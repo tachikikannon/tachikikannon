@@ -91,14 +91,8 @@ export default function ReservePage() {
                 reservationType={form.type}
                 selectedDate={form.date}
                 selectedTime={form.time_slot}
-                onSelectDate={date => setForm({ ...form, date, time_slot: '' })}
-                onSelectTime={time => setForm({ ...form, time_slot: time })}
+                onSelectSlot={(date, time) => setForm(f => ({ ...f, date, time_slot: time }))}
               />
-              {form.date && form.time_slot && (
-                <p className="mt-2 text-sm text-green-700 bg-green-50 rounded px-3 py-2">
-                  ✓ {new Date(form.date + 'T00:00:00').toLocaleDateString('ja-JP', { month: 'long', day: 'numeric' })} {form.time_slot} を選択中
-                </p>
-              )}
             </div>
 
             {/* 人数 */}
