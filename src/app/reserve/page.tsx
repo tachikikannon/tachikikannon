@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ReservationCalendar from '@/components/ReservationCalendar'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
 
@@ -23,20 +24,6 @@ export default function ReservePage() {
     party_size: 1, notes: '',
   })
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
-  const [blockedDates, setBlockedDates] = useState<{ date: string; type: string; reason: string }[]>([])
-
-  useEffect(() => {
-    supabase
-      .from('blocked_dates')
-      .select('date, type, reason')
-      .gte('date', new Date().toISOString().split('T')[0])
-      .then(({ data }) => setBlockedDates(data ?? []))
-  }, [])
-
-  function getBlockedReason(date: string, type: ReservationType): string | null {
-    const hit = blockedDates.find(b => b.date === date && (b.type === 'all' || b.type === type))
-    return hit ? (hit.reason || 'この日は予約をお受けできません') : null
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -97,25 +84,21 @@ export default function ReservePage() {
               </div>
             </div>
 
-            {/* 日付・時間 */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="admin-label">ご希望日</label>
-                <input type="date" required className="admin-input" value={form.date}
-                  min={new Date().toISOString().split('T')[0]}
-                  onChange={e => setForm({...form, date: e.target.value})} />
-                {form.date && getBlockedReason(form.date, form.type) && (
-                  <p className="mt-1 text-sm text-red-600 bg-red-50 rounded px-3 py-2">
-                    ⚠️ {getBlockedReason(form.date, form.type)}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="admin-label">ご希望時間</label>
-                <select className="admin-input" value={form.time_slot} onChange={e => setForm({...form, time_slot: e.target.value})}>
-                  {TIME_SLOTS.map(t => <option key={t}>{t}</option>)}
-                </select>
-              </div>
+            {/* カレンダー・時間帯 */}
+            <div>
+              <label className="admin-label">ご希望日・時間帯</label>
+              <ReservationCalendar
+                reservationType={form.type}
+                selectedDate={form.date}
+                selectedTime={form.time_slot}
+                onSelectDate={date => setForm({ ...form, date, time_slot: '' })}
+                onSelectTime={time => setForm({ ...form, time_slot: time })}
+              />
+              {form.date && form.time_slot && (
+                <p className="mt-2 text-sm text-green-700 bg-green-50 rounded px-3 py-2">
+                  ✓ {new Date(form.date + 'T00:00:00').toLocaleDateString('ja-JP', { month: 'long', day: 'numeric' })} {form.time_slot} を選択中
+                </p>
+              )}
             </div>
 
             {/* 人数 */}
@@ -154,7 +137,7 @@ export default function ReservePage() {
             {status === 'error' && <p className="text-red-600 text-sm">送信に失敗しました。しばらく経ってから再度お試しください。</p>}
 
             <button type="submit"
-              disabled={status === 'loading' || !!(form.date && getBlockedReason(form.date, form.type))}
+              disabled={status === 'loading' || !form.date || !form.time_slot}
               className="btn-primary w-full text-center disabled:opacity-50">
               {status === 'loading' ? '送信中...' : '予約を申し込む'}
             </button>
