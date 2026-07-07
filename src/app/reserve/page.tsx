@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { createClient } from '@/lib/supabase'
@@ -23,6 +23,20 @@ export default function ReservePage() {
     party_size: 1, notes: '',
   })
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
+  const [blockedDates, setBlockedDates] = useState<{ date: string; type: string; reason: string }[]>([])
+
+  useEffect(() => {
+    supabase
+      .from('blocked_dates')
+      .select('date, type, reason')
+      .gte('date', new Date().toISOString().split('T')[0])
+      .then(({ data }) => setBlockedDates(data ?? []))
+  }, [])
+
+  function getBlockedReason(date: string, type: ReservationType): string | null {
+    const hit = blockedDates.find(b => b.date === date && (b.type === 'all' || b.type === type))
+    return hit ? (hit.reason || 'この日は予約をお受けできません') : null
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -90,6 +104,11 @@ export default function ReservePage() {
                 <input type="date" required className="admin-input" value={form.date}
                   min={new Date().toISOString().split('T')[0]}
                   onChange={e => setForm({...form, date: e.target.value})} />
+                {form.date && getBlockedReason(form.date, form.type) && (
+                  <p className="mt-1 text-sm text-red-600 bg-red-50 rounded px-3 py-2">
+                    ⚠️ {getBlockedReason(form.date, form.type)}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="admin-label">ご希望時間</label>
@@ -134,7 +153,9 @@ export default function ReservePage() {
 
             {status === 'error' && <p className="text-red-600 text-sm">送信に失敗しました。しばらく経ってから再度お試しください。</p>}
 
-            <button type="submit" disabled={status === 'loading'} className="btn-primary w-full text-center disabled:opacity-50">
+            <button type="submit"
+              disabled={status === 'loading' || !!(form.date && getBlockedReason(form.date, form.type))}
+              className="btn-primary w-full text-center disabled:opacity-50">
               {status === 'loading' ? '送信中...' : '予約を申し込む'}
             </button>
             <p className="text-xs text-gray-400 text-center">

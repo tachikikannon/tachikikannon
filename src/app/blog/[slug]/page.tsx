@@ -6,14 +6,20 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { createServerClient } from '@/lib/supabase-server'
 
-export const metadata: Metadata = { title: 'ブログ' }
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const supabase = await createServerClient()
+  const { data } = await supabase.from('posts').select('title').eq('slug', slug).single()
+  return { title: data?.title ?? 'ブログ' }
+}
 
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
+export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const supabase = await createServerClient()
   const { data: post } = await supabase
     .from('posts')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .eq('is_published', true)
     .single()
 

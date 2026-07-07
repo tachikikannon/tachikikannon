@@ -1,8 +1,6 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const TYPE_LABELS: Record<string, string> = {
   prayer:  '護摩祈願',
   shakyou: '写経',
@@ -12,6 +10,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 export async function POST(req: Request) {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const body = await req.json()
     const { name, name_kana, email, phone, type, date, time_slot, party_size, notes } = body
 

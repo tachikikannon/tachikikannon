@@ -7,9 +7,10 @@ import Footer from '@/components/Footer'
 import { createServerClient } from '@/lib/supabase-server'
 import type { News } from '@/types'
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
   const supabase = await createServerClient()
-  const { data } = await supabase.from('news').select('title, excerpt').eq('id', params.id).single()
+  const { data } = await supabase.from('news').select('title, excerpt').eq('id', id).single()
   return { title: data?.title ?? 'お知らせ', description: data?.excerpt ?? undefined }
 }
 
@@ -21,13 +22,14 @@ const CAT_COLORS: Record<string, string> = {
   '授与品のお知らせ':'bg-purple-100 text-purple-700',
 }
 
-export default async function NewsDetailPage({ params }: { params: { id: string } }) {
+export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createServerClient()
 
   const { data: item } = await supabase
     .from('news')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('is_published', true)
     .single()
 

@@ -132,3 +132,19 @@ create policy "admin upload images"
 create policy "admin delete images"
   on storage.objects for delete
   using (bucket_id = 'temple-images' and auth.role() = 'authenticated');
+
+-- 予約不可日
+create table if not exists blocked_dates (
+  id         uuid primary key default gen_random_uuid(),
+  date       date not null,
+  reason     text not null default '',
+  type       text not null default 'all',
+  created_at timestamptz not null default now()
+);
+alter table blocked_dates enable row level security;
+create policy "public read blocked_dates"
+  on blocked_dates for select
+  using (true);
+create policy "admin all blocked_dates"
+  on blocked_dates for all
+  using (auth.role() = 'authenticated');

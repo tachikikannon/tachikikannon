@@ -97,6 +97,31 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* 拝観案内カード */}
+        <section className="py-12 bg-white">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { img: '/images/dragon.jpg',  label: '立木観音の歴史', desc: '立木観音の歴史と縁起', href: '/history' },
+                { img: '/images/haikan.png',  label: '拝観料金',       desc: '拝観料・各種料金のご案内', href: '/about#hours' },
+                { img: '/images/godaido.jpg', label: '境内のご案内',   desc: '見どころ・境内マップ', href: '/grounds' },
+              ].map(({ img, label, desc, href }) => (
+                <a key={label} href={href}
+                  className="overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all group border border-gray-100">
+                  <div className="relative h-36 overflow-hidden">
+                    <img src={img} alt={label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <div className="absolute inset-0 bg-navy/30 group-hover:bg-navy/20 transition-colors" />
+                  </div>
+                  <div className="p-4 text-center">
+                    <p className="font-serif text-navy font-medium mb-1 group-hover:text-gold transition-colors">{label}</p>
+                    <p className="text-xs text-gray-500">{desc}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* 行事カレンダー（直近） */}
         {upcomingEvents && upcomingEvents.length > 0 && (
           <section className="py-16">

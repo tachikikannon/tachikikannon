@@ -19,8 +19,9 @@ const CAT_COLORS: Record<string, string> = {
 export default async function NewsPage({
   searchParams,
 }: {
-  searchParams: { category?: string }
+  searchParams: Promise<{ category?: string }>
 }) {
+  const { category } = await searchParams
   const supabase = await createServerClient()
   let query = supabase
     .from('news')
@@ -28,8 +29,8 @@ export default async function NewsPage({
     .eq('is_published', true)
     .order('published_at', { ascending: false })
 
-  if (searchParams.category) {
-    query = query.eq('category', searchParams.category)
+  if (category) {
+    query = query.eq('category', category)
   }
 
   const { data: items } = await query
@@ -55,12 +56,12 @@ export default async function NewsPage({
           {/* カテゴリフィルター */}
           <div className="flex flex-wrap gap-2 mb-8">
             <Link href="/news"
-              className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${!searchParams.category ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
+              className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${!category ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
               すべて
             </Link>
             {CATEGORIES.map(cat => (
               <Link key={cat} href={`/news?category=${encodeURIComponent(cat)}`}
-                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${searchParams.category === cat ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
+                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${category === cat ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
                 {cat}
               </Link>
             ))}
@@ -69,7 +70,7 @@ export default async function NewsPage({
           {news.length > 0 ? (
             <div className="space-y-6">
               {/* 最新記事（大カード） */}
-              {news[0] && !searchParams.category && (
+              {news[0] && !category && (
                 <Link href={`/news/${news[0].id}`} className="group block bg-white rounded-2xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
                   <div className="md:flex">
                     <div className="md:w-80 h-52 md:h-auto flex-shrink-0 bg-cream-alt relative">
@@ -97,7 +98,7 @@ export default async function NewsPage({
 
               {/* 残りの記事（リスト） */}
               <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
-                {(searchParams.category ? news : news.slice(1)).map(item => (
+                {(category ? news : news.slice(1)).map(item => (
                   <Link key={item.id} href={`/news/${item.id}`}
                     className="flex items-start gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
                     {item.cover_url && (
