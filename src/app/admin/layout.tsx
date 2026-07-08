@@ -10,6 +10,7 @@ const navItems = [
   { href: '/admin/events',       label: '行事カレンダー', icon: '📅' },
   { href: '/admin/reservations',  label: '予約管理',       icon: '📋' },
   { href: '/admin/blocked-dates', label: '予約不可日',     icon: '🚫' },
+  { href: '/admin/capacity',      label: '定員設定',       icon: '👥' },
   { href: '/admin/contacts',      label: 'お問い合わせ',   icon: '✉️' },
   { href: '/admin/images',        label: '画像管理',       icon: '🖼️' },
 ]

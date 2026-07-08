@@ -28,7 +28,8 @@ function getTimeSlots(type: ReservationType, month: number): string[] {
 }
 
 type BlockedDate = { date: string; type: string; reason: string }
-type Reservation = { date: string; time_slot: string }
+type Reservation = { date: string; time_slot: string; type: string; party_size: number }
+type CapacitySetting = { max_groups: number; max_people: number }
 
 interface Props {
   reservationType: ReservationType
@@ -63,6 +64,7 @@ export default function ReservationCalendar({
   })
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([])
   const [reservations, setReservations] = useState<Reservation[]>([])
+  const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
 
   // 今週の7日間
   const weekDays = Array.from({ length: 7 }, (_, i) => {
@@ -72,6 +74,12 @@ export default function ReservationCalendar({
   })
 
   useEffect(() => {
+    supabase.from('capacity_settings').select('max_groups,max_people')
+      .eq('type', reservationType).single()
+      .then(({ data }) => setCapacity(data ?? null))
+  }, [reservationType])
+
+  useEffect(() => {
     const from = toDateStr(weekDays[0])
     const to = toDateStr(weekDays[6])
 
@@ -79,10 +87,11 @@ export default function ReservationCalendar({
       .gte('date', from).lte('date', to)
       .then(({ data }) => setBlockedDates(data ?? []))
 
-    supabase.from('reservations').select('date,time_slot')
+    supabase.from('reservations').select('date,time_slot,type,party_size')
       .gte('date', from).lte('date', to)
+      .eq('type', reservationType)
       .then(({ data }) => setReservations(data ?? []))
-  }, [weekStart])
+  }, [weekStart, reservationType])
 
   function isDateBlocked(dateStr: string) {
     return blockedDates.find(b =>
@@ -90,8 +99,12 @@ export default function ReservationCalendar({
     ) ?? null
   }
 
-  function isSlotBooked(dateStr: string, slot: string) {
-    return reservations.some(r => r.date === dateStr && r.time_slot === slot)
+  function isSlotFull(dateStr: string, slot: string) {
+    if (!capacity) return false
+    const slotReservations = reservations.filter(r => r.date === dateStr && r.time_slot === slot)
+    const groupCount = slotReservations.length
+    const peopleCount = slotReservations.reduce((sum, r) => sum + (r.party_size ?? 1), 0)
+    return groupCount >= capacity.max_groups || peopleCount >= capacity.max_people
   }
 
   function prevWeek() {
@@ -165,10 +178,10 @@ export default function ReservationCalendar({
                 const dateStr = toDateStr(d)
                 const isPast = d < today
                 const blocked = isDateBlocked(dateStr)
-                const booked = isSlotBooked(dateStr, slot)
+                const full = isSlotFull(dateStr, slot)
                 const isSelected = selectedDate === dateStr && selectedTime === slot
                 const validSlots = getTimeSlots(reservationType, d.getMonth() + 1)
-                const unavailable = isPast || !!blocked || booked || !validSlots.includes(slot)
+                const unavailable = isPast || !!blocked || full || !validSlots.includes(slot)
 
                 return (
                   <td key={dateStr} className="border border-gray-200 p-1 text-center">
