@@ -13,13 +13,11 @@ const TYPES: { value: ReservationType; label: string; price: string }[] = [
   { value: 'jyuzu',    label: '数珠づくり', price: '2,000円〜' },
 ]
 
-const TIME_SLOTS = ['9:00','9:30','10:00','10:30','11:00','11:30']
-
 export default function ReservePage() {
   const supabase = createClient()
   const [form, setForm] = useState({
     type: 'prayer' as ReservationType,
-    date: '', time_slot: TIME_SLOTS[0],
+    date: '', time_slot: '',
     name: '', name_kana: '', email: '', phone: '',
     party_size: 1, notes: '',
   })
@@ -76,7 +74,8 @@ export default function ReservePage() {
                   <label key={t.value} className={`border rounded-lg p-3 cursor-pointer transition-colors
                     ${form.type === t.value ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
                     <input type="radio" name="type" value={t.value} className="sr-only"
-                      checked={form.type === t.value} onChange={() => setForm({...form, type: t.value})} />
+                      checked={form.type === t.value}
+                      onChange={() => setForm(f => ({ ...f, type: t.value, date: '', time_slot: '' }))} />
                     <p className="font-medium text-navy text-sm">{t.label}</p>
                     <p className="text-xs text-gold">{t.price}</p>
                   </label>

@@ -3,8 +3,29 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
 
-const TIME_SLOTS = ['9:00','9:30','10:00','10:30','11:00','11:30']
 const DAY_LABELS = ['日','月','火','水','木','金','土']
+
+function getSeason(month: number): 'peak' | 'shoulder' | 'winter' {
+  if (month >= 4 && month <= 10) return 'peak'
+  if (month === 3 || month === 11) return 'shoulder'
+  return 'winter'
+}
+
+function getTimeSlots(type: ReservationType, month: number): string[] {
+  const season = getSeason(month)
+  if (type === 'prayer') {
+    return ['9:00','9:30','10:00','10:30','11:00','11:30']
+  }
+  if (type === 'shakyou' || type === 'shabutu') {
+    return ['午前','午後']
+  }
+  if (type === 'jyuzu') {
+    if (season === 'peak')     return ['9:00','10:00','11:00','12:00','13:00','14:00','15:00']
+    if (season === 'shoulder') return ['9:00','10:00','11:00','12:00','13:00','14:00']
+    return ['9:00','10:00','11:00','12:00','13:00']
+  }
+  return []
+}
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string }
@@ -134,7 +155,8 @@ export default function ReservationCalendar({
           </tr>
         </thead>
         <tbody>
-          {TIME_SLOTS.map(slot => (
+          {/* 週内の全日付のスロットを合わせて行を決定 */}
+          {Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getMonth() + 1)))).map(slot => (
             <tr key={slot}>
               <td className="border border-gray-200 bg-gray-50 px-2 py-2 text-xs text-gray-500 text-center whitespace-nowrap">
                 {slot}
@@ -145,7 +167,8 @@ export default function ReservationCalendar({
                 const blocked = isDateBlocked(dateStr)
                 const booked = isSlotBooked(dateStr, slot)
                 const isSelected = selectedDate === dateStr && selectedTime === slot
-                const unavailable = isPast || !!blocked || booked
+                const validSlots = getTimeSlots(reservationType, d.getMonth() + 1)
+                const unavailable = isPast || !!blocked || booked || !validSlots.includes(slot)
 
                 return (
                   <td key={dateStr} className="border border-gray-200 p-1 text-center">
