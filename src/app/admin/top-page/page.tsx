@@ -7,22 +7,23 @@ type Field = {
   label: string
   hint?: string
   multiline?: boolean
+  defaultValue?: string
 }
 
 const FIELDS: { section: string; fields: Field[] }[] = [
   {
     section: 'ヒーローセクション',
     fields: [
-      { key: 'hero_en',    label: '英語サブタイトル', hint: '例：Nikkozan Chuzenji Temple' },
-      { key: 'hero_title', label: 'キャッチコピー', hint: '改行は「\\n」で入力してください', multiline: true },
+      { key: 'hero_en',    label: '英語サブタイトル', hint: '例：Nikkozan Chuzenji Temple', defaultValue: 'Nikkozan Chuzenji Temple' },
+      { key: 'hero_title', label: 'キャッチコピー', hint: '改行は「\\n」で入力してください', multiline: true, defaultValue: '中禅寺湖畔に佇む、\n祈りと巡礼の寺' },
     ],
   },
   {
     section: 'アクセス',
     fields: [
-      { key: 'access_address', label: '住所', multiline: true },
-      { key: 'access_car',     label: '車でのアクセス', multiline: true },
-      { key: 'access_bus',     label: '電車・バスでのアクセス', multiline: true },
+      { key: 'access_address', label: '住所', multiline: true, defaultValue: '〒321-1661\n栃木県日光市中宮祠2578' },
+      { key: 'access_car',     label: '車でのアクセス', multiline: true, defaultValue: '日光宇都宮道路 日光ICより約40分\n（いろは坂経由）' },
+      { key: 'access_bus',     label: '電車・バスでのアクセス', multiline: true, defaultValue: '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩3分' },
     ],
   },
 ]
@@ -61,7 +62,7 @@ export default function TopPageEditor() {
           <div key={section}>
             <h2 className="text-sm font-medium text-gray-500 tracking-widest mb-3 uppercase">{section}</h2>
             <div className="bg-white rounded-xl shadow-sm p-6 space-y-5">
-              {fields.map(({ key, label, hint, multiline }) => (
+              {fields.map(({ key, label, hint, multiline, defaultValue }) => (
                 <div key={key}>
                   <label className="admin-label">{label}</label>
                   {hint && <p className="text-xs text-gray-400 mb-1">{hint}</p>}
@@ -69,6 +70,7 @@ export default function TopPageEditor() {
                     <textarea
                       className="admin-input min-h-[80px]"
                       value={values[key] ?? ''}
+                      placeholder={defaultValue}
                       onChange={e => setValues(v => ({ ...v, [key]: e.target.value }))}
                     />
                   ) : (
@@ -76,6 +78,7 @@ export default function TopPageEditor() {
                       type="text"
                       className="admin-input"
                       value={values[key] ?? ''}
+                      placeholder={defaultValue}
                       onChange={e => setValues(v => ({ ...v, [key]: e.target.value }))}
                     />
                   )}
