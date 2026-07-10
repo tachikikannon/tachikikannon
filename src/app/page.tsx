@@ -5,8 +5,20 @@ import Footer from '@/components/Footer'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { News, Event } from '@/types'
 
+const DEFAULT_CONTENT: Record<string, string> = {
+  hero_en:        'Nikkozan Chuzenji Temple',
+  hero_title:     '中禅寺湖畔に佇む、\n祈りと巡礼の寺',
+  access_address: '〒321-1661\n栃木県日光市中宮祠2578',
+  access_car:     '日光宇都宮道路 日光ICより約40分\n（いろは坂経由）',
+  access_bus:     '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩3分',
+}
+
 export default async function HomePage() {
   const supabase = await createServerSupabaseClient()
+
+  const { data: siteContentRows } = await supabase.from('site_content').select('key,value')
+  const content: Record<string, string> = { ...DEFAULT_CONTENT }
+  siteContentRows?.forEach(row => { content[row.key] = row.value })
 
   const { data: newsList } = await supabase
     .from('news')
@@ -32,9 +44,11 @@ export default async function HomePage() {
           <Image src="/images/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-navy/50" />
           <div className="relative text-center text-white px-4">
-            <p className="text-gold text-xs tracking-[0.3em] mb-4">Nikkozan Chuzenji Temple</p>
+            <p className="text-gold text-xs tracking-[0.3em] mb-4">{content.hero_en}</p>
             <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-snug mb-6">
-              中禅寺湖畔に佇む、<br />祈りと巡礼の寺
+              {content.hero_title.split('\\n').map((line, i) => (
+                <span key={i}>{line}{i < content.hero_title.split('\\n').length - 1 && <br />}</span>
+              ))}
             </h1>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link href="/about" className="btn-gold">参拝のご案内</Link>
@@ -226,9 +240,9 @@ export default async function HomePage() {
               />
               <div className="p-6 grid md:grid-cols-3 gap-4">
                 {[
-                  { icon:'📍', title:'住所', body:'〒321-1661\n栃木県日光市中宮祠2578' },
-                  { icon:'🚗', title:'車でのアクセス', body:'日光宇都宮道路 日光ICより約40分\n（いろは坂経由）' },
-                  { icon:'🚌', title:'電車・バスでのアクセス', body:'東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩3分' },
+                  { icon:'📍', title:'住所', body: content.access_address },
+                  { icon:'🚗', title:'車でのアクセス', body: content.access_car },
+                  { icon:'🚌', title:'電車・バスでのアクセス', body: content.access_bus },
                 ].map(({ icon, title, body }) => (
                   <div key={title}>
                     <p className="font-medium text-navy text-sm mb-1">{icon} {title}</p>
