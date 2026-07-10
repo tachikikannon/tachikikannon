@@ -35,10 +35,12 @@ export default function TopPageEditor() {
   const [saved, setSaved] = useState<string | null>(null)
 
   useEffect(() => {
+    const defaults: Record<string, string> = {}
+    FIELDS.forEach(({ fields }) => fields.forEach(f => { if (f.defaultValue) defaults[f.key] = f.defaultValue }))
     supabase.from('site_content').select('key,value')
       .then(({ data }) => {
-        const map: Record<string, string> = {}
-        data?.forEach(row => { map[row.key] = row.value })
+        const map: Record<string, string> = { ...defaults }
+        data?.forEach(row => { if (row.value) map[row.key] = row.value })
         setValues(map)
       })
   }, [])
