@@ -15,7 +15,7 @@ const DEFAULT_NOTES = [
 ]
 
 const DEFAULTS: Record<string, string> = {
-  onsenji_goshuin_fee_note: '御朱印代：各500円　／　書き入れ・書き置きともに同じ金額です。\n受付時間は拝観時間に準じます（閉門30分前に終了）。',
+  onsenji_goshuin_fee_note: '御朱印代：500円　／　写経体験（1,000円）をお申し込みの方には特別御朱印を授与しています。\n受付時間は拝観受付終了時刻までとなります。',
   onsenji_goshuin_notes: JSON.stringify(DEFAULT_NOTES),
 }
 

@@ -13,13 +13,13 @@ export const metadata: Metadata = {
 
 const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_en:    'Nikkozan Onsenji Temple',
-  onsenji_hero_title: '中禅寺湖畔に佇む、\n癒しと祈りの霊場',
-  onsenji_hero_sub:   '薬師如来の御加護のもと、千二百余年の歴史を刻む温泉の霊場',
+  onsenji_hero_title: '千二百余年の祈りを宿す\n薬師の霊場',
+  onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_about_title: '温泉寺について',
-  onsenji_about_body: '日光山温泉寺は、784年（延暦3年）に勝道上人によって開かれた霊場です。ご本尊は薬師如来（医王如来）で、病気平癒・健康長寿のご利益で知られています。',
-  onsenji_access_address: '〒321-1661 栃木県日光市中宮祠2480',
-  onsenji_access_car:  '日光宇都宮道路 日光ICより約40分（いろは坂経由）',
-  onsenji_access_bus:  '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩5分',
+  onsenji_about_body: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。',
+  onsenji_access_address: '〒321-1494 栃木県日光市山内2300',
+  onsenji_access_car:  '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり',
+  onsenji_access_bus:  '東武日光駅・JR日光駅よりバスで「西参道」バス停下車、徒歩約10分\nまたは「表参道」バス停より徒歩約15分',
 }
 
 async function getContent(): Promise<Record<string, string>> {
@@ -82,7 +82,7 @@ export default async function OnsenjPage() {
         {/* お知らせバー */}
         <div className="bg-[#7ec8a4]/20 border-y border-[#7ec8a4]/30 py-3 px-4">
           <div className="max-w-4xl mx-auto text-center text-sm text-onsenji">
-            薬師の湯（温泉浴）は拝観時間内にご利用いただけます。詳しくは拝観案内をご覧ください。
+            令和8年4月11日より「薬師の湯」開湯。泉質：含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（71.4℃）完全かけ流し。
           </div>
         </div>
 
@@ -117,10 +117,10 @@ export default async function OnsenjPage() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { icon: '🌿', title: '病気平癒', desc: '薬師如来の御力で病気の回復をお祈りします' },
-                { icon: '💧', title: '健康長寿', desc: '温泉の御湯で心身ともに清め健やかな日々を' },
-                { icon: '🏔', title: '縁結び', desc: '中禅寺湖の霊気に包まれた良縁をお結びします' },
-                { icon: '✨', title: '開運招福', desc: '千二百年の祈りが積み重なる霊場のご加護を' },
+                { icon: '🌿', title: '病気平癒', desc: '薬師瑠璃光如来の御力で病気の回復をお祈りします' },
+                { icon: '💧', title: '健康増進', desc: '大地から湧く温泉と仏縁で心身ともに清まります' },
+                { icon: '⏳', title: '延命長寿', desc: '医王如来とも呼ばれる薬師如来の御加護を' },
+                { icon: '✨', title: '開運招福', desc: '千二百余年の祈りが積み重なる霊場のご加護を' },
               ].map(({ icon, title, desc }) => (
                 <div key={title} className="bg-white rounded-2xl p-5 text-center shadow-sm border-t-4 border-[#7ec8a4]">
                   <p className="text-3xl mb-3">{icon}</p>
@@ -141,7 +141,7 @@ export default async function OnsenjPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { icon: '♨️', title: '薬師の湯', sub: '温泉浴', href: '/onsenji/about', desc: '中禅寺湖から湧く温泉で心身を清める体験。参拝と合わせてお楽しみください。' },
+              { icon: '♨️', title: '薬師の湯', sub: '温泉浴', href: '/onsenji/about', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
               { icon: '🙏', title: '御祈願', sub: 'Prayer', href: '/onsenji/prayer', desc: '薬師如来への護摩祈祷。病気平癒・健康長寿・家内安全など各種ご祈願を承ります。' },
               { icon: '📜', title: '御朱印', sub: 'Goshuin', href: '/onsenji/goshuin', desc: '温泉寺の御朱印は境内にてお受けいただけます。特別御朱印もご用意しています。' },
             ].map(({ icon, title, sub, href, desc }) => (

@@ -4,7 +4,7 @@ async function getSiteSettings() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   try {
-    const res = await fetch(`${url}/rest/v1/site_content?key=in.(onsenji_address,onsenji_tel)&select=key,value`, {
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(onsenji_address,onsenji_tel,onsenji_fax)&select=key,value`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
       cache: 'no-store',
     })
@@ -18,8 +18,8 @@ async function getSiteSettings() {
 
 export default async function FooterOnsenji() {
   const settings = await getSiteSettings()
-  const address = settings.onsenji_address ?? '〒321-1661 栃木県日光市中宮祠2480'
-  const tel = settings.onsenji_tel ?? '0288-55-0013'
+  const address = settings.onsenji_address ?? '〒321-1494 栃木県日光市山内2300'
+  const tel = settings.onsenji_tel ?? '0288-54-0560'
 
   return (
     <footer className="bg-onsenji text-white/70">

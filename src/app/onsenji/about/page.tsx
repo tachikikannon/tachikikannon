@@ -8,10 +8,10 @@ import FooterOnsenji from '@/components/FooterOnsenji'
 export const metadata: Metadata = { title: '拝観案内 | 日光山温泉寺' }
 
 const DEFAULT_FLOW = [
-  { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。大人500円・子供200円。受付は閉門30分前に終了いたします。' },
-  { title: '本堂参拝', text: 'ご本尊・薬師如来（医王如来）にお参りください。' },
-  { title: '薬師の湯', text: '参拝後は境内の温泉（足湯・手湯）をご利用いただけます。拝観料に含まれています。' },
-  { title: '御朱印・授与品', text: '御朱印所にて御朱印やお守りをお受けいただけます。' },
+  { title: '拝観受付', text: '入口にて志納金をお納めください。大人500円・小人300円。受付は参篭終了1時間前に終了いたします。' },
+  { title: '本堂参拝', text: 'ご本尊・薬師瑠璃光如来（医王如来）にお参りください。健康増進・延命長寿をお祈りいただけます。' },
+  { title: '薬師の湯', text: '参拝後は「薬師の湯」（令和8年4月開湯）をご利用いただけます。志納金に含まれています。タオルをご持参ください。' },
+  { title: '御朱印・写経体験', text: '御朱印（500円）・写経体験（1,000円・特別御朱印授与）はお気軽にお申し付けください。' },
 ]
 const DEFAULT_NOTES = [
   { text: '境内では静粛にお過ごしください。' },
@@ -23,12 +23,12 @@ const DEFAULT_NOTES = [
 
 const DEFAULTS: Record<string, string> = {
   onsenji_about_fee_adult: '500円',
-  onsenji_about_fee_child: '200円',
-  onsenji_about_hours_peak: '午前8時〜午後5時',
-  onsenji_about_hours_shoulder: '午前8時〜午後4時',
-  onsenji_about_hours_winter: '午前8時30分〜午後3時30分',
+  onsenji_about_fee_child: '300円',
+  onsenji_about_hours_peak: '午前8時〜午後5時（受付：午前8時〜午後4時）',
+  onsenji_about_hours_shoulder: '午前8時〜午後4時（受付：午前8時〜午後3時）',
+  onsenji_about_hours_winter: '午前8時〜午後3時（受付：午前8時〜午後2時）',
   onsenji_about_flow: JSON.stringify(DEFAULT_FLOW),
-  onsenji_about_onsen_note: '薬師の湯（足湯・手湯）は拝観料に含まれています。タオルをご持参ください。浴衣・タオルの貸し出しは行っておりません。',
+  onsenji_about_onsen_note: '「薬師の湯」は令和8年4月11日より開湯しました。泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（泉温71.4℃）の完全かけ流し。加水すると乳白色に変わる神秘的な湯です。タオルをご持参ください。',
   onsenji_about_notes: JSON.stringify(DEFAULT_NOTES),
 }
 
@@ -76,8 +76,8 @@ export default async function OnsenjAboutPage() {
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   {[
-                    ['拝観時間', '季節により異なります（下記参照）\n※拝観受付はいずれも閉門30分前に終了'],
-                    ['拝観料', `大人：${c.onsenji_about_fee_adult}　子供：${c.onsenji_about_fee_child}`],
+                    ['参篭時間', '季節により異なります（下記参照）\n受付終了は参篭終了の1時間前'],
+                    ['志納金', `大人：${c.onsenji_about_fee_adult}　小人：${c.onsenji_about_fee_child}`],
                     ['定休日', '年中無休'],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
@@ -90,9 +90,9 @@ export default async function OnsenjAboutPage() {
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               {[
-                { period: '4月〜10月', time: c.onsenji_about_hours_peak },
-                { period: '11月・3月', time: c.onsenji_about_hours_shoulder },
-                { period: '12月〜2月', time: c.onsenji_about_hours_winter },
+                { period: '春〜秋（4月〜10月）', time: c.onsenji_about_hours_peak },
+                { period: '秋〜冬（11月・3月）', time: c.onsenji_about_hours_shoulder },
+                { period: '冬期（12月〜2月）', time: c.onsenji_about_hours_winter },
               ].map(({ period, time }) => (
                 <div key={period} className="bg-white rounded-xl p-5 text-center shadow-sm border-t-4 border-[#7ec8a4]">
                   <p className="font-serif text-onsenji font-medium mb-2">{period}</p>

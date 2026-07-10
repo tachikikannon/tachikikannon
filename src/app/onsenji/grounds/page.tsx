@@ -24,7 +24,7 @@ const DEFAULT_FLOW = [
 
 const DEFAULTS: Record<string, string> = {
   onsenji_grounds_spots: JSON.stringify(DEFAULT_SPOTS),
-  onsenji_grounds_onsen_text: '温泉寺の境内には、中禅寺湖から湧き出る天然温泉を利用した「薬師の湯」があります。参拝者はお参りの後、この温泉で心身を清めることができます。薬師如来の御加護と温泉の癒しを同時にいただける、温泉寺ならではの体験です。',
+  onsenji_grounds_onsen_text: '境内には令和8年4月11日に開湯した「薬師の湯」があります。泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（泉温71.4℃）の完全かけ流し。加水すると乳白色に変わる神秘的な湯は、参拝者に開放されています。薬師如来の御加護とともに心身を清めていただけます。',
   onsenji_grounds_flow: JSON.stringify(DEFAULT_FLOW),
 }
 

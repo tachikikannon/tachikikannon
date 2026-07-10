@@ -15,10 +15,10 @@ const DEFAULT_ITEMS = [
 
 const DEFAULTS: Record<string, string> = {
   onsenji_shakyou_about_p1: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。',
-  onsenji_shakyou_about_p2: '温泉寺では、薬師如来に縁の深いお経をお写しいただきます。写経後は薬師の湯（足湯）をご利用いただき、心身ともにリフレッシュしていただけます。',
-  onsenji_shakyou_fee:  '1,000円（御朱印込み）',
-  onsenji_shakyou_time: '約30〜60分',
-  onsenji_shakyou_cta_sub: '事前予約をおすすめします。当日受付も空きがあれば対応します。',
+  onsenji_shakyou_about_p2: '温泉寺では薬師如来に縁の深いお経をお写しいただきます。体験後は特別御朱印をお授けします。毎日開催していますので、参拝の際にお気軽にお申し付けください。',
+  onsenji_shakyou_fee:  '1,000円（特別御朱印授与込み）',
+  onsenji_shakyou_time: '約15分',
+  onsenji_shakyou_cta_sub: '予約不要・毎日実施。参拝受付時にお申し付けください。',
   onsenji_shakyou_items: JSON.stringify(DEFAULT_ITEMS),
 }
 
