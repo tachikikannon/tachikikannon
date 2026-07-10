@@ -9,6 +9,7 @@ const navLinks = [
   { href: '/prayer',  label: '御祈願' },
   { href: '/goshuin', label: '御朱印' },
   { href: 'https://chuzenji.official.ec/', label: '授与品・通販', external: true },
+  { href: '/faq',     label: 'よくある質問' },
   { href: '/contact', label: 'お問い合わせ' },
 ]
 
