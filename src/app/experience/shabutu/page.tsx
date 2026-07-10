@@ -7,13 +7,30 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '写仏体験' }
 
+const DEFAULT_FLOW = [
+  { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
+  { title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
+  { title: 'お描きいただきます', text: '下絵に沿って、立木観世音菩薩のお姿をゆっくりお描きください。係の者がご説明いたします。' },
+  { title: '特別御朱印のお授け', text: '完成後、銀紙特別朱印（立木観世音）をお授けします。' },
+  { title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
+]
+const DEFAULT_ITEMS = [
+  { text: '下絵・筆・墨・硯はすべてご用意しています。手ぶらでお越しください。' },
+  { text: '墨が衣服につく場合がありますので、汚れてもよい服装でお越しください。' },
+  { text: '完成した作品はお持ち帰りいただけます。筒状にお渡しします。' },
+]
+
 const DEFAULTS: Record<string, string> = {
   shabutu_about_p1: '写仏とは、仏様のお姿を下絵に沿って丁寧にお描きする修行です。写経と並ぶ伝統的な仏道修行のひとつで、描きながら仏様の功徳をいただき、心を落ち着けることができます。',
   shabutu_about_p2: '立木観音の写仏体験では、立木観世音菩薩のお姿をお描きいただきます。完成した写仏は記念にお持ち帰りいただけます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。',
   shabutu_fee:  '1,000円（特別御朱印込み）',
   shabutu_time: '約30〜60分（個人差があります）',
   shabutu_cta_sub: '事前予約をおすすめします。当日受付も空きがあれば対応します。',
+  shabutu_flow: JSON.stringify(DEFAULT_FLOW),
+  shabutu_items: JSON.stringify(DEFAULT_ITEMS),
 }
+
+function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 async function getContent() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -21,8 +38,7 @@ async function getContent() {
   try {
     const keys = Object.keys(DEFAULTS).join(',')
     const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-      cache: 'no-store',
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
     })
     if (!res.ok) return DEFAULTS
     const rows: { key: string; value: string }[] = await res.json()
@@ -34,6 +50,8 @@ async function getContent() {
 
 export default async function ShabutuPage() {
   const c = await getContent()
+  const flow  = pj<typeof DEFAULT_FLOW>(c.shabutu_flow, DEFAULT_FLOW)
+  const items = pj<typeof DEFAULT_ITEMS>(c.shabutu_items, DEFAULT_ITEMS)
 
   return (
     <>
@@ -53,7 +71,6 @@ export default async function ShabutuPage() {
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
-
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">写仏とは</h2>
             <div className="bg-white rounded-xl p-6 shadow-sm text-sm text-gray-700 leading-relaxed">
@@ -87,13 +104,7 @@ export default async function ShabutuPage() {
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">体験の流れ</h2>
             <ol className="relative border-l-2 border-gold ml-4 space-y-6">
-              {[
-                { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
-                { title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
-                { title: 'お描きいただきます', text: '下絵に沿って、立木観世音菩薩のお姿をゆっくりお描きください。係の者がご説明いたします。' },
-                { title: '特別御朱印のお授け', text: '完成後、銀紙特別朱印（立木観世音）をお授けします。' },
-                { title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
-              ].map(({ title, text }, i) => (
+              {flow.map(({ title, text }, i) => (
                 <li key={i} className="pl-6 relative">
                   <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-bold">{i + 1}</div>
                   <h3 className="font-medium text-navy mb-1">{title}</h3>
@@ -118,12 +129,8 @@ export default async function ShabutuPage() {
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">持ち物・服装</h2>
             <ul className="space-y-2">
-              {[
-                '下絵・筆・墨・硯はすべてご用意しています。手ぶらでお越しください。',
-                '墨が衣服につく場合がありますので、汚れてもよい服装でお越しください。',
-                '完成した作品はお持ち帰りいただけます。筒状にお渡しします。',
-              ].map(item => (
-                <li key={item} className="flex gap-2 text-sm text-gray-700 bg-white rounded-lg px-4 py-3 shadow-sm border-l-4 border-gold">{item}</li>
+              {items.map(({ text }, i) => (
+                <li key={i} className="flex gap-2 text-sm text-gray-700 bg-white rounded-lg px-4 py-3 shadow-sm border-l-4 border-gold">{text}</li>
               ))}
             </ul>
           </section>

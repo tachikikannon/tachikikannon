@@ -7,6 +7,24 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '数珠づくり体験' }
 
+const DEFAULT_FLOW = [
+  { title: '受付・デザイン選択', text: '寺務所 体験受付窓口にてお申し込み。珠の素材や色の組み合わせをお選びいただきます。' },
+  { title: '珠の確認', text: '選んでいただいた珠を確認し、体験台へご案内します。' },
+  { title: '数珠づくり', text: 'スタッフのご説明に沿って、珠を糸に通していきます。結び方もご指導します。' },
+  { title: '完成・お持ち帰り', text: '完成した数珠はその場でお持ち帰りいただけます。専用の袋に入れてお渡しします。' },
+]
+const DEFAULT_MATERIALS = [
+  { name: '水晶', desc: '透明感があり、邪気を払う浄化の石として知られます。' },
+  { name: '翡翠', desc: '緑の美しい石。長寿・健康・魔除けの功徳があるとされます。' },
+  { name: '木珠', desc: '軽くて使いやすい伝統的な珠。温かみのある手触りが特徴です。' },
+]
+const DEFAULT_NOTES = [
+  { text: '事前予約をお願いします。当日受付は材料が揃っている場合のみ対応します。' },
+  { text: '小学生のお子様は保護者の方のご同伴が必要です。' },
+  { text: '道具はすべてご用意します。手ぶらでお越しください。' },
+  { text: '完成品は専用袋に入れてお持ち帰りいただけます。' },
+]
+
 const DEFAULTS: Record<string, string> = {
   jyuzu_about_p1: '数珠（じゅず）は、仏様を礼拝するときに手に持つ法具で、煩悩の数である108つの珠が一般的です。珠には天然石・木材・水晶などさまざまな素材があり、素材によって異なる功徳があるとされています。',
   jyuzu_about_p2: '立木観音の数珠づくり体験では、複数の珠の種類からお好みの組み合わせを選び、自分だけのオリジナル数珠をお作りいただけます。完成した数珠は参拝・法要などさまざまな場面でお使いいただけます。',
@@ -14,7 +32,12 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_time: '約60〜90分',
   jyuzu_price_note: 'お選びいただく珠の素材・数・組み合わせによって料金が異なります。詳しくは受付窓口またはお問い合わせフォームよりご確認ください。',
   jyuzu_cta_sub: '材料の準備がありますので、事前のご予約をお願いします。',
+  jyuzu_flow: JSON.stringify(DEFAULT_FLOW),
+  jyuzu_materials: JSON.stringify(DEFAULT_MATERIALS),
+  jyuzu_notes: JSON.stringify(DEFAULT_NOTES),
 }
+
+function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 async function getContent() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -22,8 +45,7 @@ async function getContent() {
   try {
     const keys = Object.keys(DEFAULTS).join(',')
     const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-      cache: 'no-store',
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
     })
     if (!res.ok) return DEFAULTS
     const rows: { key: string; value: string }[] = await res.json()
@@ -35,6 +57,9 @@ async function getContent() {
 
 export default async function JyuzuPage() {
   const c = await getContent()
+  const flow      = pj<typeof DEFAULT_FLOW>(c.jyuzu_flow, DEFAULT_FLOW)
+  const materials = pj<typeof DEFAULT_MATERIALS>(c.jyuzu_materials, DEFAULT_MATERIALS)
+  const notes     = pj<typeof DEFAULT_NOTES>(c.jyuzu_notes, DEFAULT_NOTES)
 
   return (
     <>
@@ -54,7 +79,6 @@ export default async function JyuzuPage() {
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
-
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">数珠づくりとは</h2>
             <div className="bg-white rounded-xl p-6 shadow-sm text-sm text-gray-700 leading-relaxed">
@@ -92,12 +116,7 @@ export default async function JyuzuPage() {
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">体験の流れ</h2>
             <ol className="relative border-l-2 border-gold ml-4 space-y-6">
-              {[
-                { title: '受付・デザイン選択', text: '寺務所 体験受付窓口にてお申し込み。珠の素材や色の組み合わせをお選びいただきます。' },
-                { title: '珠の確認', text: '選んでいただいた珠を確認し、体験台へご案内します。' },
-                { title: '数珠づくり', text: 'スタッフのご説明に沿って、珠を糸に通していきます。結び方もご指導します。' },
-                { title: '完成・お持ち帰り', text: '完成した数珠はその場でお持ち帰りいただけます。専用の袋に入れてお渡しします。' },
-              ].map(({ title, text }, i) => (
+              {flow.map(({ title, text }, i) => (
                 <li key={i} className="pl-6 relative">
                   <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-bold">{i + 1}</div>
                   <h3 className="font-medium text-navy mb-1">{title}</h3>
@@ -111,12 +130,8 @@ export default async function JyuzuPage() {
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">珠の素材について</h2>
             <p className="text-sm text-gray-600 mb-5">珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。</p>
             <div className="grid md:grid-cols-3 gap-4">
-              {[
-                { name: '水晶', desc: '透明感があり、邪気を払う浄化の石として知られます。' },
-                { name: '翡翠', desc: '緑の美しい石。長寿・健康・魔除けの功徳があるとされます。' },
-                { name: '木珠', desc: '軽くて使いやすい伝統的な珠。温かみのある手触りが特徴です。' },
-              ].map(({ name, desc }) => (
-                <div key={name} className="bg-white rounded-xl p-4 shadow-sm">
+              {materials.map(({ name, desc }, i) => (
+                <div key={i} className="bg-white rounded-xl p-4 shadow-sm">
                   <p className="font-medium text-navy mb-1">{name}</p>
                   <p className="text-xs text-gray-600 leading-relaxed">{desc}</p>
                 </div>
@@ -127,13 +142,8 @@ export default async function JyuzuPage() {
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">ご注意・持ち物</h2>
             <ul className="space-y-2">
-              {[
-                '事前予約をお願いします。当日受付は材料が揃っている場合のみ対応します。',
-                '小学生のお子様は保護者の方のご同伴が必要です。',
-                '道具はすべてご用意します。手ぶらでお越しください。',
-                '完成品は専用袋に入れてお持ち帰りいただけます。',
-              ].map(item => (
-                <li key={item} className="flex gap-2 text-sm text-gray-700 bg-white rounded-lg px-4 py-3 shadow-sm border-l-4 border-gold">{item}</li>
+              {notes.map(({ text }, i) => (
+                <li key={i} className="flex gap-2 text-sm text-gray-700 bg-white rounded-lg px-4 py-3 shadow-sm border-l-4 border-gold">{text}</li>
               ))}
             </ul>
           </section>

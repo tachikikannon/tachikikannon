@@ -7,13 +7,27 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '写経体験' }
 
+const DEFAULT_CONTENTS = [
+  { icon: '📜', title: '延命十句観音経', desc: '観音様のお力を借り、長寿・安全を祈るお経。十六文字を丁寧にお写しいただきます。' },
+  { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
+]
+const DEFAULT_ITEMS = [
+  { text: '筆・硯・お経の手本はすべてご用意しています。手ぶらでお越しください。' },
+  { text: '汚れてもよい服装でお越しいただくとより安心です。' },
+  { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
+]
+
 const DEFAULTS: Record<string, string> = {
   shakyou_about_p1: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。',
   shakyou_about_p2: '立木観音では、十六文字のお経（延命十句観音経・懺悔文）をお写しいただきます。短いお経のため、筆を持ったことのない方でも約15分でお写しいただけます。',
   shakyou_fee:  '1,000円（特別御朱印込み）',
   shakyou_time: '約15分',
   shakyou_cta_sub: '事前予約をおすすめします。当日受付も空きがあれば対応します。',
+  shakyou_contents: JSON.stringify(DEFAULT_CONTENTS),
+  shakyou_items: JSON.stringify(DEFAULT_ITEMS),
 }
+
+function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 async function getContent() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -21,8 +35,7 @@ async function getContent() {
   try {
     const keys = Object.keys(DEFAULTS).join(',')
     const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-      cache: 'no-store',
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
     })
     if (!res.ok) return DEFAULTS
     const rows: { key: string; value: string }[] = await res.json()
@@ -34,6 +47,8 @@ async function getContent() {
 
 export default async function ShakyouPage() {
   const c = await getContent()
+  const contents = pj<typeof DEFAULT_CONTENTS>(c.shakyou_contents, DEFAULT_CONTENTS)
+  const items    = pj<typeof DEFAULT_ITEMS>(c.shakyou_items, DEFAULT_ITEMS)
 
   return (
     <>
@@ -53,7 +68,6 @@ export default async function ShakyouPage() {
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
-
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">写経とは</h2>
             <div className="bg-white rounded-xl p-6 shadow-sm text-sm text-gray-700 leading-relaxed">
@@ -65,11 +79,8 @@ export default async function ShakyouPage() {
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">体験内容</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {[
-                { icon: '📜', title: '延命十句観音経', desc: '観音様のお力を借り、長寿・安全を祈るお経。十六文字を丁寧にお写しいただきます。' },
-                { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
-              ].map(({ icon, title, desc }) => (
-                <div key={title} className="bg-white rounded-xl p-5 shadow-sm border-t-4 border-gold">
+              {contents.map(({ icon, title, desc }, i) => (
+                <div key={i} className="bg-white rounded-xl p-5 shadow-sm border-t-4 border-gold">
                   <p className="text-2xl mb-3">{icon}</p>
                   <h3 className="font-medium text-navy mb-2">{title}</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
@@ -122,12 +133,8 @@ export default async function ShakyouPage() {
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">持ち物・服装</h2>
             <ul className="space-y-2">
-              {[
-                '筆・硯・お経の手本はすべてご用意しています。手ぶらでお越しください。',
-                '汚れてもよい服装でお越しいただくとより安心です。',
-                '書き損じても大丈夫です。丁寧にご指導いたします。',
-              ].map(item => (
-                <li key={item} className="flex gap-2 text-sm text-gray-700 bg-white rounded-lg px-4 py-3 shadow-sm border-l-4 border-gold">{item}</li>
+              {items.map(({ text }, i) => (
+                <li key={i} className="flex gap-2 text-sm text-gray-700 bg-white rounded-lg px-4 py-3 shadow-sm border-l-4 border-gold">{text}</li>
               ))}
             </ul>
           </section>

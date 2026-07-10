@@ -8,17 +8,27 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '御朱印' }
 
+const DEFAULT_NOTES = [
+  { text: '御朱印は信仰の証です。コレクション目的でのお受け取りはご遠慮ください。' },
+  { text: '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。' },
+  { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
+  { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
+]
+
 const DEFAULTS: Record<string, string> = {
   goshuin_fee_note: '御朱印代：各500円　／　書き入れ・書き置きともに同じ金額です。\n受付時間は拝観時間に準じます（閉門30分前に終了）。',
+  goshuin_notes: JSON.stringify(DEFAULT_NOTES),
 }
+
+function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 async function getContent() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   try {
-    const res = await fetch(`${url}/rest/v1/site_content?key=in.(goshuin_fee_note)&select=key,value`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-      cache: 'no-store',
+    const keys = Object.keys(DEFAULTS).join(',')
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
     })
     if (!res.ok) return DEFAULTS
     const rows: { key: string; value: string }[] = await res.json()
@@ -43,6 +53,7 @@ const special = [
 
 export default async function GoshuinPage() {
   const c = await getContent()
+  const notes = pj<typeof DEFAULT_NOTES>(c.goshuin_notes, DEFAULT_NOTES)
 
   return (
     <>
@@ -59,7 +70,6 @@ export default async function GoshuinPage() {
         </section>
 
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
-
           <section>
             <h2 className="section-title">御朱印</h2>
             <div className="section-divider" />
@@ -126,13 +136,8 @@ export default async function GoshuinPage() {
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御朱印についてのご注意</h2>
             <ul className="mt-4 space-y-3">
-              {[
-                '御朱印は信仰の証です。コレクション目的でのお受け取りはご遠慮ください。',
-                '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。',
-                '書き入れは混雑時にお時間をいただく場合がございます。',
-                '御朱印帳をお持ちでない方には書き置きもございます。',
-              ].map(item => (
-                <li key={item} className="bg-white rounded-lg px-4 py-3 border-l-4 border-gold text-sm text-gray-700 shadow-sm">{item}</li>
+              {notes.map(({ text }, i) => (
+                <li key={i} className="bg-white rounded-lg px-4 py-3 border-l-4 border-gold text-sm text-gray-700 shadow-sm">{text}</li>
               ))}
             </ul>
           </section>
