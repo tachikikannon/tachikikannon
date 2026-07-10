@@ -81,9 +81,8 @@ const SECTIONS: Section[] = [
     fields: [
       { key: 'onsenji_about_fee_adult', label: '大人 志納金', defaultValue: '500円' },
       { key: 'onsenji_about_fee_child', label: '小人 志納金', defaultValue: '300円' },
-      { key: 'onsenji_about_hours_peak',     label: '春〜秋（4〜10月）参篭・受付時間', defaultValue: '午前8時〜午後5時（受付：午前8時〜午後4時）' },
-      { key: 'onsenji_about_hours_shoulder', label: '秋〜冬（11月・3月）参篭・受付時間', defaultValue: '午前8時〜午後4時（受付：午前8時〜午後3時）' },
-      { key: 'onsenji_about_hours_winter',   label: '冬期（12〜2月）参篭・受付時間', defaultValue: '午前8時〜午後3時（受付：午前8時〜午後2時）' },
+      { key: 'onsenji_about_hours_open',   label: '受付・参篭時間', defaultValue: '受付：8時00分〜16時00分　／　参篭時間：8時00分〜17時00分' },
+      { key: 'onsenji_about_hours_winter', label: '冬季休業期間', defaultValue: '12月〜4月上旬は冬季休業。閉湯・開湯の日程は公式ホームページをご確認ください。' },
       {
         key: 'onsenji_about_flow', label: '参拝の流れ', type: 'list',
         listFields: [{ key: 'title', label: 'ステップ名' }, { key: 'text', label: '説明', multiline: true }],

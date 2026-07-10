@@ -24,9 +24,8 @@ const DEFAULT_NOTES = [
 const DEFAULTS: Record<string, string> = {
   onsenji_about_fee_adult: '500円',
   onsenji_about_fee_child: '300円',
-  onsenji_about_hours_peak: '午前8時〜午後5時（受付：午前8時〜午後4時）',
-  onsenji_about_hours_shoulder: '午前8時〜午後4時（受付：午前8時〜午後3時）',
-  onsenji_about_hours_winter: '午前8時〜午後3時（受付：午前8時〜午後2時）',
+  onsenji_about_hours_open: '受付：8時00分〜16時00分　／　参篭時間：8時00分〜17時00分',
+  onsenji_about_hours_winter: '12月〜4月上旬は冬季休業。閉湯・開湯の日程は公式ホームページをご確認ください。',
   onsenji_about_flow: JSON.stringify(DEFAULT_FLOW),
   onsenji_about_onsen_note: '「薬師の湯」は令和8年4月11日より開湯しました。泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（泉温71.4℃）の完全かけ流し。加水すると乳白色に変わる神秘的な湯です。タオルをご持参ください。',
   onsenji_about_notes: JSON.stringify(DEFAULT_NOTES),
@@ -76,29 +75,17 @@ export default async function OnsenjAboutPage() {
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   {[
-                    ['参篭時間', '季節により異なります（下記参照）\n受付終了は参篭終了の1時間前'],
+                    ['受付・参篭時間', c.onsenji_about_hours_open],
                     ['志納金', `大人：${c.onsenji_about_fee_adult}　小人：${c.onsenji_about_fee_child}`],
-                    ['定休日', '年中無休'],
+                    ['休業期間', c.onsenji_about_hours_winter],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
-                      <th className="bg-onsenji text-white text-left px-4 py-3 w-32 text-sm font-medium">{k}</th>
+                      <th className="bg-onsenji text-white text-left px-4 py-3 w-32 text-sm font-medium whitespace-nowrap">{k}</th>
                       <td className="px-4 py-3 whitespace-pre-line bg-white">{v}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              {[
-                { period: '春〜秋（4月〜10月）', time: c.onsenji_about_hours_peak },
-                { period: '秋〜冬（11月・3月）', time: c.onsenji_about_hours_shoulder },
-                { period: '冬期（12月〜2月）', time: c.onsenji_about_hours_winter },
-              ].map(({ period, time }) => (
-                <div key={period} className="bg-white rounded-xl p-5 text-center shadow-sm border-t-4 border-[#7ec8a4]">
-                  <p className="font-serif text-onsenji font-medium mb-2">{period}</p>
-                  <p className="text-sm text-gray-700">{time}</p>
-                </div>
-              ))}
             </div>
           </section>
           <section id="onsen">

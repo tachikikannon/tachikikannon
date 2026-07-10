@@ -17,7 +17,7 @@ const DEFAULTS: Record<string, string> = {
   onsenji_onsen_temp:      '71.4℃',
   onsenji_onsen_flow:      '完全かけ流し（加水あり）',
   onsenji_onsen_color:     '加水すると乳白色に変わります',
-  onsenji_onsen_hours:     '参篭時間内（受付終了の1時間前まで）',
+  onsenji_onsen_hours:     '8時00分〜17時00分（受付：8時00分〜16時00分）\n※12月〜4月上旬は冬季休業',
   onsenji_onsen_fee_note:  '志納金（大人500円・小人300円）に含まれます。別途料金はかかりません。',
   onsenji_onsen_note:      'タオルをご持参ください。貸し出しは行っておりません。',
 }
