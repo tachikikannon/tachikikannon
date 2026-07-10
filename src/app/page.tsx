@@ -18,7 +18,8 @@ const DEFAULT_CONTENT: Record<string, string> = {
 export default async function HomePage() {
   const supabase = await createServerSupabaseClient()
 
-  const { data: siteContentRows } = await supabase.from('site_content').select('key,value')
+  const { data: siteContentRows, error: siteContentError } = await supabase.from('site_content').select('key,value')
+  console.log('[site_content] rows:', siteContentRows, 'error:', siteContentError)
   const content: Record<string, string> = { ...DEFAULT_CONTENT }
   siteContentRows?.forEach(row => { content[row.key] = row.value })
 
