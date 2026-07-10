@@ -3,20 +3,26 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 
-const navItems = [
-  { href: '/admin',              label: 'ダッシュボード', icon: '🏠' },
-  { href: '/admin/news',         label: 'お知らせ',       icon: '📢' },
-  { href: '/admin/blog',         label: 'ブログ',         icon: '✏️' },
-  { href: '/admin/events',       label: '行事カレンダー', icon: '📅' },
-  { href: '/admin/reservations',  label: '予約管理',       icon: '📋' },
-  { href: '/admin/blocked-dates', label: '予約不可日',     icon: '🚫' },
-  { href: '/admin/capacity',      label: '定員設定',       icon: '👥' },
-  { href: '/admin/top-page',      label: 'トップページ編集', icon: '🏠' },
-  { href: '/admin/pages',         label: '固定ページ編集',  icon: '📄' },
-  { href: '/admin/faq',           label: 'FAQ管理',        icon: '❓' },
-  { href: '/admin/settings',      label: 'サイト設定',      icon: '⚙️' },
-  { href: '/admin/contacts',      label: 'お問い合わせ',   icon: '✉️' },
-  { href: '/admin/images',        label: '画像管理',       icon: '🖼️' },
+type NavItem = { href: string; label: string; icon: string; group?: string }
+
+const navItems: NavItem[] = [
+  { href: '/admin',               label: 'ダッシュボード',   icon: '🏠' },
+  { href: '/admin/news',          label: 'お知らせ',         icon: '📢' },
+  { href: '/admin/blog',          label: 'ブログ',           icon: '✏️' },
+  { href: '/admin/events',        label: '行事カレンダー',   icon: '📅' },
+  { href: '/admin/reservations',  label: '予約管理',         icon: '📋' },
+  { href: '/admin/blocked-dates', label: '予約不可日',       icon: '🚫' },
+  { href: '/admin/capacity',      label: '定員設定',         icon: '👥' },
+  // ── 立木観音 ──
+  { href: '/admin/top-page',      label: 'トップページ編集', icon: '🏠',  group: '立木観音' },
+  { href: '/admin/pages',         label: '固定ページ編集',   icon: '📄',  group: '立木観音' },
+  { href: '/admin/faq',           label: 'FAQ管理',          icon: '❓',  group: '立木観音' },
+  // ── 温泉寺 ──
+  { href: '/admin/onsenji-pages', label: '固定ページ編集',   icon: '📄',  group: '温泉寺' },
+  // ── 共通 ──
+  { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️' },
+  { href: '/admin/contacts',      label: 'お問い合わせ',     icon: '✉️' },
+  { href: '/admin/images',        label: '画像管理',         icon: '🖼️' },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -39,18 +45,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="text-gold text-[10px] tracking-widest">管理画面</p>
           <p className="text-white font-serif text-sm mt-0.5">中禅寺 立木観音</p>
         </div>
-        <nav className="flex-1 py-4">
-          {navItems.map(({ href, label, icon }) => {
-            const isActive = href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
-            return (
-              <Link key={href} href={href}
-                className={`flex items-center gap-3 px-5 py-3 text-sm transition-colors
-                  ${isActive ? 'bg-white/10 text-gold' : 'text-white/70 hover:text-white hover:bg-white/5'}`}>
-                <span>{icon}</span>
-                <span>{label}</span>
-              </Link>
-            )
-          })}
+        <nav className="flex-1 py-4 overflow-y-auto">
+          {(() => {
+            const rendered: React.ReactNode[] = []
+            let lastGroup: string | undefined = undefined
+            navItems.forEach(({ href, label, icon, group }) => {
+              if (group !== lastGroup) {
+                if (group) {
+                  const isOnsenji = group === '温泉寺'
+                  rendered.push(
+                    <div key={`group-${group}`} className={`px-5 pt-4 pb-1 text-[10px] tracking-widest font-medium ${isOnsenji ? 'text-[#7ec8a4]' : 'text-gold/70'}`}>
+                      ── {group}
+                    </div>
+                  )
+                } else if (lastGroup) {
+                  rendered.push(<div key={`sep-${href}`} className="mx-5 my-2 border-t border-white/10" />)
+                }
+                lastGroup = group
+              }
+              const isActive = href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
+              rendered.push(
+                <Link key={href} href={href}
+                  className={`flex items-center gap-3 px-5 py-2.5 text-sm transition-colors
+                    ${isActive
+                      ? group === '温泉寺' ? 'bg-white/10 text-[#7ec8a4]' : 'bg-white/10 text-gold'
+                      : 'text-white/70 hover:text-white hover:bg-white/5'}`}>
+                  <span>{icon}</span>
+                  <span>{label}</span>
+                </Link>
+              )
+            })
+            return rendered
+          })()}
         </nav>
         <div className="p-4 border-t border-white/10">
           <button onClick={handleLogout}
