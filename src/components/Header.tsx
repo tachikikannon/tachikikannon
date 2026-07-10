@@ -26,15 +26,28 @@ export default function Header() {
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-shadow duration-300 bg-navy ${scrolled ? 'shadow-lg' : ''}`}>
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* ロゴ */}
-        <Link href="/" className="flex items-center gap-3">
-          <Image src="/images/logo-emblem.png" alt="寺紋" width={36} height={36}
-            className="opacity-90 brightness-0 invert sepia saturate-200 hue-rotate-10" />
-          <div className="leading-tight">
-            <span className="block text-gold text-[10px] tracking-widest">日光山</span>
-            <span className="block text-white text-sm font-serif tracking-wider">中禅寺 立木観音</span>
-          </div>
-        </Link>
+        {/* ロゴ・寺切替 */}
+        <div className="flex items-center gap-1">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image src="/images/logo-emblem.png" alt="寺紋" width={34} height={34}
+              className="opacity-90 brightness-0 invert sepia saturate-200 hue-rotate-10" />
+            <div className="leading-tight">
+              <span className="block text-gold text-[9px] tracking-widest">日光山</span>
+              <span className="block text-white text-[13px] font-serif tracking-wider">中禅寺 立木観音</span>
+            </div>
+          </Link>
+
+          {/* 区切り */}
+          <span className="mx-3 h-8 w-px bg-white/20" />
+
+          {/* 温泉寺リンク */}
+          <Link href="/onsenji" className="flex items-center gap-2 group">
+            <div className="leading-tight">
+              <span className="block text-[9px] tracking-widest text-white/40 group-hover:text-[#a0c8b8] transition-colors">日光山</span>
+              <span className="block text-white/60 text-[13px] font-serif tracking-wider group-hover:text-[#7ec8a4] transition-colors">温泉寺</span>
+            </div>
+          </Link>
+        </div>
 
         {/* PC ナビ */}
         <nav className="hidden md:flex gap-6">
@@ -67,6 +80,10 @@ export default function Header() {
               : <Link key={href} href={href} onClick={() => setMenuOpen(false)}
                   className="block px-6 py-3 text-white/80 hover:text-gold border-b border-white/10 text-sm">{label}</Link>
           ))}
+          <Link href="/onsenji" onClick={() => setMenuOpen(false)}
+            className="block px-6 py-3 text-[#7ec8a4]/80 hover:text-[#7ec8a4] border-b border-white/10 text-sm">
+            → 日光山温泉寺サイトへ
+          </Link>
         </div>
       )}
     </header>

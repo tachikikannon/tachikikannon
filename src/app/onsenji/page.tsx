@@ -1,0 +1,220 @@
+export const dynamic = 'force-dynamic'
+
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import Image from 'next/image'
+import HeaderOnsenji from '@/components/HeaderOnsenji'
+import FooterOnsenji from '@/components/FooterOnsenji'
+
+export const metadata: Metadata = {
+  title: '日光山 温泉寺',
+  description: '中禅寺湖畔に佇む、癒しと祈りの霊場 日光山温泉寺',
+}
+
+const DEFAULT_CONTENT: Record<string, string> = {
+  onsenji_hero_en:    'Nikkozan Onsenji Temple',
+  onsenji_hero_title: '中禅寺湖畔に佇む、\n癒しと祈りの霊場',
+  onsenji_hero_sub:   '薬師如来の御加護のもと、千二百余年の歴史を刻む温泉の霊場',
+  onsenji_about_title: '温泉寺について',
+  onsenji_about_body: '日光山温泉寺は、784年（延暦3年）に勝道上人によって開かれた霊場です。ご本尊は薬師如来（医王如来）で、病気平癒・健康長寿のご利益で知られています。境内には中禅寺湖から湧き出る温泉を利用した薬師の湯があり、参拝者は温泉につかりながら御加護を受けることができます。',
+  onsenji_access_address: '〒321-1661 栃木県日光市中宮祠2480',
+  onsenji_access_car:  '日光宇都宮道路 日光ICより約40分（いろは坂経由）',
+  onsenji_access_bus:  '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩5分',
+}
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const keys = Object.keys(DEFAULT_CONTENT).join(',')
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
+    })
+    if (!res.ok) return DEFAULT_CONTENT
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...DEFAULT_CONTENT }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch { return DEFAULT_CONTENT }
+}
+
+export default async function OnsenjPage() {
+  const c = await getContent()
+
+  return (
+    <>
+      <HeaderOnsenji />
+      <main>
+        {/* ヒーロー */}
+        <section className="relative h-[85vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-onsenji">
+          <div className="absolute inset-0 opacity-30">
+            <Image src="/images/onsenji-hero.jpg" alt="温泉寺" fill className="object-cover" priority
+              onError={() => {}} />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-onsenji/60 via-onsenji/30 to-onsenji/80" />
+          <div className="relative text-center px-4 text-white">
+            <p className="text-[#7ec8a4] text-xs tracking-[0.4em] mb-4">{c.onsenji_hero_en}</p>
+            <h1 className="font-serif text-3xl md:text-5xl tracking-widest whitespace-pre-line leading-tight mb-6">
+              {c.onsenji_hero_title}
+            </h1>
+            <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+              {c.onsenji_hero_sub}
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/onsenji/about"
+                className="px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm tracking-wide">
+                拝観・温泉のご案内
+              </Link>
+              <Link href="/onsenji/prayer"
+                className="px-8 py-3 border border-white/60 text-white rounded-full hover:bg-white/10 transition-colors text-sm tracking-wide">
+                御祈願のご案内
+              </Link>
+            </div>
+          </div>
+          {/* スクロール */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
+            <span className="text-xs tracking-widest">SCROLL</span>
+            <span className="block w-px h-8 bg-white/30 animate-pulse" />
+          </div>
+        </section>
+
+        {/* お知らせバー */}
+        <div className="bg-[#7ec8a4]/20 border-y border-[#7ec8a4]/30 py-3 px-4">
+          <div className="max-w-4xl mx-auto text-center text-sm text-onsenji">
+            薬師の湯（温泉浴）は拝観時間内にご利用いただけます。詳しくは拝観案内をご覧ください。
+          </div>
+        </div>
+
+        {/* 温泉寺について */}
+        <section className="max-w-4xl mx-auto px-4 py-20">
+          <div className="text-center mb-12">
+            <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">About</p>
+            <h2 className="font-serif text-3xl text-onsenji tracking-widest">{c.onsenji_about_title}</h2>
+            <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
+          </div>
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg">
+              <Image src="/images/onsenji-about.jpg" alt="温泉寺" fill className="object-cover"
+                onError={() => {}} />
+              <div className="absolute inset-0 bg-onsenji/20" />
+            </div>
+            <div>
+              <p className="text-gray-700 leading-loose text-sm">{c.onsenji_about_body}</p>
+              <Link href="/onsenji/history"
+                className="inline-block mt-6 text-onsenji text-sm border-b border-onsenji/40 hover:border-onsenji transition-colors">
+                詳しい歴史・由来 →
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* 主なご利益 */}
+        <section className="bg-onsenji/5 py-16">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-10">
+              <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Goryaku</p>
+              <h2 className="font-serif text-2xl text-onsenji tracking-widest">主なご利益</h2>
+              <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { icon: '🌿', title: '病気平癒', desc: '薬師如来の御力で病気の回復をお祈りします' },
+                { icon: '💧', title: '健康長寿', desc: '温泉の御湯で心身ともに清め健やかな日々を' },
+                { icon: '🏔', title: '縁結び', desc: '中禅寺湖の霊気に包まれた良縁をお結びします' },
+                { icon: '✨', title: '開運招福', desc: '千二百年の祈りが積み重なる霊場のご加護を' },
+              ].map(({ icon, title, desc }) => (
+                <div key={title} className="bg-white rounded-2xl p-5 text-center shadow-sm border-t-4 border-[#7ec8a4]">
+                  <p className="text-3xl mb-3">{icon}</p>
+                  <p className="font-serif text-onsenji font-medium mb-2 text-sm">{title}</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 拝観・体験メニュー */}
+        <section className="max-w-4xl mx-auto px-4 py-20">
+          <div className="text-center mb-12">
+            <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Menu</p>
+            <h2 className="font-serif text-2xl text-onsenji tracking-widest">拝観・体験メニュー</h2>
+            <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { icon: '♨️', title: '薬師の湯', sub: '温泉浴', href: '/onsenji/about', desc: '中禅寺湖から湧く温泉で心身を清める体験。参拝と合わせてお楽しみください。' },
+              { icon: '🙏', title: '御祈願', sub: 'Prayer', href: '/onsenji/prayer', desc: '薬師如来への護摩祈祷。病気平癒・健康長寿・家内安全など各種ご祈願を承ります。' },
+              { icon: '📜', title: '御朱印', sub: 'Goshuin', href: '/onsenji/goshuin', desc: '温泉寺の御朱印は境内にてお受けいただけます。特別御朱印もご用意しています。' },
+            ].map(({ icon, title, sub, href, desc }) => (
+              <Link key={href} href={href}
+                className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+                <div className="bg-onsenji/10 h-32 flex items-center justify-center">
+                  <span className="text-5xl">{icon}</span>
+                </div>
+                <div className="p-5">
+                  <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">{sub}</p>
+                  <h3 className="font-serif text-onsenji font-medium mb-2">{title}</h3>
+                  <p className="text-xs text-gray-600 leading-relaxed">{desc}</p>
+                  <p className="text-onsenji text-xs mt-3 group-hover:underline">詳しく見る →</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* 境内・歴史 */}
+        <section className="bg-onsenji py-16">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-6">
+              <Link href="/onsenji/history"
+                className="group relative rounded-2xl overflow-hidden h-48 bg-onsenji-light flex items-end p-6 hover:opacity-90 transition-opacity">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="relative">
+                  <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">History</p>
+                  <p className="text-white font-serif text-lg">温泉寺の歴史</p>
+                </div>
+              </Link>
+              <Link href="/onsenji/grounds"
+                className="group relative rounded-2xl overflow-hidden h-48 bg-onsenji-light flex items-end p-6 hover:opacity-90 transition-opacity">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="relative">
+                  <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">Grounds</p>
+                  <p className="text-white font-serif text-lg">境内のご案内</p>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* アクセス */}
+        <section id="access" className="max-w-4xl mx-auto px-4 py-20">
+          <div className="text-center mb-12">
+            <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Access</p>
+            <h2 className="font-serif text-2xl text-onsenji tracking-widest">アクセス</h2>
+            <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
+          </div>
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl p-5 shadow-sm border-l-4 border-[#7ec8a4]">
+                <p className="text-xs text-[#2d6b57] tracking-widest mb-2">所在地</p>
+                <p className="text-sm text-gray-700 whitespace-pre-line">{c.onsenji_access_address}</p>
+              </div>
+              <div className="bg-white rounded-xl p-5 shadow-sm border-l-4 border-[#7ec8a4]">
+                <p className="text-xs text-[#2d6b57] tracking-widest mb-2">お車でお越しの方</p>
+                <p className="text-sm text-gray-700 whitespace-pre-line">{c.onsenji_access_car}</p>
+              </div>
+              <div className="bg-white rounded-xl p-5 shadow-sm border-l-4 border-[#7ec8a4]">
+                <p className="text-xs text-[#2d6b57] tracking-widest mb-2">バスでお越しの方</p>
+                <p className="text-sm text-gray-700 whitespace-pre-line">{c.onsenji_access_bus}</p>
+              </div>
+            </div>
+            <div className="bg-onsenji/10 rounded-2xl h-64 flex items-center justify-center text-gray-400 text-sm">
+              地図表示エリア
+            </div>
+          </div>
+        </section>
+      </main>
+      <FooterOnsenji />
+    </>
+  )
+}
