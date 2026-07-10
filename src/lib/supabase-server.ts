@@ -8,7 +8,8 @@ export async function createServerSupabaseClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       global: {
-        fetch: (url: RequestInfo | URL, options?: RequestInit) => fetch(url, { ...options, cache: 'no-store' }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        fetch: (url: any, options: any) => fetch(url, { ...options, cache: 'no-store' }),
       },
       cookies: {
         getAll: () => cookieStore.getAll(),
