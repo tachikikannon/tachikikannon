@@ -94,8 +94,8 @@ export default async function OnsenjPage() {
             <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
           </div>
           <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg bg-onsenji/20 flex items-center justify-center">
-              <p className="text-white/40 text-sm">写真準備中</p>
+            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg">
+              <Image src="/images/yakusido.png" alt="薬師堂" fill className="object-cover" />
             </div>
             <div>
               <p className="text-gray-700 leading-loose text-sm">{c.onsenji_about_body}</p>
