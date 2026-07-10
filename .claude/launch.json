@@ -4,7 +4,7 @@
     {
       "name": "temple-cms-dev",
       "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
-      "runtimeArgs": ["C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js", "run", "dev", "--", "--no-turbopack"],
+      "runtimeArgs": ["C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js", "run", "dev"],
       "port": 3000,
       "autoPort": false
     }
