@@ -18,10 +18,15 @@ const DEFAULT_CONTENT: Record<string, string> = {
 export default async function HomePage() {
   const supabase = await createServerSupabaseClient()
 
-  const { data: siteContentRows, error: siteContentError } = await supabase.from('site_content').select('key,value')
-  console.log('[site_content] rows:', siteContentRows, 'error:', siteContentError)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const siteContentRes = await fetch(`${supabaseUrl}/rest/v1/site_content?select=key,value`, {
+    headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` },
+    cache: 'no-store',
+  })
+  const siteContentRows: { key: string; value: string }[] = siteContentRes.ok ? await siteContentRes.json() : []
   const content: Record<string, string> = { ...DEFAULT_CONTENT }
-  siteContentRows?.forEach(row => { content[row.key] = row.value })
+  siteContentRows.forEach(row => { content[row.key] = row.value })
 
   const { data: newsList } = await supabase
     .from('news')
