@@ -51,7 +51,7 @@ export default async function OnsenjPage() {
         {/* ヒーロー */}
         <section className="relative h-[85vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-onsenji">
           <div className="absolute inset-0 opacity-30">
-            <Image src="/images/haikan.png" alt="温泉寺" fill className="object-cover" priority />
+            <Image src="/images/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-onsenji/60 via-onsenji/30 to-onsenji/80" />
           <div className="relative text-center px-4 text-white">
