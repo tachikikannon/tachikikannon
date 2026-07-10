@@ -56,8 +56,8 @@ export default async function GroundsPage() {
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">境内マップ</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
-            <div className="bg-gray-100 rounded-xl h-56 flex items-center justify-center text-gray-400 text-sm">
-              ［境内図 — 本番で差し替え］
+            <div className="rounded-xl overflow-hidden shadow-sm">
+              <Image src="/images/keidainotizu.png" alt="境内案内図" width={800} height={600} className="w-full h-auto" />
             </div>
           </section>
 

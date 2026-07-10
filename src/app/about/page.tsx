@@ -96,8 +96,8 @@ export default async function AboutPage() {
           <section id="map">
             <h2 className="text-2xl font-serif text-navy mb-1">境内のご案内</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
-            <div className="bg-gray-100 rounded-xl h-52 flex items-center justify-center text-gray-400 text-sm mb-6">
-              ［境内図 — 本番で差し替え］
+            <div className="rounded-xl overflow-hidden shadow-sm mb-6">
+              <Image src="/images/keidainotizu.png" alt="境内案内図" width={800} height={600} className="w-full h-auto" />
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {[
