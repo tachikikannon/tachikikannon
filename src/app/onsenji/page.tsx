@@ -67,7 +67,7 @@ export default async function OnsenjPage() {
                 className="px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm tracking-wide">
                 拝観について
               </Link>
-              <Link href="/onsenji/about#onsen"
+              <Link href="/onsenji/onsen"
                 className="px-8 py-3 border border-white/60 text-white rounded-full hover:bg-white/10 transition-colors text-sm tracking-wide">
                 温泉のご案内
               </Link>

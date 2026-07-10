@@ -101,11 +101,16 @@ export default async function OnsenjAboutPage() {
               ))}
             </div>
           </section>
-          <section>
+          <section id="onsen">
             <h2 className="text-2xl font-serif text-onsenji mb-1">薬師の湯について</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="bg-onsenji/10 rounded-xl p-6 border-l-4 border-[#7ec8a4]">
               <p className="text-sm text-gray-700 leading-loose">♨️ {c.onsenji_about_onsen_note}</p>
+            </div>
+            <div className="mt-4 text-right">
+              <a href="/onsenji/onsen" className="inline-block text-sm text-onsenji border-b border-onsenji/40 hover:border-onsenji transition-colors">
+                薬師の湯（温泉）の詳細ページへ →
+              </a>
             </div>
           </section>
           <section id="flow">
