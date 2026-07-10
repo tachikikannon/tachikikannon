@@ -16,15 +16,16 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_title: '中禅寺湖畔に佇む、\n癒しと祈りの霊場',
   onsenji_hero_sub:   '薬師如来の御加護のもと、千二百余年の歴史を刻む温泉の霊場',
   onsenji_about_title: '温泉寺について',
-  onsenji_about_body: '日光山温泉寺は、784年（延暦3年）に勝道上人によって開かれた霊場です。ご本尊は薬師如来（医王如来）で、病気平癒・健康長寿のご利益で知られています。境内には中禅寺湖から湧き出る温泉を利用した薬師の湯があり、参拝者は温泉につかりながら御加護を受けることができます。',
+  onsenji_about_body: '日光山温泉寺は、784年（延暦3年）に勝道上人によって開かれた霊場です。ご本尊は薬師如来（医王如来）で、病気平癒・健康長寿のご利益で知られています。',
   onsenji_access_address: '〒321-1661 栃木県日光市中宮祠2480',
   onsenji_access_car:  '日光宇都宮道路 日光ICより約40分（いろは坂経由）',
   onsenji_access_bus:  '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩5分',
 }
 
-async function getContent() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+async function getContent(): Promise<Record<string, string>> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return DEFAULT_CONTENT
   try {
     const keys = Object.keys(DEFAULT_CONTENT).join(',')
     const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
@@ -35,7 +36,9 @@ async function getContent() {
     const map = { ...DEFAULT_CONTENT }
     rows.forEach(r => { if (r.value) map[r.key] = r.value })
     return map
-  } catch { return DEFAULT_CONTENT }
+  } catch {
+    return DEFAULT_CONTENT
+  }
 }
 
 export default async function OnsenjPage() {
@@ -48,8 +51,7 @@ export default async function OnsenjPage() {
         {/* ヒーロー */}
         <section className="relative h-[85vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-onsenji">
           <div className="absolute inset-0 opacity-30">
-            <Image src="/images/onsenji-hero.jpg" alt="温泉寺" fill className="object-cover" priority
-              onError={() => {}} />
+            <Image src="/images/haikan.png" alt="温泉寺" fill className="object-cover" priority />
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-onsenji/60 via-onsenji/30 to-onsenji/80" />
           <div className="relative text-center px-4 text-white">
@@ -71,7 +73,6 @@ export default async function OnsenjPage() {
               </Link>
             </div>
           </div>
-          {/* スクロール */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
             <span className="text-xs tracking-widest">SCROLL</span>
             <span className="block w-px h-8 bg-white/30 animate-pulse" />
@@ -93,10 +94,8 @@ export default async function OnsenjPage() {
             <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
           </div>
           <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg">
-              <Image src="/images/onsenji-about.jpg" alt="温泉寺" fill className="object-cover"
-                onError={() => {}} />
-              <div className="absolute inset-0 bg-onsenji/20" />
+            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg bg-onsenji/20 flex items-center justify-center">
+              <p className="text-white/40 text-sm">写真準備中</p>
             </div>
             <div>
               <p className="text-gray-700 leading-loose text-sm">{c.onsenji_about_body}</p>
@@ -109,7 +108,7 @@ export default async function OnsenjPage() {
         </section>
 
         {/* 主なご利益 */}
-        <section className="bg-onsenji/5 py-16">
+        <section className="py-16" style={{backgroundColor: 'rgba(26,74,58,0.05)'}}>
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center mb-10">
               <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Goryaku</p>
@@ -148,7 +147,7 @@ export default async function OnsenjPage() {
             ].map(({ icon, title, sub, href, desc }) => (
               <Link key={href} href={href}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                <div className="bg-onsenji/10 h-32 flex items-center justify-center">
+                <div className="h-32 flex items-center justify-center" style={{backgroundColor: 'rgba(26,74,58,0.1)'}}>
                   <span className="text-5xl">{icon}</span>
                 </div>
                 <div className="p-5">
@@ -208,7 +207,7 @@ export default async function OnsenjPage() {
                 <p className="text-sm text-gray-700 whitespace-pre-line">{c.onsenji_access_bus}</p>
               </div>
             </div>
-            <div className="bg-onsenji/10 rounded-2xl h-64 flex items-center justify-center text-gray-400 text-sm">
+            <div className="rounded-2xl h-64 flex items-center justify-center text-gray-400 text-sm" style={{backgroundColor: 'rgba(26,74,58,0.1)'}}>
               地図表示エリア
             </div>
           </div>
