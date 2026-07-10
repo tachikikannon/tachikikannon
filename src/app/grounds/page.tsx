@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -6,7 +8,31 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '境内のご案内' }
 
-export default function GroundsPage() {
+const DEFAULTS: Record<string, string> = {
+  grounds_godaido_text: '五大堂の大窓からは、中禅寺湖と男体山を一望することができます。四季折々の景色は訪れる人々を魅了し、特に紅葉の季節には多くの参拝者が訪れます。また、天井に描かれた龍の大墨絵も必見です。',
+}
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(grounds_godaido_text)&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      cache: 'no-store',
+    })
+    if (!res.ok) return DEFAULTS
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...DEFAULTS }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch {
+    return DEFAULTS
+  }
+}
+
+export default async function GroundsPage() {
+  const c = await getContent()
+
   return (
     <>
       <Header />
@@ -17,7 +43,6 @@ export default function GroundsPage() {
           </div>
         </div>
 
-        {/* ヒーロー */}
         <section className="relative h-64 md:h-80">
           <Image src="/images/godaido.jpg" alt="境内のご案内" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
@@ -28,7 +53,6 @@ export default function GroundsPage() {
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
 
-          {/* 境内マップ */}
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">境内マップ</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
@@ -37,7 +61,6 @@ export default function GroundsPage() {
             </div>
           </section>
 
-          {/* 主な見どころ */}
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">主な見どころ</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
@@ -61,33 +84,27 @@ export default function GroundsPage() {
             </div>
           </section>
 
-          {/* 五大堂 */}
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">五大堂からの眺望</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <div className="relative h-56 rounded-xl overflow-hidden mb-4">
               <Image src="/images/haikan.png" alt="五大堂からの眺め" fill className="object-cover" />
             </div>
-            <p className="text-sm text-gray-700 leading-loose">
-              五大堂の大窓からは、中禅寺湖と男体山を一望することができます。四季折々の景色は訪れる人々を魅了し、特に紅葉の季節には多くの参拝者が訪れます。また、天井に描かれた龍の大墨絵も必見です。
-            </p>
+            <p className="text-sm text-gray-700 leading-loose">{c.grounds_godaido_text}</p>
           </section>
 
-          {/* 参拝の流れ */}
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">参拝の流れ</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <ol className="relative border-l-2 border-gold ml-4 space-y-6">
               {[
-                { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。大人500円・子供200円。受付は閉門30分前に終了いたします。' },
+                { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。受付は閉門30分前に終了いたします。' },
                 { title: '御朱印受付', text: '山門をくぐってすぐの御朱印所にて、御朱印やお守りをお受けいただけます。' },
                 { title: '本堂参拝', text: 'ご本尊・立木観音（千手観世音菩薩）にお参りください。' },
                 { title: '五大堂', text: '中禅寺湖を一望できる五大堂へ。天井の龍の墨絵も必見です。' },
               ].map(({ title, text }, i) => (
                 <li key={i} className="pl-6 relative">
-                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-serif font-bold">
-                    {i + 1}
-                  </div>
+                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-serif font-bold">{i + 1}</div>
                   <h3 className="font-medium text-navy mb-1">{title}</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
                 </li>
@@ -95,14 +112,9 @@ export default function GroundsPage() {
             </ol>
           </section>
 
-          {/* 関連リンク */}
           <div className="grid grid-cols-2 gap-4 pt-4">
-            <Link href="/about" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">
-              拝観時間・料金
-            </Link>
-            <Link href="/history" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">
-              立木観音の歴史
-            </Link>
+            <Link href="/about" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">拝観時間・料金</Link>
+            <Link href="/history" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">立木観音の歴史</Link>
           </div>
 
         </div>

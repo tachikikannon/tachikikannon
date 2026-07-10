@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -6,19 +8,46 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '参拝について' }
 
-export default function AboutPage() {
+const DEFAULTS: Record<string, string> = {
+  about_fee_adult:      '500円',
+  about_fee_child:      '200円',
+  about_hours_peak:     '午前8時〜午後5時',
+  about_hours_shoulder: '午前8時〜午後4時',
+  about_hours_winter:   '午前8時30分〜午後3時30分',
+}
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const keys = Object.keys(DEFAULTS).join(',')
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      cache: 'no-store',
+    })
+    if (!res.ok) return DEFAULTS
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...DEFAULTS }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch {
+    return DEFAULTS
+  }
+}
+
+export default async function AboutPage() {
+  const c = await getContent()
+
   return (
     <>
       <Header />
       <main className="pt-16">
-        {/* パンくず */}
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
           <div className="max-w-5xl mx-auto">
             <Link href="/">ホーム</Link> &gt; 参拝について
           </div>
         </div>
 
-        {/* ヒーロー */}
         <section className="relative h-64 md:h-80">
           <Image src="/images/haikan.png" alt="参拝について" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
@@ -29,7 +58,6 @@ export default function AboutPage() {
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-16">
 
-          {/* 拝観時間・料金 */}
           <section id="hours">
             <h2 className="text-2xl font-serif text-navy mb-1">拝観時間・拝観料</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
@@ -38,7 +66,7 @@ export default function AboutPage() {
                 <tbody>
                   {[
                     ['拝観時間', '季節により異なります（下記参照）\n※拝観受付はいずれも閉門30分前に終了'],
-                    ['拝観料', '大人：500円　子供：200円'],
+                    ['拝観料', `大人：${c.about_fee_adult}　子供：${c.about_fee_child}`],
                     ['定休日', '年中無休'],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
@@ -52,9 +80,9 @@ export default function AboutPage() {
 
             <div className="grid md:grid-cols-3 gap-4">
               {[
-                { period: '4月〜10月', time: '午前8時〜午後5時' },
-                { period: '11月・3月', time: '午前8時〜午後4時' },
-                { period: '12月〜2月', time: '午前8時30分〜午後3時30分' },
+                { period: '4月〜10月', time: c.about_hours_peak },
+                { period: '11月・3月', time: c.about_hours_shoulder },
+                { period: '12月〜2月', time: c.about_hours_winter },
               ].map(({ period, time }) => (
                 <div key={period} className="bg-white rounded-xl p-5 text-center shadow-sm border-t-4 border-gold">
                   <p className="font-serif text-navy font-medium mb-2">{period}</p>
@@ -65,7 +93,6 @@ export default function AboutPage() {
             <p className="text-xs text-gray-400 mt-3">※拝観受付はいずれも閉門30分前に終了いたします。</p>
           </section>
 
-          {/* 境内マップ */}
           <section id="map">
             <h2 className="text-2xl font-serif text-navy mb-1">境内のご案内</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
@@ -90,28 +117,24 @@ export default function AboutPage() {
             </div>
           </section>
 
-          {/* 参拝の流れ */}
           <section id="flow">
             <h2 className="text-2xl font-serif text-navy mb-1">参拝の流れ</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <ol className="relative border-l-2 border-gold ml-4 space-y-6">
               {[
-                { title: '拝観受付', text: '入口にて拝観料をお納めください。大人500円・子供200円。受付は閉門30分前に終了いたします。' },
+                { title: '拝観受付', text: `入口にて拝観料をお納めください。大人${c.about_fee_adult}・子供${c.about_fee_child}。受付は閉門30分前に終了いたします。` },
                 { title: '山門をくぐる', text: '山門をくぐり、境内へお進みください。' },
                 { title: '御朱印受付', text: '山門をくぐってすぐの御朱印所にて、御朱印やお守りをお受けいただけます。場所によって授与しているお守りが異なります。' },
                 { title: '本堂参拝', text: 'ご本尊・立木観音（千手観世音菩薩）にお参りください。本堂でも一部の授与品をお受けいただけます。' },
-                { title: '五大堂', text: '中禅寺湖を一望できる五大堂へ。天井に描かれた龍の墨絵も必見です。各所で取り扱いが異なりますので、ぜひ各所でご覧ください。' },
+                { title: '五大堂', text: '中禅寺湖を一望できる五大堂へ。天井に描かれた龍の墨絵も必見です。' },
               ].map(({ title, text }, i) => (
                 <li key={i} className="pl-6 relative">
-                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-serif font-bold">
-                    {i + 1}
-                  </div>
+                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-serif font-bold">{i + 1}</div>
                   <h3 className="font-medium text-navy mb-1">{title}</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
                 </li>
               ))}
             </ol>
-
             <div className="mt-8 bg-cream-alt rounded-xl p-5 border-l-4 border-gold">
               <h3 className="font-medium text-navy mb-2">授与品について</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
@@ -120,7 +143,6 @@ export default function AboutPage() {
             </div>
           </section>
 
-          {/* 注意事項 */}
           <section id="notes">
             <h2 className="text-2xl font-serif text-navy mb-1">ご参拝の注意事項</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
@@ -140,7 +162,6 @@ export default function AboutPage() {
             </ul>
           </section>
 
-          {/* 関連リンク */}
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">関連ページ</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />

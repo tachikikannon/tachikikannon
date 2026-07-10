@@ -12,6 +12,9 @@ const navItems = [
   { href: '/admin/blocked-dates', label: '予約不可日',     icon: '🚫' },
   { href: '/admin/capacity',      label: '定員設定',       icon: '👥' },
   { href: '/admin/top-page',      label: 'トップページ編集', icon: '🏠' },
+  { href: '/admin/pages',         label: '固定ページ編集',  icon: '📄' },
+  { href: '/admin/faq',           label: 'FAQ管理',        icon: '❓' },
+  { href: '/admin/settings',      label: 'サイト設定',      icon: '⚙️' },
   { href: '/admin/contacts',      label: 'お問い合わせ',   icon: '✉️' },
   { href: '/admin/images',        label: '画像管理',       icon: '🖼️' },
 ]

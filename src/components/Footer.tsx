@@ -1,6 +1,26 @@
 import Link from 'next/link'
 
-export default function Footer() {
+async function getSiteSettings() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(site_address,site_tel)&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      cache: 'no-store',
+    })
+    if (!res.ok) return {}
+    const rows: { key: string; value: string }[] = await res.json()
+    return Object.fromEntries(rows.map(r => [r.key, r.value]))
+  } catch {
+    return {}
+  }
+}
+
+export default async function Footer() {
+  const settings = await getSiteSettings()
+  const address = settings.site_address ?? '〒321-1661 栃木県日光市中宮祠2578'
+  const tel = settings.site_tel ?? '0288-55-0013'
+
   return (
     <footer className="bg-navy text-white/70">
       <div className="max-w-6xl mx-auto px-4 py-12">
@@ -8,8 +28,8 @@ export default function Footer() {
           <div>
             <p className="text-white font-serif text-lg mb-2">日光山中禅寺 立木観音</p>
             <address className="not-italic text-sm leading-7">
-              〒321-1661 栃木県日光市中宮祠2578<br />
-              TEL：0288-55-0013
+              {address}<br />
+              TEL：{tel}
             </address>
           </div>
           <div>
