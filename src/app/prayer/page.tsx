@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -5,7 +7,33 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '御祈願' }
 
-export default function PrayerPage() {
+const DEFAULTS: Record<string, string> = {
+  prayer_about: 'お護摩はインド伝来の密教の秘法（秘密の教え）で、僧侶が護摩壇に向かい、作法にしたがって仏の智慧の火を焚き、様々な供物を焚き上げ、厄難・災難を払いその加護（成就）を願います。',
+  prayer_hours: '9：00〜12：00',
+  prayer_exclude_dates: '6月18日・8月4日・8月8日',
+  prayer_mail_text: '万が一、参列できない場合は郵送にてお札をお送りします。着払いにて発送させて頂きますので、申込用紙に必要事項をご記入の上、現金書留にてお送りください。',
+}
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const keys = Object.keys(DEFAULTS).join(',')
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      cache: 'no-store',
+    })
+    if (!res.ok) return DEFAULTS
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...DEFAULTS }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch { return DEFAULTS }
+}
+
+export default async function PrayerPage() {
+  const c = await getContent()
+
   return (
     <>
       <Header />
@@ -14,7 +42,6 @@ export default function PrayerPage() {
           <div className="max-w-3xl mx-auto"><Link href="/">ホーム</Link> &gt; 御祈願</div>
         </div>
 
-        {/* ヒーロー */}
         <section className="bg-navy py-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Gokigan</p>
@@ -24,15 +51,13 @@ export default function PrayerPage() {
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
 
-          {/* 御祈願について */}
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御祈願について</h2>
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold leading-relaxed text-gray-700">
-              お護摩はインド伝来の密教の秘法（秘密の教え）で、僧侶が護摩壇に向かい、作法にしたがって仏の智慧の火を焚き、様々な供物を焚き上げ、厄難・災難を払いその加護（成就）を願います。
+              {c.prayer_about}
             </div>
           </section>
 
-          {/* 御祈願時間 */}
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御祈願時間</h2>
             <div className="mt-4 overflow-x-auto">
@@ -40,7 +65,7 @@ export default function PrayerPage() {
                 <tbody>
                   <tr className="border border-gray-200">
                     <th className="bg-navy text-white text-left px-4 py-3 font-medium whitespace-nowrap">通年（平日・土日祝）</th>
-                    <td className="px-4 py-3 bg-white">9：00〜12：00</td>
+                    <td className="px-4 py-3 bg-white">{c.prayer_hours}</td>
                   </tr>
                 </tbody>
               </table>
@@ -51,12 +76,11 @@ export default function PrayerPage() {
             </div>
             <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-gray-700 space-y-1">
               <p className="font-bold text-amber-700 text-xs">※除外日</p>
-              <p>6月18日・8月4日・8月8日</p>
+              <p>{c.prayer_exclude_dates}</p>
               <p className="text-xs text-gray-500">他にも行事によっては祈祷できない日もございますので、一度お問い合わせください。</p>
             </div>
           </section>
 
-          {/* 御祈願料 */}
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御祈願料</h2>
             <p className="text-sm text-gray-600 mt-3 mb-4">原則、御札の料金にて受付しております。金額によって御札と木箱の大きさが変わります。</p>
@@ -80,32 +104,20 @@ export default function PrayerPage() {
             </div>
           </section>
 
-          {/* 護摩札の郵送 */}
           <section>
-            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-teal">護摩札の郵送について</h2>
-            <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-teal text-sm text-gray-700 leading-relaxed space-y-2">
-              <p>万が一、参列できない場合は郵送にてお札をお送りします。着払いにて発送させて頂きますので、申込用紙に必要事項をご記入の上、現金書留にてお送りください。</p>
+            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">護摩札の郵送について</h2>
+            <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold text-sm text-gray-700 leading-relaxed space-y-2">
+              <p>{c.prayer_mail_text}</p>
               <p className="text-xs text-gray-500">※お申込み頂き御祈祷後、発送させて頂きますので1〜2週間ほどお待ちください。</p>
             </div>
           </section>
 
-          {/* その他 */}
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">その他の御祈願</h2>
             <div className="mt-4 space-y-4">
               {[
-                {
-                  title: '新車祈祷（車両安全祈願）',
-                  desc: 'お車を新しくされた方、車両安全の御祈願をお申し込みの方',
-                  rows: [['1台','5,000円'],['','10,000円']],
-                  note: '※交通安全の錫杖守りと木札が付きます。',
-                },
-                {
-                  title: '安産祈願',
-                  desc: '',
-                  rows: [['お1人につき','5,000円']],
-                  note: '※腹帯の持ち込みも可能です。詳しくはお問い合わせください。',
-                },
+                { title: '新車祈祷（車両安全祈願）', desc: 'お車を新しくされた方、車両安全の御祈願をお申し込みの方', rows: [['1台','5,000円'],['','10,000円']], note: '※交通安全の錫杖守りと木札が付きます。' },
+                { title: '安産祈願', desc: '', rows: [['お1人につき','5,000円']], note: '※腹帯の持ち込みも可能です。詳しくはお問い合わせください。' },
               ].map(({ title, desc, rows, note }) => (
                 <div key={title} className="bg-white rounded-xl p-5 shadow-sm">
                   <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">{title}</h3>
@@ -126,7 +138,6 @@ export default function PrayerPage() {
             </div>
           </section>
 
-          {/* お申し込み */}
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
             <p className="font-serif text-xl mb-2">御祈願のお申し込み</p>
             <p className="text-white/70 text-sm mb-6">ご不明な点はお気軽にお問い合わせください。</p>

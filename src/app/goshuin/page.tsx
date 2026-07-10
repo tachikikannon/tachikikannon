@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -5,6 +7,26 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '御朱印' }
+
+const DEFAULTS: Record<string, string> = {
+  goshuin_fee_note: '御朱印代：各500円　／　書き入れ・書き置きともに同じ金額です。\n受付時間は拝観時間に準じます（閉門30分前に終了）。',
+}
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(goshuin_fee_note)&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      cache: 'no-store',
+    })
+    if (!res.ok) return DEFAULTS
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...DEFAULTS }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch { return DEFAULTS }
+}
 
 const regular = [
   { title: '立木大悲殿', src: '/images/tachiki.syuin.png' },
@@ -19,7 +41,9 @@ const special = [
   { label: '写仏', title: '銀紙特別朱印', sub: '立木観世音', desc: '写仏をお書きいただいた方にお授けします。', src: '/images/syabutu.tatiki.png' },
 ]
 
-export default function GoshuinPage() {
+export default async function GoshuinPage() {
+  const c = await getContent()
+
   return (
     <>
       <Header />
@@ -28,7 +52,6 @@ export default function GoshuinPage() {
           <div className="max-w-4xl mx-auto"><Link href="/">ホーム</Link> &gt; 御朱印</div>
         </div>
 
-        {/* ヒーロー */}
         <section className="bg-navy py-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Goshuin</p>
@@ -37,7 +60,6 @@ export default function GoshuinPage() {
 
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
 
-          {/* 通常御朱印 */}
           <section>
             <h2 className="section-title">御朱印</h2>
             <div className="section-divider" />
@@ -60,13 +82,12 @@ export default function GoshuinPage() {
                 </div>
               ))}
             </div>
-            <div className="bg-cream-alt rounded-lg p-4 border-l-4 border-gold text-sm text-gray-700 space-y-1">
-              <p><strong>御朱印代：各500円</strong>　／　書き入れ・書き置きともに同じ金額です。</p>
-              <p>受付時間は拝観時間に準じます（閉門30分前に終了）。</p>
+            <div className="bg-cream-alt rounded-lg p-4 border-l-4 border-gold text-sm text-gray-700 space-y-1 whitespace-pre-line">
+              <p><strong>{c.goshuin_fee_note.split('\n')[0]}</strong></p>
+              <p>{c.goshuin_fee_note.split('\n').slice(1).join('\n')}</p>
             </div>
           </section>
 
-          {/* 特別御朱印 */}
           <section className="bg-cream-alt -mx-4 px-4 py-12 md:-mx-8 md:px-8 rounded-2xl">
             <h2 className="section-title">写経・写仏体験 特別御朱印</h2>
             <div className="section-divider" />
@@ -102,7 +123,6 @@ export default function GoshuinPage() {
             </div>
           </section>
 
-          {/* 注意事項 */}
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御朱印についてのご注意</h2>
             <ul className="mt-4 space-y-3">
@@ -117,7 +137,6 @@ export default function GoshuinPage() {
             </ul>
           </section>
 
-          {/* 関連 */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { icon:'⛩', label:'参拝について', href:'/about' },

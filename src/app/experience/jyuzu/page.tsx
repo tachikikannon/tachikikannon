@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -5,7 +7,35 @@ import Footer from '@/components/Footer'
 
 export const metadata: Metadata = { title: '数珠づくり体験' }
 
-export default function JyuzuPage() {
+const DEFAULTS: Record<string, string> = {
+  jyuzu_about_p1: '数珠（じゅず）は、仏様を礼拝するときに手に持つ法具で、煩悩の数である108つの珠が一般的です。珠には天然石・木材・水晶などさまざまな素材があり、素材によって異なる功徳があるとされています。',
+  jyuzu_about_p2: '立木観音の数珠づくり体験では、複数の珠の種類からお好みの組み合わせを選び、自分だけのオリジナル数珠をお作りいただけます。完成した数珠は参拝・法要などさまざまな場面でお使いいただけます。',
+  jyuzu_fee:  '2,000円〜（珠の素材・組み合わせにより異なります）',
+  jyuzu_time: '約60〜90分',
+  jyuzu_price_note: 'お選びいただく珠の素材・数・組み合わせによって料金が異なります。詳しくは受付窓口またはお問い合わせフォームよりご確認ください。',
+  jyuzu_cta_sub: '材料の準備がありますので、事前のご予約をお願いします。',
+}
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const keys = Object.keys(DEFAULTS).join(',')
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      cache: 'no-store',
+    })
+    if (!res.ok) return DEFAULTS
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...DEFAULTS }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch { return DEFAULTS }
+}
+
+export default async function JyuzuPage() {
+  const c = await getContent()
+
   return (
     <>
       <Header />
@@ -16,7 +46,6 @@ export default function JyuzuPage() {
           </div>
         </div>
 
-        {/* ヒーロー */}
         <section className="bg-navy py-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Juzu Making</p>
@@ -26,24 +55,22 @@ export default function JyuzuPage() {
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
 
-          {/* 概要 */}
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">数珠づくりとは</h2>
             <div className="bg-white rounded-xl p-6 shadow-sm text-sm text-gray-700 leading-relaxed">
-              <p>数珠（じゅず）は、仏様を礼拝するときに手に持つ法具で、煩悩の数である108つの珠が一般的です。珠には天然石・木材・水晶などさまざまな素材があり、素材によって異なる功徳があるとされています。</p>
-              <p className="mt-3">立木観音の数珠づくり体験では、複数の珠の種類からお好みの組み合わせを選び、自分だけのオリジナル数珠をお作りいただけます。完成した数珠は参拝・法要などさまざまな場面でお使いいただけます。</p>
+              <p>{c.jyuzu_about_p1}</p>
+              <p className="mt-3">{c.jyuzu_about_p2}</p>
             </div>
           </section>
 
-          {/* 料金・時間 */}
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">料金・所要時間</h2>
             <div className="overflow-x-auto mb-4">
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   {[
-                    ['体験料', '2,000円〜（珠の素材・組み合わせにより異なります）'],
-                    ['所要時間', '約60〜90分'],
+                    ['体験料', c.jyuzu_fee],
+                    ['所要時間', c.jyuzu_time],
                     ['対象', '小学生以上（小学生は保護者同伴）'],
                     ['受付場所', '寺務所 体験受付窓口'],
                     ['受付時間', '拝観時間内（閉門1時間30分前まで）'],
@@ -58,11 +85,10 @@ export default function JyuzuPage() {
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-gray-700">
               <p className="font-bold text-amber-700 text-xs mb-1">料金について</p>
-              <p>お選びいただく珠の素材・数・組み合わせによって料金が異なります。詳しくは受付窓口またはお問い合わせフォームよりご確認ください。</p>
+              <p>{c.jyuzu_price_note}</p>
             </div>
           </section>
 
-          {/* 体験の流れ */}
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">体験の流れ</h2>
             <ol className="relative border-l-2 border-gold ml-4 space-y-6">
@@ -81,7 +107,6 @@ export default function JyuzuPage() {
             </ol>
           </section>
 
-          {/* 珠の素材例 */}
           <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">珠の素材について</h2>
             <p className="text-sm text-gray-600 mb-5">珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。</p>
@@ -99,7 +124,6 @@ export default function JyuzuPage() {
             </div>
           </section>
 
-          {/* 注意事項 */}
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">ご注意・持ち物</h2>
             <ul className="space-y-2">
@@ -114,17 +138,15 @@ export default function JyuzuPage() {
             </ul>
           </section>
 
-          {/* CTA */}
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
             <p className="font-serif text-xl mb-2">数珠づくり体験のご予約</p>
-            <p className="text-white/60 text-sm mb-6">材料の準備がありますので、事前のご予約をお願いします。</p>
+            <p className="text-white/60 text-sm mb-6">{c.jyuzu_cta_sub}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/reserve" className="btn-gold">オンライン予約はこちら</Link>
               <Link href="/contact" className="btn-outline">お問い合わせ</Link>
             </div>
           </div>
 
-          {/* 関連 */}
           <div className="grid grid-cols-2 gap-3">
             <Link href="/experience/shakyou" className="flex flex-col items-center gap-2 p-5 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group text-center">
               <span className="text-2xl">📜</span>
