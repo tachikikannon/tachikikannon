@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 
@@ -87,8 +88,13 @@ export default async function OnsenjHistoryPage() {
           <section>
             <h2 className="text-2xl font-serif text-onsenji mb-1">ご本尊・薬師如来について</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
-            <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-[#7ec8a4]">
-              <p className="text-sm text-gray-700 leading-loose">{c.onsenji_history_honzon}</p>
+            <div className="grid md:grid-cols-2 gap-6 items-start">
+              <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-md">
+                <Image src="/images/yakushinyorai.png" alt="薬師瑠璃光如来" fill className="object-cover" />
+              </div>
+              <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-[#7ec8a4]">
+                <p className="text-sm text-gray-700 leading-loose">{c.onsenji_history_honzon}</p>
+              </div>
             </div>
           </section>
           <section>
