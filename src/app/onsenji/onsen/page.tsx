@@ -87,7 +87,7 @@ export default async function OnsenjOnsenPage() {
               <Image src="/images/onsen.png" alt="薬師の湯" fill className="object-cover" />
             </div>
             <div className="relative h-56 rounded-2xl overflow-hidden shadow-md">
-              <Image src="/images/onsenmado.png" alt="温泉の窓" fill className="object-cover" />
+              <Image src="/images/kyuukeisitu.png" alt="休憩室" fill className="object-cover" />
             </div>
           </section>
 
