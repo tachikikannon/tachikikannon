@@ -17,7 +17,7 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_about_title: '温泉寺について',
   onsenji_about_body: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。',
-  onsenji_access_address: '〒321-1494 栃木県日光市山内2300',
+  onsenji_access_address: '栃木県日光市湯元2559',
   onsenji_access_car:  '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり',
   onsenji_access_bus:  '東武日光駅・JR日光駅よりバスで「西参道」バス停下車、徒歩約10分\nまたは「表参道」バス停より徒歩約15分',
 }

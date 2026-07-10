@@ -18,8 +18,9 @@ async function getSiteSettings() {
 
 export default async function FooterOnsenji() {
   const settings = await getSiteSettings()
-  const address = settings.onsenji_address ?? '〒321-1494 栃木県日光市山内2300'
-  const tel = settings.onsenji_tel ?? '0288-54-0560'
+  const address = settings.onsenji_address ?? '栃木県日光市湯元2559'
+  const tel = settings.onsenji_tel ?? '0288-55-0013'
+  const fax = settings.onsenji_fax ?? '0288-55-0801'
 
   return (
     <footer className="bg-onsenji text-white/70">
@@ -29,7 +30,8 @@ export default async function FooterOnsenji() {
             <p className="text-white font-serif text-lg mb-2">日光山 温泉寺</p>
             <address className="not-italic text-sm leading-7">
               {address}<br />
-              TEL：{tel}
+              TEL：{tel}<br />
+              FAX：{fax}
             </address>
           </div>
           <div>
