@@ -47,6 +47,7 @@ export default async function FooterOnsenji() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/" className="hover:text-[#7ec8a4] transition-colors">日光山中禅寺 立木観音</Link></li>
               <li><a href="https://www.rinnoji.or.jp/" target="_blank" rel="noopener" className="hover:text-[#7ec8a4] transition-colors">輪王寺 公式サイト</a></li>
+              <li><a href="https://www.nikkoyumoto.com/" target="_blank" rel="noopener" className="hover:text-[#7ec8a4] transition-colors">奥日光湯元温泉旅館協同組合</a></li>
             </ul>
           </div>
         </div>
