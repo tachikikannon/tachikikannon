@@ -133,7 +133,7 @@ export default async function HomePage() {
               ].map(({ img, label, desc, href }) => (
                 <a key={label} href={href}
                   className="overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all group border border-gray-100">
-                  <div className="relative h-36 overflow-hidden">
+                  <div className="relative h-40 overflow-hidden">
                     <img src={img} alt={label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className="absolute inset-0 bg-navy/30 group-hover:bg-navy/20 transition-colors" />
                   </div>
