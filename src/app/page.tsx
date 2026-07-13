@@ -119,14 +119,17 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* 拝観案内カード */}
+        {/* 立木観音について */}
         <section className="py-12 bg-white">
           <div className="max-w-4xl mx-auto px-4">
-            <div className="grid grid-cols-3 gap-4">
+            <h2 className="section-title">立木観音について</h2>
+            <div className="section-divider" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { img: '/images/dragon.jpg',  label: '立木観音の歴史', desc: '立木観音の歴史と縁起', href: '/history' },
-                { img: '/images/haikan.png',  label: '拝観料金',       desc: '拝観料・各種料金のご案内', href: '/about#hours' },
+                { img: '/images/dragon.jpg',  label: '立木観音の歴史', desc: '歴史と縁起', href: '/history' },
+                { img: '/images/haikan.png',  label: '拝観料金',       desc: '拝観料・各種料金', href: '/about#hours' },
                 { img: '/images/godaido.jpg', label: '境内のご案内',   desc: '見どころ・境内マップ', href: '/grounds' },
+                { img: '/images/gyouji.JPEG', label: '年間行事',       desc: '法要・行事のご案内', href: '/annual-events' },
               ].map(({ img, label, desc, href }) => (
                 <a key={label} href={href}
                   className="overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all group border border-gray-100">
@@ -173,16 +176,44 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* 祈る・受ける */}
-        <section className="py-16 bg-cream-alt">
+        {/* 祈る・体験する */}
+        <section id="experience" className="py-16 bg-cream-alt">
           <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">祈る・受ける</h2>
+            <h2 className="section-title">祈る・体験する</h2>
             <div className="section-divider" />
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { icon:'🙏', title:'御祈願', text:'家内安全・病気平癒・学業成就など、各種護摩祈願を承っております。', info:'御祈願料：5,000円〜', href:'/prayer', cta:'詳しく見る' },
-                { icon:'📜', title:'御朱印', text:'中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info:'御朱印代：500円〜', href:'/goshuin', cta:'詳しく見る' },
-                { icon:'🎁', title:'授与品・通販', text:'お守り・絵馬・数珠など各種授与品をご用意しております。', info:'一部通販でもお求めいただけます', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
+                { src:'/images/gyouji.JPEG', label:'御祈願',      sub:'御祈願料：5,000円〜', href:'/prayer' },
+                { src:'/images/jyuzu.png',   label:'数珠づくり体験', sub:'2,000円〜', href:'/experience/jyuzu' },
+                { src:'/images/syakyou.JPG', label:'写経体験',    sub:'約15分 / 1,000円', href:'/experience/shakyou' },
+                { src:'/images/syabutu.png', label:'写仏体験',    sub:'1,000円', href:'/experience/shabutu' },
+              ].map(({ src, label, sub, href }) => (
+                <div key={label} className="card overflow-hidden flex flex-col">
+                  <div className="relative h-40">
+                    <Image src={src} alt={label} fill className="object-cover" />
+                  </div>
+                  <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
+                    <p className="font-medium text-navy text-sm">{label}</p>
+                    <p className="text-xs text-gray-500">{sub}</p>
+                    <Link href={href} className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5 hover:bg-navy/80 transition-colors">
+                      詳しく見る
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 受ける */}
+        <section className="py-16">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="section-title">受ける</h2>
+            <div className="section-divider" />
+            <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              {[
+                { icon:'📜', title:'御朱印', text:'中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info:'御朱印代：500円〜', href:'/goshuin', cta:'詳しく見る', external:false },
+                { icon:'🎁', title:'授与品・通販', text:'お守り・お札など各種授与品をご用意しております。一部通販でもお求めいただけます。', info:'通販サイトでもご購入いただけます', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
               ].map(({ icon, title, text, info, href, cta, external }) => (
                 <div key={title} className="card p-6 text-center">
                   <p className="text-4xl mb-4">{icon}</p>
@@ -195,38 +226,6 @@ export default async function HomePage() {
                   }
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 体験・行事 */}
-        <section id="experience" className="py-16">
-          <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">体験・行事</h2>
-            <div className="section-divider" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { src:'/images/syakyou.JPG', label:'写経', sub:'約15分 / 1,000円', href:'/experience/shakyou' },
-                { src:'/images/syabutu.png', label:'写仏', sub:'1,000円', href:'/experience/shabutu' },
-                { src:'/images/jyuzu.png',   label:'数珠づくり', sub:'2,000円〜', href:'/experience/jyuzu' },
-                { src:'/images/gyouji.JPEG', label:'年中行事', sub:'', href:'/events' },
-              ].map(({ src, label, sub, href }) => (
-                <div key={label} className="card overflow-hidden flex flex-col">
-                  <div className="relative h-40">
-                    <Image src={src} alt={label} fill className="object-cover" />
-                  </div>
-                  <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
-                    <p className="font-medium text-navy text-sm">{label}</p>
-                    {sub && <p className="text-xs text-gray-500">{sub}</p>}
-                    <Link href={href} className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5 hover:bg-navy/80 transition-colors">
-                      詳しく見る
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="text-center mt-6">
-              <Link href="/reserve" className="btn-primary">体験のご予約はこちら</Link>
             </div>
           </div>
         </section>
