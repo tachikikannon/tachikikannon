@@ -4,13 +4,14 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
 const navLinks = [
-  { href: '/about',   label: '拝観案内' },
-  { href: '/#access', label: 'アクセス' },
-  { href: '/prayer',  label: '御祈願' },
-  { href: '/goshuin', label: '御朱印' },
+  { href: '/about',          label: '拝観案内' },
+  { href: '/#access',        label: 'アクセス' },
+  { href: '/prayer',         label: '御祈願' },
+  { href: '/goshuin',        label: '御朱印' },
+  { href: '/annual-events',  label: '年間行事' },
   { href: 'https://chuzenji.official.ec/', label: '授与品・通販', external: true },
-  { href: '/faq',     label: 'よくある質問' },
-  { href: '/contact', label: 'お問い合わせ' },
+  { href: '/faq',            label: 'よくある質問' },
+  { href: '/contact',        label: 'お問い合わせ' },
 ]
 
 export default function Header() {

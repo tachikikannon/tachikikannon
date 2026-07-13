@@ -39,6 +39,19 @@ export default async function EventsPage() {
           <h1 className="font-serif text-4xl text-white tracking-widest relative">行事カレンダー</h1>
         </section>
 
+        {/* 年間行事バナー */}
+        <div className="max-w-3xl mx-auto px-4 pt-8">
+          <Link href="/annual-events"
+            className="flex items-center justify-between bg-navy text-white rounded-xl px-6 py-4 hover:bg-navy/90 transition-colors shadow-sm">
+            <div>
+              <p className="text-gold text-xs tracking-widest mb-0.5">Annual Events</p>
+              <p className="font-serif text-lg">年間行事（6月18日・8月4日）</p>
+              <p className="text-white/60 text-xs mt-0.5">大法要・大護摩供・地蔵流し、船禅頂のご案内</p>
+            </div>
+            <span className="text-gold text-xl">›</span>
+          </Link>
+        </div>
+
         <div className="max-w-3xl mx-auto px-4 py-12">
           {Object.keys(grouped).length > 0 ? (
             <div className="space-y-10">
