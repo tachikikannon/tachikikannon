@@ -200,7 +200,7 @@ export default async function HomePage() {
         </section>
 
         {/* 体験・行事 */}
-        <section className="py-16">
+        <section id="experience" className="py-16">
           <div className="max-w-5xl mx-auto px-4">
             <h2 className="section-title">体験・行事</h2>
             <div className="section-divider" />
