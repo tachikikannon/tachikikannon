@@ -141,9 +141,9 @@ export default async function OnsenjPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { icon: '♨️', title: '薬師の湯', sub: '温泉浴', href: '/onsenji/about', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
-              { icon: '🙏', title: '御祈願', sub: 'Prayer', href: '/onsenji/prayer', desc: '薬師如来への護摩祈祷。病気平癒・健康長寿・家内安全など各種ご祈願を承ります。' },
-              { icon: '📜', title: '御朱印', sub: 'Goshuin', href: '/onsenji/goshuin', desc: '温泉寺の御朱印は境内にてお受けいただけます。特別御朱印もご用意しています。' },
+              { icon: '♨️', title: '薬師の湯', sub: '温泉浴', href: '/onsenji/onsen', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
+              { icon: '📜', title: '御朱印', sub: 'Goshuin', href: '/onsenji/goshuin', desc: '温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。' },
+              { icon: '✍️', title: '写経体験', sub: 'Shakyou', href: '/onsenji/experience/shakyou', desc: '1,000円・約15分・毎日実施。特別御朱印授与。心を静めてお経をお写しいただけます。' },
             ].map(({ icon, title, sub, href, desc }) => (
               <Link key={href} href={href}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
