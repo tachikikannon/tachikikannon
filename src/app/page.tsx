@@ -121,7 +121,7 @@ export default async function HomePage() {
 
         {/* 立木観音について */}
         <section className="py-12 bg-white">
-          <div className="max-w-4xl mx-auto px-4">
+          <div className="max-w-5xl mx-auto px-4">
             <h2 className="section-title">立木観音について</h2>
             <div className="section-divider" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -132,14 +132,15 @@ export default async function HomePage() {
                 { img: '/images/gyouji.JPEG', label: '年間行事',       desc: '法要・行事のご案内', href: '/annual-events' },
               ].map(({ img, label, desc, href }) => (
                 <a key={label} href={href}
-                  className="overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all group border border-gray-100">
+                  className="card overflow-hidden flex flex-col group">
                   <div className="relative h-40 overflow-hidden">
                     <img src={img} alt={label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className="absolute inset-0 bg-navy/30 group-hover:bg-navy/20 transition-colors" />
                   </div>
-                  <div className="p-4 text-center">
-                    <p className="font-serif text-navy font-medium mb-1 group-hover:text-gold transition-colors">{label}</p>
+                  <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
+                    <p className="font-serif text-navy font-medium text-sm group-hover:text-gold transition-colors">{label}</p>
                     <p className="text-xs text-gray-500">{desc}</p>
+                    <span className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5">詳しく見る</span>
                   </div>
                 </a>
               ))}
