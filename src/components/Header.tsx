@@ -7,9 +7,9 @@ const navLinks = [
   { href: '/about',          label: '拝観案内' },
   { href: '/#access',        label: 'アクセス' },
   { href: '/prayer',         label: '御祈願' },
-  { href: '/goshuin',        label: '御朱印' },
-  { href: '/annual-events',  label: '年間行事' },
+  { href: '/experience/shakyou', label: '体験' },
   { href: 'https://chuzenji.official.ec/', label: '授与品・通販', external: true },
+  { href: '/annual-events',  label: '年間行事' },
   { href: '/faq',            label: 'よくある質問' },
   { href: '/contact',        label: 'お問い合わせ' },
 ]
