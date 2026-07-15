@@ -57,7 +57,7 @@ export default async function AboutPage() {
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   {[
-                    ['拝観時間', '季節により異なります（下記参照）\n※拝観受付はいずれも閉門30分前に終了'],
+                    ['拝観時間', '季節により異なります（下記参照）'],
                     ['拝観料', `大人：${c.about_fee_adult}　子供：${c.about_fee_child}`],
                     ['定休日', '年中無休'],
                   ].map(([k, v]) => (
@@ -81,7 +81,6 @@ export default async function AboutPage() {
                 </div>
               ))}
             </div>
-            <p className="text-xs text-gray-400 mt-3">※拝観受付はいずれも閉門30分前に終了いたします。</p>
           </section>
 
           <div className="bg-cream-alt rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-5">
