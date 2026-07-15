@@ -72,15 +72,9 @@ export default async function GroundsPage() {
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">境内マップ</h2>
-            <div className="w-10 h-0.5 bg-gold mb-6" />
-            <div className="rounded-xl overflow-hidden shadow-sm">
-              <Image src="/images/keidainotizu.png" alt="境内案内図" width={800} height={600} className="w-full h-auto" />
-            </div>
-          </section>
-          <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">主な見どころ</h2>
-            <div className="w-10 h-0.5 bg-gold mb-6" />
+            <h2 className="text-2xl font-serif text-navy mb-1">境内マップ・主な見どころ</h2>
+            <div className="w-10 h-0.5 bg-gold mb-2" />
+            <p className="text-xs text-gray-400 mb-6">地図上のピンをクリックすると各スポットの詳細が見られます</p>
             <GroundsSpots spots={spots} />
           </section>
           <section>
