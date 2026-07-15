@@ -22,8 +22,10 @@ const navItems: NavItem[] = [
   { href: '/admin/chuzenji/goshuin',      label: '御朱印',         icon: '📮', group: '立木観音' },
   { href: '/admin/chuzenji/shakyou',      label: '写経体験',       icon: '✍️', group: '立木観音' },
   { href: '/admin/chuzenji/shabutu',      label: '写仏体験',       icon: '🖌️', group: '立木観音' },
-  { href: '/admin/chuzenji/jyuzu',        label: '数珠づくり',     icon: '📿', group: '立木観音' },
-  { href: '/admin/faq',                   label: 'FAQ',            icon: '❓', group: '立木観音' },
+  { href: '/admin/chuzenji/jyuzu',             label: '数珠づくり',       icon: '📿', group: '立木観音' },
+  { href: '/admin/faq',                        label: 'FAQ',              icon: '❓', group: '立木観音' },
+  { href: '/admin/chuzenji/events/kannonko',   label: '観音講（6/18）',   icon: '🎋', group: '立木観音' },
+  { href: '/admin/chuzenji/events/funazento',  label: '船禅頂（8/4）',    icon: '⛵', group: '立木観音' },
   // ── 温泉寺 ──
   { href: '/admin/onsenji/top',           label: 'トップページ',   icon: '🏠', group: '温泉寺' },
   { href: '/admin/onsenji/history',       label: '歴史',           icon: '📜', group: '温泉寺' },
@@ -34,7 +36,9 @@ const navItems: NavItem[] = [
   { href: '/admin/onsenji/faq',           label: 'FAQ',            icon: '❓', group: '温泉寺' },
   { href: '/admin/onsenji/shakyou',       label: '写経体験',       icon: '✍️', group: '温泉寺' },
   { href: '/admin/onsenji/shabutu',       label: '写仏体験',       icon: '🖌️', group: '温泉寺' },
-  { href: '/admin/onsenji/jyuzu',         label: '数珠づくり',     icon: '📿', group: '温泉寺' },
+  { href: '/admin/onsenji/jyuzu',              label: '数珠づくり',       icon: '📿', group: '温泉寺' },
+  { href: '/admin/onsenji/events/yakushiko',   label: '薬師講大祭（8/8）', icon: '🔥', group: '温泉寺' },
+  { href: '/admin/onsenji/events/setsubun',    label: '節分大祭（1月）',   icon: '🫘', group: '温泉寺' },
   // ── 共通 ──
   { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️' },
   { href: '/admin/contacts',      label: 'お問い合わせ',     icon: '✉️' },

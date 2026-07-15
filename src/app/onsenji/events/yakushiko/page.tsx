@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -9,13 +11,48 @@ export const metadata: Metadata = {
   description: '毎年8月8日開催。湯の湖畔にて山伏による採灯大護摩供を厳修。温泉寺最大の法要のご案内。',
 }
 
-const SCHEDULE = [
+const DEFAULT_SCHEDULE = [
   { time: '11:00', title: '薬師講大祭', desc: '薬師堂にてご本尊・薬師瑠璃光如来への法要を執り行います。ご信徒・参拝者の皆様とともに薬師経をお唱えし、健康増進・病気平癒をご祈念いたします。' },
   { time: '11:30', title: '採灯大護摩供', desc: '湯の湖畔にて、山伏装束に身を包んだ僧侶たちによる採灯大護摩供を厳修いたします。護摩の炎に願い事を記した護摩木や写経を奉じ、薬師如来の御加護を祈ります。' },
   { time: '終了後', title: '写経奉納・御朱印授与', desc: '写経体験でお写しいただいた写経を御本尊に奉納いたします。特別御朱印のお授けも行います。' },
 ]
 
-export default function YakushikoPage() {
+const DEFAULT_NOTES = [
+  { text: '参列は自由です。事前のお申し込みは不要ですが、御札・願い事をご希望の方は申し込みフォームよりお申し込みください。' },
+  { text: '写経体験（1,000円）は開湯期間中毎日受付しています。当日の写経奉納も可能です。' },
+  { text: 'お支払いは当日・現地にてお受けいたします。' },
+  { text: '詳細・変更がある場合は当サイトまたはお電話にてご確認ください。' },
+]
+
+const DEFAULTS: Record<string, string> = {
+  yakushiko_about: '毎年8月8日、温泉寺では湯の湖畔を舞台に、山伏によって採灯大護摩供が焚かれます。写経体験でお写しいただいた写経が御本尊に奉じられ、護摩の炎で焚き上げられます。薬師如来の御加護のもと、参拝者の願いが天に届けられる、温泉寺最大の法要です。',
+  yakushiko_schedule: JSON.stringify(DEFAULT_SCHEDULE),
+  yakushiko_notes: JSON.stringify(DEFAULT_NOTES),
+}
+
+function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const keys = Object.keys(DEFAULTS).join(',')
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
+    })
+    if (!res.ok) return DEFAULTS
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...DEFAULTS }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch { return DEFAULTS }
+}
+
+export default async function YakushikoPage() {
+  const c = await getContent()
+  const schedule = pj<typeof DEFAULT_SCHEDULE>(c.yakushiko_schedule, DEFAULT_SCHEDULE)
+  const notes    = pj<typeof DEFAULT_NOTES>(c.yakushiko_notes, DEFAULT_NOTES)
+
   return (
     <>
       <HeaderOnsenji />
@@ -43,9 +80,7 @@ export default function YakushikoPage() {
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
               <h2 className="font-serif text-2xl text-onsenji">行事について</h2>
             </div>
-            <p className="text-sm text-gray-700 leading-loose">
-              毎年8月8日、温泉寺では湯の湖畔を舞台に、山伏によって採灯大護摩供が焚かれます。写経体験でお写しいただいた写経が御本尊に奉じられ、護摩の炎で焚き上げられます。薬師如来の御加護のもと、参拝者の願いが天に届けられる、温泉寺最大の法要です。
-            </p>
+            <p className="text-sm text-gray-700 leading-loose">{c.yakushiko_about}</p>
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
                 { label: '開催日', value: '8月8日（毎年）' },
@@ -66,7 +101,7 @@ export default function YakushikoPage() {
               <h2 className="font-serif text-2xl text-onsenji">タイムスケジュール</h2>
             </div>
             <ol className="relative border-l-2 border-[#7ec8a4]/40 ml-5 space-y-8">
-              {SCHEDULE.map(({ time, title, desc }, i) => (
+              {schedule.map(({ time, title, desc }, i) => (
                 <li key={i} className="pl-8 relative">
                   <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-onsenji flex items-center justify-center shadow-md">
                     <span className="text-[#7ec8a4] text-xs font-bold">{i + 1}</span>
@@ -99,12 +134,7 @@ export default function YakushikoPage() {
               <h2 className="font-serif text-2xl text-onsenji">ご参列にあたって</h2>
             </div>
             <div className="space-y-3">
-              {[
-                '参列は自由です。事前のお申し込みは不要ですが、御札・願い事をご希望の方は申し込みフォームよりお申し込みください。',
-                '写経体験（1,000円）は開湯期間中毎日受付しています。当日の写経奉納も可能です。',
-                'お支払いは当日・現地にてお受けいたします。',
-                '詳細・変更がある場合は当サイトまたはお電話にてご確認ください。',
-              ].map((text, i) => (
+              {notes.map(({ text }, i) => (
                 <div key={i} className="flex gap-3 text-sm text-gray-700 leading-relaxed bg-onsenji/5 rounded-xl px-4 py-3">
                   <span className="text-[#7ec8a4] font-bold flex-shrink-0">・</span>
                   <p>{text}</p>

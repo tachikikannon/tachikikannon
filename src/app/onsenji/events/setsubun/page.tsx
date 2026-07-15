@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -9,13 +11,47 @@ export const metadata: Metadata = {
   description: '毎年1月下旬開催。新年の邪気を払い福を招く節分大祭のご案内。豆まき・護摩供。日程は年によって異なります。',
 }
 
-const SCHEDULE = [
+const DEFAULT_SCHEDULE = [
   { time: '11:00', title: '節分大祭（法要）', desc: '薬師堂にて節分の法要を執り行います。ご本尊・薬師如来のご加護のもと、新年の無病息災・開運招福をお祈りいたします。' },
   { time: '11:30', title: '護摩供', desc: '護摩の炎に参拝者の願い事を記した護摩木を奉じ、薬師如来の御力で煩悩や邪気をお焚き上げいたします。' },
   { time: '終了後', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。参列の皆様にも豆をお配りいたします。' },
 ]
 
-export default function SetsubunPage() {
+const DEFAULT_NOTES = [
+  { text: '参列は自由です。事前のお申し込みは不要ですが、御札をご希望の方は申し込みフォームよりお申し込みください。' },
+  { text: '1月の湯元は積雪・寒冷が予想されます。防寒対策を十分にしてお越しください。' },
+  { text: 'お支払いは当日・現地にてお受けいたします。' },
+  { text: '日程は年によって異なります。必ず事前にお電話またはウェブサイトでご確認ください。' },
+]
+
+const DEFAULTS: Record<string, string> = {
+  setsubun_about: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。冬季の静けさのなか、厳かな雰囲気に包まれた温泉寺ならではの行事です。',
+  setsubun_schedule: JSON.stringify(DEFAULT_SCHEDULE),
+  setsubun_notes: JSON.stringify(DEFAULT_NOTES),
+}
+
+function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const keys = Object.keys(DEFAULTS).join(',')
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
+    })
+    if (!res.ok) return DEFAULTS
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...DEFAULTS }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch { return DEFAULTS }
+}
+
+export default async function SetsubunPage() {
+  const c = await getContent()
+  const schedule = pj<typeof DEFAULT_SCHEDULE>(c.setsubun_schedule, DEFAULT_SCHEDULE)
+  const notes    = pj<typeof DEFAULT_NOTES>(c.setsubun_notes, DEFAULT_NOTES)
   return (
     <>
       <HeaderOnsenji />
@@ -43,9 +79,7 @@ export default function SetsubunPage() {
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
               <h2 className="font-serif text-2xl text-onsenji">行事について</h2>
             </div>
-            <p className="text-sm text-gray-700 leading-loose">
-              新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。冬季の静けさのなか、厳かな雰囲気に包まれた温泉寺ならではの行事です。
-            </p>
+            <p className="text-sm text-gray-700 leading-loose">{c.setsubun_about}</p>
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
                 { label: '開催日', value: '1月下旬（毎年）' },
@@ -69,7 +103,7 @@ export default function SetsubunPage() {
               <h2 className="font-serif text-2xl text-onsenji">タイムスケジュール</h2>
             </div>
             <ol className="relative border-l-2 border-[#7ec8a4]/40 ml-5 space-y-8">
-              {SCHEDULE.map(({ time, title, desc }, i) => (
+              {schedule.map(({ time, title, desc }, i) => (
                 <li key={i} className="pl-8 relative">
                   <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-onsenji flex items-center justify-center shadow-md">
                     <span className="text-[#7ec8a4] text-xs font-bold">{i + 1}</span>
@@ -92,12 +126,7 @@ export default function SetsubunPage() {
               <h2 className="font-serif text-2xl text-onsenji">ご参列にあたって</h2>
             </div>
             <div className="space-y-3">
-              {[
-                '参列は自由です。事前のお申し込みは不要ですが、御札をご希望の方は申し込みフォームよりお申し込みください。',
-                '1月の湯元は積雪・寒冷が予想されます。防寒対策を十分にしてお越しください。',
-                'お支払いは当日・現地にてお受けいたします。',
-                '日程は年によって異なります。必ず事前にお電話またはウェブサイトでご確認ください。',
-              ].map((text, i) => (
+              {notes.map(({ text }, i) => (
                 <div key={i} className="flex gap-3 text-sm text-gray-700 leading-relaxed bg-onsenji/5 rounded-xl px-4 py-3">
                   <span className="text-[#7ec8a4] font-bold flex-shrink-0">・</span>
                   <p>{text}</p>
