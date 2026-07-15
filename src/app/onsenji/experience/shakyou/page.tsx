@@ -13,6 +13,13 @@ const DEFAULT_ITEMS = [
   { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
 ]
 
+const DEFAULT_FLOW = [
+  { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
+  { title: '用具の準備', text: '筆・硯・お経の手本をご用意します。すべて貸し出しですので手ぶらでお越しください。' },
+  { title: 'お写しいただきます', text: 'お経の手本に沿って、一文字一文字丁寧にお写しください。係の者がご説明いたします。' },
+  { title: '特別御朱印のお授け', text: '完成後、特別御朱印をお授けします。' },
+]
+
 const DEFAULTS: Record<string, string> = {
   onsenji_shakyou_about_p1: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。',
   onsenji_shakyou_about_p2: '温泉寺では薬師如来に縁の深いお経をお写しいただきます。体験後は特別御朱印をお授けします。毎日開催していますので、参拝の際にお気軽にお申し付けください。',
@@ -20,6 +27,7 @@ const DEFAULTS: Record<string, string> = {
   onsenji_shakyou_time: '約15分',
   onsenji_shakyou_cta_sub: '予約不要・毎日実施。参拝受付時にお申し付けください。',
   onsenji_shakyou_items: JSON.stringify(DEFAULT_ITEMS),
+  onsenji_shakyou_flow: JSON.stringify(DEFAULT_FLOW),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -43,6 +51,7 @@ async function getContent() {
 export default async function OnsenjShakyouPage() {
   const c = await getContent()
   const items = pj<typeof DEFAULT_ITEMS>(c.onsenji_shakyou_items, DEFAULT_ITEMS)
+  const flow  = pj<typeof DEFAULT_FLOW>(c.onsenji_shakyou_flow, DEFAULT_FLOW)
 
   return (
     <>
@@ -89,6 +98,22 @@ export default async function OnsenjShakyouPage() {
             </div>
           </section>
           <section>
+            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">体験の流れ</h2>
+            <ol className="relative border-l-2 border-[#7ec8a4]/40 ml-5 space-y-8">
+              {flow.map(({ title, text }, i) => (
+                <li key={i} className="pl-8 relative">
+                  <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-onsenji flex items-center justify-center shadow-md">
+                    <span className="text-[#7ec8a4] text-xs font-bold">{i + 1}</span>
+                  </div>
+                  <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                    <h3 className="font-serif text-onsenji text-base mb-1">{title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+          <section>
             <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">持ち物・服装</h2>
             <ul className="space-y-2">
               {items.map(({ text }, i) => (
@@ -104,14 +129,10 @@ export default async function OnsenjShakyouPage() {
               お問い合わせ
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <Link href="/onsenji/experience/shabutu" className="flex flex-col items-center gap-2 p-5 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white hover:-translate-y-1 transition-all group text-center">
               <span className="text-2xl">🖌️</span>
               <span className="text-sm font-medium text-onsenji group-hover:text-white">写仏体験</span>
-            </Link>
-            <Link href="/onsenji/experience/jyuzu" className="flex flex-col items-center gap-2 p-5 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white hover:-translate-y-1 transition-all group text-center">
-              <span className="text-2xl">📿</span>
-              <span className="text-sm font-medium text-onsenji group-hover:text-white">数珠づくり体験</span>
             </Link>
           </div>
         </div>

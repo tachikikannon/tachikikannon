@@ -110,14 +110,10 @@ export default async function OnsenjShabutuPage() {
               お問い合わせ
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <Link href="/onsenji/experience/shakyou" className="flex flex-col items-center gap-2 p-5 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white hover:-translate-y-1 transition-all group text-center">
               <span className="text-2xl">📜</span>
               <span className="text-sm font-medium text-onsenji group-hover:text-white">写経体験</span>
-            </Link>
-            <Link href="/onsenji/experience/jyuzu" className="flex flex-col items-center gap-2 p-5 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white hover:-translate-y-1 transition-all group text-center">
-              <span className="text-2xl">📿</span>
-              <span className="text-sm font-medium text-onsenji group-hover:text-white">数珠づくり体験</span>
             </Link>
           </div>
         </div>
