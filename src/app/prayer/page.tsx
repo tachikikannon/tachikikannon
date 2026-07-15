@@ -84,7 +84,7 @@ export default async function PrayerPage() {
               </table>
             </div>
             <div className="mt-3 bg-white rounded-lg p-4 text-sm text-gray-700 border border-gray-200 space-y-1">
-              <p>定時での御祈祷はございません。</p>
+              <p>定時での御祈願はございません。</p>
               <p><strong>予約制</strong>となりますので、事前にお申し込みをお願い致します。</p>
             </div>
             <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-gray-700 space-y-1">
@@ -119,23 +119,21 @@ export default async function PrayerPage() {
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">護摩札の郵送について</h2>
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold text-sm text-gray-700 leading-relaxed space-y-2">
               <p>{c.prayer_mail_text}</p>
-              <p className="text-xs text-gray-500">※お申込み頂き御祈祷後、発送させて頂きますので1〜2週間ほどお待ちください。</p>
+              <p className="text-xs text-gray-500">※お申込み頂き御祈願後、発送させて頂きますので1〜2週間ほどお待ちください。</p>
             </div>
           </section>
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">その他の御祈願</h2>
             <div className="mt-4 space-y-4">
               <div className="bg-white rounded-xl p-5 shadow-sm">
-                <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">新車祈祷（車両安全祈願）</h3>
+                <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">新車祈願（車両安全祈願）</h3>
                 <p className="text-xs text-gray-500 mb-3">{c.prayer_car_desc}</p>
                 <table className="w-full text-sm border-collapse mb-2">
                   <tbody>
-                    {[['1台', '5,000円'], ['', '10,000円']].map(([k, v], i) => (
-                      <tr key={i} className="border border-gray-100">
-                        <td className="px-4 py-2 text-gray-500 bg-gray-50 w-32">{k}</td>
-                        <td className="px-4 py-2 font-bold text-navy">{v}</td>
-                      </tr>
-                    ))}
+                    <tr className="border border-gray-100">
+                      <td className="px-4 py-2 text-gray-500 bg-gray-50 w-32">1台</td>
+                      <td className="px-4 py-2 font-bold text-navy">5,000円〜</td>
+                    </tr>
                   </tbody>
                 </table>
                 <p className="text-xs text-gray-400">{c.prayer_car_note}</p>
