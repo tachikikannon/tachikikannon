@@ -9,6 +9,16 @@ const FIELDS = [
   { key: 'onsenji_shakyou_fee',  label: '体験料', defaultValue: '1,000円（特別御朱印授与込み）' },
   { key: 'onsenji_shakyou_time', label: '所要時間', defaultValue: '約15分' },
   {
+    key: 'onsenji_shakyou_flow', label: '体験の流れ', type: 'list' as const,
+    listFields: [{ key: 'title', label: 'ステップ名' }, { key: 'text', label: '説明', multiline: true }],
+    defaultValue: J([
+      { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
+      { title: '用具の準備', text: '筆・硯・お経の手本をご用意します。すべて貸し出しですので手ぶらでお越しください。' },
+      { title: 'お写しいただきます', text: 'お経の手本に沿って、一文字一文字丁寧にお写しください。係の者がご説明いたします。' },
+      { title: '特別御朱印のお授け', text: '完成後、特別御朱印をお授けします。' },
+    ]),
+  },
+  {
     key: 'onsenji_shakyou_items', label: '持ち物・服装', type: 'list' as const,
     listFields: [{ key: 'text', label: '項目', multiline: true }],
     defaultValue: J([
