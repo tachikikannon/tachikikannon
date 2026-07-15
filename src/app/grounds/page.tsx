@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import GroundsSpots from '@/components/GroundsSpots'
 
 export const metadata: Metadata = { title: '境内のご案内' }
 
@@ -80,21 +81,7 @@ export default async function GroundsPage() {
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">主な見どころ</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {spots.map(({ name, image, desc }, i) => (
-                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm">
-                  {image && (
-                    <div className="relative h-44">
-                      <Image src={image} alt={name} fill className="object-cover" />
-                    </div>
-                  )}
-                  <div className="p-3">
-                    <p className="font-serif font-medium text-navy text-sm mb-1">{name}</p>
-                    {desc && <p className="text-xs text-gray-600 leading-relaxed">{desc}</p>}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <GroundsSpots spots={spots} />
           </section>
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">五大堂からの眺望</h2>
