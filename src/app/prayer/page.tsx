@@ -65,9 +65,7 @@ export default async function PrayerPage() {
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御祈願について</h2>
             <div className="mt-4 rounded-xl overflow-hidden shadow-sm">
-              <div className="relative h-56 md:h-72">
-                <Image src="/images/goma.png" alt="御護摩" fill className="object-cover" />
-              </div>
+              <img src="/images/goma.png" alt="御護摩" className="w-full h-auto" />
             </div>
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold leading-relaxed text-gray-700">{c.prayer_about}</div>
           </section>
