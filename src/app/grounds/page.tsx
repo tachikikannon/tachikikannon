@@ -50,7 +50,9 @@ async function getContent() {
 
 export default async function GroundsPage() {
   const c = await getContent()
-  const spots = pj<typeof DEFAULT_SPOTS>(c.grounds_spots, DEFAULT_SPOTS)
+  const rawSpots = pj<{ name?: string; image?: string; desc?: string; num?: string }[]>(c.grounds_spots, DEFAULT_SPOTS)
+  // 旧フォーマット（imageなし）の場合はDEFAULT_SPOTSを使用
+  const spots = rawSpots.some(s => s.image) ? rawSpots as typeof DEFAULT_SPOTS : DEFAULT_SPOTS
   const flow  = pj<typeof DEFAULT_FLOW>(c.grounds_flow, DEFAULT_FLOW)
 
   return (
