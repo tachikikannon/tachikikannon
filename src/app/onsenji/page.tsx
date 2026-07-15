@@ -132,18 +132,18 @@ export default async function OnsenjPage() {
           </div>
         </section>
 
-        {/* 拝観・体験メニュー */}
+        {/* 温泉・体験メニュー */}
         <section className="max-w-4xl mx-auto px-4 py-20">
           <div className="text-center mb-12">
             <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Menu</p>
-            <h2 className="font-serif text-2xl text-onsenji tracking-widest">拝観・体験メニュー</h2>
+            <h2 className="font-serif text-2xl text-onsenji tracking-widest">温泉・体験メニュー</h2>
             <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { icon: '♨️', title: '薬師の湯', sub: '温泉浴', href: '/onsenji/onsen', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
-              { icon: '📜', title: '御朱印', sub: 'Goshuin', href: '/onsenji/goshuin', desc: '温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。' },
+              { icon: '♨️', title: '薬師の湯', sub: 'Onsen', href: '/onsenji/onsen', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
               { icon: '✍️', title: '写経体験', sub: 'Shakyou', href: '/onsenji/experience/shakyou', desc: '1,000円・約15分・毎日実施。特別御朱印授与。心を静めてお経をお写しいただけます。' },
+              { icon: '🖌️', title: '写仏体験', sub: 'Shabutu', href: '/onsenji/experience/shabutu', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
             ].map(({ icon, title, sub, href, desc }) => (
               <Link key={href} href={href}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
@@ -158,6 +158,31 @@ export default async function OnsenjPage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </section>
+
+        {/* 御朱印 */}
+        <section className="py-16" style={{backgroundColor: 'rgba(26,74,58,0.05)'}}>
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-10">
+              <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Goshuin</p>
+              <h2 className="font-serif text-2xl text-onsenji tracking-widest">御朱印</h2>
+              <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
+            </div>
+            <div className="max-w-xl mx-auto">
+              <Link href="/onsenji/goshuin"
+                className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1 flex items-center gap-6 p-6">
+                <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center rounded-xl" style={{backgroundColor: 'rgba(26,74,58,0.1)'}}>
+                  <span className="text-4xl">📮</span>
+                </div>
+                <div>
+                  <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">Goshuin</p>
+                  <h3 className="font-serif text-onsenji font-medium mb-2">御朱印</h3>
+                  <p className="text-xs text-gray-600 leading-relaxed">温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。</p>
+                  <p className="text-onsenji text-xs mt-2 group-hover:underline">詳しく見る →</p>
+                </div>
+              </Link>
+            </div>
           </div>
         </section>
 
