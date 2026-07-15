@@ -9,12 +9,13 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = { title: '境内のご案内' }
 
 const DEFAULT_SPOTS = [
-  { num: '①', name: '山門', desc: '境内への入口。拝観受付はこちらで行います。' },
-  { num: '②', name: '御朱印受付', desc: '御朱印・お守り・各種授与品はこちらでお受けいただけます。' },
-  { num: '③', name: '本堂（立木観音）', desc: '勝道上人が桂の立木に直接刻んだと伝わる千手観世音菩薩をお祀りする本堂。根を張ったままの立木が今も残ります。' },
-  { num: '④', name: '五大堂', desc: '中禅寺湖を一望できる展望堂。天井に描かれた龍の墨絵でも有名です。' },
-  { num: '⑤', name: '大黒天堂', desc: '商売繁盛・縁結びのご利益で知られる大黒天をお祀りしています。' },
-  { num: '⑥', name: '弁天堂', desc: '中禅寺湖を背景に佇む弁天堂。芸術・財運のご利益があるとされます。' },
+  { name: '山門', image: '/images/sanmon.png', desc: '境内への入口。拝観受付はこちらで行います。' },
+  { name: '観音堂（本堂）', image: '/images/main2.png', desc: '勝道上人が桂の立木に直接刻んだと伝わる千手観世音菩薩をお祀りする本堂。根を張ったままの立木が今も残ります。' },
+  { name: '鐘楼', image: '/images/toiawase.jpg', desc: '境内に響く梵鐘。時を告げる鐘の音が静かな山の霊気とともに境内に広がります。' },
+  { name: '札所', image: '/images/hudasyo.png', desc: '御朱印・お守り・各種授与品はこちらでお受けいただけます。坂東三十三観音霊場の第十八番札所です。' },
+  { name: '天道', image: '/images/tendou.png', desc: '天へと続く石段と境内の小道。四季の草木に囲まれた参道の趣を感じながらお進みください。' },
+  { name: '愛染堂', image: '/images/aizendou.png', desc: '愛染明王をお祀りする堂。縁結び・恋愛成就・家庭円満のご利益で知られます。' },
+  { name: '延命水', image: '/images/enmeisui.png', desc: '境内に湧き出る清水。飲むと長寿・延命のご利益があると伝わり、古くから参拝者に親しまれています。' },
 ]
 const DEFAULT_FLOW = [
   { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。受付は閉門30分前に終了いたします。' },
@@ -77,13 +78,17 @@ export default async function GroundsPage() {
           <section>
             <h2 className="text-2xl font-serif text-navy mb-1">主な見どころ</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
-            <div className="grid md:grid-cols-2 gap-4">
-              {spots.map(({ num, name, desc }, i) => (
-                <div key={i} className="flex gap-4 bg-white rounded-xl p-4 shadow-sm">
-                  <span className="text-gold font-serif text-2xl leading-none flex-shrink-0">{num}</span>
-                  <div>
-                    <p className="font-medium text-navy text-sm">{name}</p>
-                    <p className="text-xs text-gray-600 mt-1 leading-relaxed">{desc}</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {spots.map(({ name, image, desc }, i) => (
+                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm">
+                  {image && (
+                    <div className="relative h-44">
+                      <Image src={image} alt={name} fill className="object-cover" />
+                    </div>
+                  )}
+                  <div className="p-3">
+                    <p className="font-serif font-medium text-navy text-sm mb-1">{name}</p>
+                    {desc && <p className="text-xs text-gray-600 leading-relaxed">{desc}</p>}
                   </div>
                 </div>
               ))}
