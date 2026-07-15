@@ -184,7 +184,7 @@ export default async function HomePage() {
             <div className="section-divider" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { src:'/images/gyouji.JPEG', label:'御祈願',      sub:'御祈願料：5,000円〜', href:'/prayer' },
+                { src:'/images/gogigan.JPG', label:'御祈願',      sub:'御祈願料：5,000円〜', href:'/prayer' },
                 { src:'/images/jyuzu.png',   label:'数珠づくり体験', sub:'2,000円〜', href:'/experience/jyuzu' },
                 { src:'/images/syakyou.JPG', label:'写経体験',    sub:'約15分 / 1,000円', href:'/experience/shakyou' },
                 { src:'/images/syabutu.png', label:'写仏体験',    sub:'1,000円', href:'/experience/shabutu' },
