@@ -4,15 +4,20 @@ import Image from 'next/image'
 
 type Spot = { name: string; image: string; desc: string }
 
-// 地図上の各スポット位置（画像サイズ 1351×1164 に対するパーセント）
+// 地図上の各スポット位置（画像サイズ 1297×1212 に対するパーセント、番号は参拝図の①〜⑫に対応）
 const MAP_PINS: { name: string; x: number; y: number }[] = [
-  { name: '山門',         x: 39, y: 84 },
-  { name: '観音堂（本堂）', x: 27, y: 26 },
-  { name: '鐘楼',         x: 48, y: 73 },
-  { name: '札所',         x: 30, y: 52 },
-  { name: '愛染堂',       x: 47, y: 50 },
-  { name: '延命水',       x: 22, y: 70 },
-  { name: '天道',         x: 33, y: 38 },
+  { name: '山門',           x: 50, y: 84 },
+  { name: '鐘楼',           x: 61, y: 73 },
+  { name: '延命水',         x: 35, y: 72 },
+  { name: '石護摩壇',       x: 36, y: 65 },
+  { name: '客殿・写経体験', x: 31, y: 43 },
+  { name: '札所・朱印所',   x: 47, y: 42 },
+  { name: '愛染堂',         x: 61, y: 40 },
+  { name: '歌碑',           x: 63, y: 30 },
+  { name: 'お水屋',         x: 63, y: 23 },
+  { name: '大黒天堂',       x: 51, y: 6 },
+  { name: '立木観音堂（本堂）', x: 38, y: 20 },
+  { name: '五大堂',         x: 15, y: 21 },
 ]
 
 export default function GroundsSpots({ spots }: { spots: Spot[] }) {
