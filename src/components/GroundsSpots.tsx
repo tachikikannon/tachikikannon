@@ -11,7 +11,7 @@ const MAP_PINS: { name: string; x: number; y: number }[] = [
   { name: '延命水',         x: 35, y: 72 },
   { name: '石護摩壇',       x: 36, y: 65 },
   { name: '客殿・写経体験', x: 31, y: 43 },
-  { name: '札所・朱印所',   x: 47, y: 42 },
+  { name: '御朱印所',       x: 47, y: 42 },
   { name: '愛染堂',         x: 61, y: 40 },
   { name: '歌碑',           x: 63, y: 30 },
   { name: 'お水屋',         x: 63, y: 23 },
