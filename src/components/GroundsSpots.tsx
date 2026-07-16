@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 type Spot = { name: string; image: string; desc: string }
 
-// 地図上の各スポット位置（画像サイズ 1297×1212 に対するパーセント、番号は参拝図の①〜⑫に対応）
+// 地図上の各スポット位置（画像サイズ 1297×1212 に対するパーセント、配列順が参拝図の①〜⑫に対応）
 const MAP_PINS: { name: string; x: number; y: number }[] = [
   { name: '山門',           x: 50, y: 84 },
   { name: '鐘楼',           x: 61, y: 73 },
@@ -19,6 +19,9 @@ const MAP_PINS: { name: string; x: number; y: number }[] = [
   { name: '立木観音堂（本堂）', x: 38, y: 20 },
   { name: '五大堂',         x: 15, y: 21 },
 ]
+
+const CIRCLED = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫']
+const NUM_BY_NAME: Record<string, string> = Object.fromEntries(MAP_PINS.map(({ name }, i) => [name, CIRCLED[i] ?? '']))
 
 export default function GroundsSpots({ spots }: { spots: Spot[] }) {
   const [active, setActive] = useState<Spot | null>(null)
@@ -46,13 +49,13 @@ export default function GroundsSpots({ spots }: { spots: Spot[] }) {
             <button key={name}
               onClick={() => setActive(spot)}
               style={{ left: `${x}%`, top: `${y}%` }}
-              className="absolute -translate-x-1/2 -translate-y-1/2 group">
+              className="absolute -translate-x-1/2 -translate-y-1/2 group w-11 h-11 flex items-center justify-center">
               {/* 脈動リング */}
-              <span className="absolute inset-0 rounded-full bg-gold/60 animate-ping" />
+              <span className="absolute w-5 h-5 rounded-full bg-gold/60 animate-ping" />
               <span className="relative block w-5 h-5 rounded-full bg-gold border-2 border-white shadow-md" />
               {/* ホバー時ラベル */}
               <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap bg-navy text-white text-xs px-2 py-1 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                {name}
+                {NUM_BY_NAME[name]} {name}
               </span>
             </button>
           )
@@ -70,7 +73,7 @@ export default function GroundsSpots({ spots }: { spots: Spot[] }) {
               </div>
             )}
             <div className="p-3">
-              <p className="font-serif font-medium text-navy text-sm mb-1">{spot.name}</p>
+              <p className="font-serif font-medium text-navy text-sm mb-1">{NUM_BY_NAME[spot.name]} {spot.name}</p>
               {spot.desc && <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{spot.desc}</p>}
             </div>
           </button>
@@ -89,7 +92,7 @@ export default function GroundsSpots({ spots }: { spots: Spot[] }) {
               </div>
             )}
             <div className="p-6">
-              <h3 className="font-serif text-navy text-xl mb-3">{active.name}</h3>
+              <h3 className="font-serif text-navy text-xl mb-3">{NUM_BY_NAME[active.name]} {active.name}</h3>
               <p className="text-sm text-gray-700 leading-relaxed">{active.desc}</p>
             </div>
             <button onClick={() => setActive(null)}
