@@ -148,3 +148,22 @@ create policy "public read blocked_dates"
 create policy "admin all blocked_dates"
   on blocked_dates for all
   using (auth.role() = 'authenticated');
+
+-- 貸出可能な写真フラグ（画像ライブラリ）
+alter table media add column if not exists is_lendable boolean not null default false;
+
+-- 各種申請（写真使用・貸出許可／境内撮影許可／取材協力依頼など）
+create table if not exists applications (
+  id          uuid primary key default gen_random_uuid(),
+  category    text not null,
+  name        text not null,
+  email       text not null,
+  phone       text,
+  message     text not null,
+  photo_ref   text,
+  is_read     boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+alter table applications enable row level security;
+create policy "public insert applications" on applications for insert with check (true);
+create policy "admin all applications"     on applications for all using (auth.role() = 'authenticated');

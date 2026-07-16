@@ -73,5 +73,26 @@ export interface Media {
   alt: string | null
   size_bytes: number | null
   mime_type: string | null
+  is_lendable: boolean
+  created_at: string
+}
+
+export const APPLICATION_CATEGORIES = [
+  '写真使用・貸出し許可申請',
+  '境内撮影許可申請',
+  '取材・取材協力依頼',
+  'その他',
+] as const
+export type ApplicationCategory = typeof APPLICATION_CATEGORIES[number]
+
+export interface Application {
+  id: string
+  category: string
+  name: string
+  email: string
+  phone: string | null
+  message: string
+  photo_ref: string | null
+  is_read: boolean
   created_at: string
 }

@@ -55,6 +55,7 @@ export default async function Footer() {
           <ul className="flex gap-4">
             <li><Link href="/privacy" className="hover:text-gold transition-colors">プライバシーポリシー</Link></li>
             <li><Link href="/contact" className="hover:text-gold transition-colors">お問い合わせ</Link></li>
+            <li><Link href="/apply" className="hover:text-gold transition-colors">各種申請のお問い合わせ</Link></li>
           </ul>
           <p>&copy; {new Date().getFullYear()} 日光山中禅寺 立木観音. All Rights Reserved.</p>
         </div>

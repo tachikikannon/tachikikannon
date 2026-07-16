@@ -11,6 +11,8 @@ export const metadata: Metadata = { title: '拝観案内' }
 const DEFAULTS: Record<string, string> = {
   about_fee_adult: '500円',
   about_fee_child: '200円',
+  about_fee_group_adult: '450円',
+  about_fee_group_child: '180円',
   about_hours_peak: '午前8時〜午後5時',
   about_hours_shoulder: '午前8時〜午後4時',
   about_hours_winter: '午前8時30分〜午後3時30分',
@@ -59,6 +61,7 @@ export default async function AboutPage() {
                   {[
                     ['拝観時間', '季節により異なります（下記参照）'],
                     ['拝観料', `大人：${c.about_fee_adult}　子供：${c.about_fee_child}`],
+                    ['団体料金（20名様以上）', `大人：${c.about_fee_group_adult}　子供：${c.about_fee_group_child}`],
                     ['定休日', '年中無休'],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">

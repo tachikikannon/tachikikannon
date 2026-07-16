@@ -42,6 +42,7 @@ const navItems: NavItem[] = [
   // ── 共通 ──
   { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️' },
   { href: '/admin/contacts',      label: 'お問い合わせ',     icon: '✉️' },
+  { href: '/admin/applications',  label: '申請管理',         icon: '📝' },
   { href: '/admin/images',        label: '画像管理',         icon: '🖼️' },
 ]
 

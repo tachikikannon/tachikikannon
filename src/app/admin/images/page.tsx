@@ -47,6 +47,11 @@ export default function AdminImagesPage() {
     load()
   }
 
+  async function toggleLendable(item: Media) {
+    await supabase.from('media').update({ is_lendable: !item.is_lendable }).eq('id', item.id)
+    setList(prev => prev.map(m => m.id === item.id ? { ...m, is_lendable: !m.is_lendable } : m))
+  }
+
   function copyUrl(url: string) {
     navigator.clipboard.writeText(url)
     setCopied(url)
@@ -77,6 +82,10 @@ export default function AdminImagesPage() {
             </div>
             <div className="p-2">
               <p className="text-xs text-gray-600 truncate">{item.filename}</p>
+              <label className="flex items-center gap-1.5 mt-1.5 text-[10px] text-gray-500 cursor-pointer">
+                <input type="checkbox" checked={item.is_lendable} onChange={() => toggleLendable(item)} className="w-3 h-3" />
+                貸出可（写真一覧に表示）
+              </label>
               <button onClick={() => remove(item)} className="text-red-400 hover:text-red-600 text-[10px] mt-1">削除</button>
             </div>
           </div>
