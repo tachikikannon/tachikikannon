@@ -49,10 +49,7 @@ export default function GroundsSpots({ spots }: { spots: Spot[] }) {
             <button key={name}
               onClick={() => setActive(spot)}
               style={{ left: `${x}%`, top: `${y}%` }}
-              className="absolute -translate-x-1/2 -translate-y-1/2 group w-11 h-11 flex items-center justify-center">
-              {/* 脈動リング */}
-              <span className="absolute w-5 h-5 rounded-full bg-gold/60 animate-ping" />
-              <span className="relative block w-5 h-5 rounded-full bg-gold border-2 border-white shadow-md" />
+              className="absolute -translate-x-1/2 -translate-y-1/2 group w-11 h-11 flex items-center justify-center cursor-pointer">
               {/* ホバー時ラベル */}
               <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap bg-navy text-white text-xs px-2 py-1 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                 {NUM_BY_NAME[name]} {name}
