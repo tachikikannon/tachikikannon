@@ -11,16 +11,40 @@ export const metadata: Metadata = {
   description: '中禅寺湖畔に佇む、癒しと祈りの霊場 日光山温泉寺',
 }
 
+const DEFAULT_GORYAKU_CARDS = [
+  { icon: '🌿', title: '病気平癒', desc: '薬師瑠璃光如来の御力で病気の回復をお祈りします' },
+  { icon: '💧', title: '健康増進', desc: '大地から湧く温泉と仏縁で心身ともに清まります' },
+  { icon: '⏳', title: '延命長寿', desc: '医王如来とも呼ばれる薬師如来の御加護を' },
+  { icon: '✨', title: '開運招福', desc: '千二百余年の祈りが積み重なる霊場のご加護を' },
+]
+const DEFAULT_MENU_CARDS = [
+  { title: '薬師の湯', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
+  { title: '写経体験', desc: '1,000円・約15分・毎日実施。特別御朱印授与。心を静めてお経をお写しいただけます。' },
+  { title: '写仏体験', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
+]
+
 const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_en:    'Nikkozan Onsenji Temple',
   onsenji_hero_title: '千二百余年の祈りを宿す\n薬師の霊場',
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
+  onsenji_notice_bar: '令和8年4月11日より「薬師の湯」開湯。泉質：含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（71.4℃）完全かけ流し。',
   onsenji_about_title: '温泉寺について',
   onsenji_about_body: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。',
+  onsenji_heading_goryaku: '主なご利益',
+  onsenji_heading_menu:    '温泉・体験メニュー',
+  onsenji_heading_goshuin: '御朱印',
+  onsenji_goshuin_desc: '温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。',
+  onsenji_history_label: '温泉寺の歴史',
+  onsenji_grounds_label: '境内のご案内',
+  onsenji_heading_access: 'アクセス',
   onsenji_access_address: '栃木県日光市湯元2559',
   onsenji_access_car:  '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり',
   onsenji_access_bus:  '東武日光駅・JR日光駅よりバスで「西参道」バス停下車、徒歩約10分\nまたは「表参道」バス停より徒歩約15分',
+  onsenji_goryaku_cards: JSON.stringify(DEFAULT_GORYAKU_CARDS),
+  onsenji_menu_cards:    JSON.stringify(DEFAULT_MENU_CARDS),
 }
+
+function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 async function getContent(): Promise<Record<string, string>> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -43,6 +67,8 @@ async function getContent(): Promise<Record<string, string>> {
 
 export default async function OnsenjPage() {
   const c = await getContent()
+  const goryakuCards = pj<typeof DEFAULT_GORYAKU_CARDS>(c.onsenji_goryaku_cards, DEFAULT_GORYAKU_CARDS)
+  const menuCards    = pj<typeof DEFAULT_MENU_CARDS>(c.onsenji_menu_cards, DEFAULT_MENU_CARDS)
 
   return (
     <>
@@ -82,7 +108,7 @@ export default async function OnsenjPage() {
         {/* お知らせバー */}
         <div className="bg-[#7ec8a4]/20 border-y border-[#7ec8a4]/30 py-3 px-4">
           <div className="max-w-4xl mx-auto text-center text-sm text-onsenji">
-            令和8年4月11日より「薬師の湯」開湯。泉質：含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（71.4℃）完全かけ流し。
+            {c.onsenji_notice_bar}
           </div>
         </div>
 
@@ -112,16 +138,11 @@ export default async function OnsenjPage() {
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center mb-10">
               <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Goryaku</p>
-              <h2 className="font-serif text-2xl text-onsenji tracking-widest">主なご利益</h2>
+              <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_goryaku}</h2>
               <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { icon: '🌿', title: '病気平癒', desc: '薬師瑠璃光如来の御力で病気の回復をお祈りします' },
-                { icon: '💧', title: '健康増進', desc: '大地から湧く温泉と仏縁で心身ともに清まります' },
-                { icon: '⏳', title: '延命長寿', desc: '医王如来とも呼ばれる薬師如来の御加護を' },
-                { icon: '✨', title: '開運招福', desc: '千二百余年の祈りが積み重なる霊場のご加護を' },
-              ].map(({ icon, title, desc }) => (
+              {goryakuCards.map(({ icon, title, desc }) => (
                 <div key={title} className="bg-white rounded-2xl p-5 text-center shadow-sm border-t-4 border-[#7ec8a4]">
                   <p className="text-3xl mb-3">{icon}</p>
                   <p className="font-serif text-onsenji font-medium mb-2 text-sm">{title}</p>
@@ -136,15 +157,15 @@ export default async function OnsenjPage() {
         <section className="max-w-4xl mx-auto px-4 py-20">
           <div className="text-center mb-12">
             <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Menu</p>
-            <h2 className="font-serif text-2xl text-onsenji tracking-widest">温泉・体験メニュー</h2>
+            <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_menu}</h2>
             <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { icon: '♨️', title: '薬師の湯', sub: 'Onsen', href: '/onsenji/onsen', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
-              { icon: '✍️', title: '写経体験', sub: 'Shakyou', href: '/onsenji/experience/shakyou', desc: '1,000円・約15分・毎日実施。特別御朱印授与。心を静めてお経をお写しいただけます。' },
-              { icon: '🖌️', title: '写仏体験', sub: 'Shabutu', href: '/onsenji/experience/shabutu', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
-            ].map(({ icon, title, sub, href, desc }) => (
+              { icon: '♨️', sub: 'Onsen', href: '/onsenji/onsen' },
+              { icon: '✍️', sub: 'Shakyou', href: '/onsenji/experience/shakyou' },
+              { icon: '🖌️', sub: 'Shabutu', href: '/onsenji/experience/shabutu' },
+            ].map(({ icon, sub, href }, i) => (
               <Link key={href} href={href}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
                 <div className="h-32 flex items-center justify-center" style={{backgroundColor: 'rgba(26,74,58,0.1)'}}>
@@ -152,8 +173,8 @@ export default async function OnsenjPage() {
                 </div>
                 <div className="p-5">
                   <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">{sub}</p>
-                  <h3 className="font-serif text-onsenji font-medium mb-2">{title}</h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">{desc}</p>
+                  <h3 className="font-serif text-onsenji font-medium mb-2">{menuCards[i]?.title}</h3>
+                  <p className="text-xs text-gray-600 leading-relaxed">{menuCards[i]?.desc}</p>
                   <p className="text-onsenji text-xs mt-3 group-hover:underline">詳しく見る →</p>
                 </div>
               </Link>
@@ -166,7 +187,7 @@ export default async function OnsenjPage() {
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center mb-10">
               <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Goshuin</p>
-              <h2 className="font-serif text-2xl text-onsenji tracking-widest">御朱印</h2>
+              <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_goshuin}</h2>
               <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
             </div>
             <div className="max-w-xl mx-auto">
@@ -177,8 +198,8 @@ export default async function OnsenjPage() {
                 </div>
                 <div>
                   <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">Goshuin</p>
-                  <h3 className="font-serif text-onsenji font-medium mb-2">御朱印</h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。</p>
+                  <h3 className="font-serif text-onsenji font-medium mb-2">{c.onsenji_heading_goshuin}</h3>
+                  <p className="text-xs text-gray-600 leading-relaxed">{c.onsenji_goshuin_desc}</p>
                   <p className="text-onsenji text-xs mt-2 group-hover:underline">詳しく見る →</p>
                 </div>
               </Link>
@@ -195,7 +216,7 @@ export default async function OnsenjPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="relative">
                   <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">History</p>
-                  <p className="text-white font-serif text-lg">温泉寺の歴史</p>
+                  <p className="text-white font-serif text-lg">{c.onsenji_history_label}</p>
                 </div>
               </Link>
               <Link href="/onsenji/grounds"
@@ -203,7 +224,7 @@ export default async function OnsenjPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="relative">
                   <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">Grounds</p>
-                  <p className="text-white font-serif text-lg">境内のご案内</p>
+                  <p className="text-white font-serif text-lg">{c.onsenji_grounds_label}</p>
                 </div>
               </Link>
             </div>
@@ -214,7 +235,7 @@ export default async function OnsenjPage() {
         <section id="access" className="max-w-4xl mx-auto px-4 py-20">
           <div className="text-center mb-12">
             <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Access</p>
-            <h2 className="font-serif text-2xl text-onsenji tracking-widest">アクセス</h2>
+            <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_access}</h2>
             <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
           </div>
           <div className="grid md:grid-cols-2 gap-8 items-start">
