@@ -23,7 +23,7 @@ const DEFAULT_SAMPLES = [
   { course: 'Bコース', price: '4,000円', desc: '天然石と天然木の個性あふれる数珠' },
   { course: 'Cコース', price: '6,000円', desc: '天然石のみで作る特別な数珠' },
 ]
-const SAMPLE_IMAGES = ['/images/jyuzu-wood-kokutan.png', '/images/jyuzu-sample-mix.jpg', '/images/jyuzu-sample-stone.jpg']
+const SAMPLE_IMAGES = ['/images/jyuzu-course-a.png', '/images/jyuzu-course-b.png', '/images/jyuzu-course-c.png']
 const WOOD_GALLERY = [
   { name: 'けやき', image: '/images/jyuzu-wood-keyaki.png' },
   { name: '紫檀', image: '/images/jyuzu-wood-shitan.png' },
