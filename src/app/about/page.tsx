@@ -9,6 +9,9 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = { title: '拝観案内' }
 
 const DEFAULTS: Record<string, string> = {
+  about_subtitle: '拝観時間・拝観料',
+  about_hours_note: '季節により異なります（下記参照）',
+  about_holiday: '年中無休',
   about_fee_adult: '500円',
   about_fee_child: '200円',
   about_fee_group_adult: '450円',
@@ -16,6 +19,8 @@ const DEFAULTS: Record<string, string> = {
   about_hours_peak: '午前8時〜午後5時',
   about_hours_shoulder: '午前8時〜午後4時',
   about_hours_winter: '午前8時30分〜午後3時30分',
+  about_grounds_teaser_title: '境内のご案内',
+  about_grounds_teaser_desc: '山門・観音堂・鐘楼・札所・天道・愛染堂・延命水など、境内各所の見どころをご紹介しています。',
 }
 
 async function getContent() {
@@ -48,21 +53,21 @@ export default async function AboutPage() {
           <Image src="/images/haikan.png" alt="拝観案内" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">拝観案内</h1>
-            <p className="text-white/70 text-sm mt-2">拝観時間・拝観料</p>
+            <p className="text-white/70 text-sm mt-2">{c.about_subtitle}</p>
           </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">拝観時間・拝観料</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{c.about_subtitle}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   {[
-                    ['拝観時間', '季節により異なります（下記参照）'],
+                    ['拝観時間', c.about_hours_note],
                     ['拝観料', `大人：${c.about_fee_adult}　子供：${c.about_fee_child}`],
                     ['団体料金（20名様以上）', `大人：${c.about_fee_group_adult}　子供：${c.about_fee_group_child}`],
-                    ['定休日', '年中無休'],
+                    ['定休日', c.about_holiday],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
                       <th className="bg-navy text-white text-left px-4 py-3 w-32 text-sm font-medium">{k}</th>
@@ -88,8 +93,8 @@ export default async function AboutPage() {
 
           <div className="bg-cream-alt rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-5">
             <div className="flex-1">
-              <p className="font-serif text-navy text-lg mb-1">境内のご案内</p>
-              <p className="text-sm text-gray-600 leading-relaxed">山門・観音堂・鐘楼・札所・天道・愛染堂・延命水など、境内各所の見どころをご紹介しています。</p>
+              <p className="font-serif text-navy text-lg mb-1">{c.about_grounds_teaser_title}</p>
+              <p className="text-sm text-gray-600 leading-relaxed">{c.about_grounds_teaser_desc}</p>
             </div>
             <Link href="/grounds"
               className="flex-shrink-0 px-6 py-3 bg-navy text-white text-sm rounded-full hover:bg-navy/80 transition-colors">

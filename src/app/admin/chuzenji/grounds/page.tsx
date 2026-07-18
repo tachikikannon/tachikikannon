@@ -4,6 +4,9 @@ import SectionEditor from '@/components/admin/SectionEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
+  { key: 'grounds_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '見どころ・境内マップ' },
+  { key: 'grounds_heading_map', label: '「境内マップ・主な見どころ」見出し', defaultValue: '境内マップ・主な見どころ' },
+  { key: 'grounds_map_hint', label: '地図の操作案内文', defaultValue: '地図上のピンをクリックすると各スポットの詳細が見られます' },
   {
     key: 'grounds_spots', label: '主な見どころ', type: 'list' as const,
     listFields: [
@@ -26,7 +29,9 @@ const FIELDS = [
       { name: '五大堂', image: '/images/godaido.jpg', desc: '不動明王、降三世明王、軍荼利明王、大威徳明王、金剛夜叉明王の五大明王が安置された御祈祷の道場です。天井には、堅山南風画伯が描いた大雲龍が堂々たる威容を誇ります。また、ここ五大堂からの中禅寺湖を望む景色は、見るものの心を振るわせるほどの絶景です。' },
     ]),
   },
+  { key: 'grounds_heading_godaido', label: '「五大堂からの眺望」見出し', defaultValue: '五大堂からの眺望' },
   { key: 'grounds_godaido_text', label: '五大堂からの眺望テキスト', multiline: true, defaultValue: '五大堂の大窓からは、中禅寺湖と男体山を一望することができます。四季折々の景色は訪れる人々を魅了し、特に紅葉の季節には多くの参拝者が訪れます。また、天井に描かれた龍の大墨絵も必見です。' },
+  { key: 'grounds_heading_flow', label: '「参拝の流れ」見出し', defaultValue: '参拝の流れ' },
   {
     key: 'grounds_flow', label: '参拝の流れ', type: 'list' as const,
     listFields: [{ key: 'title', label: 'ステップ名' }, { key: 'text', label: '説明', multiline: true }],

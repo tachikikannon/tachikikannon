@@ -31,6 +31,11 @@ const DEFAULT_FLOW = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  grounds_subtitle: '見どころ・境内マップ',
+  grounds_heading_map: '境内マップ・主な見どころ',
+  grounds_map_hint: '地図上のピンをクリックすると各スポットの詳細が見られます',
+  grounds_heading_godaido: '五大堂からの眺望',
+  grounds_heading_flow: '参拝の流れ',
   grounds_spots: JSON.stringify(DEFAULT_SPOTS),
   grounds_godaido_text: '五大堂の大窓からは、中禅寺湖と男体山を一望することができます。四季折々の景色は訪れる人々を魅了し、特に紅葉の季節には多くの参拝者が訪れます。また、天井に描かれた龍の大墨絵も必見です。',
   grounds_flow: JSON.stringify(DEFAULT_FLOW),
@@ -72,18 +77,18 @@ export default async function GroundsPage() {
           <Image src="/images/godaido.jpg" alt="境内のご案内" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">境内のご案内</h1>
-            <p className="text-white/70 text-sm mt-2">見どころ・境内マップ</p>
+            <p className="text-white/70 text-sm mt-2">{c.grounds_subtitle}</p>
           </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">境内マップ・主な見どころ</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{c.grounds_heading_map}</h2>
             <div className="w-10 h-0.5 bg-gold mb-2" />
-            <p className="text-xs text-gray-400 mb-6">地図上のピンをクリックすると各スポットの詳細が見られます</p>
+            <p className="text-xs text-gray-400 mb-6">{c.grounds_map_hint}</p>
             <GroundsSpots spots={spots} />
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">五大堂からの眺望</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{c.grounds_heading_godaido}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <div className="relative h-56 rounded-xl overflow-hidden mb-4">
               <Image src="/images/haikan.png" alt="五大堂からの眺め" fill className="object-cover" />
@@ -91,7 +96,7 @@ export default async function GroundsPage() {
             <p className="text-sm text-gray-700 leading-loose">{c.grounds_godaido_text}</p>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">参拝の流れ</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{c.grounds_heading_flow}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <ol className="relative border-l-2 border-gold ml-4 space-y-6">
               {flow.map(({ title, text }, i) => (

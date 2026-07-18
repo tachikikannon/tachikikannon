@@ -14,16 +14,32 @@ const DEFAULT_FEES = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  prayer_subtitle: '立木観音護摩祈祷',
+  prayer_heading_about:  '御祈願について',
+  prayer_heading_hours:  '御祈願時間',
+  prayer_heading_fees:   '御祈願料',
+  prayer_heading_mail:   '護摩札の郵送について',
+  prayer_heading_others: 'その他の御祈願',
   prayer_about: 'お護摩はインド伝来の密教の秘法（秘密の教え）で、僧侶が護摩壇に向かい、作法にしたがって仏の智慧の火を焚き、様々な供物を焚き上げ、厄難・災難を払いその加護（成就）を願います。',
+  prayer_hours_row_label: '通年（平日・土日祝）',
   prayer_hours: '9：00〜12：00',
+  prayer_hours_note1: '定時での御祈願はございません。',
+  prayer_hours_note2: '予約制となりますので、事前にお申し込みをお願い致します。',
   prayer_exclude_dates: '6月18日・8月4日・8月8日',
   prayer_exclude_note: '他にも行事によっては祈祷できない日もございますので、一度お問い合わせください。',
+  prayer_fees_note: '原則、御札の料金にて受付しております。金額によって御札と木箱の大きさが変わります。',
   prayer_fees: JSON.stringify(DEFAULT_FEES),
   prayer_mail_text: '万が一、参列できない場合は郵送にてお札をお送りします。着払いにて発送させて頂きますので、申込用紙に必要事項をご記入の上、現金書留にてお送りください。',
+  prayer_mail_note: '※お申込み頂き御祈願後、発送させて頂きますので1〜2週間ほどお待ちください。',
+  prayer_car_title: '新車祈願（車両安全祈願）',
   prayer_car_desc: 'お車を新しくされた方、車両安全の御祈願をお申し込みの方',
+  prayer_car_fee: '5,000円〜',
   prayer_car_note: '※交通安全の錫杖守りと木札が付きます。',
+  prayer_birth_title: '安産祈願',
   prayer_birth_fee: '5,000円',
   prayer_birth_note: '※腹帯の持ち込みも可能です。詳しくはお問い合わせください。',
+  prayer_cta_heading: '御祈願のお申し込み',
+  prayer_cta_sub: 'ご不明な点はお気軽にお問い合わせください。',
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -59,31 +75,31 @@ export default async function PrayerPage() {
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Gokigan</p>
           <h1 className="font-serif text-4xl text-white tracking-widest relative">御祈願</h1>
-          <p className="text-white/60 text-sm mt-3 relative">立木観音護摩祈祷</p>
+          <p className="text-white/60 text-sm mt-3 relative">{c.prayer_subtitle}</p>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
-            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御祈願について</h2>
+            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{c.prayer_heading_about}</h2>
             <div className="mt-4 rounded-xl overflow-hidden shadow-sm">
               <img src="/images/goma.png" alt="御護摩" className="w-full h-auto" />
             </div>
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold leading-relaxed text-gray-700">{c.prayer_about}</div>
           </section>
           <section>
-            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御祈願時間</h2>
+            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{c.prayer_heading_hours}</h2>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   <tr className="border border-gray-200">
-                    <th className="bg-navy text-white text-left px-4 py-3 font-medium whitespace-nowrap">通年（平日・土日祝）</th>
+                    <th className="bg-navy text-white text-left px-4 py-3 font-medium whitespace-nowrap">{c.prayer_hours_row_label}</th>
                     <td className="px-4 py-3 bg-white">{c.prayer_hours}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className="mt-3 bg-white rounded-lg p-4 text-sm text-gray-700 border border-gray-200 space-y-1">
-              <p>定時での御祈願はございません。</p>
-              <p><strong>予約制</strong>となりますので、事前にお申し込みをお願い致します。</p>
+              <p>{c.prayer_hours_note1}</p>
+              <p>{c.prayer_hours_note2}</p>
             </div>
             <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-gray-700 space-y-1">
               <p className="font-bold text-amber-700 text-xs">※除外日</p>
@@ -92,8 +108,8 @@ export default async function PrayerPage() {
             </div>
           </section>
           <section>
-            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御祈願料</h2>
-            <p className="text-sm text-gray-600 mt-3 mb-4">原則、御札の料金にて受付しております。金額によって御札と木箱の大きさが変わります。</p>
+            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{c.prayer_heading_fees}</h2>
+            <p className="text-sm text-gray-600 mt-3 mb-4">{c.prayer_fees_note}</p>
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <thead>
@@ -114,30 +130,30 @@ export default async function PrayerPage() {
             </div>
           </section>
           <section>
-            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">護摩札の郵送について</h2>
+            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{c.prayer_heading_mail}</h2>
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold text-sm text-gray-700 leading-relaxed space-y-2">
               <p>{c.prayer_mail_text}</p>
-              <p className="text-xs text-gray-500">※お申込み頂き御祈願後、発送させて頂きますので1〜2週間ほどお待ちください。</p>
+              <p className="text-xs text-gray-500">{c.prayer_mail_note}</p>
             </div>
           </section>
           <section>
-            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">その他の御祈願</h2>
+            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{c.prayer_heading_others}</h2>
             <div className="mt-4 space-y-4">
               <div className="bg-white rounded-xl p-5 shadow-sm">
-                <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">新車祈願（車両安全祈願）</h3>
+                <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">{c.prayer_car_title}</h3>
                 <p className="text-xs text-gray-500 mb-3">{c.prayer_car_desc}</p>
                 <table className="w-full text-sm border-collapse mb-2">
                   <tbody>
                     <tr className="border border-gray-100">
                       <td className="px-4 py-2 text-gray-500 bg-gray-50 w-32">1台</td>
-                      <td className="px-4 py-2 font-bold text-navy">5,000円〜</td>
+                      <td className="px-4 py-2 font-bold text-navy">{c.prayer_car_fee}</td>
                     </tr>
                   </tbody>
                 </table>
                 <p className="text-xs text-gray-400">{c.prayer_car_note}</p>
               </div>
               <div className="bg-white rounded-xl p-5 shadow-sm">
-                <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">安産祈願</h3>
+                <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">{c.prayer_birth_title}</h3>
                 <table className="w-full text-sm border-collapse mb-2">
                   <tbody>
                     <tr className="border border-gray-100">
@@ -151,8 +167,8 @@ export default async function PrayerPage() {
             </div>
           </section>
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-xl mb-2">御祈願のお申し込み</p>
-            <p className="text-white/70 text-sm mb-6">ご不明な点はお気軽にお問い合わせください。</p>
+            <p className="font-serif text-xl mb-2">{c.prayer_cta_heading}</p>
+            <p className="text-white/70 text-sm mb-6">{c.prayer_cta_sub}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/reserve" className="btn-gold">オンライン予約はこちら</Link>
               <Link href="/contact" className="btn-outline">お問い合わせ</Link>
