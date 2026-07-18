@@ -28,17 +28,17 @@ export default function AdminContactsPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-8 print:p-0">
+      <div className="print:hidden flex items-center justify-between mb-6">
         <h1 className="text-2xl font-serif text-navy">お問い合わせ管理</h1>
         <span className="badge bg-red-100 text-red-700">
           未読 {list.filter(c => !c.is_read).length} 件
         </span>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-4">
+      <div className="grid lg:grid-cols-2 gap-4 print:block">
         {/* 一覧 */}
-        <div className="bg-white rounded-xl shadow overflow-hidden">
+        <div className="bg-white rounded-xl shadow overflow-hidden print:hidden">
           <ul className="divide-y divide-gray-100">
             {list.map(c => (
               <li key={c.id} onClick={() => { setSelected(c); if(!c.is_read) markRead(c.id) }}
@@ -64,24 +64,25 @@ export default function AdminContactsPage() {
 
         {/* 詳細 */}
         {selected && (
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white rounded-xl shadow p-6 print:shadow-none print:p-0">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-medium text-navy">{selected.subject}</h2>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+              <h2 className="font-medium text-navy text-lg">{selected.subject}</h2>
+              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-lg print:hidden">✕</button>
             </div>
             <dl className="grid grid-cols-[5rem_1fr] gap-x-3 gap-y-2 text-sm mb-5">
               <dt className="text-gray-500 text-xs">お名前</dt><dd>{selected.name}</dd>
               <dt className="text-gray-500 text-xs">メール</dt>
-              <dd><a href={`mailto:${selected.email}`} className="text-navy underline">{selected.email}</a></dd>
+              <dd><a href={`mailto:${selected.email}`} className="text-navy underline print:no-underline print:text-black">{selected.email}</a></dd>
               <dt className="text-gray-500 text-xs">受信日</dt>
               <dd className="text-xs text-gray-500">{new Date(selected.created_at).toLocaleString('ja-JP')}</dd>
             </dl>
-            <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap mb-4">
+            <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap mb-4 print:bg-white print:p-0">
               {selected.message}
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 print:hidden">
               <a href={`mailto:${selected.email}?subject=Re: ${selected.subject}`}
                 className="btn-primary text-sm px-4 py-2">返信する（メール）</a>
+              <button onClick={() => window.print()} className="text-sm px-4 py-2 border border-navy text-navy rounded hover:bg-navy hover:text-white transition-colors">🖨 印刷</button>
               <button onClick={() => remove(selected.id)} className="text-red-500 text-sm hover:underline">削除</button>
             </div>
           </div>

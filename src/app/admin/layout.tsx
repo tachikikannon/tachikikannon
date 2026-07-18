@@ -11,6 +11,7 @@ const navItems: NavItem[] = [
   { href: '/admin/blog',          label: 'ブログ',           icon: '✏️' },
   { href: '/admin/events',        label: '行事カレンダー',   icon: '📅' },
   { href: '/admin/reservations',  label: '予約管理',         icon: '📋' },
+  { href: '/admin/reservations/schedule', label: '予約スケジュール', icon: '🗓️' },
   { href: '/admin/blocked-dates', label: '予約不可日',       icon: '🚫' },
   { href: '/admin/capacity',      label: '定員設定',         icon: '👥' },
   // ── 立木観音 ──
@@ -61,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen flex bg-gray-100">
       {/* サイドバー */}
-      <aside className="w-56 bg-navy flex flex-col flex-shrink-0">
+      <aside className="w-56 bg-navy flex flex-col flex-shrink-0 print:hidden">
         <div className="p-5 border-b border-white/10">
           <p className="text-gold text-[10px] tracking-widest">管理画面</p>
           <p className="text-white font-serif text-sm mt-0.5">中禅寺 立木観音</p>
