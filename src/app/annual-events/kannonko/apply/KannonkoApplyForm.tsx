@@ -4,10 +4,26 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 
 type Status = 'idle' | 'loading' | 'done' | 'error'
+type Applicant = { name: string; address: string; wish1: string; wish2: string }
+
+const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
+const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
+const emptyApplicant = (): Applicant => ({ name: '', address: '', wish1: '', wish2: '' })
+
+function WishSelect({ value, onChange, required }: { value: string; onChange: (v: string) => void; required?: boolean }) {
+  return (
+    <select required={required} className="admin-input" value={value} onChange={e => onChange(e.target.value)}>
+      <option value="">選択してください</option>
+      {WISH_OPTIONS.map(w => <option key={w} value={w}>{w}</option>)}
+    </select>
+  )
+}
 
 export default function KannonkoApplyForm() {
   const supabase = createClient()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', wish1: '', wish2: '' })
+  const [form, setForm] = useState({ name: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
+  const [applicants, setApplicants] = useState<Applicant[]>(Array.from({ length: 10 }, emptyApplicant))
+  const [notes, setNotes] = useState('')
   const [status, setStatus] = useState<Status>('idle')
 
   function set(field: keyof typeof form) {
@@ -15,15 +31,29 @@ export default function KannonkoApplyForm() {
       setForm(prev => ({ ...prev, [field]: e.target.value }))
   }
 
+  function setApplicant(i: number, field: keyof Applicant, value: string) {
+    setApplicants(prev => prev.map((a, idx) => idx === i ? { ...a, [field]: value } : a))
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('loading')
+
+    const applicantLines = applicants
+      .map((a, i) => ({ ...a, num: CIRCLED[i] }))
+      .filter(a => a.name.trim())
+      .map(a => `${a.num} ${a.name}（${a.address || '住所未記入'}）　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`)
+      .join('\n')
+
     const message = [
       `【行事名】観音講・大護摩供・地蔵流し（6月18日）`,
-      `【電話番号】${form.phone}`,
-      `【住所】${form.address}`,
-      `【願い事1】${form.wish1}`,
-      form.wish2 ? `【願い事2】${form.wish2}` : '',
+      `【代表者】`,
+      `電話番号：${form.phone}`,
+      `郵便番号：${form.postal}`,
+      `住所：${form.address}`,
+      `お願い事：${[form.wish1, form.wish2].filter(Boolean).join('、')}`,
+      applicantLines ? `\n【申込者一覧】\n${applicantLines}` : '',
+      notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
 
     const { error } = await supabase.from('contacts').insert({
@@ -106,12 +136,16 @@ export default function KannonkoApplyForm() {
             <span className="flex-shrink-0">📌</span>
             <p>参列自体は申し込み不要です。御札をご希望の方のみお申し込みください。</p>
           </div>
+          <div className="flex gap-2 text-sm text-amber-700">
+            <span className="flex-shrink-0">👨‍👩‍👧‍👦</span>
+            <p>ご家族・団体でお申し込みの場合は、代表者様の情報に加えて申込者①〜⑩に人数分ご記入ください。</p>
+          </div>
         </div>
 
         {/* フォーム */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="admin-label">お名前 <span className="text-red-500 text-xs">※必須</span></label>
+            <label className="admin-label">代表者名 <span className="text-red-500 text-xs">※必須</span></label>
             <input required className="admin-input" placeholder="山田 太郎" value={form.name} onChange={set('name')} />
           </div>
           <div>
@@ -123,23 +157,52 @@ export default function KannonkoApplyForm() {
             <input type="tel" required className="admin-input" placeholder="090-0000-0000" value={form.phone} onChange={set('phone')} />
           </div>
           <div>
+            <label className="admin-label">郵便番号 <span className="text-gray-400 text-xs">（任意）</span></label>
+            <input className="admin-input" placeholder="000-0000" value={form.postal} onChange={set('postal')} />
+          </div>
+          <div>
             <label className="admin-label">ご住所 <span className="text-red-500 text-xs">※必須</span></label>
-            <input required className="admin-input" placeholder="〒000-0000 都道府県市区町村..." value={form.address} onChange={set('address')} />
+            <input required className="admin-input" placeholder="都道府県市区町村..." value={form.address} onChange={set('address')} />
           </div>
 
           <div className="border-t border-gray-200 pt-5">
-            <p className="text-sm font-medium text-navy mb-1">お願い事</p>
+            <p className="text-sm font-medium text-navy mb-1">代表者様のお願い事</p>
             <p className="text-xs text-gray-400 mb-4">御札にお名前とともに記します</p>
-            <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="admin-label">願い事 1つ目 <span className="text-red-500 text-xs">※必須</span></label>
-                <input required className="admin-input" placeholder="例：病気平癒、家内安全、健康増進..." value={form.wish1} onChange={set('wish1')} />
+                <WishSelect value={form.wish1} onChange={v => setForm(f => ({ ...f, wish1: v }))} required />
               </div>
               <div>
                 <label className="admin-label">願い事 2つ目 <span className="text-gray-400 text-xs">（任意）</span></label>
-                <input className="admin-input" placeholder="例：交通安全、縁結び、学業成就..." value={form.wish2} onChange={set('wish2')} />
+                <WishSelect value={form.wish2} onChange={v => setForm(f => ({ ...f, wish2: v }))} />
               </div>
             </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-5">
+            <p className="text-sm font-medium text-navy mb-1">申込者①〜⑩</p>
+            <p className="text-xs text-gray-400 mb-4">ご家族・団体でお申し込みの場合、代表者様以外の方をこちらにご記入ください（任意）</p>
+            <div className="space-y-4">
+              {applicants.map((a, i) => (
+                <div key={i} className="border border-gray-200 rounded-lg p-4">
+                  <p className="text-sm font-medium text-navy mb-3">申込者{CIRCLED[i]}</p>
+                  <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                    <input className="admin-input" placeholder="お名前" value={a.name} onChange={e => setApplicant(i, 'name', e.target.value)} />
+                    <input className="admin-input" placeholder="ご住所" value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} />
+                    <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-5">
+            <label className="admin-label">備考 <span className="text-gray-400 text-xs">（一覧にないお願い事がある場合はこちらにご記入ください）</span></label>
+            <textarea className="admin-input min-h-[80px]" placeholder="例：〇〇（申込者③）の願い事は「学業成就」" value={notes} onChange={e => setNotes(e.target.value)} />
           </div>
 
           {status === 'error' && (
