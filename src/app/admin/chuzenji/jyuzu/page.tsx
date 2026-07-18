@@ -10,7 +10,7 @@ const FIELDS = [
   { key: 'jyuzu_hours_summer', label: '体験時間（4月〜10月）', defaultValue: '4月〜10月：9:00〜15:00' },
   { key: 'jyuzu_hours_winter', label: '体験時間（11月〜3月）', defaultValue: '11月〜3月：9:00〜14:00' },
   { key: 'jyuzu_fee',  label: '体験料', defaultValue: '2,000円〜（使用素材により異なります）' },
-  { key: 'jyuzu_time', label: '所要時間', defaultValue: '約30分' },
+  { key: 'jyuzu_time', label: '所要時間', defaultValue: '30分〜1時間（個人差があります）' },
   { key: 'jyuzu_price_note', label: '料金についての補足', multiline: true, defaultValue: 'お選びいただく珠の素材・組み合わせによって料金が異なります。詳しくは下記コース説明をご覧ください。' },
   {
     key: 'jyuzu_flow', label: '体験の流れ', type: 'list' as const,

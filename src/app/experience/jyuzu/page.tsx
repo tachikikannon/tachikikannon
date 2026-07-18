@@ -58,7 +58,7 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_hours_summer: '4月〜10月：9:00〜15:00',
   jyuzu_hours_winter: '11月〜3月：9:00〜14:00',
   jyuzu_fee:  '2,000円〜（使用素材により異なります）',
-  jyuzu_time: '約30分',
+  jyuzu_time: '30分〜1時間（個人差があります）',
   jyuzu_price_note: 'お選びいただく珠の素材・組み合わせによって料金が異なります。詳しくは下記コース説明をご覧ください。',
   jyuzu_cta_sub: '毎日開催しております。団体でお越しの際は事前にお電話ください。',
   jyuzu_flow: JSON.stringify(DEFAULT_FLOW),
@@ -185,9 +185,10 @@ export default async function JyuzuPage() {
                     ['開催日', c.jyuzu_days],
                     ['体験時間', `${c.jyuzu_hours_summer}　${c.jyuzu_hours_winter}`],
                     ['所要時間', c.jyuzu_time],
+                    ['体験人数', '1名〜20名まで'],
                     ['体験料', c.jyuzu_fee],
                     ['対象', '小学生以上（小学生は保護者同伴）'],
-                    ['受付場所', '寺務所 体験受付窓口'],
+                    ['受付場所', '大黒天堂窓口'],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
                       <th className="bg-navy text-white text-left px-4 py-3 w-32 text-sm font-medium whitespace-nowrap">{k}</th>
