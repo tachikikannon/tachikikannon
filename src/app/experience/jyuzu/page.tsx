@@ -5,13 +5,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import MaterialSwatches from '@/components/MaterialSwatches'
 
 export const metadata: Metadata = { title: '数珠づくり体験' }
 
 const DEFAULT_FLOW = [
-  { icon: '📿', title: '好きな珠を選ぶ', text: '天然石・天然木をご自由に組み合わせてお選びいただけます。', image: '/images/jyuzu-flow-choose.jpg' },
-  { icon: '🤲', title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。', image: '/images/jyuzu-flow-make.jpg' },
-  { icon: '🙏', title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。', image: '/images/jyuzu-flow-pray.jpg' },
+  { icon: '📿', title: '好きな珠を選ぶ', text: '天然石・天然木をご自由に組み合わせてお選びいただけます。', image: '/images/erabu.jpg' },
+  { icon: '🤲', title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。', image: '/images/tukuru.jpg' },
+  { icon: '🙏', title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。', image: '/images/kitousuru.jpg' },
 ]
 const DEFAULT_MATERIALS = [
   { name: '天然木', desc: '軽くて使いやすい木の珠。温かみのある手触りが特徴です。' },
@@ -23,7 +24,6 @@ const DEFAULT_SAMPLES = [
   { course: 'Cコース', price: '6,000円', desc: '天然石のみで作る特別な数珠' },
 ]
 const COURSE_IMAGES = ['/images/a-nennjyu.png', '/images/b-nennjyu.png', '/images/c-nennjyu.png']
-const REAL_SAMPLE_IMAGES = ['/images/jyuzu-real-a.png', '/images/jyuzu-real-b.png', '/images/jyuzu-real-c.png']
 const DEFAULT_NOTES = [
   { text: '数珠はすべてブレスレットタイプです。' },
   { text: '参拝料（拝観料）は別途お求めください。' },
@@ -31,24 +31,24 @@ const DEFAULT_NOTES = [
   { text: '団体でお越しの際は事前にお電話ください。' },
 ]
 const STONE_SWATCHES = [
-  { name: '水晶', image: '/images/swatches/stone-suisho.png' },
-  { name: '紅水晶', image: '/images/swatches/stone-benisuisho.png' },
-  { name: 'ヒスイ', image: '/images/swatches/stone-hisui.png' },
-  { name: 'ラピスラズリ', image: '/images/swatches/stone-lapis.png' },
-  { name: 'アメジスト', image: '/images/swatches/stone-amethyst.png' },
-  { name: 'メノウ', image: '/images/swatches/stone-menou.png' },
-  { name: 'ピンクタイガーアイ', image: '/images/swatches/stone-pinktiger.png' },
-  { name: 'ゴールドシルバータイガーアイ', image: '/images/swatches/stone-goldtiger.png' },
+  { name: '水晶', image: '/images/swatches/stone-suisho.png', desc: '浄化・魔除けの石として知られ、あらゆる願いを叶える万能の石とされています。' },
+  { name: '紅水晶', image: '/images/swatches/stone-benisuisho.png', desc: '愛情運・美容運を高めるとされ、内面の美しさを引き出す石として親しまれています。' },
+  { name: 'ヒスイ', image: '/images/swatches/stone-hisui.png', desc: '健康長寿・魔除けのご利益があるとされる、古くから尊ばれてきた石です。' },
+  { name: 'ラピスラズリ', image: '/images/swatches/stone-lapis.png', desc: '「幸運の石」と呼ばれ、直感力を高め、魔除けの効果があるとされています。' },
+  { name: 'アメジスト', image: '/images/swatches/stone-amethyst.png', desc: '精神の安定・直感力向上のご利益で知られる紫の石です。' },
+  { name: 'メノウ', image: '/images/swatches/stone-menou.png', desc: '心を落ち着け、家庭円満のご利益があるとされる石です。' },
+  { name: 'ピンクタイガーアイ', image: '/images/swatches/stone-pinktiger.png', desc: '恋愛運・美容運を高めるとされるタイガーアイの一種です。' },
+  { name: 'ゴールドシルバータイガーアイ', image: '/images/swatches/stone-goldtiger.png', desc: '仕事運・金運アップのご利益で知られる石です。' },
 ]
 const WOOD_SWATCHES = [
-  { name: 'けやき', image: '/images/swatches/wood-keyaki.png' },
-  { name: '黒檀', image: '/images/swatches/wood-kokutan.png' },
-  { name: '紫檀', image: '/images/swatches/wood-shitan.png' },
-  { name: '星月菩提樹', image: '/images/swatches/wood-hoshizuki.png' },
-  { name: '梅', image: '/images/swatches/wood-ume.png' },
-  { name: 'つげ', image: '/images/swatches/wood-tsuge.png' },
-  { name: '緑壇', image: '/images/swatches/wood-ryokutan.png' },
-  { name: '鉄刀木', image: '/images/swatches/wood-tagayasan.png' },
+  { name: 'けやき', image: '/images/swatches/wood-keyaki.png', desc: '古くから神木として親しまれ、成長・発展の象徴とされる木材です。' },
+  { name: '黒檀', image: '/images/swatches/wood-kokutan.png', desc: '高級木材として知られ、魔除け・厄除けのご利益があるとされます。' },
+  { name: '紫檀', image: '/images/swatches/wood-shitan.png', desc: '気品ある紫色が特徴で、健康長寿のご利益があるとされています。' },
+  { name: '星月菩提樹', image: '/images/swatches/wood-hoshizuki.png', desc: '表面の斑点が星と月に見えることからその名がつき、縁結びのご利益で知られます。' },
+  { name: '梅', image: '/images/swatches/wood-ume.png', desc: '「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
+  { name: 'つげ', image: '/images/swatches/wood-tsuge.png', desc: '緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
+  { name: '緑壇', image: '/images/swatches/wood-ryokutan.png', desc: '爽やかな緑色が特徴で、癒やしと安らぎをもたらすとされています。' },
+  { name: '鉄刀木', image: '/images/swatches/wood-tagayasan.png', desc: '硬く丈夫な木質で知られ、魔除け・厄除けのご利益があるとされます。' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -129,6 +129,26 @@ export default async function JyuzuPage() {
             </div>
           </section>
 
+          {/* コース説明（組成図） */}
+          <section id="course">
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">コース説明</h2>
+            <p className="text-sm text-gray-600 mb-5">天然石・天然木の組成は、コースごとに以下のようになります。</p>
+            <div className="grid grid-cols-3 gap-3">
+              {samples.map(({ course, price, desc }, i) => (
+                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm text-center border-t-4 border-gold">
+                  <div className="relative aspect-square bg-cream-alt">
+                    <Image src={COURSE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
+                  </div>
+                  <div className="p-3">
+                    <p className="text-[10px] text-gold font-medium tracking-wide">{course}</p>
+                    <p className="font-serif text-navy font-bold">{price}</p>
+                    <p className="text-xs text-gray-500 mt-1">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* 体験の流れ */}
           <section>
             <h2 className="text-xl font-serif text-navy text-center mb-1">体験の流れ</h2>
@@ -183,83 +203,16 @@ export default async function JyuzuPage() {
             </div>
           </section>
 
-          {/* 料金カード（実物サンプル） */}
-          <section>
-            <h2 className="text-xl font-serif text-navy text-center mb-1">料金</h2>
-            <div className="w-10 h-0.5 bg-gold mx-auto mb-2" />
-            <p className="text-sm text-gray-600 text-center mb-8">ご自由に組み合わせて作れます。素材により、料金の目安は以下の通りです。</p>
-            <div className="grid grid-cols-3 gap-3 md:gap-6">
-              {samples.map(({ course, price, desc }, i) => (
-                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm text-center">
-                  <div className="relative aspect-square bg-cream-alt">
-                    <Image src={REAL_SAMPLE_IMAGES[i] ?? '/images/jyuzu.png'} alt={`${course} 完成例`} fill className="object-contain p-3" />
-                  </div>
-                  <div className="p-3 md:p-5">
-                    <p className="font-serif text-navy text-lg md:text-2xl font-bold">{price}〜</p>
-                    <p className="text-xs md:text-sm text-gray-500 mt-1">{desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-gray-400 text-center mt-4">※料金は使用する素材によって異なります。</p>
-          </section>
-
-          {/* コース説明（組成図） */}
-          <section id="course">
-            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">コース説明</h2>
-            <p className="text-sm text-gray-600 mb-5">天然石・天然木の組成は、コースごとに以下のようになります。</p>
-            <div className="grid grid-cols-3 gap-3">
-              {samples.map(({ course, price, desc }, i) => (
-                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm text-center border-t-4 border-gold">
-                  <div className="relative aspect-square bg-cream-alt">
-                    <Image src={COURSE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
-                  </div>
-                  <div className="p-3">
-                    <p className="text-[10px] text-gold font-medium tracking-wide">{course}</p>
-                    <p className="font-serif text-navy font-bold">{price}</p>
-                    <p className="text-xs text-gray-500 mt-1">{desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
           {/* 選べる珠 */}
           <section id="materials" className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
             <h2 className="text-xl font-serif text-navy text-center mb-1">選べる珠</h2>
-            <div className="w-10 h-0.5 bg-gold mx-auto mb-8" />
+            <div className="w-10 h-0.5 bg-gold mx-auto mb-2" />
+            <p className="text-xs text-gray-400 text-center mb-8">珠をタップすると説明が表示されます</p>
 
-            <p className="text-sm font-medium text-navy mb-3">天然石</p>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 mb-4">
-              {STONE_SWATCHES.map(({ name, image }) => (
-                <div key={name} className="text-center">
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full overflow-hidden shadow-sm border-2 border-white ring-1 ring-gray-200">
-                    <Image src={image} alt={name} fill className="object-cover" />
-                  </div>
-                  <p className="text-[10px] text-gray-500 mt-1 leading-tight">{name}</p>
-                </div>
-              ))}
-            </div>
-            <div className="text-center mb-10">
-              <a href="#course" className="text-xs text-navy border-b border-navy/40 hover:border-navy transition-colors">すべての天然石を見る →</a>
-            </div>
+            <MaterialSwatches title="天然石" swatches={STONE_SWATCHES} />
+            <MaterialSwatches title="天然木" swatches={WOOD_SWATCHES} />
 
-            <p className="text-sm font-medium text-navy mb-3">天然木</p>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 mb-4">
-              {WOOD_SWATCHES.map(({ name, image }) => (
-                <div key={name} className="text-center">
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full overflow-hidden shadow-sm border-2 border-white ring-1 ring-gray-200">
-                    <Image src={image} alt={name} fill className="object-cover" />
-                  </div>
-                  <p className="text-[10px] text-gray-500 mt-1 leading-tight">{name}</p>
-                </div>
-              ))}
-            </div>
-            <div className="text-center mb-10">
-              <a href="#course" className="text-xs text-navy border-b border-navy/40 hover:border-navy transition-colors">すべての天然木を見る →</a>
-            </div>
-
-            <p className="text-sm text-gray-600 mb-5 text-center">珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。</p>
+            <p className="text-sm text-gray-600 mb-5 mt-8 text-center">珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。</p>
             <div className="grid grid-cols-2 gap-4">
               {materials.map(({ name, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl p-4 shadow-sm">
