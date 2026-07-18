@@ -228,12 +228,12 @@ const SECTIONS: Section[] = [
         ]),
       },
       {
-        key: 'jyuzu_samples', label: 'サンプル（価格例）', type: 'list',
-        listFields: [{ key: 'price', label: '価格' }, { key: 'desc', label: '組み合わせ' }],
+        key: 'jyuzu_samples', label: 'サンプル（コース）', type: 'list',
+        listFields: [{ key: 'course', label: 'コース名' }, { key: 'price', label: '価格' }, { key: 'desc', label: 'キャッチコピー' }],
         defaultValue: J([
-          { price: '2,000円', desc: '天然木' },
-          { price: '4,000円', desc: '天然石、天然木' },
-          { price: '6,000円', desc: '天然石' },
+          { course: 'Aコース', price: '2,000円', desc: '天然木で作るスタンダードな数珠' },
+          { course: 'Bコース', price: '4,000円', desc: '天然石と天然木の個性あふれる数珠' },
+          { course: 'Cコース', price: '6,000円', desc: '天然石のみで作る特別な数珠' },
         ]),
       },
       {

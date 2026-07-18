@@ -19,9 +19,18 @@ const DEFAULT_MATERIALS = [
   { name: '天然石', desc: '色とりどりの天然石の珠。お好みの色でお選びいただけます。' },
 ]
 const DEFAULT_SAMPLES = [
-  { price: '2,000円', desc: '天然木' },
-  { price: '4,000円', desc: '天然石、天然木' },
-  { price: '6,000円', desc: '天然石' },
+  { course: 'Aコース', price: '2,000円', desc: '天然木で作るスタンダードな数珠' },
+  { course: 'Bコース', price: '4,000円', desc: '天然石と天然木の個性あふれる数珠' },
+  { course: 'Cコース', price: '6,000円', desc: '天然石のみで作る特別な数珠' },
+]
+const SAMPLE_IMAGES = ['/images/jyuzu-wood-kokutan.png', '/images/jyuzu-sample-mix.jpg', '/images/jyuzu-sample-stone.jpg']
+const WOOD_GALLERY = [
+  { name: 'けやき', image: '/images/jyuzu-wood-keyaki.png' },
+  { name: '紫檀', image: '/images/jyuzu-wood-shitan.png' },
+  { name: '黒檀', image: '/images/jyuzu-wood-kokutan.png' },
+  { name: '鉄刀木', image: '/images/jyuzu-wood-tagayasan.png' },
+  { name: '星月菩提樹', image: '/images/jyuzu-wood-hoshizuki.png' },
+  { name: '梅', image: '/images/jyuzu-wood-ume.png' },
 ]
 const DEFAULT_NOTES = [
   { text: '数珠はすべてブレスレットタイプです。' },
@@ -130,11 +139,16 @@ export default async function JyuzuPage() {
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">サンプル</h2>
             <p className="text-sm text-gray-600 mb-5">ご自由に組み合わせて作れます。天然木・天然石の組み合わせにより、料金の目安は以下の通りです。</p>
             <div className="grid grid-cols-3 gap-3">
-              {samples.map(({ price, desc }, i) => (
-                <div key={i} className="bg-white rounded-xl p-4 shadow-sm text-center border-t-4 border-gold">
-                  <p className="text-2xl mb-2">📿</p>
-                  <p className="font-serif text-navy font-bold">{price}</p>
-                  <p className="text-xs text-gray-500 mt-1">{desc}</p>
+              {samples.map(({ course, price, desc }, i) => (
+                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm text-center border-t-4 border-gold">
+                  <div className="relative h-24 sm:h-32 bg-cream-alt">
+                    <Image src={SAMPLE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-cover" />
+                  </div>
+                  <div className="p-3">
+                    <p className="text-[10px] text-gold font-medium tracking-wide">{course}</p>
+                    <p className="font-serif text-navy font-bold">{price}</p>
+                    <p className="text-xs text-gray-500 mt-1">{desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -156,6 +170,24 @@ export default async function JyuzuPage() {
           <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">選ぶ楽しさ</h2>
             <p className="text-sm text-gray-600 mb-5">豊富な天然石・天然木の珠の中から、お好きな色を組み合わせてお作りいただけます。珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。</p>
+
+            <p className="text-sm font-medium text-navy mb-2">天然石</p>
+            <div className="relative w-full mb-6 rounded-xl overflow-hidden shadow-sm bg-white" style={{ aspectRatio: '1977/762' }}>
+              <Image src="/images/jyuzu-stones-overview.png" alt="天然石の見本" fill className="object-contain" />
+            </div>
+
+            <p className="text-sm font-medium text-navy mb-2">天然木</p>
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-6">
+              {WOOD_GALLERY.map(({ name, image }) => (
+                <div key={name} className="bg-white rounded-lg overflow-hidden shadow-sm">
+                  <div className="relative h-16 sm:h-20">
+                    <Image src={image} alt={name} fill className="object-cover" />
+                  </div>
+                  <p className="text-[10px] text-center text-navy py-1">{name}</p>
+                </div>
+              ))}
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               {materials.map(({ name, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl p-4 shadow-sm">
