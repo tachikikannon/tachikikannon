@@ -7,13 +7,42 @@ import Footer from '@/components/Footer'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { News, Event } from '@/types'
 
+const DEFAULT_ABOUT_CARDS = [
+  { label: '立木観音の歴史', desc: '歴史と縁起' },
+  { label: '拝観料金',       desc: '拝観料・各種料金' },
+  { label: '境内のご案内',   desc: '見どころ・境内マップ' },
+  { label: '年間行事',       desc: '法要・行事のご案内' },
+]
+const DEFAULT_EXPERIENCE_CARDS = [
+  { label: '御祈願',        sub: '御祈願料：5,000円〜' },
+  { label: '数珠づくり体験', sub: '2,000円〜' },
+  { label: '写経体験',      sub: '約15分 / 1,000円' },
+  { label: '写仏体験',      sub: '1,000円' },
+]
+const DEFAULT_SERVICE_CARDS = [
+  { title: '御朱印',       text: '中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info: '御朱印代：500円〜' },
+  { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。一部通販でもお求めいただけます。', info: '通販サイトでもご購入いただけます' },
+]
+
 const DEFAULT_CONTENT: Record<string, string> = {
   hero_en:        'Nikkozan Chuzenji Temple',
   hero_title:     '中禅寺湖畔に佇む、\n祈りと巡礼の寺',
   access_address: '〒321-1661\n栃木県日光市中宮祠2578',
   access_car:     '日光宇都宮道路 日光ICより約40分\n（いろは坂経由）',
   access_bus:     '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩3分',
+  top_sns_heading:      '公式SNSでも最新情報を発信中',
+  top_heading_news:       'お知らせ',
+  top_heading_about:      '立木観音について',
+  top_heading_events:     '近日の行事',
+  top_heading_experience: '祈る・体験する',
+  top_heading_service:    '受ける',
+  top_heading_access:     'アクセス',
+  top_about_cards:      JSON.stringify(DEFAULT_ABOUT_CARDS),
+  top_experience_cards: JSON.stringify(DEFAULT_EXPERIENCE_CARDS),
+  top_service_cards:    JSON.stringify(DEFAULT_SERVICE_CARDS),
 }
+
+function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 export default async function HomePage() {
   const supabase = await createServerSupabaseClient()
@@ -26,7 +55,10 @@ export default async function HomePage() {
   })
   const siteContentRows: { key: string; value: string }[] = siteContentRes.ok ? await siteContentRes.json() : []
   const content: Record<string, string> = { ...DEFAULT_CONTENT }
-  siteContentRows.forEach(row => { content[row.key] = row.value })
+  siteContentRows.forEach(row => { if (row.value) content[row.key] = row.value })
+  const aboutCards      = pj<typeof DEFAULT_ABOUT_CARDS>(content.top_about_cards, DEFAULT_ABOUT_CARDS)
+  const experienceCards = pj<typeof DEFAULT_EXPERIENCE_CARDS>(content.top_experience_cards, DEFAULT_EXPERIENCE_CARDS)
+  const serviceCards    = pj<typeof DEFAULT_SERVICE_CARDS>(content.top_service_cards, DEFAULT_SERVICE_CARDS)
 
   const { data: newsList } = await supabase
     .from('news')
@@ -69,7 +101,7 @@ export default async function HomePage() {
         {/* SNSバナー */}
         <section className="bg-navy py-6">
           <div className="max-w-4xl mx-auto px-4">
-            <p className="text-white/60 text-xs text-center tracking-widest mb-4">公式SNSでも最新情報を発信中</p>
+            <p className="text-white/60 text-xs text-center tracking-widest mb-4">{content.top_sns_heading}</p>
             <div className="grid grid-cols-4 gap-3">
               {[
                 { href:'https://www.instagram.com/tachikikannon/', label:'Instagram', id:'@tachikikannon', bg:'bg-gradient-to-br from-pink-500 to-purple-600' },
@@ -90,7 +122,7 @@ export default async function HomePage() {
         {/* お知らせ */}
         <section className="py-16 bg-cream-alt">
           <div className="max-w-3xl mx-auto px-4">
-            <h2 className="section-title">お知らせ</h2>
+            <h2 className="section-title">{content.top_heading_news}</h2>
             <div className="section-divider" />
             {newsList && newsList.length > 0 ? (
               <ul className="divide-y divide-gray-200 bg-white rounded-lg shadow-sm">
@@ -122,24 +154,24 @@ export default async function HomePage() {
         {/* 立木観音について */}
         <section className="py-12 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">立木観音について</h2>
+            <h2 className="section-title">{content.top_heading_about}</h2>
             <div className="section-divider" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { img: '/images/dragon.jpg',  label: '立木観音の歴史', desc: '歴史と縁起', href: '/history' },
-                { img: '/images/haikan.png',  label: '拝観料金',       desc: '拝観料・各種料金', href: '/about#hours' },
-                { img: '/images/godaido.jpg', label: '境内のご案内',   desc: '見どころ・境内マップ', href: '/grounds' },
-                { img: '/images/gyouji.JPEG', label: '年間行事',       desc: '法要・行事のご案内', href: '/annual-events' },
-              ].map(({ img, label, desc, href }) => (
-                <a key={label} href={href}
+                { img: '/images/dragon.jpg',  href: '/history' },
+                { img: '/images/haikan.png',  href: '/about#hours' },
+                { img: '/images/godaido.jpg', href: '/grounds' },
+                { img: '/images/gyouji.JPEG', href: '/annual-events' },
+              ].map(({ img, href }, i) => (
+                <a key={href} href={href}
                   className="card overflow-hidden flex flex-col group">
                   <div className="relative h-40 overflow-hidden">
-                    <img src={img} alt={label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className="absolute inset-0 bg-navy/30 group-hover:bg-navy/20 transition-colors" />
                   </div>
                   <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
-                    <p className="font-serif text-navy font-medium text-sm group-hover:text-gold transition-colors">{label}</p>
-                    <p className="text-xs text-gray-500">{desc}</p>
+                    <p className="font-serif text-navy font-medium text-sm group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>
+                    <p className="text-xs text-gray-500">{aboutCards[i]?.desc}</p>
                     <span className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5">詳しく見る</span>
                   </div>
                 </a>
@@ -152,7 +184,7 @@ export default async function HomePage() {
         {upcomingEvents && upcomingEvents.length > 0 && (
           <section className="py-16">
             <div className="max-w-3xl mx-auto px-4">
-              <h2 className="section-title">近日の行事</h2>
+              <h2 className="section-title">{content.top_heading_events}</h2>
               <div className="section-divider" />
               <div className="grid md:grid-cols-2 gap-4">
                 {(upcomingEvents as Event[]).map((ev) => (
@@ -184,18 +216,18 @@ export default async function HomePage() {
             <div className="section-divider" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { src:'/images/gogigan.JPG', label:'御祈願',      sub:'御祈願料：5,000円〜', href:'/prayer' },
-                { src:'/images/jyuzu.png',   label:'数珠づくり体験', sub:'2,000円〜', href:'/experience/jyuzu' },
-                { src:'/images/syakyou.JPG', label:'写経体験',    sub:'約15分 / 1,000円', href:'/experience/shakyou' },
-                { src:'/images/syabutu.png', label:'写仏体験',    sub:'1,000円', href:'/experience/shabutu' },
-              ].map(({ src, label, sub, href }) => (
-                <div key={label} className="card overflow-hidden flex flex-col">
+                { src:'/images/gogigan.JPG', href:'/prayer' },
+                { src:'/images/jyuzu.png',   href:'/experience/jyuzu' },
+                { src:'/images/syakyou.JPG', href:'/experience/shakyou' },
+                { src:'/images/syabutu.png', href:'/experience/shabutu' },
+              ].map(({ src, href }, i) => (
+                <div key={href} className="card overflow-hidden flex flex-col">
                   <div className="relative h-40">
-                    <Image src={src} alt={label} fill className="object-cover" />
+                    <Image src={src} alt={experienceCards[i]?.label} fill className="object-cover" />
                   </div>
                   <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
-                    <p className="font-medium text-navy text-sm">{label}</p>
-                    <p className="text-xs text-gray-500">{sub}</p>
+                    <p className="font-medium text-navy text-sm">{experienceCards[i]?.label}</p>
+                    <p className="text-xs text-gray-500">{experienceCards[i]?.sub}</p>
                     <Link href={href} className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5 hover:bg-navy/80 transition-colors">
                       詳しく見る
                     </Link>
@@ -209,18 +241,18 @@ export default async function HomePage() {
         {/* 受ける */}
         <section className="py-16">
           <div className="max-w-4xl mx-auto px-4">
-            <h2 className="section-title">受ける</h2>
+            <h2 className="section-title">{content.top_heading_service}</h2>
             <div className="section-divider" />
             <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               {[
-                { icon:'📜', title:'御朱印', text:'中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info:'御朱印代：500円〜', href:'/goshuin', cta:'詳しく見る', external:false },
-                { icon:'🎁', title:'授与品・通販', text:'お守り・お札など各種授与品をご用意しております。一部通販でもお求めいただけます。', info:'通販サイトでもご購入いただけます', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
-              ].map(({ icon, title, text, info, href, cta, external }) => (
-                <div key={title} className="card p-6 text-center">
+                { icon:'📜', href:'/goshuin', cta:'詳しく見る', external:false },
+                { icon:'🎁', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
+              ].map(({ icon, href, cta, external }, i) => (
+                <div key={href} className="card p-6 text-center">
                   <p className="text-4xl mb-4">{icon}</p>
-                  <h3 className="font-serif text-navy text-lg mb-2">{title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed mb-2">{text}</p>
-                  <p className="text-xs text-gold font-medium mb-4">{info}</p>
+                  <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[i]?.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[i]?.text}</p>
+                  <p className="text-xs text-gold font-medium mb-4">{serviceCards[i]?.info}</p>
                   {external
                     ? <a href={href} target="_blank" rel="noopener" className="btn-primary text-sm px-4 py-2">{cta}</a>
                     : <Link href={href} className="btn-primary text-sm px-4 py-2">{cta}</Link>
@@ -234,7 +266,7 @@ export default async function HomePage() {
         {/* アクセス */}
         <section id="access" className="py-16 bg-cream-alt">
           <div className="max-w-3xl mx-auto px-4">
-            <h2 className="section-title">アクセス</h2>
+            <h2 className="section-title">{content.top_heading_access}</h2>
             <div className="section-divider" />
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <iframe
