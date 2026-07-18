@@ -23,7 +23,7 @@ const DEFAULT_SAMPLES = [
   { course: 'Bコース', price: '4,000円', desc: '天然石と天然木の個性あふれる数珠' },
   { course: 'Cコース', price: '6,000円', desc: '天然石のみで作る特別な数珠' },
 ]
-const COURSE_IMAGES = ['/images/jyuzu-course-a.png', '/images/jyuzu-course-b.png', '/images/jyuzu-course-c.png']
+const COURSE_IMAGES = ['/images/a-nennjyu.png', '/images/b-nennjyu.png', '/images/c-nennjyu.png']
 const REAL_SAMPLE_IMAGES = ['/images/jyuzu-real-a.png', '/images/jyuzu-real-b.png', '/images/jyuzu-real-c.png']
 const DEFAULT_NOTES = [
   { text: '数珠はすべてブレスレットタイプです。' },
