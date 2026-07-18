@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -14,25 +15,33 @@ const DEFAULT_FLOW = [
   { title: '完成・お持ち帰り', text: '完成した数珠はその場でお持ち帰りいただけます。専用の袋に入れてお渡しします。' },
 ]
 const DEFAULT_MATERIALS = [
-  { name: '水晶', desc: '透明感があり、邪気を払う浄化の石として知られます。' },
-  { name: '翡翠', desc: '緑の美しい石。長寿・健康・魔除けの功徳があるとされます。' },
-  { name: '木珠', desc: '軽くて使いやすい伝統的な珠。温かみのある手触りが特徴です。' },
+  { name: '天然木', desc: '軽くて使いやすい木の珠。温かみのある手触りが特徴です。' },
+  { name: '天然石', desc: '色とりどりの天然石の珠。お好みの色でお選びいただけます。' },
+]
+const DEFAULT_SAMPLES = [
+  { price: '2,000円', desc: '天然木' },
+  { price: '4,000円', desc: '天然石、天然木' },
+  { price: '6,000円', desc: '天然石' },
 ]
 const DEFAULT_NOTES = [
-  { text: '事前予約をお願いします。当日受付は材料が揃っている場合のみ対応します。' },
-  { text: '小学生のお子様は保護者の方のご同伴が必要です。' },
-  { text: '道具はすべてご用意します。手ぶらでお越しください。' },
-  { text: '完成品は専用袋に入れてお持ち帰りいただけます。' },
+  { text: '数珠はすべてブレスレットタイプです。' },
+  { text: '参拝料（拝観料）は別途お求めください。' },
+  { text: '僧侶がご祈祷したものを当日お守りとしてお持ち帰りいただけます。僧侶が不在の場合、後日ご祈祷後郵送いたします（郵送料は当寺負担）。' },
+  { text: '団体でお越しの際は事前にお電話ください。' },
 ]
 
 const DEFAULTS: Record<string, string> = {
-  jyuzu_about_p1: '数珠（じゅず）は、仏様を礼拝するときに手に持つ法具で、煩悩の数である108つの珠が一般的です。珠には天然石・木材・水晶などさまざまな素材があり、素材によって異なる功徳があるとされています。',
-  jyuzu_about_p2: '立木観音の数珠づくり体験では、複数の珠の種類からお好みの組み合わせを選び、自分だけのオリジナル数珠をお作りいただけます。完成した数珠は参拝・法要などさまざまな場面でお使いいただけます。',
-  jyuzu_fee:  '2,000円〜（珠の素材・組み合わせにより異なります）',
-  jyuzu_time: '約60〜90分',
-  jyuzu_price_note: 'お選びいただく珠の素材・数・組み合わせによって料金が異なります。詳しくは受付窓口またはお問い合わせフォームよりご確認ください。',
-  jyuzu_cta_sub: '材料の準備がありますので、事前のご予約をお願いします。',
+  jyuzu_about_p1: '数珠（じゅず）は、仏様を礼拝するときに手に持つ法具です。当山の数珠づくり体験では、天然石・天然木の珠からご自由に組み合わせを選び、世界にひとつだけのオリジナル数珠（ブレスレット）をお作りいただけます。',
+  jyuzu_about_p2: '職員が丁寧にご説明しますので、どなたでも簡単にお作りいただけます。僧侶がご祈祷したものを当日お守りとしてお持ち帰りいただけます。',
+  jyuzu_days: '毎日開催（法要時は中止となる場合があります）',
+  jyuzu_hours_summer: '4月〜10月：9:00〜15:00',
+  jyuzu_hours_winter: '11月〜3月：9:00〜14:00',
+  jyuzu_fee:  '2,000円〜（使用素材により異なります）',
+  jyuzu_time: '約30分',
+  jyuzu_price_note: 'お選びいただく珠の素材・組み合わせによって料金が異なります。詳しくは下記サンプルをご覧ください。',
+  jyuzu_cta_sub: '毎日開催しております。団体でお越しの際は事前にお電話ください。',
   jyuzu_flow: JSON.stringify(DEFAULT_FLOW),
+  jyuzu_samples: JSON.stringify(DEFAULT_SAMPLES),
   jyuzu_materials: JSON.stringify(DEFAULT_MATERIALS),
   jyuzu_notes: JSON.stringify(DEFAULT_NOTES),
 }
@@ -58,6 +67,7 @@ async function getContent() {
 export default async function JyuzuPage() {
   const c = await getContent()
   const flow      = pj<typeof DEFAULT_FLOW>(c.jyuzu_flow, DEFAULT_FLOW)
+  const samples   = pj<typeof DEFAULT_SAMPLES>(c.jyuzu_samples, DEFAULT_SAMPLES)
   const materials = pj<typeof DEFAULT_MATERIALS>(c.jyuzu_materials, DEFAULT_MATERIALS)
   const notes     = pj<typeof DEFAULT_NOTES>(c.jyuzu_notes, DEFAULT_NOTES)
 
@@ -71,11 +81,13 @@ export default async function JyuzuPage() {
           </div>
         </div>
 
-        <section className="bg-navy py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Juzu Making</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">数珠づくり体験</h1>
-          <p className="text-white/60 text-sm mt-3 relative">世界にひとつだけの数珠を、自分の手でつくります</p>
+        <section className="relative h-64 md:h-80">
+          <Image src="/images/jyuzu.png" alt="数珠づくり体験" fill className="object-cover" />
+          <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-white text-center px-4">
+            <p className="text-gold text-xs tracking-[0.3em] mb-3">Juzu Making</p>
+            <h1 className="font-serif text-3xl md:text-4xl tracking-widest">数珠づくり体験</h1>
+            <p className="text-white/70 text-sm mt-3">世界にひとつだけの数珠を、自分の手でつくります</p>
+          </div>
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
@@ -88,20 +100,21 @@ export default async function JyuzuPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">料金・所要時間</h2>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">開催日・料金</h2>
             <div className="overflow-x-auto mb-4">
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   {[
-                    ['体験料', c.jyuzu_fee],
+                    ['開催日', c.jyuzu_days],
+                    ['体験時間', `${c.jyuzu_hours_summer}　${c.jyuzu_hours_winter}`],
                     ['所要時間', c.jyuzu_time],
+                    ['体験料', c.jyuzu_fee],
                     ['対象', '小学生以上（小学生は保護者同伴）'],
                     ['受付場所', '寺務所 体験受付窓口'],
-                    ['受付時間', '拝観時間内（閉門1時間30分前まで）'],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
                       <th className="bg-navy text-white text-left px-4 py-3 w-32 text-sm font-medium whitespace-nowrap">{k}</th>
-                      <td className="px-4 py-3 bg-white">{v}</td>
+                      <td className="px-4 py-3 bg-white whitespace-pre-line">{v}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -110,6 +123,20 @@ export default async function JyuzuPage() {
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-gray-700">
               <p className="font-bold text-amber-700 text-xs mb-1">料金について</p>
               <p>{c.jyuzu_price_note}</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">サンプル</h2>
+            <p className="text-sm text-gray-600 mb-5">ご自由に組み合わせて作れます。天然木・天然石の組み合わせにより、料金の目安は以下の通りです。</p>
+            <div className="grid grid-cols-3 gap-3">
+              {samples.map(({ price, desc }, i) => (
+                <div key={i} className="bg-white rounded-xl p-4 shadow-sm text-center border-t-4 border-gold">
+                  <p className="text-2xl mb-2">📿</p>
+                  <p className="font-serif text-navy font-bold">{price}</p>
+                  <p className="text-xs text-gray-500 mt-1">{desc}</p>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -127,9 +154,9 @@ export default async function JyuzuPage() {
           </section>
 
           <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
-            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">珠の素材について</h2>
-            <p className="text-sm text-gray-600 mb-5">珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。</p>
-            <div className="grid md:grid-cols-3 gap-4">
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">選ぶ楽しさ</h2>
+            <p className="text-sm text-gray-600 mb-5">豊富な天然石・天然木の珠の中から、お好きな色を組み合わせてお作りいただけます。珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。</p>
+            <div className="grid grid-cols-2 gap-4">
               {materials.map(({ name, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl p-4 shadow-sm">
                   <p className="font-medium text-navy mb-1">{name}</p>
