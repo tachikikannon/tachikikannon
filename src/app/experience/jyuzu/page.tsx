@@ -23,15 +23,8 @@ const DEFAULT_SAMPLES = [
   { course: 'Bコース', price: '4,000円', desc: '天然石と天然木の個性あふれる数珠' },
   { course: 'Cコース', price: '6,000円', desc: '天然石のみで作る特別な数珠' },
 ]
-const SAMPLE_IMAGES = ['/images/jyuzu-course-a.png', '/images/jyuzu-course-b.png', '/images/jyuzu-course-c.png']
-const WOOD_GALLERY = [
-  { name: 'けやき', image: '/images/jyuzu-wood-keyaki.png' },
-  { name: '紫檀', image: '/images/jyuzu-wood-shitan.png' },
-  { name: '黒檀', image: '/images/jyuzu-wood-kokutan.png' },
-  { name: '鉄刀木', image: '/images/jyuzu-wood-tagayasan.png' },
-  { name: '星月菩提樹', image: '/images/jyuzu-wood-hoshizuki.png' },
-  { name: '梅', image: '/images/jyuzu-wood-ume.png' },
-]
+const COURSE_IMAGES = ['/images/jyuzu-course-a.png', '/images/jyuzu-course-b.png', '/images/jyuzu-course-c.png']
+const REAL_SAMPLE_IMAGES = ['/images/jyuzu-real-a.png', '/images/jyuzu-real-b.png', '/images/jyuzu-real-c.png']
 const DEFAULT_NOTES = [
   { text: '数珠はすべてブレスレットタイプです。' },
   { text: '参拝料（拝観料）は別途お求めください。' },
@@ -91,7 +84,7 @@ export default async function JyuzuPage() {
         </div>
 
         <section className="relative h-64 md:h-80">
-          <Image src="/images/jyuzu.png" alt="数珠づくり体験" fill className="object-cover" />
+          <Image src="/images/jyuzu-hero.jpg" alt="数珠づくり体験" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-white text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Juzu Making</p>
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">数珠づくり体験</h1>
@@ -136,18 +129,36 @@ export default async function JyuzuPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">サンプル</h2>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">コース説明</h2>
             <p className="text-sm text-gray-600 mb-5">ご自由に組み合わせて作れます。天然木・天然石の組み合わせにより、料金の目安は以下の通りです。</p>
             <div className="grid grid-cols-3 gap-3">
               {samples.map(({ course, price, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm text-center border-t-4 border-gold">
-                  <div className="relative h-24 sm:h-32 bg-cream-alt">
-                    <Image src={SAMPLE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-cover" />
+                  <div className="relative aspect-square bg-cream-alt">
+                    <Image src={COURSE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
                   </div>
                   <div className="p-3">
                     <p className="text-[10px] text-gold font-medium tracking-wide">{course}</p>
                     <p className="font-serif text-navy font-bold">{price}</p>
                     <p className="text-xs text-gray-500 mt-1">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">サンプル</h2>
+            <p className="text-sm text-gray-600 mb-5">実際に作られた数珠の一例です。素材の組み合わせはご自由にお選びいただけます。</p>
+            <div className="grid grid-cols-3 gap-3">
+              {samples.map(({ course, price }, i) => (
+                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm text-center border-t-4 border-gold">
+                  <div className="relative aspect-square bg-cream-alt">
+                    <Image src={REAL_SAMPLE_IMAGES[i] ?? '/images/jyuzu.png'} alt={`${course} 完成例`} fill className="object-contain p-2" />
+                  </div>
+                  <div className="p-3">
+                    <p className="text-[10px] text-gold font-medium tracking-wide">{course}</p>
+                    <p className="font-serif text-navy font-bold">{price}</p>
                   </div>
                 </div>
               ))}
@@ -177,15 +188,8 @@ export default async function JyuzuPage() {
             </div>
 
             <p className="text-sm font-medium text-navy mb-2">天然木</p>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-6">
-              {WOOD_GALLERY.map(({ name, image }) => (
-                <div key={name} className="bg-white rounded-lg overflow-hidden shadow-sm">
-                  <div className="relative h-16 sm:h-20">
-                    <Image src={image} alt={name} fill className="object-cover" />
-                  </div>
-                  <p className="text-[10px] text-center text-navy py-1">{name}</p>
-                </div>
-              ))}
+            <div className="relative w-full mb-6 rounded-xl overflow-hidden shadow-sm bg-white" style={{ aspectRatio: '1180/818' }}>
+              <Image src="/images/jyuzu-wood-overview.png" alt="天然木の見本" fill className="object-contain" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
