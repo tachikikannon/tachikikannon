@@ -31,14 +31,28 @@ const DEFAULT_NOTES = [
   { text: '団体でお越しの際は事前にお電話ください。' },
 ]
 const STONE_SWATCHES = [
-  { name: '水晶', image: '/images/swatches/stone-suisho.png', desc: '浄化・魔除けの石として知られ、あらゆる願いを叶える万能の石とされています。' },
-  { name: '紅水晶', image: '/images/swatches/stone-benisuisho.png', desc: '愛情運・美容運を高めるとされ、内面の美しさを引き出す石として親しまれています。' },
+  { name: '水晶', image: '/images/swatches/stone-suisho.png', desc: '浄化作用があり、邪気を払い、災難を防ぐとされる万能の石です。' },
+  { name: '紅水晶', image: '/images/swatches/stone-benisuisho.png', desc: '内面の美しさを輝かせるご利益があるとされています。' },
   { name: 'ヒスイ', image: '/images/swatches/stone-hisui.png', desc: '健康長寿・魔除けのご利益があるとされる、古くから尊ばれてきた石です。' },
-  { name: 'ラピスラズリ', image: '/images/swatches/stone-lapis.png', desc: '「幸運の石」と呼ばれ、直感力を高め、魔除けの効果があるとされています。' },
-  { name: 'アメジスト', image: '/images/swatches/stone-amethyst.png', desc: '精神の安定・直感力向上のご利益で知られる紫の石です。' },
-  { name: 'メノウ', image: '/images/swatches/stone-menou.png', desc: '心を落ち着け、家庭円満のご利益があるとされる石です。' },
-  { name: 'ピンクタイガーアイ', image: '/images/swatches/stone-pinktiger.png', desc: '恋愛運・美容運を高めるとされるタイガーアイの一種です。' },
-  { name: 'ゴールドシルバータイガーアイ', image: '/images/swatches/stone-goldtiger.png', desc: '仕事運・金運アップのご利益で知られる石です。' },
+  { name: 'ラピスラズリ', image: '/images/swatches/stone-lapis.png', desc: '知性・直観力を高め、幸運を引き寄せるとされています。' },
+  { name: 'アメジスト', image: '/images/swatches/stone-amethyst.png', desc: 'マイナスエネルギーをプラスに導くご利益があるとされる紫の石です。' },
+  { name: 'メノウ', image: '/images/swatches/stone-menou.png', desc: '健康や長寿、子宝をもたらすとされる石です。' },
+  { name: 'ピンクタイガーアイ', image: '/images/swatches/stone-pinktiger.png', desc: '仕事運・恋愛運・金運アップのご利益があるとされています。' },
+  { name: 'ゴールドシルバータイガーアイ', image: '/images/swatches/stone-goldtiger.png', desc: '視野を広げ、正しい判断と行動で成功へと導くとされています。' },
+  { name: 'トラメ石', image: '/images/swatches/stone-torame.png', desc: '決断力・行動力を高めるとされる石です。' },
+  { name: '赤トラメ石', image: '/images/swatches/stone-akatorame.png', desc: '幸運を招き、霊力を授けるとされる石です。' },
+  { name: 'ライトブルータイガーアイ', image: '/images/swatches/stone-lightbluetiger.png', desc: '冷静さや判断力を高めるとされるタイガーアイの一種です。' },
+  { name: 'ミックスタイガーアイ', image: '/images/swatches/stone-mixtiger.png', desc: '成功や勝利、チャンスをつかむご利益があるとされています。' },
+  { name: 'パープルキャッツアイ', image: '/images/swatches/stone-purplecatseye.png', desc: '直感力を研ぎ澄まし、判断力を強めるとされる石です。' },
+  { name: 'ピーチジェイド', image: '/images/swatches/stone-peachjade.png', desc: '心と体のバランスを整えるとされる石です。' },
+  { name: '茶金石', image: '/images/swatches/stone-chakinseki.png', desc: '精神を安定させ、心の疲れを癒すとされる石です。' },
+  { name: '紫金石', image: '/images/swatches/stone-shikinseki.png', desc: '善い人や物、チャンスとの出会いを導くとされる石です。' },
+  { name: 'ハウライト', image: '/images/swatches/stone-howlite.png', desc: '厄除け効果があり、精神の安定・浄化、意志を強くするとされています。' },
+  { name: 'エンジェライト', image: '/images/swatches/stone-angelite.png', desc: 'ネガティブな感情を浄化し、優しさと癒しをもたらすとされています。' },
+  { name: 'カーネリアン', image: '/images/swatches/stone-carnelian.png', desc: '気力アップ・体を丈夫にし、迷いを断ち切るとされる石です。' },
+  { name: 'オニキス', image: '/images/swatches/stone-onyx.png', desc: '邪気祓い・厄除け・魔除けの効果があるとされる石です。' },
+  { name: 'インド翡翠', image: '/images/swatches/stone-indohisui.png', desc: '失った気力を回復させ、強いパワーで物事を成し遂げるとされています。' },
+  { name: 'プラムジェイド', image: '/images/swatches/stone-plumjade.png', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
 ]
 const WOOD_SWATCHES = [
   { name: 'けやき', image: '/images/swatches/wood-keyaki.png', desc: '古くから神木として親しまれ、成長・発展の象徴とされる木材です。' },
@@ -49,6 +63,10 @@ const WOOD_SWATCHES = [
   { name: 'つげ', image: '/images/swatches/wood-tsuge.png', desc: '緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
   { name: '緑壇', image: '/images/swatches/wood-ryokutan.png', desc: '爽やかな緑色が特徴で、癒やしと安らぎをもたらすとされています。' },
   { name: '鉄刀木', image: '/images/swatches/wood-tagayasan.png', desc: '硬く丈夫な木質で知られ、魔除け・厄除けのご利益があるとされます。' },
+  { name: 'シャム柿', image: '/images/swatches/wood-shamugaki.png', desc: '縞模様が美しい銘木で、独特の風合いを楽しめる木材です。' },
+  { name: '鉄刀木（ツヤ有）', image: '/images/swatches/wood-tagayasan-tsuya.png', desc: '艶やかに仕上げられた鉄刀木の珠。硬く丈夫な木質で、魔除け・厄除けのご利益があるとされます。' },
+  { name: '梅（ツヤ有）', image: '/images/swatches/wood-ume-tsuya.png', desc: '艶やかに仕上げられた梅の珠。「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
+  { name: 'つげ（ツヤ有）', image: '/images/swatches/wood-tsuge-tsuya.png', desc: '艶やかに仕上げられたつげの珠。緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
 ]
 
 const DEFAULTS: Record<string, string> = {
