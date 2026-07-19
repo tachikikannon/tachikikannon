@@ -19,7 +19,16 @@ const DEFAULT_NOTES = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  funazento_subtitle: '毎年8月4日　午前10時より　※事前申し込み必要',
+  funazento_heading_about: '行事について',
   funazento_about: '船禅頂（ふなぜんじょう）は、日光山を開いた勝道上人（737〜817）が中禅寺湖を舟で渡り、湖上から霊峰・男体山を遙拝したという故事に由来する伝統行事です。毎年8月4日、中禅寺湖を舞台に、上人が切り開いた修験の道を水上から辿ります。湖上から望む男体山と中禅寺の景観とともに、千二百余年の歴史に思いを馳せる特別な体験です。',
+  funazento_info_date: '8月4日（毎年）',
+  funazento_info_time: '午前10時〜',
+  funazento_info_join: '事前申し込み必要',
+  funazento_heading_gallery: '行事の様子',
+  funazento_heading_notes: 'ご参加にあたって',
+  funazento_cta_heading: '船禅頂 お申し込み',
+  funazento_cta_text: '定員になり次第締め切ります。\n御札授与あり・お支払いは当日現地にて。',
   funazento_notes: JSON.stringify(DEFAULT_NOTES),
 }
 
@@ -62,7 +71,7 @@ export default async function FunazentoPage() {
             <p className="text-gold text-xs tracking-[0.3em] mb-2">August 4th  Annual Event</p>
             <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">船禅頂</h1>
             <p className="text-white/80 text-base mt-1 font-serif">ふなぜんじょう</p>
-            <p className="text-white/70 text-sm mt-3">毎年8月4日　午前10時より　※事前申し込み必要</p>
+            <p className="text-white/70 text-sm mt-3">{c.funazento_subtitle}</p>
           </div>
         </section>
 
@@ -71,14 +80,14 @@ export default async function FunazentoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">行事について</h2>
+              <h2 className="font-serif text-2xl text-navy">{c.funazento_heading_about}</h2>
             </div>
             <p className="text-sm text-gray-700 leading-loose">{c.funazento_about}</p>
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: '開催日', value: '8月4日（毎年）' },
-                { label: '開始時間', value: '午前10時〜' },
-                { label: '参加', value: '事前申し込み必要' },
+                { label: '開催日', value: c.funazento_info_date },
+                { label: '開始時間', value: c.funazento_info_time },
+                { label: '参加', value: c.funazento_info_join },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-cream-alt rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-400 mb-1">{label}</p>
@@ -91,7 +100,7 @@ export default async function FunazentoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">行事の様子</h2>
+              <h2 className="font-serif text-2xl text-navy">{c.funazento_heading_gallery}</h2>
             </div>
             <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-md">
               <Image src="/images/mizuumi.jpg" alt="中禅寺湖・船禅頂" fill className="object-cover" />
@@ -101,7 +110,7 @@ export default async function FunazentoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">ご参加にあたって</h2>
+              <h2 className="font-serif text-2xl text-navy">{c.funazento_heading_notes}</h2>
             </div>
             <div className="space-y-3">
               {notes.map(({ text }, i) => (
@@ -114,10 +123,11 @@ export default async function FunazentoPage() {
           </section>
 
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-xl mb-2">船禅頂 お申し込み</p>
+            <p className="font-serif text-xl mb-2">{c.funazento_cta_heading}</p>
             <p className="text-white/70 text-sm mb-6">
-              定員になり次第締め切ります。<br />
-              御札授与あり・お支払いは当日現地にて。
+              {c.funazento_cta_text.split('\n').map((line: string, i: number) => (
+                <span key={i}>{line}<br /></span>
+              ))}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/annual-events/funazento/apply"

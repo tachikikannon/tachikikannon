@@ -17,6 +17,11 @@ const DEFAULT_TIMELINE = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  history_subtitle: '日光山中禅寺の由緒と縁起',
+  history_heading_founding: '創建の由来',
+  history_heading_timeline: '歴史の流れ',
+  history_heading_honzon: 'ご本尊・千手観世音菩薩',
+  history_heading_bando: '坂東三十三観音 第十八番札所',
   history_founding_p1: '日光山中禅寺は、784年（延暦3年）、勝道上人によって開かれました。勝道上人は日光山を開いた高僧であり、幾多の困難を乗り越えながら男体山に登頂し、山頂で大日如来を感得したとされています。',
   history_founding_p2: '中禅寺湖のほとりに建てられた本堂には、上人が湖畔に立つ桂の立木に直接刻んだと伝わる千手観世音菩薩が祀られています。木を切り倒すことなく、立ったままの木に彫り上げたことから「立木観音」と呼ばれ、今日まで人々の信仰を集めてきました。',
   history_timeline: JSON.stringify(DEFAULT_TIMELINE),
@@ -57,12 +62,12 @@ export default async function HistoryPage() {
           <Image src="/images/dragon.jpg" alt="立木観音の歴史" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">立木観音の歴史</h1>
-            <p className="text-white/70 text-sm mt-2">日光山中禅寺の由緒と縁起</p>
+            <p className="text-white/70 text-sm mt-2">{c.history_subtitle}</p>
           </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">創建の由来</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{c.history_heading_founding}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <div className="prose prose-sm max-w-none text-gray-700 leading-loose space-y-4">
               <p>{c.history_founding_p1}</p>
@@ -70,7 +75,7 @@ export default async function HistoryPage() {
             </div>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">歴史の流れ</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{c.history_heading_timeline}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <ol className="relative border-l-2 border-gold ml-4 space-y-8">
               {timeline.map(({ year, title, text }, i) => (
@@ -84,14 +89,14 @@ export default async function HistoryPage() {
             </ol>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">ご本尊・千手観世音菩薩</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{c.history_heading_honzon}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-gold">
               <p className="text-sm text-gray-700 leading-loose">{c.history_honzon}</p>
             </div>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">坂東三十三観音 第十八番札所</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{c.history_heading_bando}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <p className="text-sm text-gray-700 leading-loose">{c.history_bando}</p>
           </section>

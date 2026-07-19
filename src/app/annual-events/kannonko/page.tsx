@@ -25,7 +25,17 @@ const DEFAULT_NOTES = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  kannonko_subtitle: '毎年6月18日　午前10時より',
+  kannonko_heading_about: '行事について',
   kannonko_about: '毎年6月18日、日光山中禅寺 立木観音では、ご信徒・一般参拝者の皆様をお迎えして年に一度の大法要を執り行います。観音講・大護摩供・地蔵流しと三つの行事が続き、中禅寺湖の豊かな自然のなかで千二百余年の祈りが受け継がれます。',
+  kannonko_info_date: '6月18日（毎年）',
+  kannonko_info_time: '午前10時〜',
+  kannonko_info_join: '自由（申し込み不要）',
+  kannonko_heading_schedule: 'タイムスケジュール',
+  kannonko_heading_gallery: '行事の様子',
+  kannonko_heading_notes: 'ご参列にあたって',
+  kannonko_cta_heading: '御札のお申し込み',
+  kannonko_cta_text: '大護摩供にてお焚き上げする御札をご希望の方は\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
   kannonko_schedule: JSON.stringify(DEFAULT_SCHEDULE),
   kannonko_notes: JSON.stringify(DEFAULT_NOTES),
 }
@@ -69,7 +79,7 @@ export default async function KannonkoPage() {
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-2">June 18th  Annual Event</p>
             <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">観音講・大護摩供・地蔵流し</h1>
-            <p className="text-white/70 text-sm mt-3">毎年6月18日　午前10時より</p>
+            <p className="text-white/70 text-sm mt-3">{c.kannonko_subtitle}</p>
           </div>
         </section>
 
@@ -78,14 +88,14 @@ export default async function KannonkoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">行事について</h2>
+              <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_about}</h2>
             </div>
             <p className="text-sm text-gray-700 leading-loose">{c.kannonko_about}</p>
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: '開催日', value: '6月18日（毎年）' },
-                { label: '開始時間', value: '午前10時〜' },
-                { label: '参列', value: '自由（申し込み不要）' },
+                { label: '開催日', value: c.kannonko_info_date },
+                { label: '開始時間', value: c.kannonko_info_time },
+                { label: '参列', value: c.kannonko_info_join },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-cream-alt rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-400 mb-1">{label}</p>
@@ -98,7 +108,7 @@ export default async function KannonkoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">タイムスケジュール</h2>
+              <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_schedule}</h2>
             </div>
             <ol className="relative border-l-2 border-gold/40 ml-5 space-y-8">
               {schedule.map(({ time, title, desc }, i) => (
@@ -121,7 +131,7 @@ export default async function KannonkoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">行事の様子</h2>
+              <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_gallery}</h2>
             </div>
             <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-md">
               <Image src="/images/gyouji.JPEG" alt="大護摩供・地蔵流し" fill className="object-cover" />
@@ -131,7 +141,7 @@ export default async function KannonkoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">ご参列にあたって</h2>
+              <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_notes}</h2>
             </div>
             <div className="space-y-3">
               {notes.map(({ text }, i) => (
@@ -144,11 +154,11 @@ export default async function KannonkoPage() {
           </section>
 
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-xl mb-2">御札のお申し込み</p>
+            <p className="font-serif text-xl mb-2">{c.kannonko_cta_heading}</p>
             <p className="text-white/70 text-sm mb-6">
-              大護摩供にてお焚き上げする御札をご希望の方は<br className="hidden sm:block" />
-              事前に申し込みフォームよりお申し込みください。<br />
-              お支払いは当日・現地にて。
+              {c.kannonko_cta_text.split('\n').map((line: string, i: number) => (
+                <span key={i}>{line}<br /></span>
+              ))}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/annual-events/kannonko/apply"

@@ -15,23 +15,39 @@ const DEFAULT_FAQS: FaqItem[] = [
   { q: 'お守り・授与品の通販はできますか？', a: 'はい、公式通販サイト（chuzenji.official.ec）にてお求めいただけます。' },
 ]
 
+const TEXT_FIELDS = [
+  { key: 'faq_subtitle', label: '見出し（英字サブタイトル）', defaultValue: 'FAQ' },
+  { key: 'faq_heading', label: 'ページ見出し', defaultValue: 'よくある質問' },
+  { key: 'faq_bottom_text', label: '末尾の案内文', defaultValue: '解決しない場合はお気軽にお問い合わせください。' },
+  { key: 'faq_cta_label', label: 'お問い合わせボタンの文言', defaultValue: 'お問い合わせはこちら' },
+] as const
+
 export default function FaqAdmin() {
   const supabase = createClient()
   const [items, setItems] = useState<FaqItem[]>([])
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [texts, setTexts] = useState<Record<string, string>>({})
+  const [textSaving, setTextSaving] = useState<string | null>(null)
+  const [textSaved, setTextSaved] = useState<string | null>(null)
 
   useEffect(() => {
-    supabase.from('site_content').select('value').eq('key', 'faq_items').single()
-      .then(({ data }) => {
-        if (data?.value) {
-          try { setItems(JSON.parse(data.value)) } catch { setItems(DEFAULT_FAQS) }
-        } else {
-          setItems(DEFAULT_FAQS)
-        }
-        setLoaded(true)
-      })
+    supabase.from('site_content').select('key,value').then(({ data }) => {
+      const faqRow = data?.find(r => r.key === 'faq_items')
+      if (faqRow?.value) {
+        try { setItems(JSON.parse(faqRow.value)) } catch { setItems(DEFAULT_FAQS) }
+      } else {
+        setItems(DEFAULT_FAQS)
+      }
+      const defaults: Record<string, string> = {}
+      TEXT_FIELDS.forEach(f => { defaults[f.key] = f.defaultValue })
+      const map = { ...defaults }
+      data?.forEach(row => { if (row.value && row.key !== 'faq_items') map[row.key] = row.value })
+      setTexts(map)
+      setLoaded(true)
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function saveAll() {
@@ -40,6 +56,14 @@ export default function FaqAdmin() {
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  async function saveText(key: string) {
+    setTextSaving(key)
+    await supabase.from('site_content').upsert({ key, value: texts[key] ?? '' }, { onConflict: 'key' })
+    setTextSaving(null)
+    setTextSaved(key)
+    setTimeout(() => setTextSaved(null), 2000)
   }
 
   function update(i: number, field: 'q' | 'a', val: string) {
@@ -70,6 +94,30 @@ export default function FaqAdmin() {
     <div className="p-8 max-w-2xl">
       <h1 className="text-2xl font-serif text-navy mb-1">FAQ管理</h1>
       <p className="text-gray-500 text-sm mb-8">よくある質問の追加・編集・削除ができます。編集後は「すべて保存」を押してください。</p>
+
+      <div className="bg-white rounded-xl shadow-sm p-6 space-y-6 mb-8">
+        {TEXT_FIELDS.map(field => (
+          <div key={field.key}>
+            <label className="admin-label">{field.label}</label>
+            <input
+              type="text"
+              className="admin-input"
+              value={texts[field.key] ?? ''}
+              placeholder={field.defaultValue}
+              onChange={e => setTexts(v => ({ ...v, [field.key]: e.target.value }))}
+            />
+            <div className="mt-2 flex justify-end">
+              <button
+                onClick={() => saveText(field.key)}
+                disabled={textSaving === field.key}
+                className="btn-primary text-sm px-5 py-2 disabled:opacity-50"
+              >
+                {textSaving === field.key ? '保存中...' : textSaved === field.key ? '✓ 保存しました' : '保存'}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="space-y-4 mb-6">
         {items.map((item, i) => (

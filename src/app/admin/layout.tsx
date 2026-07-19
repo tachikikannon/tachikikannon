@@ -25,6 +25,7 @@ const navItems: NavItem[] = [
   { href: '/admin/chuzenji/shabutu',      label: '写仏体験',       icon: '🖌️', group: '立木観音' },
   { href: '/admin/chuzenji/jyuzu',             label: '数珠づくり',       icon: '📿', group: '立木観音' },
   { href: '/admin/faq',                        label: 'FAQ',              icon: '❓', group: '立木観音' },
+  { href: '/admin/chuzenji/events/annual',     label: '年間行事一覧',     icon: '📅', group: '立木観音' },
   { href: '/admin/chuzenji/events/kannonko',   label: '観音講（6/18）',   icon: '🎋', group: '立木観音' },
   { href: '/admin/chuzenji/events/funazento',  label: '船禅頂（8/4）',    icon: '⛵', group: '立木観音' },
   // ── 温泉寺 ──

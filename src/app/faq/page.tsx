@@ -14,33 +14,47 @@ const DEFAULT_FAQS = [
   { q: 'お守り・授与品の通販はできますか？', a: 'はい、公式通販サイト（chuzenji.official.ec）にてお求めいただけます。' },
 ]
 
-async function getFaqs() {
+const DEFAULTS: Record<string, string> = {
+  faq_subtitle: 'FAQ',
+  faq_heading: 'よくある質問',
+  faq_bottom_text: '解決しない場合はお気軽にお問い合わせください。',
+  faq_cta_label: 'お問い合わせはこちら',
+}
+
+async function getContent() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const keys = [...Object.keys(DEFAULTS), 'faq_items'].join(',')
   try {
-    const res = await fetch(`${url}/rest/v1/site_content?key=eq.faq_items&select=value`, {
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
       cache: 'no-store',
     })
-    if (!res.ok) return DEFAULT_FAQS
-    const rows: { value: string }[] = await res.json()
-    if (rows[0]?.value) return JSON.parse(rows[0].value)
-    return DEFAULT_FAQS
+    if (!res.ok) return { c: DEFAULTS, faqs: DEFAULT_FAQS }
+    const rows: { key: string; value: string }[] = await res.json()
+    const c = { ...DEFAULTS }
+    let faqs = DEFAULT_FAQS
+    rows.forEach(r => {
+      if (!r.value) return
+      if (r.key === 'faq_items') { try { faqs = JSON.parse(r.value) } catch {} }
+      else c[r.key] = r.value
+    })
+    return { c, faqs }
   } catch {
-    return DEFAULT_FAQS
+    return { c: DEFAULTS, faqs: DEFAULT_FAQS }
   }
 }
 
 export default async function FaqPage() {
-  const faqs = await getFaqs()
+  const { c, faqs } = await getContent()
 
   return (
     <>
       <Header />
       <main className="pt-16">
         <div className="bg-navy py-16 text-center">
-          <p className="text-gold text-xs tracking-widest mb-2">FAQ</p>
-          <h1 className="text-white font-serif text-3xl">よくある質問</h1>
+          <p className="text-gold text-xs tracking-widest mb-2">{c.faq_subtitle}</p>
+          <h1 className="text-white font-serif text-3xl">{c.faq_heading}</h1>
         </div>
         <section className="py-16 bg-cream-alt">
           <div className="max-w-2xl mx-auto px-4">
@@ -57,8 +71,8 @@ export default async function FaqPage() {
               ))}
             </div>
             <div className="mt-10 text-center">
-              <p className="text-sm text-gray-500 mb-4">解決しない場合はお気軽にお問い合わせください。</p>
-              <a href="/contact" className="btn-primary">お問い合わせはこちら</a>
+              <p className="text-sm text-gray-500 mb-4">{c.faq_bottom_text}</p>
+              <a href="/contact" className="btn-primary">{c.faq_cta_label}</a>
             </div>
           </div>
         </section>
