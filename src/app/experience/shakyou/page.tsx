@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -20,6 +21,7 @@ const DEFAULT_GOSHUIN_ITEMS = [
   { title: '金紙特別朱印 立木大悲殿', sub: '延命十句観音経をお写しいただいた方にお授けします。', badge: '延命十句観音経' },
   { title: '金紙特別御朱印 大日如来', sub: '懺悔文をお写しいただいた方にお授けします。', badge: '懺悔文' },
 ]
+const GOSHUIN_IMAGES = ['/images/goshuin-enmei.png', '/images/goshuin-sangemon.png']
 
 const DEFAULTS: Record<string, string> = {
   shakyou_subtitle: '心を静め、お経の文字を丁寧にお写しいただきます',
@@ -91,6 +93,14 @@ export default async function ShakyouPage() {
               <p>{c.shakyou_about_p1}</p>
               <p className="mt-3">{c.shakyou_about_p2}</p>
             </div>
+            <div className="grid md:grid-cols-2 gap-4 mt-4">
+              <div className="relative h-56 rounded-xl overflow-hidden shadow-sm">
+                <Image src="/images/shakyou-room.jpg" alt="写経体験の会場" fill className="object-cover" />
+              </div>
+              <div className="relative h-56 rounded-xl overflow-hidden shadow-sm">
+                <Image src="/images/shakyou-altar.jpg" alt="写経体験の御本尊" fill className="object-cover" />
+              </div>
+            </div>
           </section>
 
           <section>
@@ -131,10 +141,13 @@ export default async function ShakyouPage() {
           <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_goshuin}</h2>
             <div className="space-y-4">
-              {goshuinItems.map(({ title, sub, badge }) => (
+              {goshuinItems.map(({ title, sub, badge }, i) => (
                 <div key={title} className="bg-white rounded-xl p-5 shadow-sm flex items-start gap-4">
-                  <span className="flex-shrink-0 bg-navy text-gold text-xs font-bold px-2 py-1 rounded mt-0.5">{badge}</span>
+                  <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 shadow-sm border border-gray-100">
+                    <Image src={GOSHUIN_IMAGES[i] ?? GOSHUIN_IMAGES[0]} alt={title} fill className="object-cover" />
+                  </div>
                   <div>
+                    <span className="inline-block bg-navy text-gold text-xs font-bold px-2 py-1 rounded mb-1">{badge}</span>
                     <p className="font-medium text-navy">{title}</p>
                     <p className="text-sm text-gray-600 mt-1">{sub}</p>
                   </div>

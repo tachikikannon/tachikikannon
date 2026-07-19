@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
@@ -83,6 +84,14 @@ export default async function OnsenjShakyouPage() {
             <div className="bg-white rounded-xl p-6 shadow-sm text-sm text-gray-700 leading-relaxed">
               <p>{c.onsenji_shakyou_about_p1}</p>
               <p className="mt-3">{c.onsenji_shakyou_about_p2}</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4 mt-4">
+              <div className="relative h-56 rounded-xl overflow-hidden shadow-sm">
+                <Image src="/images/onsenji-shakyou-room.jpg" alt="写経体験の会場" fill className="object-cover" />
+              </div>
+              <div className="relative h-56 rounded-xl overflow-hidden shadow-sm">
+                <Image src="/images/onsenji-goshuin-shakyou.png" alt="写経体験 特別御朱印" fill className="object-cover" />
+              </div>
             </div>
           </section>
           <section>
