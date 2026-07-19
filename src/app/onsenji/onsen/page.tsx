@@ -12,6 +12,10 @@ export const metadata: Metadata = {
 }
 
 const DEFAULTS: Record<string, string> = {
+  onsenji_onsen_subtitle: '令和8年4月11日 開湯',
+  onsenji_onsen_heading_about: '薬師の湯について',
+  onsenji_onsen_heading_quality: '泉質・料金',
+  onsenji_onsen_heading_notes: 'ご利用の注意',
   onsenji_onsen_about:     '「薬師の湯」は延暦7年（788年）の開創以来、薬師瑠璃光如来のご加護のもと守り続けられてきた霊泉です。令和8年4月11日に参拝者への開放が始まりました。薬師如来の御加護と温泉の癒しを同時にいただける、温泉寺ならではの体験です。',
   onsenji_onsen_quality:   '含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉',
   onsenji_onsen_temp:      '71.4℃',
@@ -68,7 +72,7 @@ export default async function OnsenjOnsenPage() {
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3">Yakushi-no-Yu</p>
             <h1 className="font-serif text-4xl tracking-widest mb-2">薬師の湯</h1>
-            <p className="text-white/70 text-sm">令和8年4月11日 開湯</p>
+            <p className="text-white/70 text-sm">{c.onsenji_onsen_subtitle}</p>
           </div>
         </section>
 
@@ -76,7 +80,7 @@ export default async function OnsenjOnsenPage() {
 
           {/* 概要 */}
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">薬師の湯について</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_onsen_heading_about}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <p className="text-gray-700 text-sm leading-loose">{c.onsenji_onsen_about}</p>
           </section>
@@ -93,7 +97,7 @@ export default async function OnsenjOnsenPage() {
 
           {/* 泉質・料金 */}
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">泉質・料金</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_onsen_heading_quality}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
@@ -118,7 +122,7 @@ export default async function OnsenjOnsenPage() {
 
           {/* ご注意 */}
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">ご利用の注意</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_onsen_heading_notes}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-gray-700 leading-relaxed">
               <p>♨️ {c.onsenji_onsen_note}</p>

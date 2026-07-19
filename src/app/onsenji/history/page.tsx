@@ -18,6 +18,11 @@ const DEFAULT_TIMELINE = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  onsenji_history_subtitle: '日光山温泉寺の由緒と縁起',
+  onsenji_history_heading_founding: '創建の由来',
+  onsenji_history_heading_timeline: '歴史の流れ',
+  onsenji_history_heading_honzon: 'ご本尊・薬師如来について',
+  onsenji_history_heading_bando: '霊場としての温泉寺',
   onsenji_history_p1: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。勝道上人は日光山を開いた高僧で、この地で温泉の湧き出るのを発見し、薬師瑠璃光如来をお祀りしたのが温泉寺の起こりとされています。',
   onsenji_history_p2: 'ご本尊は薬師瑠璃光如来（医王如来）で、健康増進・延命長寿のご利益で信仰を集めてきました。江戸時代には輪王寺宮の直轄寺院として栄え、昭和48年に現在地に再建された後も、多くの参拝者に親しまれています。',
   onsenji_history_timeline: JSON.stringify(DEFAULT_TIMELINE),
@@ -60,11 +65,11 @@ export default async function OnsenjHistoryPage() {
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">History</p>
           <h1 className="font-serif text-4xl text-white tracking-widest relative">温泉寺の歴史</h1>
-          <p className="text-white/60 text-sm mt-3 relative">日光山温泉寺の由緒と縁起</p>
+          <p className="text-white/60 text-sm mt-3 relative">{c.onsenji_history_subtitle}</p>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">創建の由来</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_history_heading_founding}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="prose prose-sm max-w-none text-gray-700 leading-loose space-y-4">
               <p>{c.onsenji_history_p1}</p>
@@ -72,7 +77,7 @@ export default async function OnsenjHistoryPage() {
             </div>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">歴史の流れ</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_history_heading_timeline}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <ol className="relative border-l-2 border-[#7ec8a4] ml-4 space-y-8">
               {timeline.map(({ year, title, text }, i) => (
@@ -86,7 +91,7 @@ export default async function OnsenjHistoryPage() {
             </ol>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">ご本尊・薬師如来について</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_history_heading_honzon}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="grid md:grid-cols-2 gap-6 items-start">
               <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-md">
@@ -98,7 +103,7 @@ export default async function OnsenjHistoryPage() {
             </div>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">霊場としての温泉寺</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_history_heading_bando}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <p className="text-sm text-gray-700 leading-loose">{c.onsenji_history_bando}</p>
           </section>
