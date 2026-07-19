@@ -25,7 +25,17 @@ const DEFAULT_NOTES = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  setsubun_subtitle: '毎年1月下旬　午前11時より　※日程は年によって異なります',
+  setsubun_heading_about: '行事について',
   setsubun_about: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。冬季の静けさのなか、厳かな雰囲気に包まれた温泉寺ならではの行事です。',
+  setsubun_info_date: '1月下旬（毎年）',
+  setsubun_info_time: '午前11時〜',
+  setsubun_info_join: '自由（申し込み不要）',
+  setsubun_date_note: '📌 詳細な日程は年によって異なります。最新情報はお電話（0288-55-0013）またはお問い合わせフォームでご確認ください。',
+  setsubun_heading_schedule: 'タイムスケジュール',
+  setsubun_heading_notes: 'ご参列にあたって',
+  setsubun_cta_heading: '御札のお申し込み',
+  setsubun_cta_text: '護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
   setsubun_schedule: JSON.stringify(DEFAULT_SCHEDULE),
   setsubun_notes: JSON.stringify(DEFAULT_NOTES),
 }
@@ -68,7 +78,7 @@ export default async function SetsubunPage() {
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">January  Annual Event</p>
             <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">温泉寺 節分大祭</h1>
-            <p className="text-white/70 text-sm mt-3">毎年1月下旬　午前11時より　※日程は年によって異なります</p>
+            <p className="text-white/70 text-sm mt-3">{c.setsubun_subtitle}</p>
           </div>
         </section>
 
@@ -77,14 +87,14 @@ export default async function SetsubunPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">行事について</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{c.setsubun_heading_about}</h2>
             </div>
             <p className="text-sm text-gray-700 leading-loose">{c.setsubun_about}</p>
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: '開催日', value: '1月下旬（毎年）' },
-                { label: '開始時間', value: '午前11時〜' },
-                { label: '参列', value: '自由（申し込み不要）' },
+                { label: '開催日', value: c.setsubun_info_date },
+                { label: '開始時間', value: c.setsubun_info_time },
+                { label: '参列', value: c.setsubun_info_join },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-onsenji/5 rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-400 mb-1">{label}</p>
@@ -93,14 +103,14 @@ export default async function SetsubunPage() {
               ))}
             </div>
             <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-700">
-              📌 詳細な日程は年によって異なります。最新情報はお電話（0288-55-0013）またはお問い合わせフォームでご確認ください。
+              {c.setsubun_date_note}
             </div>
           </section>
 
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">タイムスケジュール</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{c.setsubun_heading_schedule}</h2>
             </div>
             <ol className="relative border-l-2 border-[#7ec8a4]/40 ml-5 space-y-8">
               {schedule.map(({ time, title, desc }, i) => (
@@ -123,7 +133,7 @@ export default async function SetsubunPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">ご参列にあたって</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{c.setsubun_heading_notes}</h2>
             </div>
             <div className="space-y-3">
               {notes.map(({ text }, i) => (
@@ -136,11 +146,11 @@ export default async function SetsubunPage() {
           </section>
 
           <div className="bg-onsenji rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-xl mb-2">御札のお申し込み</p>
+            <p className="font-serif text-xl mb-2">{c.setsubun_cta_heading}</p>
             <p className="text-white/70 text-sm mb-6">
-              護摩供にてお焚き上げする御札をご希望の方は<br className="hidden sm:block" />
-              申し込みフォームよりお申し込みください。<br />
-              お支払いは当日・現地にて。
+              {c.setsubun_cta_text.split('\n').map((line: string, i: number) => (
+                <span key={i}>{line}<br /></span>
+              ))}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/onsenji/events/setsubun/apply"

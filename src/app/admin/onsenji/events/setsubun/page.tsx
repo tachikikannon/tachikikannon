@@ -4,7 +4,14 @@ import SectionEditor from '@/components/admin/SectionEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
+  { key: 'setsubun_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '毎年1月下旬　午前11時より　※日程は年によって異なります' },
+  { key: 'setsubun_heading_about', label: '「行事について」見出し', defaultValue: '行事について' },
   { key: 'setsubun_about', label: '行事について（説明文）', multiline: true, defaultValue: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。' },
+  { key: 'setsubun_info_date', label: '開催日（カード表示）', defaultValue: '1月下旬（毎年）' },
+  { key: 'setsubun_info_time', label: '開始時間（カード表示）', defaultValue: '午前11時〜' },
+  { key: 'setsubun_info_join', label: '参列（カード表示）', defaultValue: '自由（申し込み不要）' },
+  { key: 'setsubun_date_note', label: '日程変動の注意書き', defaultValue: '📌 詳細な日程は年によって異なります。最新情報はお電話（0288-55-0013）またはお問い合わせフォームでご確認ください。' },
+  { key: 'setsubun_heading_schedule', label: '「タイムスケジュール」見出し', defaultValue: 'タイムスケジュール' },
   {
     key: 'setsubun_schedule', label: 'タイムスケジュール', type: 'list' as const,
     listFields: [{ key: 'time', label: '時間' }, { key: 'title', label: '行事名' }, { key: 'desc', label: '説明', multiline: true }],
@@ -14,6 +21,7 @@ const FIELDS = [
       { time: '終了後', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。参列の皆様にも豆をお配りいたします。' },
     ]),
   },
+  { key: 'setsubun_heading_notes', label: '「ご参列にあたって」見出し', defaultValue: 'ご参列にあたって' },
   {
     key: 'setsubun_notes', label: 'ご参列にあたって', type: 'list' as const,
     listFields: [{ key: 'text', label: '注意事項', multiline: true }],
@@ -24,6 +32,8 @@ const FIELDS = [
       { text: '日程は年によって異なります。必ず事前にお電話またはウェブサイトでご確認ください。' },
     ]),
   },
+  { key: 'setsubun_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み' },
+  { key: 'setsubun_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。' },
 ] as const
 
 export default function AdminSetsubun() {

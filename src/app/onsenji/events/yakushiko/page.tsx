@@ -25,7 +25,17 @@ const DEFAULT_NOTES = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  yakushiko_subtitle: '毎年8月8日　午前11時より',
+  yakushiko_heading_about: '行事について',
   yakushiko_about: '毎年8月8日、温泉寺では湯の湖畔を舞台に、山伏によって採灯大護摩供が焚かれます。写経体験でお写しいただいた写経が御本尊に奉じられ、護摩の炎で焚き上げられます。薬師如来の御加護のもと、参拝者の願いが天に届けられる、温泉寺最大の法要です。',
+  yakushiko_info_date: '8月8日（毎年）',
+  yakushiko_info_time: '午前11時〜',
+  yakushiko_info_join: '自由（申し込み不要）',
+  yakushiko_heading_schedule: 'タイムスケジュール',
+  yakushiko_heading_gallery: '行事の様子',
+  yakushiko_heading_notes: 'ご参列にあたって',
+  yakushiko_cta_heading: '御札のお申し込み',
+  yakushiko_cta_text: '大護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
   yakushiko_schedule: JSON.stringify(DEFAULT_SCHEDULE),
   yakushiko_notes: JSON.stringify(DEFAULT_NOTES),
 }
@@ -69,7 +79,7 @@ export default async function YakushikoPage() {
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">August 8th  Annual Event</p>
             <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">薬師講大祭・採灯大護摩供</h1>
-            <p className="text-white/70 text-sm mt-3">毎年8月8日　午前11時より</p>
+            <p className="text-white/70 text-sm mt-3">{c.yakushiko_subtitle}</p>
           </div>
         </section>
 
@@ -78,14 +88,14 @@ export default async function YakushikoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">行事について</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_about}</h2>
             </div>
             <p className="text-sm text-gray-700 leading-loose">{c.yakushiko_about}</p>
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: '開催日', value: '8月8日（毎年）' },
-                { label: '開始時間', value: '午前11時〜' },
-                { label: '参列', value: '自由（申し込み不要）' },
+                { label: '開催日', value: c.yakushiko_info_date },
+                { label: '開始時間', value: c.yakushiko_info_time },
+                { label: '参列', value: c.yakushiko_info_join },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-onsenji/5 rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-400 mb-1">{label}</p>
@@ -98,7 +108,7 @@ export default async function YakushikoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">タイムスケジュール</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_schedule}</h2>
             </div>
             <ol className="relative border-l-2 border-[#7ec8a4]/40 ml-5 space-y-8">
               {schedule.map(({ time, title, desc }, i) => (
@@ -121,7 +131,7 @@ export default async function YakushikoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">行事の様子</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_gallery}</h2>
             </div>
             <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-md">
               <Image src="/images/gyouji.JPEG" alt="採灯大護摩供" fill className="object-cover" />
@@ -131,7 +141,7 @@ export default async function YakushikoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">ご参列にあたって</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_notes}</h2>
             </div>
             <div className="space-y-3">
               {notes.map(({ text }, i) => (
@@ -144,11 +154,11 @@ export default async function YakushikoPage() {
           </section>
 
           <div className="bg-onsenji rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-xl mb-2">御札のお申し込み</p>
+            <p className="font-serif text-xl mb-2">{c.yakushiko_cta_heading}</p>
             <p className="text-white/70 text-sm mb-6">
-              大護摩供にてお焚き上げする御札をご希望の方は<br className="hidden sm:block" />
-              申し込みフォームよりお申し込みください。<br />
-              お支払いは当日・現地にて。
+              {c.yakushiko_cta_text.split('\n').map((line: string, i: number) => (
+                <span key={i}>{line}<br /></span>
+              ))}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/onsenji/events/yakushiko/apply"
