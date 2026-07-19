@@ -135,7 +135,31 @@ const SECTIONS: Section[] = [
     section: '御朱印',
     href: '/goshuin',
     fields: [
+      { key: 'goshuin_heading_regular', label: '「御朱印」見出し', defaultValue: '御朱印' },
+      { key: 'goshuin_intro', label: '御朱印セクションの説明文', multiline: true, defaultValue: '御朱印は御朱印所・本堂・五大堂の各所にてお受けいただけます。\n場所によって授与しているものが異なります。' },
+      {
+        key: 'goshuin_regular', label: '通常御朱印（画像は固定・4件）', type: 'list',
+        listFields: [{ key: 'title', label: 'タイトル' }],
+        defaultValue: J([
+          { title: '立木大悲殿' }, { title: 'ご詠歌' }, { title: '波之利大黒天' }, { title: '金剛閣' },
+        ]),
+      },
       { key: 'goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：各500円　／　書き入れ・書き置きともに同じ金額です。\n受付時間は拝観時間に準じます（閉門30分前に終了）。' },
+      { key: 'goshuin_heading_special', label: '「特別御朱印」見出し', defaultValue: '写経・写仏体験 特別御朱印' },
+      { key: 'goshuin_special_intro', label: '特別御朱印 説明文', defaultValue: '写経・写仏体験とセットでお受けいただける特別な御朱印です。' },
+      { key: 'goshuin_special_price', label: '特別御朱印 価格表示', defaultValue: '体験料込み 各1,000円' },
+      {
+        key: 'goshuin_special', label: '特別御朱印一覧（画像は固定・3件）', type: 'list',
+        listFields: [{ key: 'label', label: '区分（写経／写仏）' }, { key: 'title', label: 'タイトル' }, { key: 'sub', label: '副題' }, { key: 'desc', label: '説明', multiline: true }],
+        defaultValue: J([
+          { label: '写経', title: '金紙特別朱印', sub: '立木大悲殿', desc: '十六文字写経（延命十句観音経）をお書きいただいた方にお授けします。' },
+          { label: '写経', title: '金紙特別御朱印', sub: '大日如来', desc: '十六文字写経（懺悔文）をお書きいただいた方にお授けします。' },
+          { label: '写仏', title: '銀紙特別朱印', sub: '立木観世音', desc: '写仏をお書きいただいた方にお授けします。' },
+        ]),
+      },
+      { key: 'goshuin_special_place', label: '特別御朱印 受付場所', defaultValue: '受付場所：寺務所 体験受付窓口' },
+      { key: 'goshuin_special_note',  label: '特別御朱印 補足', defaultValue: '※特別御朱印の種類は今後追加される場合があります。' },
+      { key: 'goshuin_heading_notes', label: '「ご注意」見出し', defaultValue: '御朱印についてのご注意' },
       {
         key: 'goshuin_notes', label: '御朱印についてのご注意', type: 'list',
         listFields: [{ key: 'text', label: '注意事項', multiline: true }],
@@ -152,10 +176,11 @@ const SECTIONS: Section[] = [
     section: '写経体験',
     href: '/experience/shakyou',
     fields: [
+      { key: 'shakyou_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '心を静め、お経の文字を丁寧にお写しいただきます' },
+      { key: 'shakyou_heading_about', label: '「写経とは」見出し', defaultValue: '写経とは' },
       { key: 'shakyou_about_p1', label: '写経とは（段落1）', multiline: true, defaultValue: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。' },
       { key: 'shakyou_about_p2', label: '写経とは（段落2）', multiline: true, defaultValue: '立木観音では、十六文字のお経（延命十句観音経・懺悔文）をお写しいただきます。短いお経のため、筆を持ったことのない方でも約15分でお写しいただけます。' },
-      { key: 'shakyou_fee',  label: '体験料', defaultValue: '1,000円（特別御朱印込み）' },
-      { key: 'shakyou_time', label: '所要時間', defaultValue: '約15分' },
+      { key: 'shakyou_heading_contents', label: '「体験内容」見出し', defaultValue: '体験内容' },
       {
         key: 'shakyou_contents', label: '体験内容', type: 'list',
         listFields: [{ key: 'icon', label: 'アイコン（絵文字）' }, { key: 'title', label: 'タイトル' }, { key: 'desc', label: '説明', multiline: true }],
@@ -164,6 +189,23 @@ const SECTIONS: Section[] = [
           { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
         ]),
       },
+      { key: 'shakyou_heading_fees', label: '「料金・所要時間」見出し', defaultValue: '料金・所要時間' },
+      { key: 'shakyou_fee',  label: '体験料', defaultValue: '1,000円（特別御朱印込み）' },
+      { key: 'shakyou_time', label: '所要時間', defaultValue: '約15分' },
+      { key: 'shakyou_target', label: '対象', defaultValue: 'どなたでも（筆が初めての方も歓迎）' },
+      { key: 'shakyou_place',  label: '受付場所', defaultValue: '寺務所 体験受付窓口' },
+      { key: 'shakyou_hours',  label: '受付時間', defaultValue: '拝観時間内（閉門1時間前まで）' },
+      { key: 'shakyou_heading_goshuin', label: '「特別御朱印」見出し', defaultValue: '写経体験 特別御朱印' },
+      {
+        key: 'shakyou_goshuin_items', label: '特別御朱印一覧', type: 'list',
+        listFields: [{ key: 'title', label: 'タイトル' }, { key: 'sub', label: '説明' }, { key: 'badge', label: 'バッジ文言' }],
+        defaultValue: J([
+          { title: '金紙特別朱印 立木大悲殿', sub: '延命十句観音経をお写しいただいた方にお授けします。', badge: '延命十句観音経' },
+          { title: '金紙特別御朱印 大日如来', sub: '懺悔文をお写しいただいた方にお授けします。', badge: '懺悔文' },
+        ]),
+      },
+      { key: 'shakyou_goshuin_note', label: '特別御朱印 補足', defaultValue: '※特別御朱印は体験料に含まれています。別途購入はできません。' },
+      { key: 'shakyou_heading_items', label: '「持ち物・服装」見出し', defaultValue: '持ち物・服装' },
       {
         key: 'shakyou_items', label: '持ち物・服装', type: 'list',
         listFields: [{ key: 'text', label: '項目', multiline: true }],
@@ -173,6 +215,7 @@ const SECTIONS: Section[] = [
           { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
         ]),
       },
+      { key: 'shakyou_cta_heading', label: 'CTA見出し', defaultValue: '写経体験のご予約' },
       { key: 'shakyou_cta_sub', label: '予約ボタン下の説明文', defaultValue: '事前予約をおすすめします。当日受付も空きがあれば対応します。' },
     ],
   },

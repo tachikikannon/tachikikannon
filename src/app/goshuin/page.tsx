@@ -14,9 +14,27 @@ const DEFAULT_NOTES = [
   { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
   { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
 ]
+const DEFAULT_REGULAR = [
+  { title: '立木大悲殿' }, { title: 'ご詠歌' }, { title: '波之利大黒天' }, { title: '金剛閣' },
+]
+const DEFAULT_SPECIAL = [
+  { label: '写経', title: '金紙特別朱印', sub: '立木大悲殿', desc: '十六文字写経（延命十句観音経）をお書きいただいた方にお授けします。' },
+  { label: '写経', title: '金紙特別御朱印', sub: '大日如来', desc: '十六文字写経（懺悔文）をお書きいただいた方にお授けします。' },
+  { label: '写仏', title: '銀紙特別朱印', sub: '立木観世音', desc: '写仏をお書きいただいた方にお授けします。' },
+]
 
 const DEFAULTS: Record<string, string> = {
+  goshuin_heading_regular: '御朱印',
+  goshuin_intro: '御朱印は御朱印所・本堂・五大堂の各所にてお受けいただけます。\n場所によって授与しているものが異なります。',
+  goshuin_regular: JSON.stringify(DEFAULT_REGULAR),
   goshuin_fee_note: '御朱印代：各500円　／　書き入れ・書き置きともに同じ金額です。\n受付時間は拝観時間に準じます（閉門30分前に終了）。',
+  goshuin_heading_special: '写経・写仏体験 特別御朱印',
+  goshuin_special_intro: '写経・写仏体験とセットでお受けいただける特別な御朱印です。',
+  goshuin_special_price: '体験料込み 各1,000円',
+  goshuin_special: JSON.stringify(DEFAULT_SPECIAL),
+  goshuin_special_place: '受付場所：寺務所 体験受付窓口',
+  goshuin_special_note: '※特別御朱印の種類は今後追加される場合があります。',
+  goshuin_heading_notes: '御朱印についてのご注意',
   goshuin_notes: JSON.stringify(DEFAULT_NOTES),
 }
 
@@ -38,22 +56,14 @@ async function getContent() {
   } catch { return DEFAULTS }
 }
 
-const regular = [
-  { title: '立木大悲殿', src: '/images/tachiki.syuin.png' },
-  { title: 'ご詠歌',     src: null },
-  { title: '波之利大黒天', src: '/images/daikokuten.png' },
-  { title: '金剛閣',     src: '/images/kongoukaku.png' },
-]
-
-const special = [
-  { label: '写経', title: '金紙特別朱印', sub: '立木大悲殿', desc: '十六文字写経（延命十句観音経）をお書きいただいた方にお授けします。', src: '/images/sakyou.tatiki.png' },
-  { label: '写経', title: '金紙特別御朱印', sub: '大日如来', desc: '十六文字写経（懺悔文）をお書きいただいた方にお授けします。', src: null },
-  { label: '写仏', title: '銀紙特別朱印', sub: '立木観世音', desc: '写仏をお書きいただいた方にお授けします。', src: '/images/syabutu.tatiki.png' },
-]
+const REGULAR_IMAGES = ['/images/tachiki.syuin.png', null, '/images/daikokuten.png', '/images/kongoukaku.png']
+const SPECIAL_IMAGES = ['/images/sakyou.tatiki.png', null, '/images/syabutu.tatiki.png']
 
 export default async function GoshuinPage() {
   const c = await getContent()
   const notes = pj<typeof DEFAULT_NOTES>(c.goshuin_notes, DEFAULT_NOTES)
+  const regular = pj<typeof DEFAULT_REGULAR>(c.goshuin_regular, DEFAULT_REGULAR)
+  const special = pj<typeof DEFAULT_SPECIAL>(c.goshuin_special, DEFAULT_SPECIAL)
 
   return (
     <>
@@ -71,13 +81,15 @@ export default async function GoshuinPage() {
 
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
           <section>
-            <h2 className="section-title">御朱印</h2>
+            <h2 className="section-title">{c.goshuin_heading_regular}</h2>
             <div className="section-divider" />
-            <p className="text-center text-sm text-gray-500 mb-8">
-              御朱印は御朱印所・本堂・五大堂の各所にてお受けいただけます。<br />場所によって授与しているものが異なります。
+            <p className="text-center text-sm text-gray-500 mb-8 whitespace-pre-line">
+              {c.goshuin_intro}
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              {regular.map(({ title, src }) => (
+              {regular.map(({ title }, i) => {
+                const src = REGULAR_IMAGES[i]
+                return (
                 <div key={title} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="h-52 bg-cream flex items-center justify-center p-2">
                     {src
@@ -90,7 +102,7 @@ export default async function GoshuinPage() {
                     <p className="text-xs text-gray-400 mt-0.5">受付場所：御朱印所</p>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
             <div className="bg-cream-alt rounded-lg p-4 border-l-4 border-gold text-sm text-gray-700 space-y-1 whitespace-pre-line">
               <p><strong>{c.goshuin_fee_note.split('\n')[0]}</strong></p>
@@ -99,12 +111,14 @@ export default async function GoshuinPage() {
           </section>
 
           <section className="bg-cream-alt -mx-4 px-4 py-12 md:-mx-8 md:px-8 rounded-2xl">
-            <h2 className="section-title">写経・写仏体験 特別御朱印</h2>
+            <h2 className="section-title">{c.goshuin_heading_special}</h2>
             <div className="section-divider" />
-            <p className="text-center text-sm text-gray-500 mb-2">写経・写仏体験とセットでお受けいただける特別な御朱印です。</p>
-            <p className="text-center text-gold font-medium mb-8">体験料込み 各1,000円</p>
+            <p className="text-center text-sm text-gray-500 mb-2">{c.goshuin_special_intro}</p>
+            <p className="text-center text-gold font-medium mb-8">{c.goshuin_special_price}</p>
             <div className="space-y-4">
-              {special.map(({ label, title, sub, desc, src }) => (
+              {special.map(({ label, title, sub, desc }, i) => {
+                const src = SPECIAL_IMAGES[i]
+                return (
                 <div key={title} className="bg-white rounded-xl overflow-hidden shadow-sm">
                   <div className="bg-navy px-4 py-1.5 inline-block">
                     <span className="text-gold text-xs font-bold tracking-wider">{label}</span>
@@ -124,17 +138,17 @@ export default async function GoshuinPage() {
                     </div>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
             <div className="mt-6 bg-white rounded-lg p-4 border-l-4 border-gold text-sm text-gray-700 space-y-1">
-              <p>受付場所：寺務所 体験受付窓口</p>
+              <p>{c.goshuin_special_place}</p>
               <p>写経・写仏体験のお申し込みは<Link href="/reserve" className="text-navy underline">体験予約ページ</Link>よりご確認ください。</p>
-              <p className="text-xs text-gray-400">※特別御朱印の種類は今後追加される場合があります。</p>
+              <p className="text-xs text-gray-400">{c.goshuin_special_note}</p>
             </div>
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">御朱印についてのご注意</h2>
+            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{c.goshuin_heading_notes}</h2>
             <ul className="mt-4 space-y-3">
               {notes.map(({ text }, i) => (
                 <li key={i} className="bg-white rounded-lg px-4 py-3 border-l-4 border-gold text-sm text-gray-700 shadow-sm">{text}</li>
