@@ -4,10 +4,17 @@ import SectionEditor from '@/components/admin/SectionEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
+  { key: 'onsenji_shakyou_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '心を静め、お経の文字を丁寧にお写しいただきます' },
+  { key: 'onsenji_shakyou_heading_about', label: '「写経とは」見出し', defaultValue: '写経とは' },
   { key: 'onsenji_shakyou_about_p1', label: '写経とは（段落1）', multiline: true, defaultValue: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。' },
   { key: 'onsenji_shakyou_about_p2', label: '写経とは（段落2）', multiline: true, defaultValue: '温泉寺では薬師如来に縁の深いお経をお写しいただきます。体験後は特別御朱印をお授けします。毎日開催していますので、参拝の際にお気軽にお申し付けください。' },
+  { key: 'onsenji_shakyou_heading_fees', label: '「料金・所要時間」見出し', defaultValue: '料金・所要時間' },
   { key: 'onsenji_shakyou_fee',  label: '体験料', defaultValue: '1,000円（特別御朱印授与込み）' },
   { key: 'onsenji_shakyou_time', label: '所要時間', defaultValue: '約15分' },
+  { key: 'onsenji_shakyou_target', label: '対象', defaultValue: 'どなたでも（筆が初めての方も歓迎）' },
+  { key: 'onsenji_shakyou_place', label: '受付場所', defaultValue: '寺務所 体験受付窓口' },
+  { key: 'onsenji_shakyou_hours', label: '受付時間', defaultValue: '拝観時間内（閉門1時間前まで）' },
+  { key: 'onsenji_shakyou_heading_flow', label: '「体験の流れ」見出し', defaultValue: '体験の流れ' },
   {
     key: 'onsenji_shakyou_flow', label: '体験の流れ', type: 'list' as const,
     listFields: [{ key: 'title', label: 'ステップ名' }, { key: 'text', label: '説明', multiline: true }],
@@ -18,6 +25,7 @@ const FIELDS = [
       { title: '特別御朱印のお授け', text: '完成後、特別御朱印をお授けします。' },
     ]),
   },
+  { key: 'onsenji_shakyou_heading_items', label: '「持ち物・服装」見出し', defaultValue: '持ち物・服装' },
   {
     key: 'onsenji_shakyou_items', label: '持ち物・服装', type: 'list' as const,
     listFields: [{ key: 'text', label: '項目', multiline: true }],
@@ -27,6 +35,7 @@ const FIELDS = [
       { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
     ]),
   },
+  { key: 'onsenji_shakyou_cta_heading', label: 'CTA見出し', defaultValue: '写経体験のご予約・お問い合わせ' },
   { key: 'onsenji_shakyou_cta_sub', label: '予約ボタン下の説明文', defaultValue: '予約不要・毎日実施。参拝受付時にお申し付けください。' },
 ] as const
 

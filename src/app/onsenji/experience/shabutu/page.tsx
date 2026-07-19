@@ -16,10 +16,18 @@ const DEFAULT_FLOW = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  onsenji_shabutu_subtitle: '仏様のお姿を一筆一筆、心を込めてお描きいただきます',
+  onsenji_shabutu_heading_about: '写仏とは',
   onsenji_shabutu_about_p1: '写仏とは、仏様のお姿を下絵に沿って丁寧にお描きする修行です。写経と並ぶ伝統的な仏道修行のひとつで、描きながら仏様の功徳をいただき、心を落ち着けることができます。',
   onsenji_shabutu_about_p2: '温泉寺の写仏体験では、ご本尊・薬師如来のお姿をお描きいただきます。完成した写仏は記念にお持ち帰りいただけます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。',
+  onsenji_shabutu_heading_fees: '料金・所要時間',
   onsenji_shabutu_fee:  '1,000円（御朱印込み）',
   onsenji_shabutu_time: '約30〜60分（個人差があります）',
+  onsenji_shabutu_target: 'どなたでも（絵が苦手な方も歓迎）',
+  onsenji_shabutu_place: '寺務所 体験受付窓口',
+  onsenji_shabutu_hours: '拝観時間内（閉門1時間前まで）',
+  onsenji_shabutu_heading_flow: '体験の流れ',
+  onsenji_shabutu_cta_heading: '写仏体験のご予約・お問い合わせ',
   onsenji_shabutu_cta_sub: '事前予約をおすすめします。当日受付も空きがあれば対応します。',
   onsenji_shabutu_flow: JSON.stringify(DEFAULT_FLOW),
 }
@@ -59,27 +67,27 @@ export default async function OnsenjShabutuPage() {
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">Shabutu</p>
           <h1 className="font-serif text-4xl text-white tracking-widest relative">写仏体験</h1>
-          <p className="text-white/60 text-sm mt-3 relative">仏様のお姿を一筆一筆、心を込めてお描きいただきます</p>
+          <p className="text-white/60 text-sm mt-3 relative">{c.onsenji_shabutu_subtitle}</p>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
           <section>
-            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">写仏とは</h2>
+            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">{c.onsenji_shabutu_heading_about}</h2>
             <div className="bg-white rounded-xl p-6 shadow-sm text-sm text-gray-700 leading-relaxed">
               <p>{c.onsenji_shabutu_about_p1}</p>
               <p className="mt-3">{c.onsenji_shabutu_about_p2}</p>
             </div>
           </section>
           <section>
-            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">料金・所要時間</h2>
+            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">{c.onsenji_shabutu_heading_fees}</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   {[
                     ['体験料', c.onsenji_shabutu_fee],
                     ['所要時間', c.onsenji_shabutu_time],
-                    ['対象', 'どなたでも（絵が苦手な方も歓迎）'],
-                    ['受付場所', '寺務所 体験受付窓口'],
-                    ['受付時間', '拝観時間内（閉門1時間前まで）'],
+                    ['対象', c.onsenji_shabutu_target],
+                    ['受付場所', c.onsenji_shabutu_place],
+                    ['受付時間', c.onsenji_shabutu_hours],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
                       <th className="bg-onsenji text-white text-left px-4 py-3 w-32 text-sm font-medium whitespace-nowrap">{k}</th>
@@ -91,7 +99,7 @@ export default async function OnsenjShabutuPage() {
             </div>
           </section>
           <section>
-            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">体験の流れ</h2>
+            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">{c.onsenji_shabutu_heading_flow}</h2>
             <ol className="relative border-l-2 border-[#7ec8a4] ml-4 space-y-6">
               {flow.map(({ title, text }, i) => (
                 <li key={i} className="pl-6 relative">
@@ -103,7 +111,7 @@ export default async function OnsenjShabutuPage() {
             </ol>
           </section>
           <div className="bg-onsenji rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-xl mb-2">写仏体験のご予約・お問い合わせ</p>
+            <p className="font-serif text-xl mb-2">{c.onsenji_shabutu_cta_heading}</p>
             <p className="text-white/60 text-sm mb-6">{c.onsenji_shabutu_cta_sub}</p>
             <Link href="/onsenji/contact"
               className="inline-block px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm">
