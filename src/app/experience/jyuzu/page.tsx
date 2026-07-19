@@ -33,7 +33,6 @@ const DEFAULT_NOTES = [
 const STONE_SWATCHES = [
   { name: '水晶', image: '/images/swatches/stone-suisho.png', desc: '浄化作用があり、邪気を払い、災難を防ぐとされる万能の石です。' },
   { name: '紅水晶', image: '/images/swatches/stone-benisuisho.png', desc: '内面の美しさを輝かせるご利益があるとされています。' },
-  { name: 'ヒスイ', image: '/images/swatches/stone-hisui.png', desc: '健康長寿・魔除けのご利益があるとされる、古くから尊ばれてきた石です。' },
   { name: 'ラピスラズリ', image: '/images/swatches/stone-lapis.png', desc: '知性・直観力を高め、幸運を引き寄せるとされています。' },
   { name: 'アメジスト', image: '/images/swatches/stone-amethyst.png', desc: 'マイナスエネルギーをプラスに導くご利益があるとされる紫の石です。' },
   { name: 'メノウ', image: '/images/swatches/stone-menou.png', desc: '健康や長寿、子宝をもたらすとされる石です。' },
@@ -67,6 +66,7 @@ const WOOD_SWATCHES = [
   { name: '鉄刀木（ツヤ有）', image: '/images/swatches/wood-tagayasan-tsuya.png', desc: '艶やかに仕上げられた鉄刀木の珠。硬く丈夫な木質で、魔除け・厄除けのご利益があるとされます。' },
   { name: '梅（ツヤ有）', image: '/images/swatches/wood-ume-tsuya.png', desc: '艶やかに仕上げられた梅の珠。「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
   { name: 'つげ（ツヤ有）', image: '/images/swatches/wood-tsuge-tsuya.png', desc: '艶やかに仕上げられたつげの珠。緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
+  { name: '椰', image: '/images/swatches/wood-yashi.png', desc: '椰子の実を使った、素朴な模様が魅力の木材です。' },
 ]
 
 const DEFAULTS: Record<string, string> = {
