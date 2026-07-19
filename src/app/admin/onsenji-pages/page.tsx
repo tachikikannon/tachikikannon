@@ -106,13 +106,23 @@ const SECTIONS: Section[] = [
     section: '御朱印',
     href: '/onsenji/goshuin',
     fields: [
+      { key: 'onsenji_goshuin_heading_info', label: '「御朱印のご案内」見出し', defaultValue: '御朱印のご案内' },
+      {
+        key: 'onsenji_goshuin_items', label: '御朱印一覧（写真は準備中表示・固定）', type: 'list',
+        listFields: [{ key: 'title', label: 'タイトル' }, { key: 'sub', label: '副題' }],
+        defaultValue: J([
+          { title: '薬師如来', sub: '温泉寺 本堂' },
+          { title: '特別御朱印', sub: '季節限定・行事限定' },
+        ]),
+      },
       { key: 'onsenji_goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：500円　／　写経体験（1,000円）をお申し込みの方には特別御朱印を授与しています。\n受付時間は拝観受付終了時刻までとなります。' },
+      { key: 'onsenji_goshuin_heading_notes', label: '「御朱印についてのご注意」見出し', defaultValue: '御朱印についてのご注意' },
       {
         key: 'onsenji_goshuin_notes', label: '御朱印についてのご注意', type: 'list',
         listFields: [{ key: 'text', label: '注意事項', multiline: true }],
         defaultValue: J([
           { text: '御朱印は信仰の証です。コレクション目的でのお受け取りはご遠慮ください。' },
-          { text: '受付時間は参篭受付終了時刻に終了いたします。余裕をもってお越しください。' },
+          { text: '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。' },
           { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
           { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
         ]),
@@ -123,6 +133,8 @@ const SECTIONS: Section[] = [
     section: 'よくある質問',
     href: '/onsenji/faq',
     fields: [
+      { key: 'onsenji_faq_subtitle', label: '見出し（英字サブタイトル）', defaultValue: 'FAQ' },
+      { key: 'onsenji_faq_heading', label: 'ページ見出し', defaultValue: 'よくある質問' },
       {
         key: 'onsenji_faq_items', label: 'FAQ一覧', type: 'list',
         listFields: [{ key: 'q', label: '質問', multiline: true }, { key: 'a', label: '回答', multiline: true }],
@@ -135,6 +147,9 @@ const SECTIONS: Section[] = [
           { q: '温泉寺は輪王寺と関係がありますか？', a: 'はい、日光山温泉寺は世界遺産「日光山輪王寺」の別院です。延暦7年（788年）に勝道上人によって開創され、江戸時代には輪王寺宮の直轄寺院として栄えました。' },
         ]),
       },
+      { key: 'onsenji_faq_bottom_heading', label: '末尾の見出し', defaultValue: 'その他のご質問' },
+      { key: 'onsenji_faq_bottom_text', label: '末尾の案内文', defaultValue: '解決しない場合はお気軽にお問い合わせください。' },
+      { key: 'onsenji_faq_cta_label', label: 'お問い合わせボタンの文言', defaultValue: 'お問い合わせ' },
     ],
   },
   {

@@ -13,9 +13,16 @@ const DEFAULT_NOTES = [
   { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
   { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
 ]
+const DEFAULT_ITEMS = [
+  { title: '薬師如来', sub: '温泉寺 本堂' },
+  { title: '特別御朱印', sub: '季節限定・行事限定' },
+]
 
 const DEFAULTS: Record<string, string> = {
+  onsenji_goshuin_heading_info: '御朱印のご案内',
+  onsenji_goshuin_items: JSON.stringify(DEFAULT_ITEMS),
   onsenji_goshuin_fee_note: '御朱印代：500円　／　写経体験（1,000円）をお申し込みの方には特別御朱印を授与しています。\n受付時間は拝観受付終了時刻までとなります。',
+  onsenji_goshuin_heading_notes: '御朱印についてのご注意',
   onsenji_goshuin_notes: JSON.stringify(DEFAULT_NOTES),
 }
 
@@ -40,6 +47,7 @@ async function getContent() {
 export default async function OnsenjGoshuinPage() {
   const c = await getContent()
   const notes = pj<typeof DEFAULT_NOTES>(c.onsenji_goshuin_notes, DEFAULT_NOTES)
+  const items = pj<typeof DEFAULT_ITEMS>(c.onsenji_goshuin_items, DEFAULT_ITEMS)
 
   return (
     <>
@@ -55,12 +63,9 @@ export default async function OnsenjGoshuinPage() {
         </section>
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
           <section>
-            <h2 className="text-xl font-serif text-onsenji mb-1 pl-3 border-l-4 border-[#7ec8a4]">御朱印のご案内</h2>
+            <h2 className="text-xl font-serif text-onsenji mb-1 pl-3 border-l-4 border-[#7ec8a4]">{c.onsenji_goshuin_heading_info}</h2>
             <div className="mt-4 grid md:grid-cols-2 gap-4">
-              {[
-                { title: '薬師如来', sub: '温泉寺 本堂' },
-                { title: '特別御朱印', sub: '季節限定・行事限定' },
-              ].map(({ title, sub }) => (
+              {items.map(({ title, sub }) => (
                 <div key={title} className="bg-white rounded-xl overflow-hidden shadow-sm">
                   <div className="h-40 bg-onsenji/10 flex items-center justify-center">
                     <span className="text-gray-300 text-xs">写真準備中</span>
@@ -78,7 +83,7 @@ export default async function OnsenjGoshuinPage() {
             </div>
           </section>
           <section>
-            <h2 className="text-xl font-serif text-onsenji mb-1 pl-3 border-l-4 border-[#7ec8a4]">御朱印についてのご注意</h2>
+            <h2 className="text-xl font-serif text-onsenji mb-1 pl-3 border-l-4 border-[#7ec8a4]">{c.onsenji_goshuin_heading_notes}</h2>
             <ul className="mt-4 space-y-3">
               {notes.map(({ text }, i) => (
                 <li key={i} className="bg-white rounded-lg px-4 py-3 border-l-4 border-[#7ec8a4] text-sm text-gray-700 shadow-sm">{text}</li>
@@ -88,7 +93,7 @@ export default async function OnsenjGoshuinPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {[
               { icon:'⛩', label:'参拝について', href:'/onsenji/about' },
-              { icon:'🙏', label:'御祈願', href:'/onsenji/prayer' },
+              { icon:'🗺️', label:'境内のご案内', href:'/onsenji/grounds' },
               { icon:'❓', label:'よくある質問', href:'/onsenji/faq' },
             ].map(({ icon, label, href }) => (
               <Link key={href} href={href}

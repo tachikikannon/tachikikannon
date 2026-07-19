@@ -4,6 +4,8 @@ import SectionEditor from '@/components/admin/SectionEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
+  { key: 'onsenji_faq_subtitle', label: '見出し（英字サブタイトル）', defaultValue: 'FAQ' },
+  { key: 'onsenji_faq_heading', label: 'ページ見出し', defaultValue: 'よくある質問' },
   {
     key: 'onsenji_faq_items', label: 'FAQ一覧', type: 'list' as const,
     listFields: [{ key: 'q', label: '質問', multiline: true }, { key: 'a', label: '回答', multiline: true }],
@@ -16,6 +18,9 @@ const FIELDS = [
       { q: '温泉寺は輪王寺と関係がありますか？', a: 'はい、日光山温泉寺は世界遺産「日光山輪王寺」の別院です。延暦7年（788年）に勝道上人によって開創され、江戸時代には輪王寺宮の直轄寺院として栄えました。' },
     ]),
   },
+  { key: 'onsenji_faq_bottom_heading', label: '末尾の見出し', defaultValue: 'その他のご質問' },
+  { key: 'onsenji_faq_bottom_text', label: '末尾の案内文', defaultValue: '解決しない場合はお気軽にお問い合わせください。' },
+  { key: 'onsenji_faq_cta_label', label: 'お問い合わせボタンの文言', defaultValue: 'お問い合わせ' },
 ] as const
 
 export default function AdminOnsenjFaq() {

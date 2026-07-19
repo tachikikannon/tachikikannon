@@ -16,23 +16,37 @@ const DEFAULT_FAQS = [
   { q: '温泉寺は輪王寺と関係がありますか？', a: 'はい、日光山温泉寺は世界遺産「日光山輪王寺」の別院です。延暦7年（788年）に勝道上人によって開創され、江戸時代には輪王寺宮の直轄寺院として栄えました。' },
 ]
 
+const DEFAULTS: Record<string, string> = {
+  onsenji_faq_subtitle: 'FAQ',
+  onsenji_faq_heading: 'よくある質問',
+  onsenji_faq_bottom_heading: 'その他のご質問',
+  onsenji_faq_bottom_text: '解決しない場合はお気軽にお問い合わせください。',
+  onsenji_faq_cta_label: 'お問い合わせ',
+}
+
 async function getContent() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const keys = [...Object.keys(DEFAULTS), 'onsenji_faq_items'].join(',')
   try {
-    const res = await fetch(`${url}/rest/v1/site_content?key=in.(onsenji_faq_items)&select=key,value`, {
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
     })
-    if (!res.ok) return DEFAULT_FAQS
+    if (!res.ok) return { c: DEFAULTS, faqs: DEFAULT_FAQS }
     const rows: { key: string; value: string }[] = await res.json()
-    const row = rows.find(r => r.key === 'onsenji_faq_items')
-    if (!row?.value) return DEFAULT_FAQS
-    try { return JSON.parse(row.value) } catch { return DEFAULT_FAQS }
-  } catch { return DEFAULT_FAQS }
+    const c = { ...DEFAULTS }
+    let faqs = DEFAULT_FAQS
+    rows.forEach(r => {
+      if (!r.value) return
+      if (r.key === 'onsenji_faq_items') { try { faqs = JSON.parse(r.value) } catch {} }
+      else c[r.key] = r.value
+    })
+    return { c, faqs }
+  } catch { return { c: DEFAULTS, faqs: DEFAULT_FAQS } }
 }
 
 export default async function OnsenjFaqPage() {
-  const faqs: { q: string; a: string }[] = await getContent()
+  const { c, faqs } = await getContent()
 
   return (
     <>
@@ -43,12 +57,12 @@ export default async function OnsenjFaqPage() {
         </div>
         <section className="bg-onsenji py-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">FAQ</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">よくある質問</h1>
+          <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">{c.onsenji_faq_subtitle}</p>
+          <h1 className="font-serif text-4xl text-white tracking-widest relative">{c.onsenji_faq_heading}</h1>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12">
           <div className="space-y-4">
-            {faqs.map(({ q, a }, i) => (
+            {faqs.map(({ q, a }: { q: string; a: string }, i: number) => (
               <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div className="flex gap-4 p-5 items-start">
                   <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#7ec8a4] text-white font-bold text-sm flex items-center justify-center">Q</span>
@@ -62,11 +76,11 @@ export default async function OnsenjFaqPage() {
             ))}
           </div>
           <div className="mt-12 bg-onsenji rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-lg mb-2">その他のご質問</p>
-            <p className="text-white/70 text-sm mb-6">解決しない場合はお気軽にお問い合わせください。</p>
+            <p className="font-serif text-lg mb-2">{c.onsenji_faq_bottom_heading}</p>
+            <p className="text-white/70 text-sm mb-6">{c.onsenji_faq_bottom_text}</p>
             <Link href="/onsenji/contact"
               className="inline-block px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm">
-              お問い合わせ
+              {c.onsenji_faq_cta_label}
             </Link>
           </div>
         </div>
