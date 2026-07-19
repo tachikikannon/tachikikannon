@@ -33,7 +33,6 @@ const navItems: NavItem[] = [
   { href: '/admin/onsenji/history',       label: '歴史',           icon: '📜', group: '温泉寺' },
   { href: '/admin/onsenji/grounds',       label: '境内のご案内',   icon: '🗺️', group: '温泉寺' },
   { href: '/admin/onsenji/about',         label: '拝観案内',       icon: '🎫', group: '温泉寺' },
-  { href: '/admin/onsenji/prayer',        label: '御祈願',         icon: '🙏', group: '温泉寺' },
   { href: '/admin/onsenji/goshuin',       label: '御朱印',         icon: '📮', group: '温泉寺' },
   { href: '/admin/onsenji/faq',           label: 'FAQ',            icon: '❓', group: '温泉寺' },
   { href: '/admin/onsenji/shakyou',       label: '写経体験',       icon: '✍️', group: '温泉寺' },
