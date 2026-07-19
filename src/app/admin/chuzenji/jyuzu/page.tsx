@@ -4,13 +4,22 @@ import SectionEditor from '@/components/admin/SectionEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
+  { key: 'jyuzu_heading_about', label: '「数珠づくりとは」見出し', defaultValue: '数珠づくりとは' },
   { key: 'jyuzu_about_p1', label: '数珠づくりとは（段落1）', multiline: true, defaultValue: '数珠（じゅず）は、仏様を礼拝するときに手に持つ法具です。当山の数珠づくり体験では、天然石・天然木の珠からご自由に組み合わせを選び、世界にひとつだけのオリジナル数珠（ブレスレット）をお作りいただけます。' },
   { key: 'jyuzu_about_p2', label: '数珠づくりとは（段落2）', multiline: true, defaultValue: '職員が丁寧にご説明しますので、どなたでも簡単にお作りいただけます。僧侶がご祈祷したものを当日お守りとしてお持ち帰りいただけます。' },
+  { key: 'jyuzu_heading_course', label: '「コース説明」見出し', defaultValue: 'コース説明' },
+  { key: 'jyuzu_course_desc', label: 'コース説明 補足文', defaultValue: '天然石・天然木の組成は、コースごとに以下のようになります。' },
+  { key: 'jyuzu_heading_flow', label: '「体験の流れ」見出し', defaultValue: '体験の流れ' },
+  { key: 'jyuzu_heading_fees', label: '「開催日・料金」見出し', defaultValue: '開催日・料金' },
   { key: 'jyuzu_days', label: '開催日', defaultValue: '毎日開催（法要時は中止となる場合があります）' },
   { key: 'jyuzu_hours_summer', label: '体験時間（4月〜10月）', defaultValue: '4月〜10月：9:00〜15:00' },
   { key: 'jyuzu_hours_winter', label: '体験時間（11月〜3月）', defaultValue: '11月〜3月：9:00〜14:00' },
   { key: 'jyuzu_fee',  label: '体験料', defaultValue: '2,000円〜（使用素材により異なります）' },
   { key: 'jyuzu_time', label: '所要時間', defaultValue: '30分〜1時間（個人差があります）' },
+  { key: 'jyuzu_capacity', label: '体験人数', defaultValue: '1名〜20名まで' },
+  { key: 'jyuzu_target', label: '対象', defaultValue: '小学生以上（小学生は保護者同伴）' },
+  { key: 'jyuzu_place', label: '受付場所', defaultValue: '大黒天堂窓口' },
+  { key: 'jyuzu_price_note_label', label: '料金補足の見出し', defaultValue: '料金について' },
   { key: 'jyuzu_price_note', label: '料金についての補足', multiline: true, defaultValue: 'お選びいただく珠の素材・組み合わせによって料金が異なります。詳しくは下記コース説明をご覧ください。' },
   {
     key: 'jyuzu_flow', label: '体験の流れ', type: 'list' as const,
@@ -38,6 +47,10 @@ const FIELDS = [
       { name: '天然石', desc: '色とりどりの天然石の珠。お好みの色でお選びいただけます。' },
     ]),
   },
+  { key: 'jyuzu_heading_materials', label: '「選べる珠」見出し', defaultValue: '選べる珠' },
+  { key: 'jyuzu_materials_hint', label: '選べる珠 補足（タップ案内）', defaultValue: '珠をタップすると説明が表示されます' },
+  { key: 'jyuzu_materials_note', label: '選べる珠 注意書き', defaultValue: '珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。' },
+  { key: 'jyuzu_heading_notes', label: '「ご注意・持ち物」見出し', defaultValue: 'ご注意・持ち物' },
   {
     key: 'jyuzu_notes', label: 'ご注意・持ち物', type: 'list' as const,
     listFields: [{ key: 'text', label: '項目', multiline: true }],
@@ -48,6 +61,7 @@ const FIELDS = [
       { text: '団体でお越しの際は事前にお電話ください。' },
     ]),
   },
+  { key: 'jyuzu_cta_heading', label: 'CTA見出し', defaultValue: '数珠づくり体験のご予約' },
   { key: 'jyuzu_cta_sub', label: '予約ボタン下の説明文', defaultValue: '毎日開催しております。団体でお越しの際は事前にお電話ください。' },
 ] as const
 
