@@ -92,8 +92,8 @@ export default async function ShabutuPage() {
               <p>{c.shabutu_about_p1}</p>
               <p className="mt-3">{c.shabutu_about_p2}</p>
             </div>
-            <div className="relative h-64 rounded-xl overflow-hidden shadow-sm mt-4">
-              <Image src="/images/shabutu-template.jpg" alt="写仏体験の下絵" fill className="object-cover" />
+            <div className="max-w-[220px] mx-auto mt-4 rounded-xl overflow-hidden shadow-sm border border-gray-100">
+              <Image src="/images/shabutu-template.jpg" alt="写仏体験の下絵" width={835} height={1200} className="w-full h-auto" />
             </div>
           </section>
 
@@ -135,8 +135,8 @@ export default async function ShabutuPage() {
           <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shabutu_heading_goshuin}</h2>
             <div className="bg-white rounded-xl p-5 shadow-sm flex items-start gap-4">
-              <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 shadow-sm border border-gray-100">
-                <Image src="/images/goshuin-shabutu.jpg" alt={c.shabutu_goshuin_title} fill className="object-cover" />
+              <div className="w-20 sm:w-24 flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                <Image src="/images/goshuin-shabutu.jpg" alt={c.shabutu_goshuin_title} width={799} height={1200} className="w-full h-auto" />
               </div>
               <div>
                 <span className="inline-block bg-navy text-gold text-xs font-bold px-2 py-1 rounded mb-1">{c.shabutu_goshuin_badge}</span>

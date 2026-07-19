@@ -85,12 +85,12 @@ export default async function OnsenjShakyouPage() {
               <p>{c.onsenji_shakyou_about_p1}</p>
               <p className="mt-3">{c.onsenji_shakyou_about_p2}</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-4 mt-4">
-              <div className="relative h-56 rounded-xl overflow-hidden shadow-sm">
-                <Image src="/images/onsenji-shakyou-room.jpg" alt="写経体験の会場" fill className="object-cover" />
+            <div className="grid sm:grid-cols-2 gap-4 mt-4 items-start">
+              <div className="rounded-xl overflow-hidden shadow-sm">
+                <Image src="/images/onsenji-shakyou-room.jpg" alt="写経体験の会場" width={1200} height={800} className="w-full h-auto" />
               </div>
-              <div className="relative h-56 rounded-xl overflow-hidden shadow-sm">
-                <Image src="/images/onsenji-goshuin-shakyou.png" alt="写経体験 特別御朱印" fill className="object-cover" />
+              <div className="max-w-[220px] mx-auto sm:mx-0 rounded-xl overflow-hidden shadow-sm border border-gray-100">
+                <Image src="/images/onsenji-goshuin-shakyou.png" alt="写経体験 特別御朱印" width={778} height={1200} className="w-full h-auto" />
               </div>
             </div>
           </section>

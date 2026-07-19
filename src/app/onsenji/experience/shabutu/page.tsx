@@ -77,12 +77,12 @@ export default async function OnsenjShabutuPage() {
               <p>{c.onsenji_shabutu_about_p1}</p>
               <p className="mt-3">{c.onsenji_shabutu_about_p2}</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-4 mt-4">
-              <div className="relative h-56 rounded-xl overflow-hidden shadow-sm">
-                <Image src="/images/onsenji-shabutu-template.png" alt="写仏体験の下絵" fill className="object-cover" />
+            <div className="grid grid-cols-2 gap-4 mt-4 max-w-md mx-auto">
+              <div className="rounded-xl overflow-hidden shadow-sm border border-gray-100">
+                <Image src="/images/onsenji-shabutu-template.png" alt="写仏体験の下絵" width={799} height={1200} className="w-full h-auto" />
               </div>
-              <div className="relative h-56 rounded-xl overflow-hidden shadow-sm">
-                <Image src="/images/onsenji-goshuin-shabutu.jpg" alt="写仏体験 特別御朱印" fill className="object-cover" />
+              <div className="rounded-xl overflow-hidden shadow-sm border border-gray-100">
+                <Image src="/images/onsenji-goshuin-shabutu.jpg" alt="写仏体験 特別御朱印" width={833} height={1200} className="w-full h-auto" />
               </div>
             </div>
           </section>
