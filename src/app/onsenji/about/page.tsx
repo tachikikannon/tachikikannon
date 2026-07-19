@@ -15,8 +15,12 @@ const DEFAULT_NOTES = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  onsenji_about_subtitle: '拝観時間・参拝料のご案内',
+  onsenji_about_heading_hours: '拝観時間・参拝料',
   onsenji_about_hours_open:   '8時00分〜17時00分',
+  onsenji_about_fee: '無料',
   onsenji_about_hours_winter: '12月〜4月上旬は冬季休業。閉湯・開湯の日程は公式ホームページをご確認ください。',
+  onsenji_about_heading_notes: 'ご参拝の注意事項',
   onsenji_about_notes: JSON.stringify(DEFAULT_NOTES),
 }
 
@@ -53,21 +57,21 @@ export default async function OnsenjAboutPage() {
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">About</p>
           <h1 className="font-serif text-4xl text-white tracking-widest relative">拝観案内</h1>
-          <p className="text-white/60 text-sm mt-3 relative">拝観時間・参拝料のご案内</p>
+          <p className="text-white/60 text-sm mt-3 relative">{c.onsenji_about_subtitle}</p>
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
 
           {/* 拝観時間・料金 */}
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">拝観時間・参拝料</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_about_heading_hours}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <tbody>
                   {[
                     ['拝観時間', c.onsenji_about_hours_open],
-                    ['参拝料',   '無料'],
+                    ['参拝料',   c.onsenji_about_fee],
                     ['休業期間', c.onsenji_about_hours_winter],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
@@ -82,7 +86,7 @@ export default async function OnsenjAboutPage() {
 
           {/* ご参拝の注意事項 */}
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">ご参拝の注意事項</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_about_heading_notes}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <ul className="space-y-3">
               {notes.map(({ text }, i) => (

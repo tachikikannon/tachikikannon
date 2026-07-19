@@ -23,8 +23,12 @@ const DEFAULT_FLOW = [
 ]
 
 const DEFAULTS: Record<string, string> = {
+  onsenji_grounds_subtitle: '見どころ・薬師の湯・境内マップ',
+  onsenji_grounds_heading_spots: '主な見どころ',
   onsenji_grounds_spots: JSON.stringify(DEFAULT_SPOTS),
+  onsenji_grounds_heading_onsen: '薬師の湯（温泉）',
   onsenji_grounds_onsen_text: '境内には令和8年4月11日に開湯した「薬師の湯」があります。泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（泉温71.4℃）の完全かけ流し。加水すると乳白色に変わる神秘的な湯は、参拝者に開放されています。薬師如来の御加護とともに心身を清めていただけます。',
+  onsenji_grounds_heading_flow: '参拝の流れ',
   onsenji_grounds_flow: JSON.stringify(DEFAULT_FLOW),
 }
 
@@ -64,11 +68,11 @@ export default async function OnsenjGroundsPage() {
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">Grounds</p>
           <h1 className="font-serif text-4xl text-white tracking-widest relative">境内のご案内</h1>
-          <p className="text-white/60 text-sm mt-3 relative">見どころ・薬師の湯・境内マップ</p>
+          <p className="text-white/60 text-sm mt-3 relative">{c.onsenji_grounds_subtitle}</p>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">主な見どころ</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_grounds_heading_spots}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="grid md:grid-cols-2 gap-4">
               {spots.map(({ num, name, desc }, i) => (
@@ -83,14 +87,14 @@ export default async function OnsenjGroundsPage() {
             </div>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">薬師の湯（温泉）</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_grounds_heading_onsen}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="bg-onsenji/10 rounded-2xl p-6 border-l-4 border-[#7ec8a4]">
               <p className="text-sm text-gray-700 leading-loose">{c.onsenji_grounds_onsen_text}</p>
             </div>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">参拝の流れ</h2>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_grounds_heading_flow}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <ol className="relative border-l-2 border-[#7ec8a4] ml-4 space-y-6">
               {flow.map(({ title, text }, i) => (
