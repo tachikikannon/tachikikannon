@@ -102,12 +102,13 @@ export default async function HomePage() {
         <section className="bg-navy py-6">
           <div className="max-w-4xl mx-auto px-4">
             <p className="text-white/60 text-xs text-center tracking-widest mb-4">{content.top_sns_heading}</p>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
               {[
                 { href:'https://www.instagram.com/tachikikannon/', label:'Instagram', id:'@tachikikannon', bg:'bg-gradient-to-br from-pink-500 to-purple-600' },
                 { href:'https://x.com/tachikikannon13', label:'X', id:'@tachikikannon13', bg:'bg-black' },
                 { href:'https://www.youtube.com/@tachikikannon', label:'YouTube', id:'@tachikikannon', bg:'bg-red-600' },
                 { href:'#', label:'TikTok', id:'@tachikikannon', bg:'bg-gray-900' },
+                { href:'https://line.me/R/ti/p/@201diwas', label:'LINE', id:'@201diwas', bg:'bg-[#06C755]' },
               ].map(({ href, label, id, bg }) => (
                 <a key={label} href={href} target="_blank" rel="noopener"
                   className={`${bg} rounded-lg p-4 text-white text-center hover:opacity-90 transition-opacity`}>
