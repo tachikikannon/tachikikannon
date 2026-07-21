@@ -154,7 +154,7 @@ export default async function OnsenjPage() {
         </section>
 
         {/* 温泉・体験メニュー */}
-        <section className="max-w-4xl mx-auto px-4 py-20">
+        <section id="experience" className="max-w-4xl mx-auto px-4 py-20">
           <div className="text-center mb-12">
             <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Menu</p>
             <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_menu}</h2>
