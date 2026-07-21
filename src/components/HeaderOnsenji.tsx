@@ -5,11 +5,10 @@ import { useState, useEffect } from 'react'
 
 const navLinks = [
   { href: '/onsenji/about',              label: '拝観案内' },
-  { href: '/onsenji/onsen',              label: '温泉について' },
   { href: '/onsenji#access',             label: 'アクセス' },
+  { href: '/onsenji/experience/shakyou', label: '体験' },
   { href: '/onsenji/goshuin',            label: '御朱印' },
   { href: '/onsenji/events',             label: '年間行事' },
-  { href: '/onsenji/experience/shakyou', label: '体験' },
   { href: '/onsenji/faq',                label: 'よくある質問' },
   { href: '/onsenji/contact',            label: 'お問い合わせ' },
 ]

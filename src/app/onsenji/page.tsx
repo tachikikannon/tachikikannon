@@ -162,14 +162,14 @@ export default async function OnsenjPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { icon: '♨️', sub: 'Onsen', href: '/onsenji/onsen' },
-              { icon: '✍️', sub: 'Shakyou', href: '/onsenji/experience/shakyou' },
-              { icon: '🖌️', sub: 'Shabutu', href: '/onsenji/experience/shabutu' },
-            ].map(({ icon, sub, href }, i) => (
+              { src: '/images/onsen.png', sub: 'Onsen', href: '/onsenji/onsen' },
+              { src: '/images/onsenji-shakyou-room.jpg', sub: 'Shakyou', href: '/onsenji/experience/shakyou' },
+              { src: '/images/onsenji-shabutu-template.png', sub: 'Shabutu', href: '/onsenji/experience/shabutu' },
+            ].map(({ src, sub, href }, i) => (
               <Link key={href} href={href}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                <div className="h-32 flex items-center justify-center" style={{backgroundColor: 'rgba(26,74,58,0.1)'}}>
-                  <span className="text-5xl">{icon}</span>
+                <div className="relative h-32">
+                  <Image src={src} alt={menuCards[i]?.title || sub} fill className="object-cover" />
                 </div>
                 <div className="p-5">
                   <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">{sub}</p>
