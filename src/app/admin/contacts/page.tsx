@@ -1,16 +1,32 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
-import type { Contact } from '@/types'
+import { useAdminProfile } from '@/lib/useAdminProfile'
+import type { AdminProfile, Contact, ContactStatus } from '@/types'
+
+const STATUS_LABELS: Record<ContactStatus, string> = {
+  unread: '未読', checking: '対応中', replied: '返信済み', completed: '完了',
+}
+const STATUS_COLORS: Record<ContactStatus, string> = {
+  unread: 'bg-red-100 text-red-700',
+  checking: 'bg-yellow-100 text-yellow-700',
+  replied: 'bg-green-100 text-green-700',
+  completed: 'bg-gray-200 text-gray-600',
+}
+const STATUS_OPTIONS: ContactStatus[] = ['unread', 'checking', 'replied', 'completed']
 
 export default function AdminContactsPage() {
   const supabase = createClient()
+  const { canEdit } = useAdminProfile()
   const [list, setList] = useState<Contact[]>([])
+  const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [selected, setSelected] = useState<Contact | null>(null)
 
   async function load() {
     const { data } = await supabase.from('contacts').select('*').order('created_at', { ascending: false })
     setList(data ?? [])
+    const { data: adminData } = await supabase.from('admin_profiles').select('*').eq('is_active', true)
+    setAdmins(adminData ?? [])
   }
   useEffect(() => { load() }, [])
 
@@ -20,12 +36,26 @@ export default function AdminContactsPage() {
     if (selected?.id === id) setSelected({ ...selected, is_read: true })
   }
 
+  async function updateStatus(id: string, status: ContactStatus) {
+    await supabase.from('contacts').update({ status }).eq('id', id)
+    load()
+    if (selected?.id === id) setSelected({ ...selected, status })
+  }
+
+  async function updateAssignee(id: string, assigned_admin_id: string) {
+    await supabase.from('contacts').update({ assigned_admin_id: assigned_admin_id || null }).eq('id', id)
+    load()
+    if (selected?.id === id) setSelected({ ...selected, assigned_admin_id: assigned_admin_id || null })
+  }
+
   async function remove(id: string) {
     if (!confirm('削除しますか？')) return
     await supabase.from('contacts').delete().eq('id', id)
     setSelected(null)
     load()
   }
+
+  const adminName = (id: string | null) => admins.find(a => a.id === id)?.name || '未割当'
 
   return (
     <div className="p-8 print:p-0">
@@ -41,7 +71,7 @@ export default function AdminContactsPage() {
         <div className="bg-white rounded-xl shadow overflow-hidden print:hidden">
           <ul className="divide-y divide-gray-100">
             {list.map(c => (
-              <li key={c.id} onClick={() => { setSelected(c); if(!c.is_read) markRead(c.id) }}
+              <li key={c.id} onClick={() => { setSelected(c); if(!c.is_read && canEdit) markRead(c.id) }}
                 className={`px-5 py-4 cursor-pointer hover:bg-blue-50 transition-colors
                   ${selected?.id === c.id ? 'bg-blue-50' : ''}`}>
                 <div className="flex items-start justify-between gap-2">
@@ -49,8 +79,10 @@ export default function AdminContactsPage() {
                     <div className="flex items-center gap-2">
                       {!c.is_read && <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />}
                       <p className="font-medium text-sm truncate">{c.name}</p>
+                      <span className={`badge ${STATUS_COLORS[c.status]} flex-shrink-0`}>{STATUS_LABELS[c.status]}</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5 truncate">{c.subject}</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">担当: {adminName(c.assigned_admin_id)}</p>
                   </div>
                   <span className="text-[10px] text-gray-400 whitespace-nowrap">
                     {new Date(c.created_at).toLocaleDateString('ja-JP')}
@@ -75,15 +107,41 @@ export default function AdminContactsPage() {
               <dd><a href={`mailto:${selected.email}`} className="text-navy underline print:no-underline print:text-black">{selected.email}</a></dd>
               <dt className="text-gray-500 text-xs">受信日</dt>
               <dd className="text-xs text-gray-500">{new Date(selected.created_at).toLocaleString('ja-JP')}</dd>
+              <dt className="text-gray-500 text-xs">更新日時</dt>
+              <dd className="text-xs text-gray-500">{selected.updated_at ? new Date(selected.updated_at).toLocaleString('ja-JP') : '—'}</dd>
             </dl>
             <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap mb-4 print:bg-white print:p-0">
               {selected.message}
             </div>
+
+            <div className="mb-4 print:hidden">
+              <p className="text-xs text-gray-500 mb-2">担当者</p>
+              <select className="admin-input text-sm" value={selected.assigned_admin_id ?? ''} disabled={!canEdit}
+                onChange={e => updateAssignee(selected.id, e.target.value)}>
+                <option value="">未割当</option>
+                {admins.map(a => <option key={a.id} value={a.id}>{a.name || a.email}</option>)}
+              </select>
+            </div>
+
+            <div className="mb-4 print:hidden">
+              <p className="text-xs text-gray-500 mb-2">対応状況</p>
+              <div className="flex gap-2 flex-wrap">
+                {STATUS_OPTIONS.map(s => (
+                  <button key={s} onClick={() => updateStatus(selected.id, s)}
+                    disabled={!canEdit || selected.status === s}
+                    className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40 ${STATUS_COLORS[s]}`}>
+                    {STATUS_LABELS[s]}
+                  </button>
+                ))}
+              </div>
+              {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
+            </div>
+
             <div className="flex gap-3 print:hidden">
               <a href={`mailto:${selected.email}?subject=Re: ${selected.subject}`}
                 className="btn-primary text-sm px-4 py-2">返信する（メール）</a>
               <button onClick={() => window.print()} className="text-sm px-4 py-2 border border-navy text-navy rounded hover:bg-navy hover:text-white transition-colors">🖨 印刷</button>
-              <button onClick={() => remove(selected.id)} className="text-red-500 text-sm hover:underline">削除</button>
+              {canEdit && <button onClick={() => remove(selected.id)} className="text-red-500 text-sm hover:underline">削除</button>}
             </div>
           </div>
         )}

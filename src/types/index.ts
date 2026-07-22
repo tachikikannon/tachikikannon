@@ -38,7 +38,7 @@ export interface Event {
 }
 
 export type ReservationType = 'prayer' | 'shakyou' | 'shabutu' | 'jyuzu'
-export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled'
+export type ReservationStatus = 'unconfirmed' | 'in_progress' | 'confirmed' | 'completed' | 'cancelled' | 'pending'
 
 export interface Reservation {
   id: string
@@ -52,8 +52,13 @@ export interface Reservation {
   party_size: number
   notes: string | null
   status: ReservationStatus
+  assigned_admin_id: string | null
+  updated_by: string | null
+  updated_at: string
   created_at: string
 }
+
+export type ContactStatus = 'unread' | 'checking' | 'replied' | 'completed'
 
 export interface Contact {
   id: string
@@ -62,6 +67,33 @@ export interface Contact {
   subject: string
   message: string
   is_read: boolean
+  status: ContactStatus
+  assigned_admin_id: string | null
+  updated_by: string | null
+  updated_at: string
+  created_at: string
+}
+
+export type AdminRole = 'super_admin' | 'admin' | 'viewer'
+
+export interface AdminProfile {
+  id: string
+  email: string
+  name: string | null
+  role: AdminRole
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface AdminActivityLog {
+  id: string
+  actor_id: string | null
+  action: string
+  target_table: string | null
+  target_id: string | null
+  old_value: Record<string, unknown> | null
+  new_value: Record<string, unknown> | null
   created_at: string
 }
 

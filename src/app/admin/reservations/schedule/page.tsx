@@ -7,7 +7,7 @@ const TYPE_LABELS: Record<string, string> = {
   prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり'
 }
 const STATUS_LABELS: Record<ReservationStatus, string> = {
-  pending: '未確認', confirmed: '確認済み', cancelled: 'キャンセル'
+  unconfirmed: '未確認', pending: '未確認', in_progress: '対応中', confirmed: '確認済み', completed: '完了', cancelled: 'キャンセル'
 }
 
 function todayStr() {

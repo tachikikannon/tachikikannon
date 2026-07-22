@@ -1,14 +1,24 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { sendLinePush } from '@/lib/line'
 
 export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const { name, email, subject, message } = await req.json()
     const toEmail = process.env.NOTIFY_EMAIL!
+    const adminUrl = `${process.env.SITE_URL ?? ''}/admin/contacts`
+    const receivedAt = new Date().toLocaleString('ja-JP')
 
-    // お寺への通知
-    await resend.emails.send({
+    // メール通知とLINEグループ通知は並行して実行し、どちらかが失敗しても
+    // 問い合わせ登録そのものは成功として扱う（LINE失敗はログのみ）。
+    await Promise.allSettled([
+      sendLinePush(
+        `【新規お問い合わせ】\n氏名: ${name}\n件名: ${subject}\n受信日時: ${receivedAt}\n管理画面: ${adminUrl}`
+      ),
+
+      // お寺への通知
+      resend.emails.send({
       from: 'noreply@resend.dev',
       to: toEmail,
       subject: `【お問い合わせ】${subject} — ${name} 様`,
@@ -22,10 +32,10 @@ export async function POST(req: Request) {
         </table>
         <p style="margin-top:20px;font-size:12px;color:#888;">管理画面で確認: /admin/contacts</p>
       `,
-    })
+      }),
 
-    // 送信者への自動返信
-    await resend.emails.send({
+      // 送信者への自動返信
+      resend.emails.send({
       from: 'noreply@resend.dev',
       to: email,
       subject: '【立木観音】お問い合わせを受け付けました',
@@ -51,7 +61,8 @@ export async function POST(req: Request) {
           </div>
         </div>
       `,
-    })
+      }),
+    ])
 
     return NextResponse.json({ ok: true })
   } catch (err) {

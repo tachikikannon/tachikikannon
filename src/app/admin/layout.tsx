@@ -47,6 +47,7 @@ const navItems: NavItem[] = [
   { href: '/admin/contacts',      label: 'お問い合わせ',     icon: '✉️' },
   { href: '/admin/applications',  label: '申請管理',         icon: '📝' },
   { href: '/admin/images',        label: '画像管理',         icon: '🖼️' },
+  { href: '/admin/users',         label: '管理者管理',       icon: '👤' },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

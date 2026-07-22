@@ -24,13 +24,17 @@ export default function ReserveForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('loading')
-    const { error } = await supabase.from('reservations').insert({ ...form, status: 'pending' })
+    // 予約番号（LINE通知等で使用）をクライアント側で採番する。
+    // anonロールにはreservationsのSELECT権限が無くinsert後にDB生成IDを
+    // 取得できないため、この方式でIDを先に確定させてinsert/通知の両方に使う。
+    const id = crypto.randomUUID()
+    const { error } = await supabase.from('reservations').insert({ ...form, id, status: 'pending' })
     if (error) { setStatus('error'); return }
-    // メール通知（失敗してもフォーム送信は成功扱い）
+    // メール・LINE通知（失敗してもフォーム送信は成功扱い）
     await fetch('/api/notify/reservation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, id }),
     }).catch(() => {})
     setStatus('done')
   }

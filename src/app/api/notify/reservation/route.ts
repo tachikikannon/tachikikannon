@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { sendLinePush } from '@/lib/line'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer:  '護摩祈願',
@@ -12,13 +13,21 @@ export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const body = await req.json()
-    const { name, name_kana, email, phone, type, date, time_slot, party_size, notes } = body
+    const { id, name, name_kana, email, phone, type, date, time_slot, party_size, notes } = body
 
     const typeLabel = TYPE_LABELS[type] ?? type
     const toEmail = process.env.NOTIFY_EMAIL!
+    const adminUrl = `${process.env.SITE_URL ?? ''}/admin/reservations`
 
-    // お寺への通知メール
-    await resend.emails.send({
+    // メール通知とLINEグループ通知は並行して実行し、どちらかが失敗しても
+    // 予約登録そのものは成功として扱う（LINE失敗はログのみ）。
+    await Promise.allSettled([
+      sendLinePush(
+        `【新規予約】\n予約番号: ${id ?? '(不明)'}\n氏名: ${name}\n予約日時: ${date} ${time_slot}\n人数: ${party_size}名\n体験内容: ${typeLabel}\n管理画面: ${adminUrl}`
+      ),
+
+      // お寺への通知メール
+      resend.emails.send({
       from: 'noreply@resend.dev',
       to: toEmail,
       subject: `【予約通知】${typeLabel} — ${name} 様`,
@@ -35,10 +44,10 @@ export async function POST(req: Request) {
         </table>
         <p style="margin-top:20px;font-size:12px;color:#888;">管理画面で確認: /admin/reservations</p>
       `,
-    })
+    }),
 
     // 申込者への自動返信メール
-    await resend.emails.send({
+    resend.emails.send({
       from: 'noreply@resend.dev',
       to: email,
       subject: `【立木観音】ご予約を受け付けました — ${typeLabel}`,
@@ -70,7 +79,8 @@ export async function POST(req: Request) {
           </div>
         </div>
       `,
-    })
+    }),
+    ])
 
     return NextResponse.json({ ok: true })
   } catch (err) {
