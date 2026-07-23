@@ -31,6 +31,7 @@ export default function SetsubunApplyForm() {
       email: form.email,
       subject: '【1月下旬】温泉寺 節分大祭 御札申し込み',
       message,
+      source: 'event_application',
     })
     if (error) { setStatus('error'); return }
     await fetch('/api/notify/contact', {

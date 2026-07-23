@@ -61,6 +61,7 @@ export default function FunazentoApplyForm() {
       email: form.email,
       subject: '【8月4日】船禅頂（ふなぜんじょう）申し込み',
       message,
+      source: 'event_application',
     })
     if (error) { setStatus('error'); return }
     await fetch('/api/notify/contact', {

@@ -60,6 +60,7 @@ export interface Reservation {
 }
 
 export type ContactStatus = 'unread' | 'checking' | 'replied' | 'completed'
+export type ContactSource = 'contact' | 'event_application'
 
 export interface Contact {
   id: string
@@ -69,6 +70,7 @@ export interface Contact {
   message: string
   is_read: boolean
   status: ContactStatus
+  source: ContactSource
   assigned_admin_id: string | null
   updated_by: string | null
   updated_at: string

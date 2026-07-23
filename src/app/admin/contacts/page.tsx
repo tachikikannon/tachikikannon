@@ -86,6 +86,9 @@ export default function AdminContactsPage() {
                       {!c.is_read && <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />}
                       <p className="font-medium text-sm truncate">{c.name}</p>
                       <span className={`badge ${STATUS_COLORS[c.status]} flex-shrink-0`}>{STATUS_LABELS[c.status]}</span>
+                      {c.source === 'event_application' && (
+                        <span className="badge bg-amber-100 text-amber-700 flex-shrink-0">行事申込み</span>
+                      )}
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5 truncate">{c.subject}</p>
                     <p className="text-[11px] text-gray-400 mt-0.5">担当: {adminName(c.assigned_admin_id)}</p>

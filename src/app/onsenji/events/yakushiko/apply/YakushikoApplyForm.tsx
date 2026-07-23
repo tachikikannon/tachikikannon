@@ -31,6 +31,7 @@ export default function YakushikoApplyForm() {
       email: form.email,
       subject: '【8月8日】薬師講大祭・採灯大護摩供 御札申し込み',
       message,
+      source: 'event_application',
     })
     if (error) { setStatus('error'); return }
     await fetch('/api/notify/contact', {

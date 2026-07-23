@@ -61,6 +61,7 @@ export default function KannonkoApplyForm() {
       email: form.email,
       subject: '【6月18日】観音講・大護摩供・地蔵流し 御札申し込み',
       message,
+      source: 'event_application',
     })
     if (error) { setStatus('error'); return }
     await fetch('/api/notify/contact', {
