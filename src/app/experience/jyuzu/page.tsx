@@ -30,7 +30,9 @@ const DEFAULT_NOTES = [
   { text: '僧侶がご祈祷したものを当日お守りとしてお持ち帰りいただけます。僧侶が不在の場合、後日ご祈祷後郵送いたします（郵送料は当寺負担）。' },
   { text: '団体でお越しの際は事前にお電話ください。' },
 ]
-const STONE_SWATCHES = [
+type Swatch = { name: string; image: string; desc: string }
+
+const DEFAULT_STONE_SWATCHES: Swatch[] = [
   { name: '水晶', image: '/images/swatches/stone-suisho.png', desc: '浄化作用があり、邪気を払い、災難を防ぐとされる万能の石です。' },
   { name: '紅水晶', image: '/images/swatches/stone-benisuisho.png', desc: '内面の美しさを輝かせるご利益があるとされています。' },
   { name: 'ラピスラズリ', image: '/images/swatches/stone-lapis.png', desc: '知性・直観力を高め、幸運を引き寄せるとされています。' },
@@ -53,7 +55,7 @@ const STONE_SWATCHES = [
   { name: 'インド翡翠', image: '/images/swatches/stone-indohisui.png', desc: '失った気力を回復させ、強いパワーで物事を成し遂げるとされています。' },
   { name: 'プラムジェイド', image: '/images/swatches/stone-plumjade.png', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
 ]
-const WOOD_SWATCHES = [
+const DEFAULT_WOOD_SWATCHES: Swatch[] = [
   { name: 'けやき', image: '/images/swatches/wood-keyaki.png', desc: '古くから神木として親しまれ、成長・発展の象徴とされる木材です。' },
   { name: '黒檀', image: '/images/swatches/wood-kokutan.png', desc: '高級木材として知られ、魔除け・厄除けのご利益があるとされます。' },
   { name: '紫檀', image: '/images/swatches/wood-shitan.png', desc: '気品ある紫色が特徴で、健康長寿のご利益があるとされています。' },
@@ -97,6 +99,8 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_samples: JSON.stringify(DEFAULT_SAMPLES),
   jyuzu_materials: JSON.stringify(DEFAULT_MATERIALS),
   jyuzu_notes: JSON.stringify(DEFAULT_NOTES),
+  jyuzu_stones: JSON.stringify(DEFAULT_STONE_SWATCHES.map(({ name, desc }) => ({ name, desc }))),
+  jyuzu_woods: JSON.stringify(DEFAULT_WOOD_SWATCHES.map(({ name, desc }) => ({ name, desc }))),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -124,6 +128,10 @@ export default async function JyuzuPage() {
   const samples   = pj<typeof DEFAULT_SAMPLES>(c.jyuzu_samples, DEFAULT_SAMPLES)
   const materials = pj<typeof DEFAULT_MATERIALS>(c.jyuzu_materials, DEFAULT_MATERIALS)
   const notes     = pj<typeof DEFAULT_NOTES>(c.jyuzu_notes, DEFAULT_NOTES)
+  const stonesRaw = pj<{ name: string; desc: string }[]>(c.jyuzu_stones, DEFAULT_STONE_SWATCHES)
+  const woodsRaw  = pj<{ name: string; desc: string }[]>(c.jyuzu_woods, DEFAULT_WOOD_SWATCHES)
+  const stones = stonesRaw.map((s, i) => ({ image: DEFAULT_STONE_SWATCHES[i]?.image ?? DEFAULT_STONE_SWATCHES[0].image, ...s }))
+  const woods  = woodsRaw.map((s, i) => ({ image: DEFAULT_WOOD_SWATCHES[i]?.image ?? DEFAULT_WOOD_SWATCHES[0].image, ...s }))
 
   return (
     <>
@@ -242,8 +250,8 @@ export default async function JyuzuPage() {
             <div className="w-10 h-0.5 bg-gold mx-auto mb-2" />
             <p className="text-xs text-gray-400 text-center mb-8">{c.jyuzu_materials_hint}</p>
 
-            <MaterialSwatches title="天然石" swatches={STONE_SWATCHES} />
-            <MaterialSwatches title="天然木" swatches={WOOD_SWATCHES} />
+            <MaterialSwatches title="天然石" swatches={stones} />
+            <MaterialSwatches title="天然木" swatches={woods} />
 
             <p className="text-sm text-gray-600 mb-5 mt-8 text-center">{c.jyuzu_materials_note}</p>
             <div className="grid grid-cols-2 gap-4">
