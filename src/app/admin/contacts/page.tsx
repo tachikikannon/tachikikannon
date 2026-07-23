@@ -72,9 +72,9 @@ export default function AdminContactsPage() {
         </span>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-4 print:block">
+      <div className="grid lg:grid-cols-2 gap-4 print:block items-start">
         {/* 一覧 */}
-        <div className="bg-white rounded-xl shadow overflow-hidden print:hidden">
+        <div className="bg-white rounded-xl shadow overflow-y-auto lg:max-h-[calc(100vh-14rem)] print:hidden">
           <ul className="divide-y divide-gray-100">
             {list.map(c => (
               <li key={c.id} onClick={() => { openDetail(c); if(!c.is_read && canEdit) markRead(c.id) }}
@@ -102,7 +102,7 @@ export default function AdminContactsPage() {
 
         {/* 詳細 */}
         {selected && (
-          <div className="bg-white rounded-xl shadow p-6 print:shadow-none print:p-0">
+          <div className="bg-white rounded-xl shadow p-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto print:shadow-none print:p-0 print:max-h-none print:overflow-visible">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-medium text-navy text-lg">{selected.subject}</h2>
               <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg print:hidden">✕</button>

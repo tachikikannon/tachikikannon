@@ -228,14 +228,15 @@ export default function AdminReservationSchedulePage() {
 
       {/* 選択した日の一覧・詳細 */}
       {selectedDate && (
-        <div className="grid lg:grid-cols-3 gap-4">
+        <div className="grid lg:grid-cols-3 gap-4 items-start">
           <div className="lg:col-span-2 bg-white rounded-xl shadow overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between">
               <h2 className="font-medium text-navy text-sm">{selectedDateLabel}　（{dayList.length}件）</h2>
               <button onClick={() => setSelectedDate(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
             </div>
+            <div className="overflow-y-auto lg:max-h-[calc(100vh-18rem)]">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 sticky top-0 z-10">
                 <tr>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">時間</th>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">種別</th>
@@ -262,10 +263,11 @@ export default function AdminReservationSchedulePage() {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
 
           {detail && (
-            <div className="bg-white rounded-xl shadow p-5">
+            <div className="bg-white rounded-xl shadow p-5 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-medium text-navy">予約詳細</h2>
                 <div className="flex items-center gap-3">
