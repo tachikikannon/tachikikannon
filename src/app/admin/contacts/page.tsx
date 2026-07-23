@@ -17,10 +17,11 @@ const STATUS_OPTIONS: ContactStatus[] = ['unread', 'checking', 'replied', 'compl
 
 export default function AdminContactsPage() {
   const supabase = createClient()
-  const { canEditContacts: canEdit } = useAdminProfile()
+  const { profile, canEditContacts: canEdit } = useAdminProfile()
   const [list, setList] = useState<Contact[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [selected, setSelected] = useState<Contact | null>(null)
+  const [pendingStatus, setPendingStatus] = useState<ContactStatus | null>(null)
 
   async function load() {
     const { data } = await supabase.from('contacts').select('*').order('created_at', { ascending: false })
@@ -30,22 +31,27 @@ export default function AdminContactsPage() {
   }
   useEffect(() => { load() }, [])
 
+  function openDetail(c: Contact | null) {
+    setSelected(c)
+    setPendingStatus(null)
+  }
+
   async function markRead(id: string) {
     await supabase.from('contacts').update({ is_read: true }).eq('id', id)
     setList(prev => prev.map(c => c.id === id ? { ...c, is_read: true } : c))
-    if (selected?.id === id) setSelected({ ...selected, is_read: true })
+    if (selected?.id === id) setSelected(s => s ? { ...s, is_read: true } : s)
   }
 
   async function updateStatus(id: string, status: ContactStatus) {
     await supabase.from('contacts').update({ status }).eq('id', id)
     load()
-    if (selected?.id === id) setSelected({ ...selected, status })
+    if (selected?.id === id) setSelected(s => s ? { ...s, status } : s)
   }
 
   async function updateAssignee(id: string, assigned_admin_id: string) {
     await supabase.from('contacts').update({ assigned_admin_id: assigned_admin_id || null }).eq('id', id)
     load()
-    if (selected?.id === id) setSelected({ ...selected, assigned_admin_id: assigned_admin_id || null })
+    if (selected?.id === id) setSelected(s => s ? { ...s, assigned_admin_id: assigned_admin_id || null } : s)
   }
 
   async function remove(id: string) {
@@ -71,7 +77,7 @@ export default function AdminContactsPage() {
         <div className="bg-white rounded-xl shadow overflow-hidden print:hidden">
           <ul className="divide-y divide-gray-100">
             {list.map(c => (
-              <li key={c.id} onClick={() => { setSelected(c); if(!c.is_read && canEdit) markRead(c.id) }}
+              <li key={c.id} onClick={() => { openDetail(c); if(!c.is_read && canEdit) markRead(c.id) }}
                 className={`px-5 py-4 cursor-pointer hover:bg-blue-50 transition-colors
                   ${selected?.id === c.id ? 'bg-blue-50' : ''}`}>
                 <div className="flex items-start justify-between gap-2">
@@ -99,7 +105,7 @@ export default function AdminContactsPage() {
           <div className="bg-white rounded-xl shadow p-6 print:shadow-none print:p-0">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-medium text-navy text-lg">{selected.subject}</h2>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-lg print:hidden">✕</button>
+              <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg print:hidden">✕</button>
             </div>
             <dl className="grid grid-cols-[5rem_1fr] gap-x-3 gap-y-2 text-sm mb-5">
               <dt className="text-gray-500 text-xs">お名前</dt><dd>{selected.name}</dd>
@@ -116,24 +122,40 @@ export default function AdminContactsPage() {
 
             <div className="mb-4 print:hidden">
               <p className="text-xs text-gray-500 mb-2">担当者</p>
-              <select className="admin-input text-sm" value={selected.assigned_admin_id ?? ''} disabled={!canEdit}
-                onChange={e => updateAssignee(selected.id, e.target.value)}>
-                <option value="">未割当</option>
-                {admins.map(a => <option key={a.id} value={a.id}>{a.name || a.email}</option>)}
-              </select>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-sm">{adminName(selected.assigned_admin_id)}</span>
+                {canEdit && profile && selected.assigned_admin_id !== profile.id && (
+                  <button onClick={() => updateAssignee(selected.id, profile.id)} className="text-xs text-navy underline">
+                    自分を担当にする
+                  </button>
+                )}
+                {canEdit && selected.assigned_admin_id && (
+                  <button onClick={() => updateAssignee(selected.id, '')} className="text-xs text-gray-400 underline">
+                    担当を外す
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="mb-4 print:hidden">
               <p className="text-xs text-gray-500 mb-2">対応状況</p>
               <div className="flex gap-2 flex-wrap">
                 {STATUS_OPTIONS.map(s => (
-                  <button key={s} onClick={() => updateStatus(selected.id, s)}
+                  <button key={s} onClick={() => setPendingStatus(s)}
                     disabled={!canEdit || selected.status === s}
-                    className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40 ${STATUS_COLORS[s]}`}>
+                    className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40 ${STATUS_COLORS[s]} ${pendingStatus === s ? 'ring-2 ring-offset-1 ring-navy' : ''}`}>
                     {STATUS_LABELS[s]}
                   </button>
                 ))}
               </div>
+              {pendingStatus && pendingStatus !== selected.status && (
+                <div className="mt-3 flex items-center gap-2 flex-wrap">
+                  <span className="text-xs text-gray-500">「{STATUS_LABELS[pendingStatus]}」に変更しますか？</span>
+                  <button onClick={() => { updateStatus(selected.id, pendingStatus); setPendingStatus(null) }}
+                    className="btn-primary text-xs px-3 py-1.5">確定する</button>
+                  <button onClick={() => setPendingStatus(null)} className="text-xs text-gray-400 underline">キャンセル</button>
+                </div>
+              )}
               {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
             </div>
 

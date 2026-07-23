@@ -59,7 +59,7 @@ function tagClasses(r: Reservation) {
 
 export default function AdminReservationSchedulePage() {
   const supabase = createClient()
-  const { canEditReservations: canEdit } = useAdminProfile()
+  const { profile, canEditReservations: canEdit } = useAdminProfile()
   const today = new Date()
   const [year, setYear] = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth()) // 0始まり
@@ -68,6 +68,7 @@ export default function AdminReservationSchedulePage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [detail, setDetail] = useState<Reservation | null>(null)
   const [mailNotice, setMailNotice] = useState<string | null>(null)
+  const [pendingStatus, setPendingStatus] = useState<ReservationStatus | null>(null)
 
   const weeks = useMemo(() => getMonthMatrix(year, month), [year, month])
   const monthLabel = new Date(year, month, 1).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })
@@ -96,11 +97,17 @@ export default function AdminReservationSchedulePage() {
     setSelectedDate(dstr(today))
   }
 
+  function openDetail(r: Reservation | null) {
+    setDetail(r)
+    setPendingStatus(null)
+    setMailNotice(null)
+  }
+
   async function updateStatus(id: string, status: ReservationStatus) {
     const target = list.find(r => r.id === id)
     await supabase.from('reservations').update({ status }).eq('id', id)
     load()
-    if (detail?.id === id) setDetail({ ...detail, status })
+    if (detail?.id === id) setDetail(d => d ? { ...d, status } : d)
 
     if (status === 'confirmed' && target) {
       setMailNotice('確定メールを送信中…')
@@ -113,7 +120,14 @@ export default function AdminReservationSchedulePage() {
         }),
       })
         .then(res => res.json())
-        .then(data => setMailNotice(data.ok ? '確定メールを送信しました' : '確定メールの送信に失敗しました'))
+        .then(async data => {
+          setMailNotice(data.ok ? '確定メールを送信しました' : '確定メールの送信に失敗しました')
+          if (data.ok) {
+            await supabase.from('reservations').update({ confirmation_email_sent: true }).eq('id', id)
+            load()
+            if (detail?.id === id) setDetail(d => d ? { ...d, confirmation_email_sent: true } : d)
+          }
+        })
         .catch(err => { console.error('confirm mail failed:', err); setMailNotice('確定メールの送信に失敗しました') })
     }
   }
@@ -121,7 +135,7 @@ export default function AdminReservationSchedulePage() {
   async function updateAssignee(id: string, assigned_admin_id: string) {
     await supabase.from('reservations').update({ assigned_admin_id: assigned_admin_id || null }).eq('id', id)
     load()
-    if (detail?.id === id) setDetail({ ...detail, assigned_admin_id: assigned_admin_id || null })
+    if (detail?.id === id) setDetail(d => d ? { ...d, assigned_admin_id: assigned_admin_id || null } : d)
   }
 
   async function remove(id: string) {
@@ -190,7 +204,7 @@ export default function AdminReservationSchedulePage() {
                 const visible = items.slice(0, 3)
                 const overflow = items.length - visible.length
                 return (
-                  <button key={di} onClick={() => { setSelectedDate(ds); setDetail(null); setMailNotice(null) }}
+                  <button key={di} onClick={() => { setSelectedDate(ds); openDetail(null) }}
                     className={`min-h-[6.5rem] p-1.5 text-left align-top hover:bg-blue-50 transition-colors
                       ${isSelected ? 'bg-blue-50 ring-1 ring-inset ring-navy/30' : ''}`}>
                     <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs
@@ -232,13 +246,14 @@ export default function AdminReservationSchedulePage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {dayList.map(r => (
-                  <tr key={r.id} onClick={() => { setDetail(r); setMailNotice(null) }} className="hover:bg-blue-50 cursor-pointer">
+                  <tr key={r.id} onClick={() => openDetail(r)} className="hover:bg-blue-50 cursor-pointer">
                     <td className="px-4 py-2.5 whitespace-nowrap font-medium text-navy">{r.time_slot}</td>
                     <td className="px-4 py-2.5 whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
                     <td className="px-4 py-2.5">{r.name}</td>
                     <td className="px-4 py-2.5 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                     <td className="px-4 py-2.5">
                       <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+                      {r.confirmation_email_sent && <div className="text-[10px] text-gray-400 mt-1">✉️ 自動メール送信済み</div>}
                     </td>
                   </tr>
                 ))}
@@ -255,7 +270,7 @@ export default function AdminReservationSchedulePage() {
                 <h2 className="font-medium text-navy">予約詳細</h2>
                 <div className="flex items-center gap-3">
                   {canEdit && <button onClick={() => remove(detail.id)} className="text-red-500 text-xs hover:underline">削除</button>}
-                  <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+                  <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
                 </div>
               </div>
               <dl className="space-y-3 text-sm">
@@ -280,26 +295,43 @@ export default function AdminReservationSchedulePage() {
 
               <div className="mt-5 border-t pt-4">
                 <p className="text-xs text-gray-500 mb-2">担当者</p>
-                <select className="admin-input text-sm" value={detail.assigned_admin_id ?? ''} disabled={!canEdit}
-                  onChange={e => updateAssignee(detail.id, e.target.value)}>
-                  <option value="">未割当</option>
-                  {admins.map(a => <option key={a.id} value={a.id}>{a.name || a.email}</option>)}
-                </select>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-sm">{adminName(detail.assigned_admin_id)}</span>
+                  {canEdit && profile && detail.assigned_admin_id !== profile.id && (
+                    <button onClick={() => updateAssignee(detail.id, profile.id)} className="text-xs text-navy underline">
+                      自分を担当にする
+                    </button>
+                  )}
+                  {canEdit && detail.assigned_admin_id && (
+                    <button onClick={() => updateAssignee(detail.id, '')} className="text-xs text-gray-400 underline">
+                      担当を外す
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="mt-5 border-t pt-4">
                 <p className="text-xs text-gray-500 mb-2">ステータス変更</p>
                 <div className="flex gap-2 flex-wrap">
                   {STATUS_OPTIONS.map(s => (
-                    <button key={s} onClick={() => updateStatus(detail.id, s)}
+                    <button key={s} onClick={() => setPendingStatus(s)}
                       disabled={!canEdit || detail.status === s}
                       className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40
-                        ${STATUS_COLORS[s]}`}>
+                        ${STATUS_COLORS[s]} ${pendingStatus === s ? 'ring-2 ring-offset-1 ring-navy' : ''}`}>
                       {STATUS_LABELS[s]}
                     </button>
                   ))}
                 </div>
+                {pendingStatus && pendingStatus !== detail.status && (
+                  <div className="mt-3 flex items-center gap-2 flex-wrap">
+                    <span className="text-xs text-gray-500">「{STATUS_LABELS[pendingStatus]}」に変更しますか？</span>
+                    <button onClick={() => { updateStatus(detail.id, pendingStatus); setPendingStatus(null) }}
+                      className="btn-primary text-xs px-3 py-1.5">確定する</button>
+                    <button onClick={() => setPendingStatus(null)} className="text-xs text-gray-400 underline">キャンセル</button>
+                  </div>
+                )}
                 {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
+                {detail.confirmation_email_sent && <p className="text-[11px] text-green-700 mt-2">✉️ 自動メール送信済み</p>}
                 {mailNotice && <p className="text-[11px] text-gray-500 mt-2">✉️ {mailNotice}</p>}
               </div>
             </div>

@@ -28,12 +28,13 @@ const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'conf
 
 export default function AdminReservationsPage() {
   const supabase = createClient()
-  const { canEditReservations: canEdit } = useAdminProfile()
+  const { profile, canEditReservations: canEdit } = useAdminProfile()
   const [list, setList] = useState<Reservation[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [detail, setDetail] = useState<Reservation | null>(null)
   const [filter, setFilter] = useState<string>('all')
   const [mailNotice, setMailNotice] = useState<string | null>(null)
+  const [pendingStatus, setPendingStatus] = useState<ReservationStatus | null>(null)
 
   async function load() {
     const query = supabase.from('reservations').select('*').order('date').order('created_at', { ascending: false })
@@ -44,11 +45,17 @@ export default function AdminReservationsPage() {
   }
   useEffect(() => { load() }, [])
 
+  function openDetail(r: Reservation | null) {
+    setDetail(r)
+    setPendingStatus(null)
+    setMailNotice(null)
+  }
+
   async function updateStatus(id: string, status: ReservationStatus) {
     const target = list.find(r => r.id === id)
     await supabase.from('reservations').update({ status }).eq('id', id)
     load()
-    if (detail?.id === id) setDetail({ ...detail, status })
+    if (detail?.id === id) setDetail(d => d ? { ...d, status } : d)
 
     if (status === 'confirmed' && target) {
       setMailNotice('確定メールを送信中…')
@@ -61,7 +68,14 @@ export default function AdminReservationsPage() {
         }),
       })
         .then(res => res.json())
-        .then(data => setMailNotice(data.ok ? '確定メールを送信しました' : '確定メールの送信に失敗しました'))
+        .then(async data => {
+          setMailNotice(data.ok ? '確定メールを送信しました' : '確定メールの送信に失敗しました')
+          if (data.ok) {
+            await supabase.from('reservations').update({ confirmation_email_sent: true }).eq('id', id)
+            load()
+            if (detail?.id === id) setDetail(d => d ? { ...d, confirmation_email_sent: true } : d)
+          }
+        })
         .catch(err => { console.error('confirm mail failed:', err); setMailNotice('確定メールの送信に失敗しました') })
     }
   }
@@ -69,7 +83,7 @@ export default function AdminReservationsPage() {
   async function updateAssignee(id: string, assigned_admin_id: string) {
     await supabase.from('reservations').update({ assigned_admin_id: assigned_admin_id || null }).eq('id', id)
     load()
-    if (detail?.id === id) setDetail({ ...detail, assigned_admin_id: assigned_admin_id || null })
+    if (detail?.id === id) setDetail(d => d ? { ...d, assigned_admin_id: assigned_admin_id || null } : d)
   }
 
   async function remove(id: string) {
@@ -120,7 +134,7 @@ export default function AdminReservationsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map(r => (
-                <tr key={r.id} onClick={() => { setDetail(r); setMailNotice(null) }}
+                <tr key={r.id} onClick={() => openDetail(r)}
                   className="hover:bg-blue-50 cursor-pointer">
                   <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
                     {new Date(r.date).toLocaleDateString('ja-JP')}<br/>
@@ -131,6 +145,7 @@ export default function AdminReservationsPage() {
                   <td className="px-4 py-3 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                   <td className="px-4 py-3">
                     <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+                    {r.confirmation_email_sent && <div className="text-[10px] text-gray-400 mt-1">✉️ 自動メール送信済み</div>}
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
                     {r.updated_at ? new Date(r.updated_at).toLocaleString('ja-JP') : '—'}
@@ -149,7 +164,7 @@ export default function AdminReservationsPage() {
               <h2 className="font-medium text-navy">予約詳細</h2>
               <div className="flex items-center gap-3">
                 {canEdit && <button onClick={() => remove(detail.id)} className="text-red-500 text-xs hover:underline">削除</button>}
-                <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+                <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
               </div>
             </div>
             <dl className="space-y-3 text-sm">
@@ -174,26 +189,43 @@ export default function AdminReservationsPage() {
 
             <div className="mt-5 border-t pt-4">
               <p className="text-xs text-gray-500 mb-2">担当者</p>
-              <select className="admin-input text-sm" value={detail.assigned_admin_id ?? ''} disabled={!canEdit}
-                onChange={e => updateAssignee(detail.id, e.target.value)}>
-                <option value="">未割当</option>
-                {admins.map(a => <option key={a.id} value={a.id}>{a.name || a.email}</option>)}
-              </select>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-sm">{adminName(detail.assigned_admin_id)}</span>
+                {canEdit && profile && detail.assigned_admin_id !== profile.id && (
+                  <button onClick={() => updateAssignee(detail.id, profile.id)} className="text-xs text-navy underline">
+                    自分を担当にする
+                  </button>
+                )}
+                {canEdit && detail.assigned_admin_id && (
+                  <button onClick={() => updateAssignee(detail.id, '')} className="text-xs text-gray-400 underline">
+                    担当を外す
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="mt-5 border-t pt-4">
               <p className="text-xs text-gray-500 mb-2">ステータス変更</p>
               <div className="flex gap-2 flex-wrap">
                 {STATUS_OPTIONS.map(s => (
-                  <button key={s} onClick={() => updateStatus(detail.id, s)}
+                  <button key={s} onClick={() => setPendingStatus(s)}
                     disabled={!canEdit || detail.status === s}
                     className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40
-                      ${STATUS_COLORS[s]}`}>
+                      ${STATUS_COLORS[s]} ${pendingStatus === s ? 'ring-2 ring-offset-1 ring-navy' : ''}`}>
                     {STATUS_LABELS[s]}
                   </button>
                 ))}
               </div>
+              {pendingStatus && pendingStatus !== detail.status && (
+                <div className="mt-3 flex items-center gap-2 flex-wrap">
+                  <span className="text-xs text-gray-500">「{STATUS_LABELS[pendingStatus]}」に変更しますか？</span>
+                  <button onClick={() => { updateStatus(detail.id, pendingStatus); setPendingStatus(null) }}
+                    className="btn-primary text-xs px-3 py-1.5">確定する</button>
+                  <button onClick={() => setPendingStatus(null)} className="text-xs text-gray-400 underline">キャンセル</button>
+                </div>
+              )}
               {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
+              {detail.confirmation_email_sent && <p className="text-[11px] text-green-700 mt-2">✉️ 自動メール送信済み</p>}
               {mailNotice && <p className="text-[11px] text-gray-500 mt-2">✉️ {mailNotice}</p>}
             </div>
           </div>

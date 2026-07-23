@@ -54,6 +54,7 @@ export interface Reservation {
   status: ReservationStatus
   assigned_admin_id: string | null
   updated_by: string | null
+  confirmation_email_sent: boolean
   updated_at: string
   created_at: string
 }
