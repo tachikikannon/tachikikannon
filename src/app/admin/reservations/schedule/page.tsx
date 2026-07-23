@@ -14,7 +14,7 @@ const TYPE_TAG_COLORS: Record<string, string> = {
   jyuzu: 'bg-amber-100 text-amber-700',
 }
 const STATUS_LABELS: Record<ReservationStatus, string> = {
-  unconfirmed: '未確認', pending: '未確認', in_progress: '対応中', confirmed: '確認済み', completed: '完了', cancelled: 'キャンセル'
+  unconfirmed: '未確認', pending: '未確認', in_progress: '対応中', confirmed: '予約確定', completed: '完了', cancelled: 'キャンセル'
 }
 const STATUS_COLORS: Record<ReservationStatus, string> = {
   unconfirmed: 'bg-yellow-100 text-yellow-700',
@@ -26,12 +26,6 @@ const STATUS_COLORS: Record<ReservationStatus, string> = {
 }
 const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'confirmed', 'completed', 'cancelled']
 const WEEKDAY_LABELS = ['月', '火', '水', '木', '金', '土', '日']
-
-// 護摩祈願は「確認済み」、体験（写経・写仏・数珠づくり）は「予約確定」と表示を出し分ける
-function statusLabel(status: ReservationStatus, type: string) {
-  if (status === 'confirmed' && type !== 'prayer') return '予約確定'
-  return STATUS_LABELS[status]
-}
 
 function dstr(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -73,6 +67,7 @@ export default function AdminReservationSchedulePage() {
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [detail, setDetail] = useState<Reservation | null>(null)
+  const [mailNotice, setMailNotice] = useState<string | null>(null)
 
   const weeks = useMemo(() => getMonthMatrix(year, month), [year, month])
   const monthLabel = new Date(year, month, 1).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })
@@ -108,6 +103,7 @@ export default function AdminReservationSchedulePage() {
     if (detail?.id === id) setDetail({ ...detail, status })
 
     if (status === 'confirmed' && target) {
+      setMailNotice('確定メールを送信中…')
       fetch('/api/notify/reservation-confirmed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -115,7 +111,10 @@ export default function AdminReservationSchedulePage() {
           name: target.name, email: target.email, type: target.type,
           date: target.date, time_slot: target.time_slot, party_size: target.party_size,
         }),
-      }).catch(err => console.error('confirm mail failed:', err))
+      })
+        .then(res => res.json())
+        .then(data => setMailNotice(data.ok ? '確定メールを送信しました' : '確定メールの送信に失敗しました'))
+        .catch(err => { console.error('confirm mail failed:', err); setMailNotice('確定メールの送信に失敗しました') })
     }
   }
 
@@ -191,7 +190,7 @@ export default function AdminReservationSchedulePage() {
                 const visible = items.slice(0, 3)
                 const overflow = items.length - visible.length
                 return (
-                  <button key={di} onClick={() => { setSelectedDate(ds); setDetail(null) }}
+                  <button key={di} onClick={() => { setSelectedDate(ds); setDetail(null); setMailNotice(null) }}
                     className={`min-h-[6.5rem] p-1.5 text-left align-top hover:bg-blue-50 transition-colors
                       ${isSelected ? 'bg-blue-50 ring-1 ring-inset ring-navy/30' : ''}`}>
                     <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs
@@ -233,13 +232,13 @@ export default function AdminReservationSchedulePage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {dayList.map(r => (
-                  <tr key={r.id} onClick={() => setDetail(r)} className="hover:bg-blue-50 cursor-pointer">
+                  <tr key={r.id} onClick={() => { setDetail(r); setMailNotice(null) }} className="hover:bg-blue-50 cursor-pointer">
                     <td className="px-4 py-2.5 whitespace-nowrap font-medium text-navy">{r.time_slot}</td>
                     <td className="px-4 py-2.5 whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
                     <td className="px-4 py-2.5">{r.name}</td>
                     <td className="px-4 py-2.5 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                     <td className="px-4 py-2.5">
-                      <span className={`badge ${STATUS_COLORS[r.status]}`}>{statusLabel(r.status, r.type)}</span>
+                      <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
                     </td>
                   </tr>
                 ))}
@@ -296,11 +295,12 @@ export default function AdminReservationSchedulePage() {
                       disabled={!canEdit || detail.status === s}
                       className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40
                         ${STATUS_COLORS[s]}`}>
-                      {statusLabel(s, detail.type)}
+                      {STATUS_LABELS[s]}
                     </button>
                   ))}
                 </div>
                 {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
+                {mailNotice && <p className="text-[11px] text-gray-500 mt-2">✉️ {mailNotice}</p>}
               </div>
             </div>
           )}

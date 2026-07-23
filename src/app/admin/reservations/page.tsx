@@ -11,7 +11,7 @@ const STATUS_LABELS: Record<ReservationStatus, string> = {
   unconfirmed: '未確認',
   pending: '未確認',
   in_progress: '対応中',
-  confirmed: '確認済み',
+  confirmed: '予約確定',
   completed: '完了',
   cancelled: 'キャンセル',
 }
@@ -26,12 +26,6 @@ const STATUS_COLORS: Record<ReservationStatus, string> = {
 const FILTERS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'confirmed', 'completed', 'cancelled']
 const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'confirmed', 'completed', 'cancelled']
 
-// 護摩祈願は「確認済み」、体験（写経・写仏・数珠づくり）は「予約確定」と表示を出し分ける
-function statusLabel(status: ReservationStatus, type: string) {
-  if (status === 'confirmed' && type !== 'prayer') return '予約確定'
-  return STATUS_LABELS[status]
-}
-
 export default function AdminReservationsPage() {
   const supabase = createClient()
   const { canEditReservations: canEdit } = useAdminProfile()
@@ -39,6 +33,7 @@ export default function AdminReservationsPage() {
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [detail, setDetail] = useState<Reservation | null>(null)
   const [filter, setFilter] = useState<string>('all')
+  const [mailNotice, setMailNotice] = useState<string | null>(null)
 
   async function load() {
     const query = supabase.from('reservations').select('*').order('date').order('created_at', { ascending: false })
@@ -56,6 +51,7 @@ export default function AdminReservationsPage() {
     if (detail?.id === id) setDetail({ ...detail, status })
 
     if (status === 'confirmed' && target) {
+      setMailNotice('確定メールを送信中…')
       fetch('/api/notify/reservation-confirmed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,7 +59,10 @@ export default function AdminReservationsPage() {
           name: target.name, email: target.email, type: target.type,
           date: target.date, time_slot: target.time_slot, party_size: target.party_size,
         }),
-      }).catch(err => console.error('confirm mail failed:', err))
+      })
+        .then(res => res.json())
+        .then(data => setMailNotice(data.ok ? '確定メールを送信しました' : '確定メールの送信に失敗しました'))
+        .catch(err => { console.error('confirm mail failed:', err); setMailNotice('確定メールの送信に失敗しました') })
     }
   }
 
@@ -121,7 +120,7 @@ export default function AdminReservationsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map(r => (
-                <tr key={r.id} onClick={() => setDetail(r)}
+                <tr key={r.id} onClick={() => { setDetail(r); setMailNotice(null) }}
                   className="hover:bg-blue-50 cursor-pointer">
                   <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
                     {new Date(r.date).toLocaleDateString('ja-JP')}<br/>
@@ -131,7 +130,7 @@ export default function AdminReservationsPage() {
                   <td className="px-4 py-3 font-medium">{r.name}</td>
                   <td className="px-4 py-3 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                   <td className="px-4 py-3">
-                    <span className={`badge ${STATUS_COLORS[r.status]}`}>{statusLabel(r.status, r.type)}</span>
+                    <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
                     {r.updated_at ? new Date(r.updated_at).toLocaleString('ja-JP') : '—'}
@@ -190,11 +189,12 @@ export default function AdminReservationsPage() {
                     disabled={!canEdit || detail.status === s}
                     className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40
                       ${STATUS_COLORS[s]}`}>
-                    {statusLabel(s, detail.type)}
+                    {STATUS_LABELS[s]}
                   </button>
                 ))}
               </div>
               {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
+              {mailNotice && <p className="text-[11px] text-gray-500 mt-2">✉️ {mailNotice}</p>}
             </div>
           </div>
         )}
