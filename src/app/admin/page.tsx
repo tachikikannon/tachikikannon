@@ -5,15 +5,11 @@ export default async function AdminDashboard() {
   const supabase = await createServerSupabaseClient()
 
   const [
-    { count: newsCount },
-    { count: reservationCount },
     { count: unreadContacts },
     { count: pendingReservations },
     { count: unreadApplications },
     { count: unreadEventApplications },
   ] = await Promise.all([
-    supabase.from('news').select('*', { count: 'exact', head: true }),
-    supabase.from('reservations').select('*', { count: 'exact', head: true }),
     supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('is_read', false).eq('source', 'contact'),
     supabase.from('reservations').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('applications').select('*', { count: 'exact', head: true }).eq('is_read', false),
@@ -25,8 +21,6 @@ export default async function AdminDashboard() {
     { label: '未読の行事の申込み', value: unreadEventApplications ?? 0, href: '/admin/contacts', alert: (unreadEventApplications ?? 0) > 0 },
     { label: '未確認の予約',       value: pendingReservations ?? 0, href: '/admin/reservations', alert: (pendingReservations ?? 0) > 0 },
     { label: '未読の申請',         value: unreadApplications ?? 0, href: '/admin/applications', alert: (unreadApplications ?? 0) > 0 },
-    { label: 'お知らせ件数',       value: newsCount ?? 0, href: '/admin/news', alert: false },
-    { label: '予約件数（合計）',   value: reservationCount ?? 0, href: '/admin/reservations', alert: false },
   ]
 
   const quickLinks = [
