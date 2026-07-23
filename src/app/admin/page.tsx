@@ -9,16 +9,19 @@ export default async function AdminDashboard() {
     { count: reservationCount },
     { count: unreadContacts },
     { count: pendingReservations },
+    { count: unreadApplications },
   ] = await Promise.all([
     supabase.from('news').select('*', { count: 'exact', head: true }),
     supabase.from('reservations').select('*', { count: 'exact', head: true }),
     supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('is_read', false),
     supabase.from('reservations').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    supabase.from('applications').select('*', { count: 'exact', head: true }).eq('is_read', false),
   ])
 
   const stats = [
     { label: '未読のお問い合わせ', value: unreadContacts ?? 0, href: '/admin/contacts', alert: (unreadContacts ?? 0) > 0 },
     { label: '未確認の予約',       value: pendingReservations ?? 0, href: '/admin/reservations', alert: (pendingReservations ?? 0) > 0 },
+    { label: '未読の申請',         value: unreadApplications ?? 0, href: '/admin/applications', alert: (unreadApplications ?? 0) > 0 },
     { label: 'お知らせ件数',       value: newsCount ?? 0, href: '/admin/news', alert: false },
     { label: '予約件数（合計）',   value: reservationCount ?? 0, href: '/admin/reservations', alert: false },
   ]
