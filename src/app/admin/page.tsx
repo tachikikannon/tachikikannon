@@ -24,9 +24,9 @@ export default async function AdminDashboard() {
   ]
 
   const quickLinks = [
-    { href: '/admin/news/new',         label: 'お知らせを書く', icon: '📢' },
-    { href: '/admin/blog/new',         label: 'ブログを書く',   icon: '✏️' },
-    { href: '/admin/events/new',       label: '行事を登録する', icon: '📅' },
+    { href: '/admin/news?new=1',       label: 'お知らせを書く', icon: '📢' },
+    { href: '/admin/blog?new=1',       label: 'ブログを書く',   icon: '✏️' },
+    { href: '/admin/events?new=1',     label: '行事を登録する', icon: '📅' },
     { href: '/admin/reservations',     label: '予約を確認する', icon: '📋' },
     { href: '/admin/contacts',         label: 'お問い合わせを見る', icon: '✉️' },
     { href: '/admin/images',           label: '画像をアップロード', icon: '🖼️' },

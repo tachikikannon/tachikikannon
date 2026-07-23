@@ -13,7 +13,12 @@ export default function AdminEventsPage() {
     const { data } = await supabase.from('events').select('*').order('start_date')
     setList(data ?? [])
   }
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+    if (new URLSearchParams(window.location.search).get('new') === '1') {
+      setEditing({ title:'', start_date:'', all_day:true, color:'#1a2a4a' })
+    }
+  }, [])
 
   async function save() {
     if (!editing) return

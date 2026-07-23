@@ -13,7 +13,12 @@ export default function AdminBlogPage() {
     const { data } = await supabase.from('posts').select('*').order('created_at', { ascending: false })
     setList(data ?? [])
   }
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+    if (new URLSearchParams(window.location.search).get('new') === '1') {
+      setEditing({ title:'', body:'', excerpt:'', is_published:false })
+    }
+  }, [])
 
   function toSlug(title: string) {
     return encodeURIComponent(title.trim().replace(/\s+/g, '-').toLowerCase()).slice(0, 60)

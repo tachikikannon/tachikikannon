@@ -17,7 +17,13 @@ export default function AdminNewsPage() {
     setList(data ?? [])
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+    if (new URLSearchParams(window.location.search).get('new') === '1') {
+      setEditing({ title:'', excerpt:'', body:'', cover_url:'', category:'お知らせ', is_published:false })
+      setPreview(false)
+    }
+  }, [])
 
   async function save() {
     if (!editing) return
