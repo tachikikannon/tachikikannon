@@ -1,6 +1,7 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { sendLinePush } from '@/lib/line'
+import { sendGmail } from '@/lib/gmail'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer:  '護摩祈願',
@@ -46,12 +47,11 @@ export async function POST(req: Request) {
       `,
     }),
 
-    // 申込者への自動返信メール
-    resend.emails.send({
-      from: 'noreply@resend.dev',
-      to: email,
-      subject: `【立木観音】ご予約を受け付けました — ${typeLabel}`,
-      html: `
+    // 申込者への自動返信メール（Resendはドメイン未認証のため、Gmail経由で直接送信）
+    sendGmail(
+      email,
+      `【立木観音】ご予約を受け付けました — ${typeLabel}`,
+      `
         <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
           <div style="background:#1a2a4a;padding:24px;text-align:center;">
             <h1 style="color:#c8a96e;margin:0;font-size:20px;">日光山中禅寺 立木観音</h1>
@@ -78,8 +78,8 @@ export async function POST(req: Request) {
             〒321-1661 栃木県日光市中宮祠2578
           </div>
         </div>
-      `,
-    }),
+      `
+    ),
     ])
 
     return NextResponse.json({ ok: true })

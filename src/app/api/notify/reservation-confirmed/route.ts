@@ -1,5 +1,5 @@
-import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { sendGmail } from '@/lib/gmail'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer:  '護摩祈願',
@@ -10,17 +10,15 @@ const TYPE_LABELS: Record<string, string> = {
 
 export async function POST(req: Request) {
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY)
     const body = await req.json()
     const { name, email, type, date, time_slot, party_size } = body
 
     const typeLabel = TYPE_LABELS[type] ?? type
 
-    const { data, error } = await resend.emails.send({
-      from: 'noreply@resend.dev',
-      to: email,
-      subject: `【立木観音】ご予約が確定しました — ${typeLabel}`,
-      html: `
+    await sendGmail(
+      email,
+      `【立木観音】ご予約が確定しました — ${typeLabel}`,
+      `
         <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
           <div style="background:#1a2a4a;padding:24px;text-align:center;">
             <h1 style="color:#c8a96e;margin:0;font-size:20px;">日光山中禅寺 立木観音</h1>
@@ -46,15 +44,10 @@ export async function POST(req: Request) {
             〒321-1661 栃木県日光市中宮祠2578
           </div>
         </div>
-      `,
-    })
+      `
+    )
 
-    if (error) {
-      console.error('[notify/reservation-confirmed] resend error:', error)
-      return NextResponse.json({ ok: false, error }, { status: 500 })
-    }
-
-    console.log('[notify/reservation-confirmed] sent:', data?.id, 'to', email)
+    console.log('[notify/reservation-confirmed] sent to', email)
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('[notify/reservation-confirmed] error:', err)
