@@ -44,9 +44,21 @@ export default function AdminReservationsPage() {
   useEffect(() => { load() }, [])
 
   async function updateStatus(id: string, status: ReservationStatus) {
+    const target = list.find(r => r.id === id)
     await supabase.from('reservations').update({ status }).eq('id', id)
     load()
     if (detail?.id === id) setDetail({ ...detail, status })
+
+    if (status === 'confirmed' && target) {
+      fetch('/api/notify/reservation-confirmed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: target.name, email: target.email, type: target.type,
+          date: target.date, time_slot: target.time_slot, party_size: target.party_size,
+        }),
+      }).catch(err => console.error('confirm mail failed:', err))
+    }
   }
 
   async function updateAssignee(id: string, assigned_admin_id: string) {
