@@ -17,7 +17,7 @@ const STATUS_OPTIONS: ContactStatus[] = ['unread', 'checking', 'replied', 'compl
 
 export default function AdminContactsPage() {
   const supabase = createClient()
-  const { canEdit } = useAdminProfile()
+  const { canEditContacts: canEdit } = useAdminProfile()
   const [list, setList] = useState<Contact[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [selected, setSelected] = useState<Contact | null>(null)

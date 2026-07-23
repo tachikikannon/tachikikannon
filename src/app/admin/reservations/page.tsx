@@ -28,7 +28,7 @@ const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'conf
 
 export default function AdminReservationsPage() {
   const supabase = createClient()
-  const { canEdit } = useAdminProfile()
+  const { canEditReservations: canEdit } = useAdminProfile()
   const [list, setList] = useState<Reservation[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [detail, setDetail] = useState<Reservation | null>(null)

@@ -74,7 +74,7 @@ export interface Contact {
   created_at: string
 }
 
-export type AdminRole = 'super_admin' | 'admin' | 'viewer'
+export type AdminRole = 'super_admin' | 'admin' | 'reservation_admin' | 'contact_admin' | 'viewer'
 
 export interface AdminProfile {
   id: string
