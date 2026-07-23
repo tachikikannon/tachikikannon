@@ -243,6 +243,7 @@ export default function AdminReservationSchedulePage() {
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">お名前</th>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">担当者</th>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">状態</th>
+                  <th className="text-left px-4 py-2.5 text-xs text-gray-500">確定メール</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -254,12 +255,16 @@ export default function AdminReservationSchedulePage() {
                     <td className="px-4 py-2.5 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                     <td className="px-4 py-2.5">
                       <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
-                      {r.confirmation_email_sent && <div className="text-[10px] text-gray-400 mt-1">✉️ 自動メール送信済み</div>}
+                    </td>
+                    <td className="px-4 py-2.5 text-xs whitespace-nowrap">
+                      {r.confirmation_email_sent
+                        ? <span className="text-green-700">✉️ 送信済み</span>
+                        : <span className="text-gray-300">—</span>}
                     </td>
                   </tr>
                 ))}
                 {dayList.length === 0 && (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">この日の予約はありません</td></tr>
+                  <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400 text-sm">この日の予約はありません</td></tr>
                 )}
               </tbody>
             </table>
@@ -333,8 +338,14 @@ export default function AdminReservationSchedulePage() {
                   </div>
                 )}
                 {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
-                {detail.confirmation_email_sent && <p className="text-[11px] text-green-700 mt-2">✉️ 自動メール送信済み</p>}
                 {mailNotice && <p className="text-[11px] text-gray-500 mt-2">✉️ {mailNotice}</p>}
+              </div>
+
+              <div className="mt-5 border-t pt-4">
+                <p className="text-xs text-gray-500 mb-2">確定メール</p>
+                {detail.confirmation_email_sent
+                  ? <p className="text-sm text-green-700">✉️ お客様に送信済みです</p>
+                  : <p className="text-sm text-gray-400">未送信（「予約確定」にすると自動送信されます）</p>}
               </div>
             </div>
           )}
