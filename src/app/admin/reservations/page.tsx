@@ -118,11 +118,11 @@ export default function AdminReservationsPage() {
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-3 gap-4 items-start">
         {/* 一覧 */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow overflow-hidden">
+        <div className="lg:col-span-2 bg-white rounded-xl shadow overflow-y-auto lg:max-h-[calc(100vh-14rem)]">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">日付</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">種別</th>
@@ -159,7 +159,7 @@ export default function AdminReservationsPage() {
 
         {/* 詳細 */}
         {detail && (
-          <div className="bg-white rounded-xl shadow p-5">
+          <div className="bg-white rounded-xl shadow p-5 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-medium text-navy">予約詳細</h2>
               <div className="flex items-center gap-3">
