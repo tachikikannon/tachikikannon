@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 
@@ -10,11 +10,16 @@ const navItems: NavItem[] = [
   { href: '/admin',               label: 'ダッシュボード',   icon: '🏠' },
   { href: '/admin/news',          label: 'お知らせ',         icon: '📢' },
   { href: '/admin/blog',          label: 'ブログ',           icon: '✏️' },
-  { href: '/admin/events',        label: '行事カレンダー',   icon: '📅' },
-  { href: '/admin/reservations',  label: '予約管理',         icon: '📋' },
-  { href: '/admin/reservations/schedule', label: '予約スケジュール', icon: '🗓️' },
-  { href: '/admin/blocked-dates', label: '予約不可日',       icon: '🚫' },
-  { href: '/admin/capacity',      label: '定員設定',         icon: '👥' },
+  // ── 予約・体験 ──
+  { href: '/admin/reservations',  label: '予約管理',         icon: '📋', group: '予約・体験' },
+  { href: '/admin/reservations/schedule', label: '予約スケジュール', icon: '🗓️', group: '予約・体験' },
+  { href: '/admin/blocked-dates', label: '予約不可日',       icon: '🚫', group: '予約・体験' },
+  { href: '/admin/capacity',      label: '定員設定',         icon: '👥', group: '予約・体験' },
+  // ── 行事 ──
+  { href: '/admin/events',        label: '行事カレンダー',   icon: '📅', group: '行事' },
+  // ── お問い合わせ ──
+  { href: '/admin/contacts',      label: 'お問い合わせ',     icon: '✉️', group: 'お問い合わせ' },
+  { href: '/admin/applications',  label: '申請管理',         icon: '📝', group: 'お問い合わせ' },
   // ── 立木観音 ──
   { href: '/admin/top-page',              label: 'トップページ',   icon: '🏠', group: '立木観音' },
   { href: '/admin/chuzenji/history',      label: '歴史',           icon: '📜', group: '立木観音' },
@@ -43,20 +48,16 @@ const navItems: NavItem[] = [
   { href: '/admin/onsenji/events/annual',      label: '年間行事一覧',     icon: '📅', group: '温泉寺' },
   { href: '/admin/onsenji/events/yakushiko',   label: '薬師講大祭（8/8）', icon: '🔥', group: '温泉寺' },
   { href: '/admin/onsenji/events/setsubun',    label: '節分大祭（1月）',   icon: '🫘', group: '温泉寺' },
-  // ── 共通 ──
-  { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️' },
-  { href: '/admin/contacts',      label: 'お問い合わせ',     icon: '✉️' },
-  { href: '/admin/applications',  label: '申請管理',         icon: '📝' },
-  { href: '/admin/images',        label: '画像管理',         icon: '🖼️' },
-  { href: '/admin/users',         label: '管理者管理',       icon: '👤' },
+  // ── サイト管理 ──
+  { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️', group: 'サイト管理' },
+  { href: '/admin/images',        label: '画像管理',         icon: '🖼️', group: 'サイト管理' },
+  { href: '/admin/users',         label: '管理者管理',       icon: '👤', group: 'サイト管理' },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => { setMenuOpen(false) }, [pathname])
 
   async function handleLogout() {
     const supabase = createClient()
@@ -110,7 +111,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               }
               const isActive = href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
               rendered.push(
-                <Link key={href} href={href}
+                <Link key={href} href={href} onClick={() => setMenuOpen(false)}
                   className={`flex items-center gap-3 px-5 py-2.5 text-sm transition-colors
                     ${isActive
                       ? group === '温泉寺' ? 'bg-white/10 text-[#7ec8a4]' : 'bg-white/10 text-gold'
