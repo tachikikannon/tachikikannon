@@ -249,7 +249,7 @@ export default function AdminReservationSchedulePage() {
                   <tr key={r.id} onClick={() => openDetail(r)} className="hover:bg-blue-50 cursor-pointer">
                     <td className="px-4 py-2.5 whitespace-nowrap font-medium text-navy">{r.time_slot}</td>
                     <td className="px-4 py-2.5 whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
-                    <td className="px-4 py-2.5">{r.name}</td>
+                    <td className="px-4 py-2.5 whitespace-nowrap">{r.name}</td>
                     <td className="px-4 py-2.5 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                     <td className="px-4 py-2.5">
                       <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>

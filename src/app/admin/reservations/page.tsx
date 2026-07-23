@@ -140,8 +140,8 @@ export default function AdminReservationsPage() {
                     {new Date(r.date).toLocaleDateString('ja-JP')}<br/>
                     <span className="text-gray-400">{r.time_slot}</span>
                   </td>
-                  <td className="px-4 py-3 text-xs">{TYPE_LABELS[r.type]}</td>
-                  <td className="px-4 py-3 font-medium">{r.name}</td>
+                  <td className="px-4 py-3 text-xs whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
+                  <td className="px-4 py-3 font-medium whitespace-nowrap">{r.name}</td>
                   <td className="px-4 py-3 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                   <td className="px-4 py-3">
                     <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
