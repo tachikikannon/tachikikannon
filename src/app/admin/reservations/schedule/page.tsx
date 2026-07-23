@@ -27,6 +27,12 @@ const STATUS_COLORS: Record<ReservationStatus, string> = {
 const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'confirmed', 'completed', 'cancelled']
 const WEEKDAY_LABELS = ['月', '火', '水', '木', '金', '土', '日']
 
+// 護摩祈願は「確認済み」、体験（写経・写仏・数珠づくり）は「予約確定」と表示を出し分ける
+function statusLabel(status: ReservationStatus, type: string) {
+  if (status === 'confirmed' && type !== 'prayer') return '予約確定'
+  return STATUS_LABELS[status]
+}
+
 function dstr(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
@@ -117,6 +123,13 @@ export default function AdminReservationSchedulePage() {
     await supabase.from('reservations').update({ assigned_admin_id: assigned_admin_id || null }).eq('id', id)
     load()
     if (detail?.id === id) setDetail({ ...detail, assigned_admin_id: assigned_admin_id || null })
+  }
+
+  async function remove(id: string) {
+    if (!confirm('この予約を削除しますか？削除すると元に戻せません。')) return
+    await supabase.from('reservations').delete().eq('id', id)
+    setDetail(null)
+    load()
   }
 
   const adminName = (id: string | null) => admins.find(a => a.id === id)?.name || '未割当'
@@ -226,7 +239,7 @@ export default function AdminReservationSchedulePage() {
                     <td className="px-4 py-2.5">{r.name}</td>
                     <td className="px-4 py-2.5 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                     <td className="px-4 py-2.5">
-                      <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+                      <span className={`badge ${STATUS_COLORS[r.status]}`}>{statusLabel(r.status, r.type)}</span>
                     </td>
                   </tr>
                 ))}
@@ -241,7 +254,10 @@ export default function AdminReservationSchedulePage() {
             <div className="bg-white rounded-xl shadow p-5">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-medium text-navy">予約詳細</h2>
-                <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+                <div className="flex items-center gap-3">
+                  {canEdit && <button onClick={() => remove(detail.id)} className="text-red-500 text-xs hover:underline">削除</button>}
+                  <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+                </div>
               </div>
               <dl className="space-y-3 text-sm">
                 {[
@@ -280,7 +296,7 @@ export default function AdminReservationSchedulePage() {
                       disabled={!canEdit || detail.status === s}
                       className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40
                         ${STATUS_COLORS[s]}`}>
-                      {STATUS_LABELS[s]}
+                      {statusLabel(s, detail.type)}
                     </button>
                   ))}
                 </div>
