@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 
@@ -53,6 +54,9 @@ const navItems: NavItem[] = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => { setMenuOpen(false) }, [pathname])
 
   async function handleLogout() {
     const supabase = createClient()
@@ -64,8 +68,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen flex bg-gray-100">
+      {/* モバイル用ヘッダー（ハンバーガーメニュー） */}
+      <div className="md:hidden fixed top-0 inset-x-0 z-30 flex items-center justify-between bg-navy text-white px-4 py-3 print:hidden">
+        <p className="font-serif text-sm">中禅寺 立木観音 管理画面</p>
+        <button onClick={() => setMenuOpen(o => !o)} aria-label="メニュー" className="text-2xl leading-none px-1">
+          {menuOpen ? '✕' : '☰'}
+        </button>
+      </div>
+
+      {/* モバイルでメニューを開いた時の背景オーバーレイ */}
+      {menuOpen && (
+        <div className="md:hidden fixed inset-0 bg-black/40 z-20" onClick={() => setMenuOpen(false)} />
+      )}
+
       {/* サイドバー */}
-      <aside className="w-56 bg-navy flex flex-col flex-shrink-0 print:hidden">
+      <aside className={`w-56 bg-navy flex flex-col flex-shrink-0 print:hidden
+        fixed inset-y-0 left-0 z-30 transform transition-transform duration-200
+        ${menuOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:static md:translate-x-0`}>
         <div className="p-5 border-b border-white/10">
           <p className="text-gold text-[10px] tracking-widest">管理画面</p>
           <p className="text-white font-serif text-sm mt-0.5">中禅寺 立木観音</p>
@@ -112,7 +132,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* メインコンテンツ */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto pt-12 md:pt-0">
         {children}
       </main>
     </div>
