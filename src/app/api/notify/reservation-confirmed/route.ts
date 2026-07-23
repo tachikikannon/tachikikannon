@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const typeLabel = TYPE_LABELS[type] ?? type
 
-    await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: 'noreply@resend.dev',
       to: email,
       subject: `【立木観音】ご予約が確定しました — ${typeLabel}`,
@@ -49,9 +49,15 @@ export async function POST(req: Request) {
       `,
     })
 
+    if (error) {
+      console.error('[notify/reservation-confirmed] resend error:', error)
+      return NextResponse.json({ ok: false, error }, { status: 500 })
+    }
+
+    console.log('[notify/reservation-confirmed] sent:', data?.id, 'to', email)
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error('notify/reservation-confirmed error:', err)
+    console.error('[notify/reservation-confirmed] error:', err)
     return NextResponse.json({ ok: false }, { status: 500 })
   }
 }
