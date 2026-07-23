@@ -286,6 +286,99 @@ const SECTIONS: Section[] = [
       { key: 'onsenji_jyuzu_cta_sub', label: '予約ボタン下の説明文', defaultValue: '材料の準備がありますので、事前のご予約をお願いします。' },
     ],
   },
+  {
+    section: '年間行事一覧',
+    href: '/onsenji/events',
+    fields: [
+      { key: 'onsenji_events_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '温泉寺の法要・行事のご案内' },
+      {
+        key: 'onsenji_events_list', label: '行事一覧（画像・リンク先は固定・2件）', type: 'list',
+        listFields: [
+          { key: 'month', label: '月（バッジ表示）' },
+          { key: 'date', label: '開催日' },
+          { key: 'time', label: '開始時間' },
+          { key: 'name', label: '行事名' },
+          { key: 'desc', label: '説明', multiline: true },
+        ],
+        defaultValue: J([
+          { month: '8月', date: '8月8日', time: '午前11時〜', name: '薬師講大祭・採灯大護摩供', desc: '湯の湖畔にて、山伏によって採灯大護摩供が焚かれます。写経が御本尊に奉じられ、護摩の炎で焚き上げられる、温泉寺最大の法要です。' },
+          { month: '1月', date: '1月下旬', time: '午前11時〜', name: '温泉寺 節分大祭', desc: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。' },
+        ]),
+      },
+    ],
+  },
+  {
+    section: '節分大祭（1月下旬）',
+    href: '/onsenji/events/setsubun',
+    fields: [
+      { key: 'setsubun_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '毎年1月下旬　午前11時より　※日程は年によって異なります' },
+      { key: 'setsubun_heading_about', label: '「行事について」見出し', defaultValue: '行事について' },
+      { key: 'setsubun_about', label: '行事について（説明文）', multiline: true, defaultValue: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。' },
+      { key: 'setsubun_info_date', label: '開催日（カード表示）', defaultValue: '1月下旬（毎年）' },
+      { key: 'setsubun_info_time', label: '開始時間（カード表示）', defaultValue: '午前11時〜' },
+      { key: 'setsubun_info_join', label: '参列（カード表示）', defaultValue: '自由（申し込み不要）' },
+      { key: 'setsubun_date_note', label: '日程変動の注意書き', defaultValue: '📌 詳細な日程は年によって異なります。最新情報はお電話（0288-55-0013）またはお問い合わせフォームでご確認ください。' },
+      { key: 'setsubun_heading_schedule', label: '「タイムスケジュール」見出し', defaultValue: 'タイムスケジュール' },
+      {
+        key: 'setsubun_schedule', label: 'タイムスケジュール', type: 'list',
+        listFields: [{ key: 'time', label: '時間' }, { key: 'title', label: '行事名' }, { key: 'desc', label: '説明', multiline: true }],
+        defaultValue: J([
+          { time: '11:00', title: '節分大祭（法要）', desc: '薬師堂にて節分の法要を執り行います。ご本尊・薬師如来のご加護のもと、新年の無病息災・開運招福をお祈りいたします。' },
+          { time: '11:30', title: '護摩供', desc: '護摩の炎に参拝者の願い事を記した護摩木を奉じ、薬師如来の御力で煩悩や邪気をお焚き上げいたします。' },
+          { time: '終了後', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。参列の皆様にも豆をお配りいたします。' },
+        ]),
+      },
+      { key: 'setsubun_heading_notes', label: '「ご参列にあたって」見出し', defaultValue: 'ご参列にあたって' },
+      {
+        key: 'setsubun_notes', label: 'ご参列にあたって', type: 'list',
+        listFields: [{ key: 'text', label: '注意事項', multiline: true }],
+        defaultValue: J([
+          { text: '参列は自由です。事前のお申し込みは不要ですが、御札をご希望の方は申し込みフォームよりお申し込みください。' },
+          { text: '1月の湯元は積雪・寒冷が予想されます。防寒対策を十分にしてお越しください。' },
+          { text: 'お支払いは当日・現地にてお受けいたします。' },
+          { text: '日程は年によって異なります。必ず事前にお電話またはウェブサイトでご確認ください。' },
+        ]),
+      },
+      { key: 'setsubun_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み' },
+      { key: 'setsubun_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。' },
+    ],
+  },
+  {
+    section: '薬師講大祭・採灯大護摩供（8/8）',
+    href: '/onsenji/events/yakushiko',
+    fields: [
+      { key: 'yakushiko_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '毎年8月8日　午前11時より' },
+      { key: 'yakushiko_heading_about', label: '「行事について」見出し', defaultValue: '行事について' },
+      { key: 'yakushiko_about', label: '行事について（説明文）', multiline: true, defaultValue: '毎年8月8日、温泉寺では湯の湖畔を舞台に、山伏によって採灯大護摩供が焚かれます。' },
+      { key: 'yakushiko_info_date', label: '開催日（カード表示）', defaultValue: '8月8日（毎年）' },
+      { key: 'yakushiko_info_time', label: '開始時間（カード表示）', defaultValue: '午前11時〜' },
+      { key: 'yakushiko_info_join', label: '参列（カード表示）', defaultValue: '自由（申し込み不要）' },
+      { key: 'yakushiko_heading_schedule', label: '「タイムスケジュール」見出し', defaultValue: 'タイムスケジュール' },
+      {
+        key: 'yakushiko_schedule', label: 'タイムスケジュール', type: 'list',
+        listFields: [{ key: 'time', label: '時間' }, { key: 'title', label: '行事名' }, { key: 'desc', label: '説明', multiline: true }],
+        defaultValue: J([
+          { time: '11:00', title: '薬師講大祭', desc: '薬師堂にてご本尊・薬師瑠璃光如来への法要を執り行います。' },
+          { time: '11:30', title: '採灯大護摩供', desc: '湯の湖畔にて、山伏装束に身を包んだ僧侶たちによる採灯大護摩供を厳修いたします。' },
+          { time: '終了後', title: '写経奉納・御朱印授与', desc: '写経体験でお写しいただいた写経を御本尊に奉納いたします。特別御朱印のお授けも行います。' },
+        ]),
+      },
+      { key: 'yakushiko_heading_gallery', label: '「行事の様子」見出し', defaultValue: '行事の様子' },
+      { key: 'yakushiko_heading_notes', label: '「ご参列にあたって」見出し', defaultValue: 'ご参列にあたって' },
+      {
+        key: 'yakushiko_notes', label: 'ご参列にあたって', type: 'list',
+        listFields: [{ key: 'text', label: '注意事項', multiline: true }],
+        defaultValue: J([
+          { text: '参列は自由です。事前のお申し込みは不要ですが、御札・願い事をご希望の方は申し込みフォームよりお申し込みください。' },
+          { text: '写経体験（1,000円）は開湯期間中毎日受付しています。当日の写経奉納も可能です。' },
+          { text: 'お支払いは当日・現地にてお受けいたします。' },
+          { text: '詳細・変更がある場合は当サイトまたはお電話にてご確認ください。' },
+        ]),
+      },
+      { key: 'yakushiko_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み' },
+      { key: 'yakushiko_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '大護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。' },
+    ],
+  },
 ]
 
 export default function OnsenjPagesEditor() {
