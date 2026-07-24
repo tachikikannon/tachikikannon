@@ -33,12 +33,19 @@ const DEFAULTS: Record<string, string> = {
   setsubun_info_join: '自由（申し込み不要）',
   setsubun_date_note: '📌 詳細な日程は年によって異なります。最新情報はお電話（0288-55-0013）またはお問い合わせフォームでご確認ください。',
   setsubun_heading_schedule: 'タイムスケジュール',
+  setsubun_heading_gallery: '行事の様子',
   setsubun_heading_notes: 'ご参列にあたって',
   setsubun_cta_heading: '御札のお申し込み',
   setsubun_cta_text: '護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
   setsubun_schedule: JSON.stringify(DEFAULT_SCHEDULE),
   setsubun_notes: JSON.stringify(DEFAULT_NOTES),
 }
+
+const GALLERY_IMAGES = [
+  '/images/温泉寺節分/onsenji-setubun (1).JPG',
+  '/images/温泉寺節分/onsenji-setubun (2).JPG',
+  '/images/温泉寺節分/onsenji-setubun (3).JPG',
+]
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
@@ -73,7 +80,7 @@ export default async function SetsubunPage() {
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <Image src="/images/gyouji.JPEG" alt="節分大祭" fill className="object-cover" />
+          <Image src="/images/温泉寺節分/onsenji-setubun-hiro.JPG" alt="節分大祭" fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-onsenji via-onsenji/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">January  Annual Event</p>
@@ -128,6 +135,20 @@ export default async function SetsubunPage() {
                 </li>
               ))}
             </ol>
+          </section>
+
+          <section>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
+              <h2 className="font-serif text-2xl text-onsenji">{c.setsubun_heading_gallery}</h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {GALLERY_IMAGES.map((src, i) => (
+                <div key={src} className="relative h-40 md:h-52 rounded-xl overflow-hidden shadow-sm">
+                  <Image src={src} alt={`節分大祭の様子 ${i + 1}`} fill className="object-cover" />
+                </div>
+              ))}
+            </div>
           </section>
 
           <section>

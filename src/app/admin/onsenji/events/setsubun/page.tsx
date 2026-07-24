@@ -21,6 +21,7 @@ const FIELDS = [
       { time: '終了後', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。参列の皆様にも豆をお配りいたします。' },
     ]),
   },
+  { key: 'setsubun_heading_gallery', label: '「行事の様子」見出し（画像は固定・3件）', defaultValue: '行事の様子' },
   { key: 'setsubun_heading_notes', label: '「ご参列にあたって」見出し', defaultValue: 'ご参列にあたって' },
   {
     key: 'setsubun_notes', label: 'ご参列にあたって', type: 'list' as const,
