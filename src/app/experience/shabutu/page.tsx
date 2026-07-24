@@ -9,11 +9,11 @@ import ZoomableImage from '@/components/ZoomableImage'
 export const metadata: Metadata = { title: '写仏体験' }
 
 const DEFAULT_FLOW = [
-  { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
-  { title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
-  { title: 'お描きいただきます', text: '下絵に沿って、立木観世音菩薩のお姿をゆっくりお描きください。係の者がご説明いたします。' },
-  { title: '特別御朱印のお授け', text: '完成後、銀紙特別朱印（立木観世音）をお授けします。' },
-  { title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
+  { icon: '📝', title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
+  { icon: '🖌️', title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
+  { icon: '🎨', title: 'お描きいただきます', text: '下絵に沿って、立木観世音菩薩のお姿をゆっくりお描きください。係の者がご説明いたします。' },
+  { icon: '🙏', title: '特別御朱印のお授け', text: '完成後、銀紙特別朱印（立木観世音）をお授けします。' },
+  { icon: '🖼️', title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
 ]
 const DEFAULT_ITEMS = [
   { text: '下絵・筆・墨・硯はすべてご用意しています。手ぶらでお越しください。' },
@@ -65,7 +65,8 @@ async function getContent() {
 
 export default async function ShabutuPage() {
   const c = await getContent()
-  const flow  = pj<typeof DEFAULT_FLOW>(c.shabutu_flow, DEFAULT_FLOW)
+  const flowRaw = pj<{ icon?: string; title: string; text: string }[]>(c.shabutu_flow, DEFAULT_FLOW)
+  const flow    = flowRaw.map((f, i) => ({ ...DEFAULT_FLOW[i], ...f }))
   const items = pj<typeof DEFAULT_ITEMS>(c.shabutu_items, DEFAULT_ITEMS)
 
   return (
@@ -120,16 +121,23 @@ export default async function ShabutuPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shabutu_heading_flow}</h2>
-            <ol className="relative border-l-2 border-gold ml-4 space-y-6">
-              {flow.map(({ title, text }, i) => (
-                <li key={i} className="pl-6 relative">
-                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-bold">{i + 1}</div>
-                  <h3 className="font-medium text-navy mb-1">{title}</h3>
+            <h2 className="text-xl font-serif text-navy text-center mb-1">{c.shabutu_heading_flow}</h2>
+            <div className="w-10 h-0.5 bg-gold mx-auto mb-8" />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4">
+              {flow.map(({ icon, title, text }, i) => (
+                <div key={i} className="relative">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-9 h-9 rounded-full bg-navy text-gold flex items-center justify-center text-sm font-serif font-bold flex-shrink-0">{i + 1}</span>
+                    <span className="text-xl">{icon}</span>
+                    <h3 className="font-medium text-navy">{title}</h3>
+                    {i < flow.length - 1 && (
+                      <span className="hidden lg:block ml-auto text-gold text-xl">→</span>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
-                </li>
+                </div>
               ))}
-            </ol>
+            </div>
           </section>
 
           <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
