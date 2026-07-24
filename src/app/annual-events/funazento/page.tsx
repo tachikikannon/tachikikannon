@@ -32,6 +32,15 @@ const DEFAULTS: Record<string, string> = {
   funazento_notes: JSON.stringify(DEFAULT_NOTES),
 }
 
+const GALLERY_IMAGES = [
+  '/images/船禅頂/hunazenjyou-1.png',
+  '/images/船禅頂/hunazenjyou-2.JPEG',
+  '/images/船禅頂/hunazenjyou-3.JPEG',
+  '/images/船禅頂/hunazenjyou-4.JPEG',
+  '/images/船禅頂/hunazenjyou-5.png',
+  '/images/船禅頂/hunazenjyou-6.JPEG',
+]
+
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 async function getContent() {
@@ -102,8 +111,12 @@ export default async function FunazentoPage() {
               <div className="w-1 h-8 bg-gold rounded-full" />
               <h2 className="font-serif text-2xl text-navy">{c.funazento_heading_gallery}</h2>
             </div>
-            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-md">
-              <Image src="/images/mizuumi.jpg" alt="中禅寺湖・船禅頂" fill className="object-cover" />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {GALLERY_IMAGES.map((src, i) => (
+                <div key={src} className="relative h-40 md:h-52 rounded-xl overflow-hidden shadow-sm">
+                  <Image src={src} alt={`船禅頂の様子 ${i + 1}`} fill className="object-cover" />
+                </div>
+              ))}
             </div>
           </section>
 

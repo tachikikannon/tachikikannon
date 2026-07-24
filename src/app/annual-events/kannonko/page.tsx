@@ -40,6 +40,13 @@ const DEFAULTS: Record<string, string> = {
   kannonko_notes: JSON.stringify(DEFAULT_NOTES),
 }
 
+const GALLERY_IMAGES = [
+  '/images/観音講/1.kannonkou.JPEG',
+  '/images/観音講/2.kannonkou.JPEG',
+  '/images/観音講/3.kannonkou.JPEG',
+  '/images/観音講/4.kannonkou.JPEG',
+]
+
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 async function getContent() {
@@ -133,8 +140,12 @@ export default async function KannonkoPage() {
               <div className="w-1 h-8 bg-gold rounded-full" />
               <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_gallery}</h2>
             </div>
-            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-md">
-              <Image src="/images/gyouji.JPEG" alt="大護摩供・地蔵流し" fill className="object-cover" />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {GALLERY_IMAGES.map((src, i) => (
+                <div key={src} className="relative h-40 md:h-52 rounded-xl overflow-hidden shadow-sm">
+                  <Image src={src} alt={`観音講・大護摩供・地蔵流しの様子 ${i + 1}`} fill className="object-cover" />
+                </div>
+              ))}
             </div>
           </section>
 
