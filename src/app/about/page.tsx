@@ -106,7 +106,7 @@ export default async function AboutPage() {
             {[
               { icon: '🗺', label: 'アクセス', href: '/#access' },
               { icon: '🙏', label: '御祈願', href: '/prayer' },
-              { icon: '📮', label: '御朱印', href: '/goshuin' },
+              { icon: '📜', label: '御朱印', href: '/goshuin' },
               { icon: '❓', label: 'よくある質問', href: '/faq' },
             ].map(({ icon, label, href }) => (
               <Link key={href} href={href} className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group">
