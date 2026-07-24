@@ -85,7 +85,7 @@ export default async function ShakyouPage() {
         </div>
 
         <section className="relative h-64 md:h-80">
-          <Image src="/images/syakyou-hiro.JPG" alt="写経体験" fill priority className="object-cover" />
+          <Image src="/images/syakyou-hiro.JPG" alt="写経体験" fill priority className="object-cover object-top" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Shakyou</p>
             <h1 className="font-serif text-4xl text-white tracking-widest">写経体験</h1>
@@ -115,8 +115,8 @@ export default async function ShakyouPage() {
             <div className="grid md:grid-cols-2 gap-4">
               {contents.map(({ icon, title, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold">
-                  <div className="relative h-40">
-                    <Image src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-cover" />
+                  <div className="relative h-64 bg-cream-alt">
+                    <Image src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-3" />
                   </div>
                   <div className="p-5">
                     <p className="text-2xl mb-3">{icon}</p>
