@@ -77,12 +77,18 @@ export default async function OnsenjShabutuPage() {
               <p>{c.onsenji_shabutu_about_p1}</p>
               <p className="mt-3">{c.onsenji_shabutu_about_p2}</p>
             </div>
-            <div className="grid grid-cols-2 gap-4 mt-4 max-w-md mx-auto">
-              <div className="rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <ZoomableImage src="/images/onsenji-shabutu-template.png" alt="写仏体験の下絵" width={799} height={1200} className="w-full h-auto" />
+            <div className="grid grid-cols-2 gap-4 mt-4 max-w-md mx-auto bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
+              <div>
+                <div className="relative h-56 bg-cream-alt">
+                  <ZoomableImage src="/images/onsenji-shabutu-template.png" alt="写仏体験の下絵" fill className="object-contain p-2" />
+                </div>
+                <p className="text-center text-[11px] text-gray-400 py-1.5">下絵</p>
               </div>
-              <div className="rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <ZoomableImage src="/images/onsenji-goshuin-shabutu.jpg" alt="写仏体験 特別御朱印" width={833} height={1200} className="w-full h-auto" />
+              <div className="border-l border-gray-100">
+                <div className="relative h-56 bg-cream-alt">
+                  <ZoomableImage src="/images/onsenji-goshuin-shabutu.jpg" alt="写仏体験 特別御朱印" fill className="object-contain p-2" />
+                </div>
+                <p className="text-center text-[11px] text-gray-400 py-1.5">特別御朱印</p>
               </div>
             </div>
           </section>

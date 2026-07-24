@@ -34,16 +34,7 @@ const FIELDS = [
   { key: 'shakyou_target', label: '対象', defaultValue: 'どなたでも（筆が初めての方も歓迎）' },
   { key: 'shakyou_place',  label: '受付場所', defaultValue: '寺務所 体験受付窓口' },
   { key: 'shakyou_hours',  label: '受付時間', defaultValue: '拝観時間内（閉門1時間前まで）' },
-  { key: 'shakyou_heading_goshuin', label: '「特別御朱印」見出し', defaultValue: '写経体験 特別御朱印' },
-  {
-    key: 'shakyou_goshuin_items', label: '特別御朱印一覧', type: 'list' as const,
-    listFields: [{ key: 'title', label: 'タイトル' }, { key: 'sub', label: '説明' }, { key: 'badge', label: 'バッジ文言' }],
-    defaultValue: J([
-      { title: '金紙特別朱印 立木大悲殿', sub: '延命十句観音経をお写しいただいた方にお授けします。', badge: '延命十句観音経' },
-      { title: '金紙特別御朱印 大日如来', sub: '懺悔文をお写しいただいた方にお授けします。', badge: '懺悔文' },
-    ]),
-  },
-  { key: 'shakyou_goshuin_note', label: '特別御朱印 補足', defaultValue: '※特別御朱印は体験料に含まれています。別途購入はできません。' },
+  { key: 'shakyou_goshuin_note', label: '特別御朱印 補足（体験内容の下に表示）', defaultValue: '※特別御朱印は体験料に含まれています。別途購入はできません。' },
   { key: 'shakyou_heading_items', label: '「持ち物・服装」見出し', defaultValue: '持ち物・服装' },
   {
     key: 'shakyou_items', label: '持ち物・服装', type: 'list' as const,

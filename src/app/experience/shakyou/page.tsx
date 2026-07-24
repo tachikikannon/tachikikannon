@@ -24,10 +24,6 @@ const DEFAULT_ITEMS = [
   { text: '汚れてもよい服装でお越しいただくとより安心です。' },
   { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
 ]
-const DEFAULT_GOSHUIN_ITEMS = [
-  { title: '金紙特別朱印 立木大悲殿', sub: '延命十句観音経をお写しいただいた方にお授けします。', badge: '延命十句観音経' },
-  { title: '金紙特別御朱印 大日如来', sub: '懺悔文をお写しいただいた方にお授けします。', badge: '懺悔文' },
-]
 const GOSHUIN_IMAGES = [
   { src: '/images/goshuin-enmei.png', w: 772, h: 1200 },
   { src: '/images/goshuin-sangemon.png', w: 742, h: 1192 },
@@ -47,7 +43,6 @@ const DEFAULTS: Record<string, string> = {
   shakyou_target: 'どなたでも（筆が初めての方も歓迎）',
   shakyou_place:  '寺務所 体験受付窓口',
   shakyou_hours:  '拝観時間内（閉門1時間前まで）',
-  shakyou_heading_goshuin: '写経体験 特別御朱印',
   shakyou_goshuin_note: '※特別御朱印は体験料に含まれています。別途購入はできません。',
   shakyou_heading_items: '持ち物・服装',
   shakyou_cta_heading: '写経体験のご予約',
@@ -55,7 +50,6 @@ const DEFAULTS: Record<string, string> = {
   shakyou_contents: JSON.stringify(DEFAULT_CONTENTS),
   shakyou_flow: JSON.stringify(DEFAULT_FLOW),
   shakyou_items: JSON.stringify(DEFAULT_ITEMS),
-  shakyou_goshuin_items: JSON.stringify(DEFAULT_GOSHUIN_ITEMS),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -82,7 +76,6 @@ export default async function ShakyouPage() {
   const flowRaw  = pj<{ title: string; text: string }[]>(c.shakyou_flow, DEFAULT_FLOW)
   const flow     = flowRaw.map((f, i) => ({ ...DEFAULT_FLOW[i], ...f }))
   const items    = pj<typeof DEFAULT_ITEMS>(c.shakyou_items, DEFAULT_ITEMS)
-  const goshuinItems = pj<typeof DEFAULT_GOSHUIN_ITEMS>(c.shakyou_goshuin_items, DEFAULT_GOSHUIN_ITEMS)
 
   return (
     <>
@@ -123,18 +116,33 @@ export default async function ShakyouPage() {
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_contents}</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {contents.map(({ title, desc }, i) => (
-                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold">
-                  <div className="relative h-64 bg-cream-alt">
-                    <ZoomableImage src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-3" />
+              {contents.map(({ title, desc }, i) => {
+                const gimg = GOSHUIN_IMAGES[i] ?? GOSHUIN_IMAGES[0]
+                return (
+                  <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold">
+                    <div className="grid grid-cols-2">
+                      <div>
+                        <div className="relative h-56 bg-cream-alt">
+                          <ZoomableImage src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-2" />
+                        </div>
+                        <p className="text-center text-[11px] text-gray-400 py-1.5">写経用紙</p>
+                      </div>
+                      <div className="border-l border-gray-100">
+                        <div className="relative h-56 bg-cream-alt">
+                          <ZoomableImage src={gimg.src} alt={`${title}の特別御朱印`} fill className="object-contain p-2" />
+                        </div>
+                        <p className="text-center text-[11px] text-gray-400 py-1.5">{title}の特別御朱印</p>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="font-medium text-navy mb-2">{title}</h3>
+                      <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
+                    </div>
                   </div>
-                  <div className="p-5">
-                    <h3 className="font-medium text-navy mb-2">{title}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
+            <p className="text-xs text-gray-400 mt-4">{c.shakyou_goshuin_note}</p>
           </section>
 
           <section>
@@ -170,28 +178,6 @@ export default async function ShakyouPage() {
                 </li>
               ))}
             </ol>
-          </section>
-
-          <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
-            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_goshuin}</h2>
-            <div className="space-y-4">
-              {goshuinItems.map(({ title, sub, badge }, i) => {
-                const img = GOSHUIN_IMAGES[i] ?? GOSHUIN_IMAGES[0]
-                return (
-                  <div key={title} className="bg-white rounded-xl p-5 shadow-sm flex items-start gap-4">
-                    <div className="w-20 sm:w-24 flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                      <ZoomableImage src={img.src} alt={title} width={img.w} height={img.h} className="w-full h-auto" />
-                    </div>
-                    <div>
-                      <span className="inline-block bg-navy text-gold text-xs font-bold px-2 py-1 rounded mb-1">{badge}</span>
-                      <p className="font-medium text-navy">{title}</p>
-                      <p className="text-sm text-gray-600 mt-1">{sub}</p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            <p className="text-xs text-gray-400 mt-4">{c.shakyou_goshuin_note}</p>
           </section>
 
           <section>

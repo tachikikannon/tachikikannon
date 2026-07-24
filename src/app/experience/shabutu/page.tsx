@@ -13,6 +13,7 @@ const DEFAULT_CONTENTS = [
   { title: '立木観世音菩薩', desc: '下絵に沿って、立木観音のご本尊・立木観世音菩薩のお姿をお描きいただきます。完成後は銀紙特別朱印（立木観世音）とセットでお授けします。' },
 ]
 const CONTENT_IMAGES = ['/images/shabutu-template.jpg']
+const GOSHUIN_IMAGES = ['/images/goshuin-shabutu.jpg']
 const DEFAULT_FLOW = [
   { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
   { title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
@@ -39,10 +40,6 @@ const DEFAULTS: Record<string, string> = {
   shabutu_place:  '寺務所 体験受付窓口',
   shabutu_hours:  '拝観時間内（閉門1時間前まで）',
   shabutu_heading_flow: '体験の流れ',
-  shabutu_heading_goshuin: '写仏体験 特別御朱印',
-  shabutu_goshuin_badge: '写仏',
-  shabutu_goshuin_title: '銀紙特別朱印 立木観世音',
-  shabutu_goshuin_desc:  '写仏をお描きいただいた方にお授けします。体験料に含まれています。',
   shabutu_goshuin_note: '※特別御朱印は体験料に含まれています。別途購入はできません。',
   shabutu_heading_items: '持ち物・服装',
   shabutu_cta_heading: '写仏体験のご予約',
@@ -116,9 +113,20 @@ export default async function ShabutuPage() {
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shabutu_heading_contents}</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {contents.map(({ title, desc }, i) => (
-                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold max-w-[280px] mx-auto sm:max-w-none sm:mx-0">
-                  <div className="relative h-64 bg-cream-alt">
-                    <ZoomableImage src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-3" />
+                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold max-w-[360px] mx-auto sm:max-w-none sm:mx-0">
+                  <div className="grid grid-cols-2">
+                    <div>
+                      <div className="relative h-56 bg-cream-alt">
+                        <ZoomableImage src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-2" />
+                      </div>
+                      <p className="text-center text-[11px] text-gray-400 py-1.5">下絵</p>
+                    </div>
+                    <div className="border-l border-gray-100">
+                      <div className="relative h-56 bg-cream-alt">
+                        <ZoomableImage src={GOSHUIN_IMAGES[i] ?? GOSHUIN_IMAGES[0]} alt={`${title}の特別御朱印`} fill className="object-contain p-2" />
+                      </div>
+                      <p className="text-center text-[11px] text-gray-400 py-1.5">{title}の特別御朱印</p>
+                    </div>
                   </div>
                   <div className="p-5">
                     <h3 className="font-medium text-navy mb-2">{title}</h3>
@@ -127,6 +135,7 @@ export default async function ShabutuPage() {
                 </div>
               ))}
             </div>
+            <p className="text-xs text-gray-400 mt-4">{c.shabutu_goshuin_note}</p>
           </section>
 
           <section>
@@ -162,21 +171,6 @@ export default async function ShabutuPage() {
                 </li>
               ))}
             </ol>
-          </section>
-
-          <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
-            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shabutu_heading_goshuin}</h2>
-            <div className="bg-white rounded-xl p-5 shadow-sm flex items-start gap-4">
-              <div className="w-20 sm:w-24 flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                <ZoomableImage src="/images/goshuin-shabutu.jpg" alt={c.shabutu_goshuin_title} width={799} height={1200} className="w-full h-auto" />
-              </div>
-              <div>
-                <span className="inline-block bg-navy text-gold text-xs font-bold px-2 py-1 rounded mb-1">{c.shabutu_goshuin_badge}</span>
-                <p className="font-medium text-navy">{c.shabutu_goshuin_title}</p>
-                <p className="text-sm text-gray-600 mt-1">{c.shabutu_goshuin_desc}</p>
-              </div>
-            </div>
-            <p className="text-xs text-gray-400 mt-4">{c.shabutu_goshuin_note}</p>
           </section>
 
           <section>
