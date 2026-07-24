@@ -38,9 +38,7 @@ export default function ZoomableImage(props: ImageProps) {
         <button type="button" onClick={() => setOpen(true)} aria-label="写真を拡大表示"
           className="absolute inset-0 w-full h-full block group cursor-zoom-in">
           <Image {...props} />
-          <span className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center pointer-events-none">
-            <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-2xl drop-shadow">🔍</span>
-          </span>
+          <span className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
         </button>
         {open && <Lightbox {...props} onClose={() => setOpen(false)} />}
       </>
