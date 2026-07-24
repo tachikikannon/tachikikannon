@@ -194,7 +194,7 @@ export default async function OnsenjPage() {
               <Link href="/onsenji/goshuin"
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1 flex items-center gap-6 p-6">
                 <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center rounded-xl" style={{backgroundColor: 'rgba(26,74,58,0.1)'}}>
-                  <span className="text-4xl">📮</span>
+                  <span className="text-4xl">📜</span>
                 </div>
                 <div>
                   <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">Goshuin</p>
