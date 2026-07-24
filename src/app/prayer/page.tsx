@@ -71,11 +71,13 @@ export default async function PrayerPage() {
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto"><Link href="/">ホーム</Link> &gt; 御祈願</div>
         </div>
-        <section className="bg-navy py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Gokigan</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">御祈願</h1>
-          <p className="text-white/60 text-sm mt-3 relative">{c.prayer_subtitle}</p>
+        <section className="relative h-64 md:h-80">
+          <Image src="/images/gokigan-hiro.png" alt="御祈願" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
+            <p className="text-gold text-xs tracking-[0.3em] mb-3">Gokigan</p>
+            <h1 className="font-serif text-4xl text-white tracking-widest">御祈願</h1>
+            <p className="text-white/60 text-sm mt-3">{c.prayer_subtitle}</p>
+          </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
