@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -160,7 +161,7 @@ export default async function JyuzuPage() {
           {/* 数珠づくりとは */}
           <section className="grid md:grid-cols-2 gap-6 items-center">
             <div className="relative h-56 md:h-72 rounded-2xl overflow-hidden shadow-sm">
-              <ZoomableImage src="/images/jyuzu-hero.jpg" alt="数珠づくりとは" fill className="object-cover" />
+              <Image src="/images/jyuzu-hero.jpg" alt="数珠づくりとは" fill className="object-cover" />
             </div>
             <div>
               <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.jyuzu_heading_about}</h2>
@@ -177,7 +178,7 @@ export default async function JyuzuPage() {
               {samples.map(({ course, price, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm text-center border-t-4 border-gold">
                   <div className="relative aspect-square bg-cream-alt">
-                    <ZoomableImage src={COURSE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
+                    <Image src={COURSE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
                   </div>
                   <div className="p-3">
                     <p className="text-[10px] text-gold font-medium tracking-wide">{course}</p>
