@@ -131,11 +131,12 @@ const SECTIONS: Section[] = [
     fields: [
       { key: 'onsenji_goshuin_heading_info', label: '「御朱印のご案内」見出し', defaultValue: '御朱印のご案内' },
       {
-        key: 'onsenji_goshuin_items', label: '御朱印一覧（写真は準備中表示・固定）', type: 'list',
+        key: 'onsenji_goshuin_items', label: '御朱印一覧（画像は固定・3件）', type: 'list',
         listFields: [{ key: 'title', label: 'タイトル' }, { key: 'sub', label: '副題' }],
         defaultValue: J([
-          { title: '薬師如来', sub: '温泉寺 本堂' },
-          { title: '特別御朱印', sub: '季節限定・行事限定' },
+          { title: '薬師如来', sub: '温泉寺 本堂（通常御朱印）' },
+          { title: '写経特別御朱印', sub: '写経体験をされた方に授与' },
+          { title: '写仏特別御朱印', sub: '写仏体験をされた方に授与' },
         ]),
       },
       { key: 'onsenji_goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：500円　／　写経体験（1,000円）をお申し込みの方には特別御朱印を授与しています。\n受付時間は拝観受付終了時刻までとなります。' },

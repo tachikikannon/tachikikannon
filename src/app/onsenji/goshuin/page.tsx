@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 
@@ -14,8 +15,14 @@ const DEFAULT_NOTES = [
   { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
 ]
 const DEFAULT_ITEMS = [
-  { title: '薬師如来', sub: '温泉寺 本堂' },
-  { title: '特別御朱印', sub: '季節限定・行事限定' },
+  { title: '薬師如来', sub: '温泉寺 本堂（通常御朱印）' },
+  { title: '写経特別御朱印', sub: '写経体験をされた方に授与' },
+  { title: '写仏特別御朱印', sub: '写仏体験をされた方に授与' },
+]
+const ITEM_IMAGES = [
+  '/images/onsen-yakusi-tuujyou.png',
+  '/images/onsenji-goshuin-shakyou.png',
+  '/images/onsenji-shabutu-template.png',
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -64,18 +71,23 @@ export default async function OnsenjGoshuinPage() {
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
           <section>
             <h2 className="text-xl font-serif text-onsenji mb-1 pl-3 border-l-4 border-[#7ec8a4]">{c.onsenji_goshuin_heading_info}</h2>
-            <div className="mt-4 grid md:grid-cols-2 gap-4">
-              {items.map(({ title, sub }) => (
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+              {items.map(({ title, sub }, i) => {
+                const src = ITEM_IMAGES[i]
+                return (
                 <div key={title} className="bg-white rounded-xl overflow-hidden shadow-sm">
-                  <div className="h-40 bg-onsenji/10 flex items-center justify-center">
-                    <span className="text-gray-300 text-xs">写真準備中</span>
+                  <div className="h-40 bg-onsenji/10 flex items-center justify-center p-2">
+                    {src
+                      ? <Image src={src} alt={title} width={200} height={200} className="object-contain h-full w-full" />
+                      : <span className="text-gray-300 text-xs">写真準備中</span>
+                    }
                   </div>
                   <div className="p-3 text-center">
                     <p className="font-medium text-onsenji text-sm">{title}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{sub}</p>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
             <div className="mt-6 bg-onsenji/10 rounded-lg p-4 border-l-4 border-[#7ec8a4] text-sm text-gray-700 space-y-1 whitespace-pre-line">
               <p><strong>{c.onsenji_goshuin_fee_note.split('\n')[0]}</strong></p>
