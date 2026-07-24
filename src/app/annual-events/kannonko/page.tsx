@@ -45,6 +45,8 @@ const GALLERY_IMAGES = [
   '/images/観音講/2.kannonkou.JPEG',
   '/images/観音講/3.kannonkou.JPEG',
   '/images/観音講/4.kannonkou.JPEG',
+  '/images/kannonkou-5.JPEG',
+  '/images/kannonkou-6.JPEG',
 ]
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
