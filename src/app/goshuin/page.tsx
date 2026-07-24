@@ -73,10 +73,12 @@ export default async function GoshuinPage() {
           <div className="max-w-4xl mx-auto"><Link href="/">ホーム</Link> &gt; 御朱印</div>
         </div>
 
-        <section className="bg-navy py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Goshuin</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">御朱印</h1>
+        <section className="relative h-64 md:h-80">
+          <ZoomableImage src="/images/syuin-hiro.jpg" alt="御朱印" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
+            <p className="text-gold text-xs tracking-[0.3em] mb-3">Goshuin</p>
+            <h1 className="font-serif text-4xl text-white tracking-widest">御朱印</h1>
+          </div>
         </section>
 
         <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
