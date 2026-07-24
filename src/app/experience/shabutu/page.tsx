@@ -9,6 +9,10 @@ import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '写仏体験' }
 
+const DEFAULT_CONTENTS = [
+  { title: '立木観世音菩薩', desc: '下絵に沿って、立木観音のご本尊・立木観世音菩薩のお姿をお描きいただきます。完成後は銀紙特別朱印（立木観世音）とセットでお授けします。' },
+]
+const CONTENT_IMAGES = ['/images/shabutu-template.jpg']
 const DEFAULT_FLOW = [
   { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
   { title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
@@ -27,6 +31,7 @@ const DEFAULTS: Record<string, string> = {
   shabutu_heading_about: '写仏とは',
   shabutu_about_p1: '写仏とは、仏様のお姿を下絵に沿って丁寧にお描きする修行です。写経と並ぶ伝統的な仏道修行のひとつで、描きながら仏様の功徳をいただき、心を落ち着けることができます。',
   shabutu_about_p2: '立木観音の写仏体験では、立木観世音菩薩のお姿をお描きいただきます。完成した写仏は記念にお持ち帰りいただけます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。',
+  shabutu_heading_contents: '体験内容',
   shabutu_heading_fees: '料金・所要時間',
   shabutu_fee:  '1,000円（特別御朱印込み）',
   shabutu_time: '約30〜60分（個人差があります）',
@@ -42,6 +47,7 @@ const DEFAULTS: Record<string, string> = {
   shabutu_heading_items: '持ち物・服装',
   shabutu_cta_heading: '写仏体験のご予約',
   shabutu_cta_sub: '事前予約をおすすめします。当日受付も空きがあれば対応します。',
+  shabutu_contents: JSON.stringify(DEFAULT_CONTENTS),
   shabutu_flow: JSON.stringify(DEFAULT_FLOW),
   shabutu_items: JSON.stringify(DEFAULT_ITEMS),
 }
@@ -66,6 +72,7 @@ async function getContent() {
 
 export default async function ShabutuPage() {
   const c = await getContent()
+  const contents = pj<typeof DEFAULT_CONTENTS>(c.shabutu_contents, DEFAULT_CONTENTS)
   const flow  = pj<typeof DEFAULT_FLOW>(c.shabutu_flow, DEFAULT_FLOW)
   const items = pj<typeof DEFAULT_ITEMS>(c.shabutu_items, DEFAULT_ITEMS)
 
@@ -95,9 +102,6 @@ export default async function ShabutuPage() {
               <p>{c.shabutu_about_p1}</p>
               <p className="mt-3">{c.shabutu_about_p2}</p>
             </div>
-            <div className="max-w-[220px] mx-auto mt-4 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-              <ZoomableImage src="/images/shabutu-template.jpg" alt="写仏体験の下絵" width={835} height={1200} className="w-full h-auto" />
-            </div>
             <div className="grid sm:grid-cols-2 gap-4 mt-4">
               <div className="rounded-xl overflow-hidden shadow-sm">
                 <ZoomableImage src="/images/shakyou-room.jpg" alt="写仏体験の会場" width={1200} height={800} className="w-full h-auto" />
@@ -105,6 +109,23 @@ export default async function ShabutuPage() {
               <div className="rounded-xl overflow-hidden shadow-sm">
                 <ZoomableImage src="/images/shakyou-altar.jpg" alt="写仏体験の御本尊" width={1200} height={900} className="w-full h-auto" />
               </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shabutu_heading_contents}</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {contents.map(({ title, desc }, i) => (
+                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold max-w-[280px] mx-auto sm:max-w-none sm:mx-0">
+                  <div className="relative h-64 bg-cream-alt">
+                    <ZoomableImage src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-3" />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-medium text-navy mb-2">{title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 

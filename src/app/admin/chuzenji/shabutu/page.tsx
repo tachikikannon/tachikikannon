@@ -8,6 +8,14 @@ const FIELDS = [
   { key: 'shabutu_heading_about', label: '「写仏とは」見出し', defaultValue: '写仏とは' },
   { key: 'shabutu_about_p1', label: '写仏とは（段落1）', multiline: true, defaultValue: '写仏とは、仏様のお姿を下絵に沿って丁寧にお描きする修行です。写経と並ぶ伝統的な仏道修行のひとつで、描きながら仏様の功徳をいただき、心を落ち着けることができます。' },
   { key: 'shabutu_about_p2', label: '写仏とは（段落2）', multiline: true, defaultValue: '立木観音の写仏体験では、立木観世音菩薩のお姿をお描きいただきます。完成した写仏は記念にお持ち帰りいただけます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。' },
+  { key: 'shabutu_heading_contents', label: '「体験内容」見出し', defaultValue: '体験内容' },
+  {
+    key: 'shabutu_contents', label: '体験内容', type: 'list' as const,
+    listFields: [{ key: 'title', label: 'タイトル' }, { key: 'desc', label: '説明', multiline: true }],
+    defaultValue: J([
+      { title: '立木観世音菩薩', desc: '下絵に沿って、立木観音のご本尊・立木観世音菩薩のお姿をお描きいただきます。完成後は銀紙特別朱印（立木観世音）とセットでお授けします。' },
+    ]),
+  },
   { key: 'shabutu_heading_fees', label: '「料金・所要時間」見出し', defaultValue: '料金・所要時間' },
   { key: 'shabutu_fee',  label: '体験料', defaultValue: '1,000円（特別御朱印込み）' },
   { key: 'shabutu_time', label: '所要時間', defaultValue: '約30〜60分（個人差があります）' },
