@@ -111,11 +111,11 @@ export default async function ShakyouPage() {
               <p className="mt-3">{c.shakyou_about_p2}</p>
             </div>
             <div className="grid sm:grid-cols-2 gap-4 mt-4">
-              <div className="rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/shakyou-room.jpg" alt="写経体験の会場" width={1200} height={800} className="w-full h-auto" />
+              <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/shakyou-room.jpg" alt="写経体験の会場" fill className="object-cover" />
               </div>
-              <div className="rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/shakyou-altar.jpg" alt="写経体験の御本尊" width={1200} height={900} className="w-full h-auto" />
+              <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/shakyou-altar.jpg" alt="写経体験の御本尊" fill className="object-cover" />
               </div>
             </div>
           </section>
