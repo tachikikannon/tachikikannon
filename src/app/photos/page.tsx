@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 import type { Media } from '@/types'
 
 export const metadata: Metadata = { title: '貸出用写真一覧' }
@@ -45,7 +45,7 @@ export default async function PhotosPage() {
               {photos.map(item => (
                 <div key={item.id} className="bg-white rounded-xl shadow-sm overflow-hidden border">
                   <div className="relative h-36">
-                    <Image src={item.public_url} alt={item.alt ?? item.filename} fill className="object-cover" />
+                    <ZoomableImage src={item.public_url} alt={item.alt ?? item.filename} fill className="object-cover" />
                   </div>
                   <div className="p-3">
                     <p className="text-xs text-gray-600 truncate mb-2">{item.alt ?? item.filename}</p>

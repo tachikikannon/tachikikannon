@@ -1,11 +1,11 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import MaterialSwatches from '@/components/MaterialSwatches'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '数珠づくり体験' }
 
@@ -145,7 +145,7 @@ export default async function JyuzuPage() {
 
         {/* ヒーロー */}
         <section className="relative h-80 md:h-[28rem]">
-          <Image src="/images/jyuzu-hero.jpg" alt="数珠づくり体験" fill priority className="object-cover" />
+          <ZoomableImage src="/images/jyuzu-hero.jpg" alt="数珠づくり体験" fill priority className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/50 to-navy/20 flex flex-col justify-center px-6 md:px-16">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Juzu Making</p>
             <h1 className="font-serif text-3xl md:text-5xl text-white tracking-widest mb-3">数珠づくり体験</h1>
@@ -160,7 +160,7 @@ export default async function JyuzuPage() {
           {/* 数珠づくりとは */}
           <section className="grid md:grid-cols-2 gap-6 items-center">
             <div className="relative h-56 md:h-72 rounded-2xl overflow-hidden shadow-sm">
-              <Image src="/images/jyuzu-hero.jpg" alt="数珠づくりとは" fill className="object-cover" />
+              <ZoomableImage src="/images/jyuzu-hero.jpg" alt="数珠づくりとは" fill className="object-cover" />
             </div>
             <div>
               <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.jyuzu_heading_about}</h2>
@@ -177,7 +177,7 @@ export default async function JyuzuPage() {
               {samples.map(({ course, price, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm text-center border-t-4 border-gold">
                   <div className="relative aspect-square bg-cream-alt">
-                    <Image src={COURSE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
+                    <ZoomableImage src={COURSE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
                   </div>
                   <div className="p-3">
                     <p className="text-[10px] text-gold font-medium tracking-wide">{course}</p>
@@ -207,7 +207,7 @@ export default async function JyuzuPage() {
                   <p className="text-sm text-gray-600 leading-relaxed mb-3">{text}</p>
                   {image && (
                     <div className="relative h-40 rounded-xl overflow-hidden shadow-sm">
-                      <Image src={image} alt={title} fill className="object-cover" />
+                      <ZoomableImage src={image} alt={title} fill className="object-cover" />
                     </div>
                   )}
                 </div>

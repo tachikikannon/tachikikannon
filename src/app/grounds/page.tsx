@@ -1,11 +1,11 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import GroundsSpots from '@/components/GroundsSpots'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '境内のご案内' }
 
@@ -74,7 +74,7 @@ export default async function GroundsPage() {
           <div className="max-w-3xl mx-auto"><Link href="/">ホーム</Link> &gt; 境内のご案内</div>
         </div>
         <section className="relative h-64 md:h-80">
-          <Image src="/images/godaido.jpg" alt="境内のご案内" fill className="object-cover" />
+          <ZoomableImage src="/images/godaido.jpg" alt="境内のご案内" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">境内のご案内</h1>
             <p className="text-white/70 text-sm mt-2">{c.grounds_subtitle}</p>
@@ -91,7 +91,7 @@ export default async function GroundsPage() {
             <h2 className="text-2xl font-serif text-navy mb-1">{c.grounds_heading_godaido}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <div className="relative h-56 rounded-xl overflow-hidden mb-4">
-              <Image src="/images/haikan.png" alt="五大堂からの眺め" fill className="object-cover" />
+              <ZoomableImage src="/images/haikan.png" alt="五大堂からの眺め" fill className="object-cover" />
             </div>
             <p className="text-sm text-gray-700 leading-loose">{c.grounds_godaido_text}</p>
           </section>

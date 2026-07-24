@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '拝観案内' }
 
@@ -50,7 +50,7 @@ export default async function AboutPage() {
           <div className="max-w-3xl mx-auto"><Link href="/">ホーム</Link> &gt; 拝観案内</div>
         </div>
         <section className="relative h-64 md:h-80">
-          <Image src="/images/haikan.png" alt="拝観案内" fill className="object-cover" />
+          <ZoomableImage src="/images/haikan.png" alt="拝観案内" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">拝観案内</h1>
             <p className="text-white/70 text-sm mt-2">{c.about_subtitle}</p>

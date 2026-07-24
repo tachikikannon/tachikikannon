@@ -1,9 +1,9 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { News, Event } from '@/types'
 
@@ -81,7 +81,7 @@ export default async function HomePage() {
       <main>
         {/* ヒーロー */}
         <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
-          <Image src="/images/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
+          <ZoomableImage src="/images/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-navy/50" />
           <div className="relative text-center text-white px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-4">{content.hero_en}</p>
@@ -224,7 +224,7 @@ export default async function HomePage() {
               ].map(({ src, href }, i) => (
                 <div key={href} className="card overflow-hidden flex flex-col">
                   <div className="relative h-40">
-                    <Image src={src} alt={experienceCards[i]?.label} fill className="object-cover" />
+                    <ZoomableImage src={src} alt={experienceCards[i]?.label} fill className="object-cover" />
                   </div>
                   <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
                     <p className="font-medium text-navy text-sm">{experienceCards[i]?.label}</p>

@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '写経体験' }
 
@@ -98,10 +98,10 @@ export default async function ShakyouPage() {
             </div>
             <div className="grid sm:grid-cols-2 gap-4 mt-4">
               <div className="rounded-xl overflow-hidden shadow-sm">
-                <Image src="/images/shakyou-room.jpg" alt="写経体験の会場" width={1200} height={800} className="w-full h-auto" />
+                <ZoomableImage src="/images/shakyou-room.jpg" alt="写経体験の会場" width={1200} height={800} className="w-full h-auto" />
               </div>
               <div className="rounded-xl overflow-hidden shadow-sm">
-                <Image src="/images/shakyou-altar.jpg" alt="写経体験の御本尊" width={1200} height={900} className="w-full h-auto" />
+                <ZoomableImage src="/images/shakyou-altar.jpg" alt="写経体験の御本尊" width={1200} height={900} className="w-full h-auto" />
               </div>
             </div>
           </section>
@@ -149,7 +149,7 @@ export default async function ShakyouPage() {
                 return (
                   <div key={title} className="bg-white rounded-xl p-5 shadow-sm flex items-start gap-4">
                     <div className="w-20 sm:w-24 flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                      <Image src={img.src} alt={title} width={img.w} height={img.h} className="w-full h-auto" />
+                      <ZoomableImage src={img.src} alt={title} width={img.w} height={img.h} className="w-full h-auto" />
                     </div>
                     <div>
                       <span className="inline-block bg-navy text-gold text-xs font-bold px-2 py-1 rounded mb-1">{badge}</span>

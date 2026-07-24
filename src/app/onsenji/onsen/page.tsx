@@ -2,9 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = {
   title: '薬師の湯（温泉） | 日光山温泉寺',
@@ -61,7 +61,7 @@ export default async function OnsenjOnsenPage() {
 
         {/* ページヒーロー */}
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <Image
+          <ZoomableImage
             src="/images/onsen.png"
             alt="薬師の湯"
             fill
@@ -88,10 +88,10 @@ export default async function OnsenjOnsenPage() {
           {/* 写真2枚 */}
           <section className="grid md:grid-cols-2 gap-4">
             <div className="relative h-56 rounded-2xl overflow-hidden shadow-md">
-              <Image src="/images/onsen.png" alt="薬師の湯" fill className="object-cover" />
+              <ZoomableImage src="/images/onsen.png" alt="薬師の湯" fill className="object-cover" />
             </div>
             <div className="relative h-56 rounded-2xl overflow-hidden shadow-md">
-              <Image src="/images/kyuukeisitu.png" alt="休憩室" fill className="object-cover" />
+              <ZoomableImage src="/images/kyuukeisitu.png" alt="休憩室" fill className="object-cover" />
             </div>
           </section>
 

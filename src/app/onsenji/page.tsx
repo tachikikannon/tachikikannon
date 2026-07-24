@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = {
   title: '日光山 温泉寺',
@@ -77,7 +78,7 @@ export default async function OnsenjPage() {
         {/* ヒーロー */}
         <section className="relative h-[85vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-onsenji">
           <div className="absolute inset-0 opacity-30">
-            <Image src="/images/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
+            <ZoomableImage src="/images/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-onsenji/60 via-onsenji/30 to-onsenji/80" />
           <div className="relative text-center px-4 text-white">
@@ -121,7 +122,7 @@ export default async function OnsenjPage() {
           </div>
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg">
-              <Image src="/images/yakusido.png" alt="薬師堂" fill className="object-cover" />
+              <ZoomableImage src="/images/yakusido.png" alt="薬師堂" fill className="object-cover" />
             </div>
             <div>
               <p className="text-gray-700 leading-loose text-sm">{c.onsenji_about_body}</p>

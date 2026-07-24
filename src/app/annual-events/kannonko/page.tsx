@@ -2,9 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = {
   title: '観音講・大護摩供・地蔵流し（6月18日） | 日光山中禅寺 立木観音',
@@ -83,7 +83,7 @@ export default async function KannonkoPage() {
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <Image src="/images/gyouji.JPEG" alt="観音講・大護摩供・地蔵流し" fill className="object-cover" />
+          <ZoomableImage src="/images/gyouji.JPEG" alt="観音講・大護摩供・地蔵流し" fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-2">June 18th  Annual Event</p>
@@ -145,7 +145,7 @@ export default async function KannonkoPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {GALLERY_IMAGES.map((src, i) => (
                 <div key={src} className="relative h-40 md:h-52 rounded-xl overflow-hidden shadow-sm">
-                  <Image src={src} alt={`観音講・大護摩供・地蔵流しの様子 ${i + 1}`} fill className="object-cover" />
+                  <ZoomableImage src={src} alt={`観音講・大護摩供・地蔵流しの様子 ${i + 1}`} fill className="object-cover" />
                 </div>
               ))}
             </div>

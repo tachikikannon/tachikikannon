@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '写仏体験' }
 
@@ -93,7 +93,7 @@ export default async function ShabutuPage() {
               <p className="mt-3">{c.shabutu_about_p2}</p>
             </div>
             <div className="max-w-[220px] mx-auto mt-4 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-              <Image src="/images/shabutu-template.jpg" alt="写仏体験の下絵" width={835} height={1200} className="w-full h-auto" />
+              <ZoomableImage src="/images/shabutu-template.jpg" alt="写仏体験の下絵" width={835} height={1200} className="w-full h-auto" />
             </div>
           </section>
 
@@ -136,7 +136,7 @@ export default async function ShabutuPage() {
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shabutu_heading_goshuin}</h2>
             <div className="bg-white rounded-xl p-5 shadow-sm flex items-start gap-4">
               <div className="w-20 sm:w-24 flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                <Image src="/images/goshuin-shabutu.jpg" alt={c.shabutu_goshuin_title} width={799} height={1200} className="w-full h-auto" />
+                <ZoomableImage src="/images/goshuin-shabutu.jpg" alt={c.shabutu_goshuin_title} width={799} height={1200} className="w-full h-auto" />
               </div>
               <div>
                 <span className="inline-block bg-navy text-gold text-xs font-bold px-2 py-1 rounded mb-1">{c.shabutu_goshuin_badge}</span>

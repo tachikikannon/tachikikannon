@@ -2,9 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = {
   title: '薬師講大祭・採灯大護摩供（8月8日） | 日光山温泉寺',
@@ -83,7 +83,7 @@ export default async function YakushikoPage() {
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <Image src="/images/温泉寺法楽/saitougoma-onsen.JPEG" alt="薬師講大祭・採灯大護摩供" fill className="object-cover" />
+          <ZoomableImage src="/images/温泉寺法楽/saitougoma-onsen.JPEG" alt="薬師講大祭・採灯大護摩供" fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-onsenji via-onsenji/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">August 8th  Annual Event</p>
@@ -145,7 +145,7 @@ export default async function YakushikoPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {GALLERY_IMAGES.map((src, i) => (
                 <div key={src} className="relative h-40 md:h-52 rounded-xl overflow-hidden shadow-sm">
-                  <Image src={src} alt={`薬師講大祭・採灯大護摩供の様子 ${i + 1}`} fill className="object-cover" />
+                  <ZoomableImage src={src} alt={`薬師講大祭・採灯大護摩供の様子 ${i + 1}`} fill className="object-cover" />
                 </div>
               ))}
             </div>

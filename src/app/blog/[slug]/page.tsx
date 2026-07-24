@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -37,7 +37,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
         {post.cover_url && (
           <div className="relative h-64 md:h-80">
-            <Image src={post.cover_url} alt={post.title} fill className="object-cover" />
+            <ZoomableImage src={post.cover_url} alt={post.title} fill className="object-cover" />
             <div className="absolute inset-0 bg-navy/30" />
           </div>
         )}

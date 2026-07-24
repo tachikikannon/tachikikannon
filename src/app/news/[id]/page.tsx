@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
 import type { News } from '@/types'
 
@@ -60,7 +60,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
         {/* カバー画像 */}
         {news.cover_url && (
           <div className="relative h-56 md:h-72">
-            <Image src={news.cover_url} alt={news.title} fill className="object-cover" />
+            <ZoomableImage src={news.cover_url} alt={news.title} fill className="object-cover" />
             <div className="absolute inset-0 bg-navy/30" />
           </div>
         )}

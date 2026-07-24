@@ -2,9 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '御朱印 | 日光山温泉寺' }
 
@@ -78,7 +78,7 @@ export default async function OnsenjGoshuinPage() {
                 <div key={title} className="bg-white rounded-xl overflow-hidden shadow-sm">
                   <div className="h-40 bg-onsenji/10 flex items-center justify-center p-2">
                     {src
-                      ? <Image src={src} alt={title} width={200} height={200} className="object-contain h-full w-full" />
+                      ? <ZoomableImage src={src} alt={title} width={200} height={200} className="object-contain h-full w-full" />
                       : <span className="text-gray-300 text-xs">写真準備中</span>
                     }
                   </div>

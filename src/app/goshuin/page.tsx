@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '御朱印' }
 
@@ -93,7 +93,7 @@ export default async function GoshuinPage() {
                 <div key={title} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="h-52 bg-cream flex items-center justify-center p-2">
                     {src
-                      ? <Image src={src} alt={title} width={200} height={200} className="object-contain h-full w-full" />
+                      ? <ZoomableImage src={src} alt={title} width={200} height={200} className="object-contain h-full w-full" />
                       : <span className="text-gray-300 text-xs">写真準備中</span>
                     }
                   </div>
@@ -126,7 +126,7 @@ export default async function GoshuinPage() {
                   <div className="flex items-center gap-5 p-5">
                     <div className="w-32 h-36 flex-shrink-0 bg-cream rounded-lg flex items-center justify-center p-1">
                       {src
-                        ? <Image src={src} alt={title} width={128} height={144} className="object-contain h-full w-full" />
+                        ? <ZoomableImage src={src} alt={title} width={128} height={144} className="object-contain h-full w-full" />
                         : <span className="text-gray-300 text-xs text-center">写真準備中</span>
                       }
                     </div>

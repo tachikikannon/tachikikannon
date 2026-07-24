@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '写経体験 | 日光山温泉寺' }
 
@@ -87,10 +87,10 @@ export default async function OnsenjShakyouPage() {
             </div>
             <div className="grid sm:grid-cols-2 gap-4 mt-4 items-start">
               <div className="rounded-xl overflow-hidden shadow-sm">
-                <Image src="/images/onsenji-shakyou-room.jpg" alt="写経体験の会場" width={1200} height={800} className="w-full h-auto" />
+                <ZoomableImage src="/images/onsenji-shakyou-room.jpg" alt="写経体験の会場" width={1200} height={800} className="w-full h-auto" />
               </div>
               <div className="max-w-[220px] mx-auto sm:mx-0 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <Image src="/images/onsenji-goshuin-shakyou.png" alt="写経体験 特別御朱印" width={778} height={1200} className="w-full h-auto" />
+                <ZoomableImage src="/images/onsenji-goshuin-shakyou.png" alt="写経体験 特別御朱印" width={778} height={1200} className="w-full h-auto" />
               </div>
             </div>
           </section>

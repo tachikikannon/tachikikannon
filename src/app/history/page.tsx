@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '立木観音の歴史' }
 
@@ -59,7 +59,7 @@ export default async function HistoryPage() {
           <div className="max-w-3xl mx-auto"><Link href="/">ホーム</Link> &gt; 立木観音の歴史</div>
         </div>
         <section className="relative h-64 md:h-80">
-          <Image src="/images/dragon.jpg" alt="立木観音の歴史" fill className="object-cover" />
+          <ZoomableImage src="/images/dragon.jpg" alt="立木観音の歴史" fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">立木観音の歴史</h1>
             <p className="text-white/70 text-sm mt-2">{c.history_subtitle}</p>

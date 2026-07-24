@@ -2,9 +2,9 @@ export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = {
   title: '年間行事 | 日光山温泉寺',
@@ -80,7 +80,7 @@ export default async function OnsenjEventsPage() {
           {events.map((ev, i) => (
             <article key={ev.date} className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
               <div className="relative h-56 md:h-72">
-                <Image src={EVENT_IMAGES[i] ?? '/images/gyouji.JPEG'} alt={EVENT_ALTS[i] ?? ev.name} fill className="object-cover" />
+                <ZoomableImage src={EVENT_IMAGES[i] ?? '/images/gyouji.JPEG'} alt={EVENT_ALTS[i] ?? ev.name} fill className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-onsenji/80 via-onsenji/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 p-6">
                   <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">{ev.date}　{ev.time}</p>
