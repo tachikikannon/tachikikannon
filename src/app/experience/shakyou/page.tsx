@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -25,6 +26,7 @@ const GOSHUIN_IMAGES = [
   { src: '/images/goshuin-enmei.png', w: 772, h: 1200 },
   { src: '/images/goshuin-sangemon.png', w: 742, h: 1192 },
 ]
+const CONTENT_IMAGES = ['/images/enmeijyuku.jpg', '/images/sanngemon.jpg']
 
 const DEFAULTS: Record<string, string> = {
   shakyou_subtitle: '心を静め、お経の文字を丁寧にお写しいただきます',
@@ -82,11 +84,13 @@ export default async function ShakyouPage() {
           </div>
         </div>
 
-        <section className="bg-navy py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Shakyou</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">写経体験</h1>
-          <p className="text-white/60 text-sm mt-3 relative">{c.shakyou_subtitle}</p>
+        <section className="relative h-64 md:h-80">
+          <Image src="/images/syakyou-hiro.JPG" alt="写経体験" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
+            <p className="text-gold text-xs tracking-[0.3em] mb-3">Shakyou</p>
+            <h1 className="font-serif text-4xl text-white tracking-widest">写経体験</h1>
+            <p className="text-white/60 text-sm mt-3">{c.shakyou_subtitle}</p>
+          </div>
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
@@ -110,10 +114,15 @@ export default async function ShakyouPage() {
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_contents}</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {contents.map(({ icon, title, desc }, i) => (
-                <div key={i} className="bg-white rounded-xl p-5 shadow-sm border-t-4 border-gold">
-                  <p className="text-2xl mb-3">{icon}</p>
-                  <h3 className="font-medium text-navy mb-2">{title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
+                <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold">
+                  <div className="relative h-40">
+                    <Image src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-cover" />
+                  </div>
+                  <div className="p-5">
+                    <p className="text-2xl mb-3">{icon}</p>
+                    <h3 className="font-medium text-navy mb-2">{title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
