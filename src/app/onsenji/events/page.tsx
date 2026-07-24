@@ -27,7 +27,7 @@ const DEFAULT_EVENTS = [
     desc: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。',
   },
 ]
-const EVENT_IMAGES = ['/images/gyouji.JPEG', '/images/gyouji.JPEG']
+const EVENT_IMAGES = ['/images/温泉寺法楽/saitougoma-onsen.JPEG', '/images/温泉寺節分/onsenji-setubun-hiro.JPG']
 const EVENT_ALTS = ['薬師講大祭・採灯大護摩供', '節分大祭']
 const EVENT_HREFS = ['/onsenji/events/yakushiko', '/onsenji/events/setsubun']
 const EVENT_APPLIES = ['/onsenji/events/yakushiko/apply', '/onsenji/events/setsubun/apply']
