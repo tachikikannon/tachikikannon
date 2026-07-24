@@ -222,18 +222,19 @@ export default async function HomePage() {
                 { src:'/images/syakyou.JPG', href:'/experience/shakyou' },
                 { src:'/images/syabutu.png', href:'/experience/shabutu' },
               ].map(({ src, href }, i) => (
-                <div key={href} className="card overflow-hidden flex flex-col">
-                  <div className="relative h-40">
-                    <ZoomableImage src={src} alt={experienceCards[i]?.label} fill className="object-cover" />
+                <Link key={href} href={href} className="card card-selectable overflow-hidden flex flex-col group">
+                  <div className="relative h-40 overflow-hidden">
+                    <img src={src} alt={experienceCards[i]?.label} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-navy/0 group-hover:bg-navy/10 transition-colors" />
                   </div>
                   <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
                     <p className="font-medium text-navy text-sm">{experienceCards[i]?.label}</p>
                     <p className="text-xs text-gray-500">{experienceCards[i]?.sub}</p>
-                    <Link href={href} className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5 hover:bg-navy/80 transition-colors">
+                    <span className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5">
                       詳しく見る
-                    </Link>
+                    </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -248,18 +249,26 @@ export default async function HomePage() {
               {[
                 { icon:'📜', href:'/goshuin', cta:'詳しく見る', external:false },
                 { icon:'🎁', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
-              ].map(({ icon, href, cta, external }, i) => (
-                <div key={href} className="card p-6 text-center">
-                  <p className="text-4xl mb-4">{icon}</p>
-                  <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[i]?.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[i]?.text}</p>
-                  <p className="text-xs text-gold font-medium mb-4">{serviceCards[i]?.info}</p>
-                  {external
-                    ? <a href={href} target="_blank" rel="noopener" className="btn-primary text-sm px-4 py-2">{cta}</a>
-                    : <Link href={href} className="btn-primary text-sm px-4 py-2">{cta}</Link>
-                  }
-                </div>
-              ))}
+              ].map(({ icon, href, cta, external }, i) => {
+                const cardBody = (
+                  <>
+                    <p className="text-4xl mb-4">{icon}</p>
+                    <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[i]?.title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[i]?.text}</p>
+                    <p className="text-xs text-gold font-medium mb-4">{serviceCards[i]?.info}</p>
+                    <span className="btn-primary text-sm px-4 py-2">{cta}</span>
+                  </>
+                )
+                return external ? (
+                  <a key={href} href={href} target="_blank" rel="noopener" className="card card-selectable p-6 text-center block">
+                    {cardBody}
+                  </a>
+                ) : (
+                  <Link key={href} href={href} className="card card-selectable p-6 text-center block">
+                    {cardBody}
+                  </Link>
+                )
+              })}
             </div>
           </div>
         </section>
