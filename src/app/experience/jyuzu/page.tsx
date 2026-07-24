@@ -11,9 +11,9 @@ import ZoomableImage from '@/components/ZoomableImage'
 export const metadata: Metadata = { title: '数珠づくり体験' }
 
 const DEFAULT_FLOW = [
-  { icon: '📿', title: '好きな珠を選ぶ', text: '天然石・天然木をご自由に組み合わせてお選びいただけます。', image: '/images/erabu.jpg' },
-  { icon: '🤲', title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。', image: '/images/tukuru.jpg' },
-  { icon: '🙏', title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。', image: '/images/kitousuru.jpg' },
+  { title: '好きな珠を選ぶ', text: '天然石・天然木をご自由に組み合わせてお選びいただけます。' },
+  { title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。' },
+  { title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。' },
 ]
 const DEFAULT_MATERIALS = [
   { name: '天然木', desc: '軽くて使いやすい木の珠。温かみのある手触りが特徴です。' },
@@ -192,28 +192,16 @@ export default async function JyuzuPage() {
 
           {/* 体験の流れ */}
           <section>
-            <h2 className="text-xl font-serif text-navy text-center mb-1">{c.jyuzu_heading_flow}</h2>
-            <div className="w-10 h-0.5 bg-gold mx-auto mb-8" />
-            <div className="grid md:grid-cols-3 gap-6 md:gap-4">
-              {flow.map(({ icon, title, text, image }, i) => (
-                <div key={i} className="relative">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-9 h-9 rounded-full bg-navy text-gold flex items-center justify-center text-sm font-serif font-bold flex-shrink-0">{i + 1}</span>
-                    <span className="text-xl">{icon}</span>
-                    <h3 className="font-medium text-navy">{title}</h3>
-                    {i < flow.length - 1 && (
-                      <span className="hidden md:block ml-auto text-gold text-xl">→</span>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-600 leading-relaxed mb-3">{text}</p>
-                  {image && (
-                    <div className="relative h-40 rounded-xl overflow-hidden shadow-sm">
-                      <ZoomableImage src={image} alt={title} fill className="object-cover" />
-                    </div>
-                  )}
-                </div>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.jyuzu_heading_flow}</h2>
+            <ol className="relative border-l-2 border-gold ml-4 space-y-6">
+              {flow.map(({ title, text }, i) => (
+                <li key={i} className="pl-6 relative">
+                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-bold">{i + 1}</div>
+                  <h3 className="font-medium text-navy mb-1">{title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
+                </li>
               ))}
-            </div>
+            </ol>
           </section>
 
           {/* 開催日・料金 */}

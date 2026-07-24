@@ -14,10 +14,10 @@ const DEFAULT_CONTENTS = [
   { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
 ]
 const DEFAULT_FLOW = [
-  { icon: '📝', title: '受付', text: '寺務所体験窓口にてお申し込みください。体験料をお納めいただきます。' },
-  { icon: '🖌️', title: '用具の準備', text: '写経用紙の入ったクリアファイルと筆をご用意しますので、お教室にそのままお持ちください。' },
-  { icon: '✍️', title: '体験', text: '一文字一文字丁寧に、薄墨になっているところをお書入れください。' },
-  { icon: '🙏', title: '特別朱印のお授け', text: '体験終了後、三宝（木の台）に写経を収め、クリアファイルと筆を寺務所にお返しください。引き換えに御朱印をお授けします。' },
+  { title: '受付', text: '寺務所体験窓口にてお申し込みください。体験料をお納めいただきます。' },
+  { title: '用具の準備', text: '写経用紙の入ったクリアファイルと筆をご用意しますので、お教室にそのままお持ちください。' },
+  { title: '体験', text: '一文字一文字丁寧に、薄墨になっているところをお書入れください。' },
+  { title: '特別朱印のお授け', text: '体験終了後、三宝（木の台）に写経を収め、クリアファイルと筆を寺務所にお返しください。引き換えに御朱印をお授けします。' },
 ]
 const DEFAULT_ITEMS = [
   { text: '筆・硯・お経の手本はすべてご用意しています。手ぶらでお越しください。' },
@@ -139,23 +139,16 @@ export default async function ShakyouPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-navy text-center mb-1">{c.shakyou_heading_flow}</h2>
-            <div className="w-10 h-0.5 bg-gold mx-auto mb-8" />
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
-              {flow.map(({ icon, title, text }, i) => (
-                <div key={i} className="relative">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-9 h-9 rounded-full bg-navy text-gold flex items-center justify-center text-sm font-serif font-bold flex-shrink-0">{i + 1}</span>
-                    <span className="text-xl">{icon}</span>
-                    <h3 className="font-medium text-navy">{title}</h3>
-                    {i < flow.length - 1 && (
-                      <span className="hidden lg:block ml-auto text-gold text-xl">→</span>
-                    )}
-                  </div>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_flow}</h2>
+            <ol className="relative border-l-2 border-gold ml-4 space-y-6">
+              {flow.map(({ title, text }, i) => (
+                <li key={i} className="pl-6 relative">
+                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-bold">{i + 1}</div>
+                  <h3 className="font-medium text-navy mb-1">{title}</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
-                </div>
+                </li>
               ))}
-            </div>
+            </ol>
           </section>
 
           <section>
