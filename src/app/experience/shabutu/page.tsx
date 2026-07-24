@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -78,11 +79,13 @@ export default async function ShabutuPage() {
           </div>
         </div>
 
-        <section className="bg-navy py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Shabutu</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">写仏体験</h1>
-          <p className="text-white/60 text-sm mt-3 relative">{c.shabutu_subtitle}</p>
+        <section className="relative h-64 md:h-80">
+          <Image src="/images/syabutu-hiro.png" alt="写仏体験" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
+            <p className="text-gold text-xs tracking-[0.3em] mb-3">Shabutu</p>
+            <h1 className="font-serif text-4xl text-white tracking-widest">写仏体験</h1>
+            <p className="text-white/60 text-sm mt-3">{c.shabutu_subtitle}</p>
+          </div>
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
@@ -94,6 +97,14 @@ export default async function ShabutuPage() {
             </div>
             <div className="max-w-[220px] mx-auto mt-4 rounded-xl overflow-hidden shadow-sm border border-gray-100">
               <ZoomableImage src="/images/shabutu-template.jpg" alt="写仏体験の下絵" width={835} height={1200} className="w-full h-auto" />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4 mt-4">
+              <div className="rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/shakyou-room.jpg" alt="写仏体験の会場" width={1200} height={800} className="w-full h-auto" />
+              </div>
+              <div className="rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/shakyou-altar.jpg" alt="写仏体験の御本尊" width={1200} height={900} className="w-full h-auto" />
+              </div>
             </div>
           </section>
 

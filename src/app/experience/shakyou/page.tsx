@@ -95,7 +95,7 @@ export default async function ShakyouPage() {
         </div>
 
         <section className="relative h-64 md:h-80">
-          <Image src="/images/syakyou-hiro.JPG" alt="写経体験" fill priority className="object-cover object-top" />
+          <Image src="/images/syakyou-hiro.png" alt="写経体験" fill priority className="object-cover object-top" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Shakyou</p>
             <h1 className="font-serif text-4xl text-white tracking-widest">写経体験</h1>
