@@ -56,8 +56,8 @@ async function getContent() {
   } catch { return DEFAULTS }
 }
 
-const REGULAR_IMAGES = ['/images/tachiki.syuin.png', null, '/images/daikokuten.png', '/images/kongoukaku.png']
-const SPECIAL_IMAGES = ['/images/sakyou.tatiki.png', null, '/images/syabutu.tatiki.png']
+const REGULAR_IMAGES = ['/images/tachiki.syuin.png', '/images/goeika.jpg', '/images/daikokuten.png', '/images/kongoukaku.png']
+const SPECIAL_IMAGES = ['/images/sakyou.tatiki.png', '/images/goshuin-sangemon.png', '/images/syabutu.tatiki.png']
 
 export default async function GoshuinPage() {
   const c = await getContent()
