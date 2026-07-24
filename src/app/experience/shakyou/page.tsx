@@ -123,13 +123,12 @@ export default async function ShakyouPage() {
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_contents}</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {contents.map(({ icon, title, desc }, i) => (
+              {contents.map(({ title, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold">
                   <div className="relative h-64 bg-cream-alt">
                     <ZoomableImage src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-3" />
                   </div>
                   <div className="p-5">
-                    <p className="text-2xl mb-3">{icon}</p>
                     <h3 className="font-medium text-navy mb-2">{title}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
                   </div>
