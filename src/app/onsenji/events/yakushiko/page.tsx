@@ -40,6 +40,15 @@ const DEFAULTS: Record<string, string> = {
   yakushiko_notes: JSON.stringify(DEFAULT_NOTES),
 }
 
+const GALLERY_IMAGES = [
+  '/images/温泉寺法楽/yakusyo-onsen1 (1).JPEG',
+  '/images/温泉寺法楽/yakusyo-onsen1 (2).JPEG',
+  '/images/温泉寺法楽/yakusyo-onsen1 (3).JPEG',
+  '/images/温泉寺法楽/yakusyo-onsen1 (4).JPEG',
+  '/images/温泉寺法楽/yakusyo-onsen1 (5).JPEG',
+  '/images/温泉寺法楽/yakusyo-onsen1 (6).JPEG',
+]
+
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
 async function getContent() {
@@ -74,7 +83,7 @@ export default async function YakushikoPage() {
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <Image src="/images/gyouji.JPEG" alt="薬師講大祭・採灯大護摩供" fill className="object-cover" />
+          <Image src="/images/温泉寺法楽/saitougoma-onsen.JPEG" alt="薬師講大祭・採灯大護摩供" fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-onsenji via-onsenji/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">August 8th  Annual Event</p>
@@ -133,8 +142,12 @@ export default async function YakushikoPage() {
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
               <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_gallery}</h2>
             </div>
-            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-md">
-              <Image src="/images/gyouji.JPEG" alt="採灯大護摩供" fill className="object-cover" />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {GALLERY_IMAGES.map((src, i) => (
+                <div key={src} className="relative h-40 md:h-52 rounded-xl overflow-hidden shadow-sm">
+                  <Image src={src} alt={`薬師講大祭・採灯大護摩供の様子 ${i + 1}`} fill className="object-cover" />
+                </div>
+              ))}
             </div>
           </section>
 
