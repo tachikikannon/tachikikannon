@@ -138,19 +138,6 @@ export default async function ShakyouPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_flow}</h2>
-            <ol className="relative border-l-2 border-gold ml-4 space-y-6">
-              {flow.map(({ title, text }, i) => (
-                <li key={i} className="pl-6 relative">
-                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-bold">{i + 1}</div>
-                  <h3 className="font-medium text-navy mb-1">{title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
-                </li>
-              ))}
-            </ol>
-          </section>
-
-          <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_fees}</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
@@ -170,6 +157,19 @@ export default async function ShakyouPage() {
                 </tbody>
               </table>
             </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{c.shakyou_heading_flow}</h2>
+            <ol className="relative border-l-2 border-gold ml-4 space-y-6">
+              {flow.map(({ title, text }, i) => (
+                <li key={i} className="pl-6 relative">
+                  <div className="absolute -left-[19px] top-0 w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center text-sm font-bold">{i + 1}</div>
+                  <h3 className="font-medium text-navy mb-1">{title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
+                </li>
+              ))}
+            </ol>
           </section>
 
           <section className="bg-cream-alt -mx-4 px-4 py-10 md:-mx-8 md:px-8 rounded-2xl">
