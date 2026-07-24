@@ -116,7 +116,7 @@ export default async function ShakyouPage() {
               {contents.map(({ icon, title, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-gold">
                   <div className="relative h-64 bg-cream-alt">
-                    <Image src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-3" />
+                    <ZoomableImage src={CONTENT_IMAGES[i] ?? CONTENT_IMAGES[0]} alt={title} fill className="object-contain p-3" />
                   </div>
                   <div className="p-5">
                     <p className="text-2xl mb-3">{icon}</p>
