@@ -13,6 +13,12 @@ const DEFAULT_CONTENTS = [
   { icon: '📜', title: '延命十句観音経', desc: '観音様のお力を借り、長寿・安全を祈るお経。十六文字を丁寧にお写しいただきます。' },
   { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
 ]
+const DEFAULT_FLOW = [
+  { icon: '📝', title: '受付', text: '寺務所体験窓口にてお申し込みください。体験料をお納めいただきます。' },
+  { icon: '🖌️', title: '用具の準備', text: '写経用紙の入ったクリアファイルと筆をご用意しますので、お教室にそのままお持ちください。' },
+  { icon: '✍️', title: '体験', text: '一文字一文字丁寧に、薄墨になっているところをお書入れください。' },
+  { icon: '🙏', title: '特別朱印のお授け', text: '体験終了後、三宝（木の台）に写経を収め、クリアファイルと筆を寺務所にお返しください。引き換えに御朱印をお授けします。' },
+]
 const DEFAULT_ITEMS = [
   { text: '筆・硯・お経の手本はすべてご用意しています。手ぶらでお越しください。' },
   { text: '汚れてもよい服装でお越しいただくとより安心です。' },
@@ -34,6 +40,7 @@ const DEFAULTS: Record<string, string> = {
   shakyou_about_p1: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。',
   shakyou_about_p2: '立木観音では、十六文字のお経（延命十句観音経・懺悔文）をお写しいただきます。短いお経のため、筆を持ったことのない方でも約15分でお写しいただけます。',
   shakyou_heading_contents: '体験内容',
+  shakyou_heading_flow: '体験の流れ',
   shakyou_heading_fees: '料金・所要時間',
   shakyou_fee:  '1,000円（特別御朱印込み）',
   shakyou_time: '約15分',
@@ -46,6 +53,7 @@ const DEFAULTS: Record<string, string> = {
   shakyou_cta_heading: '写経体験のご予約',
   shakyou_cta_sub: '事前予約をおすすめします。当日受付も空きがあれば対応します。',
   shakyou_contents: JSON.stringify(DEFAULT_CONTENTS),
+  shakyou_flow: JSON.stringify(DEFAULT_FLOW),
   shakyou_items: JSON.stringify(DEFAULT_ITEMS),
   shakyou_goshuin_items: JSON.stringify(DEFAULT_GOSHUIN_ITEMS),
 }
@@ -71,6 +79,8 @@ async function getContent() {
 export default async function ShakyouPage() {
   const c = await getContent()
   const contents = pj<typeof DEFAULT_CONTENTS>(c.shakyou_contents, DEFAULT_CONTENTS)
+  const flowRaw  = pj<{ title: string; text: string }[]>(c.shakyou_flow, DEFAULT_FLOW)
+  const flow     = flowRaw.map((f, i) => ({ ...DEFAULT_FLOW[i], ...f }))
   const items    = pj<typeof DEFAULT_ITEMS>(c.shakyou_items, DEFAULT_ITEMS)
   const goshuinItems = pj<typeof DEFAULT_GOSHUIN_ITEMS>(c.shakyou_goshuin_items, DEFAULT_GOSHUIN_ITEMS)
 
@@ -123,6 +133,26 @@ export default async function ShakyouPage() {
                     <h3 className="font-medium text-navy mb-2">{title}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
                   </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-serif text-navy text-center mb-1">{c.shakyou_heading_flow}</h2>
+            <div className="w-10 h-0.5 bg-gold mx-auto mb-8" />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
+              {flow.map(({ icon, title, text }, i) => (
+                <div key={i} className="relative">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-9 h-9 rounded-full bg-navy text-gold flex items-center justify-center text-sm font-serif font-bold flex-shrink-0">{i + 1}</span>
+                    <span className="text-xl">{icon}</span>
+                    <h3 className="font-medium text-navy">{title}</h3>
+                    {i < flow.length - 1 && (
+                      <span className="hidden lg:block ml-auto text-gold text-xl">→</span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
                 </div>
               ))}
             </div>

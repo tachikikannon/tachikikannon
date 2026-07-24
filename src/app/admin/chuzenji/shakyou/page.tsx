@@ -17,6 +17,17 @@ const FIELDS = [
       { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
     ]),
   },
+  { key: 'shakyou_heading_flow', label: '「体験の流れ」見出し', defaultValue: '体験の流れ' },
+  {
+    key: 'shakyou_flow', label: '体験の流れ', type: 'list' as const,
+    listFields: [{ key: 'title', label: 'ステップ名' }, { key: 'text', label: '説明', multiline: true }],
+    defaultValue: J([
+      { title: '受付', text: '寺務所体験窓口にてお申し込みください。体験料をお納めいただきます。' },
+      { title: '用具の準備', text: '写経用紙の入ったクリアファイルと筆をご用意しますので、お教室にそのままお持ちください。' },
+      { title: '体験', text: '一文字一文字丁寧に、薄墨になっているところをお書入れください。' },
+      { title: '特別朱印のお授け', text: '体験終了後、三宝（木の台）に写経を収め、クリアファイルと筆を寺務所にお返しください。引き換えに御朱印をお授けします。' },
+    ]),
+  },
   { key: 'shakyou_heading_fees', label: '「料金・所要時間」見出し', defaultValue: '料金・所要時間' },
   { key: 'shakyou_fee',  label: '体験料', defaultValue: '1,000円（特別御朱印込み）' },
   { key: 'shakyou_time', label: '所要時間', defaultValue: '約15分' },
