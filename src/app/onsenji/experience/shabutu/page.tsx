@@ -80,6 +80,17 @@ export default async function OnsenjShabutuPage() {
               <p>{c.onsenji_shabutu_about_p1}</p>
               <p className="mt-3">{c.onsenji_shabutu_about_p2}</p>
             </div>
+            <div className="grid grid-cols-3 gap-3 mt-4">
+              <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/onsen-kyousitu.png" alt="写仏体験の本堂" fill className="object-cover" />
+              </div>
+              <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/onsensyakyou.png" alt="写仏体験の会場" fill className="object-cover" />
+              </div>
+              <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/onsen-syakyou1.png" alt="お書きいただく様子" fill className="object-cover" />
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-4 mt-4 max-w-md mx-auto bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
               <div>
                 <div className="relative h-56 bg-cream-alt">

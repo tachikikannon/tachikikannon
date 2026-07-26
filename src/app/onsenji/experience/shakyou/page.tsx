@@ -88,13 +88,22 @@ export default async function OnsenjShakyouPage() {
               <p>{c.onsenji_shakyou_about_p1}</p>
               <p className="mt-3">{c.onsenji_shakyou_about_p2}</p>
             </div>
-            <div className="grid sm:grid-cols-2 gap-4 mt-4">
-              <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/onsenji-shakyou-room.jpg" alt="写経体験の会場" fill className="object-cover" />
+            <div className="grid grid-cols-3 gap-3 mt-4">
+              <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/onsen-kyousitu.png" alt="写経体験の本堂" fill className="object-cover" />
               </div>
-              <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-sm bg-cream-alt border border-gray-100">
+              <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/onsensyakyou.png" alt="写経体験の会場" fill className="object-cover" />
+              </div>
+              <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
+                <ZoomableImage src="/images/onsen-syakyou1.png" alt="写経をお書きいただく様子" fill className="object-cover" />
+              </div>
+            </div>
+            <div className="max-w-[180px] mx-auto mt-4 rounded-xl overflow-hidden shadow-sm bg-cream-alt border border-gray-100">
+              <div className="relative h-56">
                 <ZoomableImage src="/images/onsenji-goshuin-shakyou.png" alt="写経体験 特別御朱印" fill className="object-contain p-2" />
               </div>
+              <p className="text-center text-[11px] text-gray-400 py-1.5">特別御朱印</p>
             </div>
           </section>
           <section>
