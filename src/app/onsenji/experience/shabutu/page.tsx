@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
@@ -64,11 +65,13 @@ export default async function OnsenjShabutuPage() {
             <Link href="/onsenji">ホーム</Link> &gt; 写仏体験
           </div>
         </div>
-        <section className="bg-onsenji py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">Shabutu</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">写仏体験</h1>
-          <p className="text-white/60 text-sm mt-3 relative">{c.onsenji_shabutu_subtitle}</p>
+        <section className="relative h-64 md:h-80">
+          <Image src="/images/syabutu-hiro.png" alt="写仏体験" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-onsenji/60 flex flex-col items-center justify-center text-center px-4">
+            <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3">Shabutu</p>
+            <h1 className="font-serif text-4xl text-white tracking-widest">写仏体験</h1>
+            <p className="text-white/60 text-sm mt-3">{c.onsenji_shabutu_subtitle}</p>
+          </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
           <section>
