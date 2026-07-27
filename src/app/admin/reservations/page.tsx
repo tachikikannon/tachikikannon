@@ -2,10 +2,23 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import type { AdminProfile, Reservation, ReservationStatus } from '@/types'
+import ReservationCalendar from '@/components/ReservationCalendar'
+import type { AdminProfile, Reservation, ReservationStatus, ReservationType } from '@/types'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり'
+}
+const TYPES: { value: ReservationType; label: string }[] = [
+  { value: 'prayer',  label: '護摩祈願' },
+  { value: 'shakyou', label: '写経' },
+  { value: 'shabutu', label: '写仏' },
+  { value: 'jyuzu',   label: '数珠づくり' },
+]
+const NEW_RESERVATION_DEFAULTS = {
+  type: 'prayer' as ReservationType,
+  date: '', time_slot: '',
+  name: '', name_kana: '', email: '', phone: '',
+  party_size: 1, notes: '', status: 'confirmed' as ReservationStatus,
 }
 const STATUS_LABELS: Record<ReservationStatus, string> = {
   unconfirmed: '未確認',
@@ -35,6 +48,10 @@ export default function AdminReservationsPage() {
   const [filter, setFilter] = useState<string>('all')
   const [mailNotice, setMailNotice] = useState<string | null>(null)
   const [pendingStatus, setPendingStatus] = useState<ReservationStatus | null>(null)
+  const [creating, setCreating] = useState(false)
+  const [newRes, setNewRes] = useState(NEW_RESERVATION_DEFAULTS)
+  const [createError, setCreateError] = useState<string | null>(null)
+  const [createSaving, setCreateSaving] = useState(false)
 
   async function load() {
     const query = supabase.from('reservations').select('*').order('date').order('created_at', { ascending: false })
@@ -49,6 +66,28 @@ export default function AdminReservationsPage() {
     setDetail(r)
     setPendingStatus(null)
     setMailNotice(null)
+    setCreating(false)
+  }
+
+  function openCreate() {
+    setDetail(null)
+    setCreateError(null)
+    setNewRes(NEW_RESERVATION_DEFAULTS)
+    setCreating(true)
+  }
+
+  async function submitCreate() {
+    if (!newRes.date || !newRes.time_slot || !newRes.name || !newRes.name_kana || !newRes.email || !newRes.phone) {
+      setCreateError('日時・お名前・フリガナ・メール・電話番号は必須です。')
+      return
+    }
+    setCreateSaving(true)
+    setCreateError(null)
+    const { error } = await supabase.from('reservations').insert({ ...newRes, id: crypto.randomUUID() })
+    setCreateSaving(false)
+    if (error) { setCreateError('登録に失敗しました：' + error.message); return }
+    setCreating(false)
+    load()
   }
 
   async function updateStatus(id: string, status: ReservationStatus) {
@@ -99,7 +138,12 @@ export default function AdminReservationsPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-serif text-navy mb-6">予約管理</h1>
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <h1 className="text-2xl font-serif text-navy">予約管理</h1>
+        {canEdit && (
+          <button onClick={openCreate} className="btn-primary text-sm px-4 py-2">＋ 新規予約を追加</button>
+        )}
+      </div>
 
       {/* フィルター */}
       <div className="flex gap-2 mb-4 flex-wrap">
@@ -161,6 +205,91 @@ export default function AdminReservationsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* 新規予約フォーム */}
+        {creating && (
+          <div className="bg-white rounded-xl shadow p-5 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-medium text-navy">新規予約を追加</h2>
+              <button onClick={() => setCreating(false)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+            </div>
+
+            <div className="mb-4">
+              <label className="admin-label">種別</label>
+              <div className="grid grid-cols-2 gap-2">
+                {TYPES.map(t => (
+                  <label key={t.value} className={`border rounded-lg p-2.5 cursor-pointer text-sm transition-colors
+                    ${newRes.type === t.value ? 'border-navy bg-navy/5 font-medium' : 'border-gray-200 hover:border-navy/40'}`}>
+                    <input type="radio" name="new-type" value={t.value} className="sr-only"
+                      checked={newRes.type === t.value}
+                      onChange={() => setNewRes(f => ({ ...f, type: t.value, date: '', time_slot: '' }))} />
+                    {t.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="admin-label">日時</label>
+              <ReservationCalendar
+                reservationType={newRes.type}
+                selectedDate={newRes.date}
+                selectedTime={newRes.time_slot}
+                onSelectSlot={(date, time_slot) => setNewRes(f => ({ ...f, date, time_slot }))}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="admin-label">参加人数</label>
+              <input type="number" min={1} className="admin-input w-24"
+                value={newRes.party_size}
+                onChange={e => setNewRes(f => ({ ...f, party_size: Number(e.target.value) }))} />
+              <span className="text-sm text-gray-500 ml-2">名</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="admin-label">お名前</label>
+                <input className="admin-input" value={newRes.name}
+                  onChange={e => setNewRes(f => ({ ...f, name: e.target.value }))} />
+              </div>
+              <div>
+                <label className="admin-label">フリガナ</label>
+                <input className="admin-input" value={newRes.name_kana}
+                  onChange={e => setNewRes(f => ({ ...f, name_kana: e.target.value }))} />
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="admin-label">メールアドレス</label>
+              <input type="email" className="admin-input" value={newRes.email}
+                onChange={e => setNewRes(f => ({ ...f, email: e.target.value }))} />
+            </div>
+            <div className="mb-4">
+              <label className="admin-label">電話番号</label>
+              <input type="tel" className="admin-input" value={newRes.phone}
+                onChange={e => setNewRes(f => ({ ...f, phone: e.target.value }))} />
+            </div>
+            <div className="mb-4">
+              <label className="admin-label">備考（任意）</label>
+              <textarea className="admin-input min-h-[70px]" value={newRes.notes}
+                onChange={e => setNewRes(f => ({ ...f, notes: e.target.value }))} />
+            </div>
+            <div className="mb-5">
+              <label className="admin-label">状態</label>
+              <select className="admin-input" value={newRes.status}
+                onChange={e => setNewRes(f => ({ ...f, status: e.target.value as ReservationStatus }))}>
+                {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+              </select>
+              <p className="text-[11px] text-gray-400 mt-1">電話等で直接受けた予約は「予約確定」のままで問題ありません。</p>
+            </div>
+
+            {createError && <p className="text-red-600 text-sm mb-3">{createError}</p>}
+
+            <button onClick={submitCreate} disabled={createSaving} className="btn-primary w-full text-center disabled:opacity-50">
+              {createSaving ? '登録中...' : 'この内容で予約を追加'}
+            </button>
+          </div>
+        )}
 
         {/* 詳細 */}
         {detail && (
