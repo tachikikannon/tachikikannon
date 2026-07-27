@@ -247,12 +247,14 @@ export default async function HomePage() {
             <div className="section-divider" />
             <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               {[
-                { icon:'📜', href:'/goshuin', cta:'詳しく見る', external:false },
-                { icon:'🎁', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
+                { icon:'/images/gosyuin-main.png', href:'/goshuin', cta:'詳しく見る', external:false },
+                { icon:'/images/jyuyohin-main.png', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
               ].map(({ icon, href, cta, external }, i) => {
                 const cardBody = (
                   <>
-                    <p className="text-4xl mb-4">{icon}</p>
+                    <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
+                      <img src={icon} alt={serviceCards[i]?.title} className="w-full h-full object-cover" />
+                    </div>
                     <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[i]?.title}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[i]?.text}</p>
                     <p className="text-xs text-gold font-medium mb-4">{serviceCards[i]?.info}</p>
