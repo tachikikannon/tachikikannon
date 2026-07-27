@@ -67,12 +67,11 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     fields: [
       { key: 'top_heading_service', label: 'セクション見出し', defaultValue: '受ける' },
       {
-        key: 'top_service_cards', label: 'カード（御朱印・授与品通販・代金引換の順、3件固定）', type: 'list',
+        key: 'top_service_cards', label: 'カード（御朱印・授与品通販の順、2件固定。授与品カードには通販サイト／代金引換の2ボタンを表示）', type: 'list',
         listFields: [{ key: 'title', label: 'タイトル' }, { key: 'text', label: '説明文', multiline: true }, { key: 'info', label: '価格・補足' }],
         defaultValue: J([
           { title: '御朱印', text: '中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info: '御朱印代：500円〜' },
-          { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。通販サイトからもお求めいただけます。', info: '通販サイトでもご購入いただけます' },
-          { title: '代金引換でのお申し込み', text: '通販サイトを使わず、お電話代わりにフォームから代金引換（着払い）でもお申し込みいただけます。', info: '商品代金は配達員へお支払いください' },
+          { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。通販サイトのほか、代金引換でもお求めいただけます。', info: '通販サイト／代金引換からお選びいただけます' },
         ]),
       },
     ],

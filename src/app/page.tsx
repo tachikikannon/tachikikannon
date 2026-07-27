@@ -21,8 +21,7 @@ const DEFAULT_EXPERIENCE_CARDS = [
 ]
 const DEFAULT_SERVICE_CARDS = [
   { title: '御朱印',       text: '中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info: '御朱印代：500円〜' },
-  { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。通販サイトからもお求めいただけます。', info: '通販サイトでもご購入いただけます' },
-  { title: '代金引換でのお申し込み', text: '通販サイトを使わず、お電話代わりにフォームから代金引換（着払い）でもお申し込みいただけます。', info: '商品代金は配達員へお支払いください' },
+  { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。通販サイトのほか、代金引換でもお求めいただけます。', info: '通販サイト／代金引換からお選びいただけます' },
 ]
 
 const DEFAULT_CONTENT: Record<string, string> = {
@@ -246,33 +245,35 @@ export default async function HomePage() {
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="section-title">{content.top_heading_service}</h2>
             <div className="section-divider" />
-            <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              {[
-                { icon:'/images/gosyuin-main.png',  href:'/goshuin', cta:'詳しく見る', external:false },
-                { icon:'/images/jyuyohin-main.png', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
-                { icon:'/images/jyuyohin-main.png', href:'/order/cod', cta:'代金引換で申し込む', external:false },
-              ].map(({ icon, href, cta, external }, i) => {
-                const cardBody = (
-                  <>
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-lg overflow-hidden">
-                      <img src={icon} alt={serviceCards[i]?.title} className="w-full h-full object-cover scale-125" />
-                    </div>
-                    <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[i]?.title}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[i]?.text}</p>
-                    <p className="text-xs text-gold font-medium mb-4">{serviceCards[i]?.info}</p>
-                    <span className="btn-primary text-sm px-4 py-2">{cta}</span>
-                  </>
-                )
-                return external ? (
-                  <a key={href} href={href} target="_blank" rel="noopener" className="card card-selectable p-6 text-center block">
-                    {cardBody}
+            <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              <Link href="/goshuin" className="card card-selectable p-6 text-center block">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-lg overflow-hidden">
+                  <img src="/images/gosyuin-main.png" alt={serviceCards[0]?.title} className="w-full h-full object-cover scale-125" />
+                </div>
+                <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[0]?.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[0]?.text}</p>
+                <p className="text-xs text-gold font-medium mb-4">{serviceCards[0]?.info}</p>
+                <span className="btn-primary text-sm px-4 py-2">詳しく見る</span>
+              </Link>
+
+              <div className="card p-6 text-center">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-lg overflow-hidden">
+                  <img src="/images/jyuyohin-main.png" alt={serviceCards[1]?.title} className="w-full h-full object-cover scale-125" />
+                </div>
+                <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[1]?.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[1]?.text}</p>
+                <p className="text-xs text-gold font-medium mb-4">{serviceCards[1]?.info}</p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <a href="https://chuzenji.official.ec/" target="_blank" rel="noopener"
+                    className="btn-primary text-sm px-4 py-2">
+                    通販サイトへ
                   </a>
-                ) : (
-                  <Link key={href} href={href} className="card card-selectable p-6 text-center block">
-                    {cardBody}
+                  <Link href="/order/cod"
+                    className="inline-block border-2 border-navy text-navy text-sm px-4 py-2 rounded font-medium tracking-wider hover:bg-navy hover:text-white transition-colors">
+                    代金引換で申し込む
                   </Link>
-                )
-              })}
+                </div>
+              </div>
             </div>
           </div>
         </section>
