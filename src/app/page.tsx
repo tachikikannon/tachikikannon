@@ -252,8 +252,8 @@ export default async function HomePage() {
               ].map(({ icon, href, cta, external }, i) => {
                 const cardBody = (
                   <>
-                    <div className="w-20 h-20 mx-auto mb-4">
-                      <img src={icon} alt={serviceCards[i]?.title} className="w-full h-full object-contain" />
+                    <div className="w-20 h-20 mx-auto mb-4 rounded-lg overflow-hidden">
+                      <img src={icon} alt={serviceCards[i]?.title} className="w-full h-full object-cover scale-125" />
                     </div>
                     <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[i]?.title}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[i]?.text}</p>

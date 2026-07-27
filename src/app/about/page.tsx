@@ -106,11 +106,17 @@ export default async function AboutPage() {
             {[
               { icon: '🗺', label: 'アクセス', href: '/#access' },
               { icon: '🙏', label: '御祈願', href: '/prayer' },
-              { icon: '📜', label: '御朱印', href: '/goshuin' },
+              { icon: '/images/gosyuin-main.png', label: '御朱印', href: '/goshuin' },
               { icon: '❓', label: 'よくある質問', href: '/faq' },
             ].map(({ icon, label, href }) => (
               <Link key={href} href={href} className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group">
-                <span className="text-2xl">{icon}</span>
+                {icon.startsWith('/') ? (
+                  <span className="w-8 h-8 rounded overflow-hidden flex-shrink-0">
+                    <img src={icon} alt="" className="w-full h-full object-cover scale-125" />
+                  </span>
+                ) : (
+                  <span className="text-2xl">{icon}</span>
+                )}
                 <span className="text-sm font-medium text-navy group-hover:text-white">{label}</span>
               </Link>
             ))}
