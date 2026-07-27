@@ -263,13 +263,13 @@ export default async function HomePage() {
                 <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[1]?.title}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[1]?.text}</p>
                 <p className="text-xs text-gold font-medium mb-4">{serviceCards[1]?.info}</p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="flex flex-wrap gap-3 justify-center">
                   <a href="https://chuzenji.official.ec/" target="_blank" rel="noopener"
-                    className="btn-primary text-sm px-4 py-2">
+                    className="btn-primary text-sm px-4 py-2 whitespace-nowrap">
                     通販サイトへ
                   </a>
                   <Link href="/order/cod"
-                    className="inline-block border-2 border-navy text-navy text-sm px-4 py-2 rounded font-medium tracking-wider hover:bg-navy hover:text-white transition-colors">
+                    className="inline-block border-2 border-navy text-navy text-sm px-4 py-2 rounded font-medium tracking-wider hover:bg-navy hover:text-white transition-colors whitespace-nowrap">
                     代金引換で申し込む
                   </Link>
                 </div>
