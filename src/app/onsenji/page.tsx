@@ -164,8 +164,8 @@ export default async function OnsenjPage() {
           <div className="grid md:grid-cols-3 gap-5">
             {[
               { src: '/images/onsen.png', sub: 'Onsen', href: '/onsenji/onsen' },
-              { src: '/images/onsenji-shakyou-room.jpg', sub: 'Shakyou', href: '/onsenji/experience/shakyou' },
-              { src: '/images/onsenji-shabutu-template.png', sub: 'Shabutu', href: '/onsenji/experience/shabutu' },
+              { src: '/images/onsen-syakyou-card.png', sub: 'Shakyou', href: '/onsenji/experience/shakyou' },
+              { src: '/images/onsen-syabutu-card.png', sub: 'Shabutu', href: '/onsenji/experience/shabutu' },
             ].map(({ src, sub, href }, i) => (
               <Link key={href} href={href}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
