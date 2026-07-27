@@ -21,6 +21,8 @@ const FIELDS = [
   { key: 'jyuzu_place', label: '受付場所', defaultValue: '大黒天堂窓口' },
   { key: 'jyuzu_price_note_label', label: '料金補足の見出し', defaultValue: '料金について' },
   { key: 'jyuzu_price_note', label: '料金についての補足', multiline: true, defaultValue: 'お選びいただく珠の素材・組み合わせによって料金が異なります。詳しくは下記コース説明をご覧ください。' },
+  { key: 'jyuzu_group_note_label', label: '団体案内の見出し', defaultValue: '団体のご案内' },
+  { key: 'jyuzu_group_note', label: '団体のご案内 補足', multiline: true, defaultValue: '数珠づくり体験、団体のご予約も承っております。20名様を超える場合は、ご相談ください。' },
   {
     key: 'jyuzu_flow', label: '体験の流れ', type: 'list' as const,
     listFields: [{ key: 'title', label: 'ステップ名' }, { key: 'text', label: '説明', multiline: true }],

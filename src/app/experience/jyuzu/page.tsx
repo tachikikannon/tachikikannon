@@ -90,6 +90,8 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_place: '大黒天堂窓口',
   jyuzu_price_note_label: '料金について',
   jyuzu_price_note: 'お選びいただく珠の素材・組み合わせによって料金が異なります。詳しくは下記コース説明をご覧ください。',
+  jyuzu_group_note_label: '団体のご案内',
+  jyuzu_group_note: '数珠づくり体験、団体のご予約も承っております。20名様を超える場合は、ご相談ください。',
   jyuzu_heading_materials: '選べる珠',
   jyuzu_materials_hint: '珠をタップすると説明が表示されます',
   jyuzu_materials_note: '珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。',
@@ -239,9 +241,13 @@ export default async function JyuzuPage() {
                 </tbody>
               </table>
             </div>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-gray-700">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-gray-700 mb-4">
               <p className="font-bold text-amber-700 text-xs mb-1">{c.jyuzu_price_note_label}</p>
               <p>{c.jyuzu_price_note}</p>
+            </div>
+            <div className="bg-cream-alt border border-gray-200 rounded-lg p-4 text-sm text-gray-700">
+              <p className="font-bold text-navy text-xs mb-1">{c.jyuzu_group_note_label}</p>
+              <p>{c.jyuzu_group_note}</p>
             </div>
           </section>
 
