@@ -217,10 +217,10 @@ export default async function HomePage() {
             <div className="section-divider" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { src:'/images/gogigan.JPG', href:'/prayer' },
-                { src:'/images/jyuzu.png',   href:'/experience/jyuzu' },
-                { src:'/images/syakyou.JPG', href:'/experience/shakyou' },
-                { src:'/images/syabutu.png', href:'/experience/shabutu' },
+                { src:'/images/gogigan.JPG',     href:'/prayer' },
+                { src:'/images/jyuzu-card.png',   href:'/experience/jyuzu' },
+                { src:'/images/syakyou-card.png', href:'/experience/shakyou' },
+                { src:'/images/syabutu-card.png', href:'/experience/shabutu' },
               ].map(({ src, href }, i) => (
                 <Link key={href} href={href} className="card card-selectable overflow-hidden flex flex-col group">
                   <div className="relative h-40 overflow-hidden">
