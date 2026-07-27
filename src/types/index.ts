@@ -80,6 +80,38 @@ export interface Reservation {
   created_at: string
 }
 
+export interface CodOrderItem {
+  name: string
+  price: number
+  quantity: number
+}
+
+export type CodOrderStatus = 'unconfirmed' | 'in_progress' | 'confirmed' | 'shipped' | 'completed' | 'cancelled'
+
+export interface CodOrder {
+  id: string
+  name: string
+  name_kana: string
+  email: string
+  phone: string
+  postal_code: string
+  address: string
+  items: CodOrderItem[]
+  total_amount: number
+  notes: string | null
+  status: CodOrderStatus
+  assigned_admin_id: string | null
+  updated_by: string | null
+  updated_at: string
+  created_at: string
+}
+
+export interface GoodsItem {
+  id: string
+  name: string
+  price: number
+}
+
 export type ContactStatus = 'unread' | 'checking' | 'replied' | 'completed'
 export type ContactSource = 'contact' | 'event_application'
 

@@ -21,7 +21,8 @@ const DEFAULT_EXPERIENCE_CARDS = [
 ]
 const DEFAULT_SERVICE_CARDS = [
   { title: '御朱印',       text: '中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info: '御朱印代：500円〜' },
-  { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。一部通販でもお求めいただけます。', info: '通販サイトでもご購入いただけます' },
+  { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。通販サイトからもお求めいただけます。', info: '通販サイトでもご購入いただけます' },
+  { title: '代金引換でのお申し込み', text: '通販サイトを使わず、お電話代わりにフォームから代金引換（着払い）でもお申し込みいただけます。', info: '商品代金は配達員へお支払いください' },
 ]
 
 const DEFAULT_CONTENT: Record<string, string> = {
@@ -245,10 +246,11 @@ export default async function HomePage() {
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="section-title">{content.top_heading_service}</h2>
             <div className="section-divider" />
-            <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
               {[
-                { icon:'/images/gosyuin-main.png', href:'/goshuin', cta:'詳しく見る', external:false },
+                { icon:'/images/gosyuin-main.png',  href:'/goshuin', cta:'詳しく見る', external:false },
                 { icon:'/images/jyuyohin-main.png', href:'https://chuzenji.official.ec/', cta:'通販サイトへ', external:true },
+                { icon:'/images/jyuyohin-main.png', href:'/order/cod', cta:'代金引換で申し込む', external:false },
               ].map(({ icon, href, cta, external }, i) => {
                 const cardBody = (
                   <>

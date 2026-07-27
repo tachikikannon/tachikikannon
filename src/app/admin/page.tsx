@@ -9,11 +9,13 @@ export default async function AdminDashboard() {
     { count: pendingReservations },
     { count: unreadApplications },
     { count: unreadEventApplications },
+    { count: pendingCodOrders },
   ] = await Promise.all([
     supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('is_read', false).eq('source', 'contact'),
     supabase.from('reservations').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('applications').select('*', { count: 'exact', head: true }).eq('is_read', false),
     supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('is_read', false).eq('source', 'event_application'),
+    supabase.from('cod_orders').select('*', { count: 'exact', head: true }).eq('status', 'unconfirmed'),
   ])
 
   const stats = [
@@ -21,6 +23,7 @@ export default async function AdminDashboard() {
     { label: '未読の行事の申込み', value: unreadEventApplications ?? 0, href: '/admin/contacts', alert: (unreadEventApplications ?? 0) > 0 },
     { label: '未確認の予約',       value: pendingReservations ?? 0, href: '/admin/reservations', alert: (pendingReservations ?? 0) > 0 },
     { label: '未読の申請',         value: unreadApplications ?? 0, href: '/admin/applications', alert: (unreadApplications ?? 0) > 0 },
+    { label: '未確認の代金引換申込', value: pendingCodOrders ?? 0, href: '/admin/cod-orders', alert: (pendingCodOrders ?? 0) > 0 },
   ]
 
   const quickLinks = [
@@ -29,6 +32,7 @@ export default async function AdminDashboard() {
     { href: '/admin/events?new=1',     label: '行事を登録する', icon: '📅' },
     { href: '/admin/reservations',     label: '予約を確認する', icon: '📋' },
     { href: '/admin/contacts',         label: 'お問い合わせを見る', icon: '✉️' },
+    { href: '/admin/cod-orders',       label: '代金引換の申込を見る', icon: '📦' },
     { href: '/admin/images',           label: '画像をアップロード', icon: '🖼️' },
   ]
 

@@ -17,6 +17,8 @@ const navItems: NavItem[] = [
   { href: '/admin/reservations/categories', label: '予約区分の管理', icon: '🏷️', group: '予約・体験' },
   { href: '/admin/blocked-dates', label: '予約不可日',       icon: '🚫', group: '予約・体験' },
   { href: '/admin/capacity',      label: '定員設定',         icon: '👥', group: '予約・体験' },
+  // ── 授与品 ──
+  { href: '/admin/cod-orders',    label: '代金引換の申込',   icon: '📦', group: '授与品' },
   // ── 行事 ──
   { href: '/admin/events',        label: '行事カレンダー',   icon: '📅', group: '行事' },
   // ── お問い合わせ ──
