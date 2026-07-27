@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import type { AdminProfile, Reservation, ReservationStatus } from '@/types'
+import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus } from '@/types'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり'
@@ -14,17 +14,18 @@ const TYPE_TAG_COLORS: Record<string, string> = {
   jyuzu: 'bg-amber-100 text-amber-700',
 }
 const STATUS_LABELS: Record<ReservationStatus, string> = {
-  unconfirmed: '未確認', pending: '未確認', in_progress: '対応中', confirmed: '予約確定', completed: '完了', cancelled: 'キャンセル'
+  unconfirmed: '未確認', pending: '未確認', provisional: '仮予約', in_progress: '対応中', confirmed: '予約確定', completed: '完了', cancelled: 'キャンセル'
 }
 const STATUS_COLORS: Record<ReservationStatus, string> = {
   unconfirmed: 'bg-yellow-100 text-yellow-700',
   pending: 'bg-yellow-100 text-yellow-700',
+  provisional: 'bg-purple-100 text-purple-700',
   in_progress: 'bg-blue-100 text-blue-700',
   confirmed: 'bg-green-100 text-green-700',
   completed: 'bg-gray-200 text-gray-600',
   cancelled: 'bg-gray-100 text-gray-500',
 }
-const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'confirmed', 'completed', 'cancelled']
+const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_progress', 'confirmed', 'completed', 'cancelled']
 const WEEKDAY_LABELS = ['月', '火', '水', '木', '金', '土', '日']
 
 function dstr(d: Date) {
@@ -65,6 +66,7 @@ export default function AdminReservationSchedulePage() {
   const [month, setMonth] = useState(today.getMonth()) // 0始まり
   const [list, setList] = useState<Reservation[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
+  const [categories, setCategories] = useState<ReservationCategory[]>([])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [detail, setDetail] = useState<Reservation | null>(null)
   const [mailNotice, setMailNotice] = useState<string | null>(null)
@@ -80,6 +82,8 @@ export default function AdminReservationSchedulePage() {
     setList(data ?? [])
     const { data: adminData } = await supabase.from('admin_profiles').select('*').eq('is_active', true)
     setAdmins(adminData ?? [])
+    const { data: categoryData } = await supabase.from('reservation_categories').select('*').order('sort_order')
+    setCategories(categoryData ?? [])
   }
   useEffect(() => { load() }, [year, month])
 
@@ -146,6 +150,7 @@ export default function AdminReservationSchedulePage() {
   }
 
   const adminName = (id: string | null) => admins.find(a => a.id === id)?.name || '未割当'
+  const categoryName = (id: string | null) => categories.find(c => c.id === id)?.name || '区分なし'
 
   const byDate = useMemo(() => {
     const map = new Map<string, Reservation[]>()
@@ -283,6 +288,7 @@ export default function AdminReservationSchedulePage() {
               <dl className="space-y-3 text-sm">
                 {[
                   ['種別', TYPE_LABELS[detail.type]],
+                  ['区分', categoryName(detail.category_id)],
                   ['日付', new Date(detail.date).toLocaleDateString('ja-JP')],
                   ['時間', detail.time_slot],
                   ['お名前', detail.name],

@@ -28,7 +28,10 @@ export default function ReserveForm() {
     // anonロールにはreservationsのSELECT権限が無くinsert後にDB生成IDを
     // 取得できないため、この方式でIDを先に確定させてinsert/通知の両方に使う。
     const id = crypto.randomUUID()
-    const { error } = await supabase.from('reservations').insert({ ...form, id, status: 'pending' })
+    const { data: defaultCategory } = await supabase
+      .from('reservation_categories').select('id').eq('is_default', true).maybeSingle()
+    const { error } = await supabase.from('reservations')
+      .insert({ ...form, id, status: 'pending', category_id: defaultCategory?.id ?? null })
     if (error) { setStatus('error'); return }
     // メール・LINE通知（失敗してもフォーム送信は成功扱い）
     await fetch('/api/notify/reservation', {

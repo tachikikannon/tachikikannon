@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import ReservationCalendar from '@/components/ReservationCalendar'
-import type { AdminProfile, Reservation, ReservationStatus, ReservationType } from '@/types'
+import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus, ReservationType } from '@/types'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり'
@@ -19,10 +19,12 @@ const NEW_RESERVATION_DEFAULTS = {
   date: '', time_slot: '',
   name: '', name_kana: '', email: '', phone: '',
   party_size: 1, notes: '', status: 'confirmed' as ReservationStatus,
+  category_id: '' as string,
 }
 const STATUS_LABELS: Record<ReservationStatus, string> = {
   unconfirmed: '未確認',
   pending: '未確認',
+  provisional: '仮予約',
   in_progress: '対応中',
   confirmed: '予約確定',
   completed: '完了',
@@ -31,19 +33,21 @@ const STATUS_LABELS: Record<ReservationStatus, string> = {
 const STATUS_COLORS: Record<ReservationStatus, string> = {
   unconfirmed: 'bg-yellow-100 text-yellow-700',
   pending: 'bg-yellow-100 text-yellow-700',
+  provisional: 'bg-purple-100 text-purple-700',
   in_progress: 'bg-blue-100 text-blue-700',
   confirmed: 'bg-green-100 text-green-700',
   completed: 'bg-gray-200 text-gray-600',
   cancelled: 'bg-gray-100 text-gray-500',
 }
-const FILTERS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'confirmed', 'completed', 'cancelled']
-const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'in_progress', 'confirmed', 'completed', 'cancelled']
+const FILTERS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_progress', 'confirmed', 'completed', 'cancelled']
+const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_progress', 'confirmed', 'completed', 'cancelled']
 
 export default function AdminReservationsPage() {
   const supabase = createClient()
   const { profile, canEditReservations: canEdit } = useAdminProfile()
   const [list, setList] = useState<Reservation[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
+  const [categories, setCategories] = useState<ReservationCategory[]>([])
   const [detail, setDetail] = useState<Reservation | null>(null)
   const [filter, setFilter] = useState<string>('all')
   const [mailNotice, setMailNotice] = useState<string | null>(null)
@@ -59,6 +63,8 @@ export default function AdminReservationsPage() {
     setList(data ?? [])
     const { data: adminData } = await supabase.from('admin_profiles').select('*').eq('is_active', true)
     setAdmins(adminData ?? [])
+    const { data: categoryData } = await supabase.from('reservation_categories').select('*').order('sort_order')
+    setCategories(categoryData ?? [])
   }
   useEffect(() => { load() }, [])
 
@@ -72,7 +78,9 @@ export default function AdminReservationsPage() {
   function openCreate() {
     setDetail(null)
     setCreateError(null)
-    setNewRes(NEW_RESERVATION_DEFAULTS)
+    // 職員が直接追加する予約は「一般予約（予約サイト）」以外の区分をデフォルトにする
+    const defaultCategory = categories.find(c => !c.is_default) ?? categories[0]
+    setNewRes({ ...NEW_RESERVATION_DEFAULTS, category_id: defaultCategory?.id ?? '' })
     setCreating(true)
   }
 
@@ -83,7 +91,8 @@ export default function AdminReservationsPage() {
     }
     setCreateSaving(true)
     setCreateError(null)
-    const { error } = await supabase.from('reservations').insert({ ...newRes, id: crypto.randomUUID() })
+    const { error } = await supabase.from('reservations')
+      .insert({ ...newRes, category_id: newRes.category_id || null, id: crypto.randomUUID() })
     setCreateSaving(false)
     if (error) { setCreateError('登録に失敗しました：' + error.message); return }
     setCreating(false)
@@ -125,6 +134,12 @@ export default function AdminReservationsPage() {
     if (detail?.id === id) setDetail(d => d ? { ...d, assigned_admin_id: assigned_admin_id || null } : d)
   }
 
+  async function updateCategory(id: string, category_id: string) {
+    await supabase.from('reservations').update({ category_id: category_id || null }).eq('id', id)
+    load()
+    if (detail?.id === id) setDetail(d => d ? { ...d, category_id: category_id || null } : d)
+  }
+
   async function remove(id: string) {
     if (!confirm('この予約を削除しますか？削除すると元に戻せません。')) return
     await supabase.from('reservations').delete().eq('id', id)
@@ -133,6 +148,7 @@ export default function AdminReservationsPage() {
   }
 
   const adminName = (id: string | null) => admins.find(a => a.id === id)?.name || '未割当'
+  const categoryName = (id: string | null) => categories.find(c => c.id === id)?.name || '区分なし'
 
   const filtered = filter === 'all' ? list : list.filter(r => r.status === filter || (filter === 'unconfirmed' && r.status === 'pending'))
 
@@ -170,6 +186,7 @@ export default function AdminReservationsPage() {
               <tr>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">日付</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">種別</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500">区分</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">お名前</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">担当者</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">状態</th>
@@ -186,6 +203,7 @@ export default function AdminReservationsPage() {
                     <span className="text-gray-400">{r.time_slot}</span>
                   </td>
                   <td className="px-4 py-3 text-xs whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{categoryName(r.category_id)}</td>
                   <td className="px-4 py-3 font-medium whitespace-nowrap">{r.name}</td>
                   <td className="px-4 py-3 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                   <td className="px-4 py-3">
@@ -201,7 +219,7 @@ export default function AdminReservationsPage() {
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400 text-sm">予約がありません</td></tr>}
+              {filtered.length === 0 && <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400 text-sm">予約がありません</td></tr>}
             </tbody>
           </table>
         </div>
@@ -227,6 +245,15 @@ export default function AdminReservationsPage() {
                   </label>
                 ))}
               </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="admin-label">区分</label>
+              <select className="admin-input" value={newRes.category_id}
+                onChange={e => setNewRes(f => ({ ...f, category_id: e.target.value }))}>
+                <option value="">区分なし</option>
+                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
             </div>
 
             <div className="mb-4">
@@ -320,6 +347,19 @@ export default function AdminReservationsPage() {
                 </div>
               ))}
             </dl>
+
+            <div className="mt-5 border-t pt-4">
+              <p className="text-xs text-gray-500 mb-2">区分</p>
+              {canEdit ? (
+                <select className="admin-input" value={detail.category_id ?? ''}
+                  onChange={e => updateCategory(detail.id, e.target.value)}>
+                  <option value="">区分なし</option>
+                  {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              ) : (
+                <span className="text-sm">{categoryName(detail.category_id)}</span>
+              )}
+            </div>
 
             <div className="mt-5 border-t pt-4">
               <p className="text-xs text-gray-500 mb-2">担当者</p>
