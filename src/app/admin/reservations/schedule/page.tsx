@@ -245,6 +245,7 @@ export default function AdminReservationSchedulePage() {
                 <tr>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">時間</th>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">種別</th>
+                  <th className="text-left px-4 py-2.5 text-xs text-gray-500">区分</th>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">お名前</th>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">担当者</th>
                   <th className="text-left px-4 py-2.5 text-xs text-gray-500">状態</th>
@@ -256,6 +257,7 @@ export default function AdminReservationSchedulePage() {
                   <tr key={r.id} onClick={() => openDetail(r)} className="hover:bg-blue-50 cursor-pointer">
                     <td className="px-4 py-2.5 whitespace-nowrap font-medium text-navy">{r.time_slot}</td>
                     <td className="px-4 py-2.5 whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
+                    <td className="px-4 py-2.5 text-xs text-gray-500 whitespace-nowrap">{categoryName(r.category_id)}</td>
                     <td className="px-4 py-2.5 whitespace-nowrap">{r.name}</td>
                     <td className="px-4 py-2.5 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                     <td className="px-4 py-2.5">
@@ -269,7 +271,7 @@ export default function AdminReservationSchedulePage() {
                   </tr>
                 ))}
                 {dayList.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400 text-sm">この日の予約はありません</td></tr>
+                  <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400 text-sm">この日の予約はありません</td></tr>
                 )}
               </tbody>
             </table>
