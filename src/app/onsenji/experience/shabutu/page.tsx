@@ -22,6 +22,9 @@ const DEFAULTS: Record<string, string> = {
   onsenji_shabutu_heading_about: '写仏とは',
   onsenji_shabutu_about_p1: '写仏とは、仏様のお姿を下絵に沿って丁寧にお描きする修行です。写経と並ぶ伝統的な仏道修行のひとつで、描きながら仏様の功徳をいただき、心を落ち着けることができます。',
   onsenji_shabutu_about_p2: '温泉寺の写仏体験では、ご本尊・薬師如来のお姿をお描きいただきます。完成した写仏は記念にお持ち帰りいただけます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。',
+  onsenji_shabutu_heading_contents: '体験内容',
+  onsenji_shabutu_content_title: '薬師如来',
+  onsenji_shabutu_content_desc: '下絵に沿って、ご本尊・薬師如来のお姿をお描きいただきます。完成後は特別御朱印とセットでお授けします。',
   onsenji_shabutu_heading_fees: '料金・所要時間',
   onsenji_shabutu_fee:  '1,000円（御朱印込み）',
   onsenji_shabutu_time: '約30〜60分（個人差があります）',
@@ -91,18 +94,27 @@ export default async function OnsenjShabutuPage() {
                 <ZoomableImage src="/images/onsen-syakyou1.png" alt="お書きいただく様子" fill className="object-cover" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 mt-4 max-w-md mx-auto bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
-              <div>
-                <div className="relative h-56 bg-cream-alt">
-                  <ZoomableImage src="/images/onsenji-goshuin-shabutu.jpg" alt="写仏体験の下絵" fill className="object-contain p-2" />
+          </section>
+          <section>
+            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">{c.onsenji_shabutu_heading_contents}</h2>
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-[#7ec8a4] max-w-md mx-auto">
+              <div className="grid grid-cols-2">
+                <div>
+                  <div className="relative h-56 bg-cream-alt">
+                    <ZoomableImage src="/images/onsenji-goshuin-shabutu.jpg" alt="写仏体験の下絵" fill className="object-contain p-2" />
+                  </div>
+                  <p className="text-center text-[11px] text-gray-400 py-1.5">下絵</p>
                 </div>
-                <p className="text-center text-[11px] text-gray-400 py-1.5">下絵</p>
+                <div className="border-l border-gray-100">
+                  <div className="relative h-56 bg-cream-alt">
+                    <ZoomableImage src="/images/onsenji-shabutu-template.png" alt="写仏体験の特別御朱印" fill className="object-contain p-2" />
+                  </div>
+                  <p className="text-center text-[11px] text-gray-400 py-1.5">特別御朱印</p>
+                </div>
               </div>
-              <div className="border-l border-gray-100">
-                <div className="relative h-56 bg-cream-alt">
-                  <ZoomableImage src="/images/onsenji-shabutu-template.png" alt="写仏体験 特別御朱印" fill className="object-contain p-2" />
-                </div>
-                <p className="text-center text-[11px] text-gray-400 py-1.5">特別御朱印</p>
+              <div className="p-5">
+                <h3 className="font-medium text-onsenji mb-2">{c.onsenji_shabutu_content_title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{c.onsenji_shabutu_content_desc}</p>
               </div>
             </div>
           </section>

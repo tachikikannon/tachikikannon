@@ -27,6 +27,9 @@ const DEFAULTS: Record<string, string> = {
   onsenji_shakyou_heading_about: '写経とは',
   onsenji_shakyou_about_p1: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。',
   onsenji_shakyou_about_p2: '温泉寺では薬師如来に縁の深いお経をお写しいただきます。体験後は特別御朱印をお授けします。毎日開催していますので、参拝の際にお気軽にお申し付けください。',
+  onsenji_shakyou_heading_contents: '体験内容',
+  onsenji_shakyou_content_title: '薬師経',
+  onsenji_shakyou_content_desc: 'ご本尊・薬師如来に縁の深い薬師経をお写しいただきます。お写しいただいた方には特別御朱印をお授けします。',
   onsenji_shakyou_heading_fees: '料金・所要時間',
   onsenji_shakyou_fee:  '1,000円（特別御朱印授与込み）',
   onsenji_shakyou_time: '約15分',
@@ -99,11 +102,28 @@ export default async function OnsenjShakyouPage() {
                 <ZoomableImage src="/images/onsen-syakyou1.png" alt="写経をお書きいただく様子" fill className="object-cover" />
               </div>
             </div>
-            <div className="max-w-[180px] mx-auto mt-4 rounded-xl overflow-hidden shadow-sm bg-cream-alt border border-gray-100">
-              <div className="relative h-56">
-                <ZoomableImage src="/images/onsenji-goshuin-shakyou.png" alt="写経体験 特別御朱印" fill className="object-contain p-2" />
+          </section>
+          <section>
+            <h2 className="text-xl font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">{c.onsenji_shakyou_heading_contents}</h2>
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm border-t-4 border-[#7ec8a4] max-w-md mx-auto">
+              <div className="grid grid-cols-2">
+                <div>
+                  <div className="relative h-56 bg-cream-alt">
+                    <ZoomableImage src="/images/onsen-syakyou.png" alt="薬師経 写経用紙" fill className="object-contain p-2" />
+                  </div>
+                  <p className="text-center text-[11px] text-gray-400 py-1.5">写経用紙</p>
+                </div>
+                <div className="border-l border-gray-100">
+                  <div className="relative h-56 bg-cream-alt">
+                    <ZoomableImage src="/images/onsenji-goshuin-shakyou.png" alt="薬師経の特別御朱印" fill className="object-contain p-2" />
+                  </div>
+                  <p className="text-center text-[11px] text-gray-400 py-1.5">薬師経の特別御朱印</p>
+                </div>
               </div>
-              <p className="text-center text-[11px] text-gray-400 py-1.5">特別御朱印</p>
+              <div className="p-5">
+                <h3 className="font-medium text-onsenji mb-2">{c.onsenji_shakyou_content_title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{c.onsenji_shakyou_content_desc}</p>
+              </div>
             </div>
           </section>
           <section>
