@@ -2,34 +2,14 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
+import { getTimeSlots } from '@/lib/reservationSlots'
 
 const DAY_LABELS = ['日','月','火','水','木','金','土']
-
-function getSeason(month: number): 'peak' | 'shoulder' | 'winter' {
-  if (month >= 4 && month <= 10) return 'peak'
-  if (month === 3 || month === 11) return 'shoulder'
-  return 'winter'
-}
-
-function getTimeSlots(type: ReservationType, month: number): string[] {
-  const season = getSeason(month)
-  if (type === 'prayer') {
-    return ['9:00','9:30','10:00','10:30','11:00','11:30']
-  }
-  if (type === 'shakyou' || type === 'shabutu') {
-    return ['午前','午後']
-  }
-  if (type === 'jyuzu') {
-    if (season === 'peak')     return ['9:00','10:00','11:00','12:00','13:00','14:00','15:00']
-    if (season === 'shoulder') return ['9:00','10:00','11:00','12:00','13:00','14:00']
-    return ['9:00','10:00','11:00','12:00','13:00']
-  }
-  return []
-}
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; type: string; party_size: number }
 type CapacitySetting = { max_groups: number; max_people: number }
+type SlotOverride = { date: string; time_slot: string; is_closed: boolean; max_groups: number | null; max_people: number | null }
 
 interface Props {
   reservationType: ReservationType
@@ -65,6 +45,7 @@ export default function ReservationCalendar({
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([])
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
+  const [overrides, setOverrides] = useState<SlotOverride[]>([])
 
   // 今週の7日間
   const weekDays = Array.from({ length: 7 }, (_, i) => {
@@ -91,6 +72,11 @@ export default function ReservationCalendar({
       .gte('date', from).lte('date', to)
       .eq('type', reservationType)
       .then(({ data }) => setReservations(data ?? []))
+
+    supabase.from('slot_overrides').select('date,time_slot,is_closed,max_groups,max_people')
+      .gte('date', from).lte('date', to)
+      .eq('type', reservationType)
+      .then(({ data }) => setOverrides(data ?? []))
   }, [weekStart, reservationType])
 
   function isDateBlocked(dateStr: string) {
@@ -99,12 +85,19 @@ export default function ReservationCalendar({
     ) ?? null
   }
 
+  function getOverride(dateStr: string, slot: string) {
+    return overrides.find(o => o.date === dateStr && o.time_slot === slot) ?? null
+  }
+
   function isSlotFull(dateStr: string, slot: string) {
-    if (!capacity) return false
+    const override = getOverride(dateStr, slot)
+    const maxGroups = override?.max_groups ?? capacity?.max_groups
+    const maxPeople = override?.max_people ?? capacity?.max_people
+    if (maxGroups == null && maxPeople == null) return false
     const slotReservations = reservations.filter(r => r.date === dateStr && r.time_slot === slot)
     const groupCount = slotReservations.length
     const peopleCount = slotReservations.reduce((sum, r) => sum + (r.party_size ?? 1), 0)
-    return groupCount >= capacity.max_groups || peopleCount >= capacity.max_people
+    return (maxGroups != null && groupCount >= maxGroups) || (maxPeople != null && peopleCount >= maxPeople)
   }
 
   function prevWeek() {
@@ -178,10 +171,11 @@ export default function ReservationCalendar({
                 const dateStr = toDateStr(d)
                 const isPast = d < today
                 const blocked = isDateBlocked(dateStr)
+                const override = getOverride(dateStr, slot)
                 const full = isSlotFull(dateStr, slot)
                 const isSelected = selectedDate === dateStr && selectedTime === slot
                 const validSlots = getTimeSlots(reservationType, d.getMonth() + 1)
-                const unavailable = isPast || !!blocked || full || !validSlots.includes(slot)
+                const unavailable = isPast || !!blocked || !!override?.is_closed || full || !validSlots.includes(slot)
 
                 return (
                   <td key={dateStr} className="border border-gray-200 p-1 text-center">

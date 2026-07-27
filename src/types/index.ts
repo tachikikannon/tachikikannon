@@ -40,6 +40,18 @@ export interface Event {
 export type ReservationType = 'prayer' | 'shakyou' | 'shabutu' | 'jyuzu'
 export type ReservationStatus = 'unconfirmed' | 'in_progress' | 'confirmed' | 'completed' | 'cancelled' | 'pending'
 
+export interface SlotOverride {
+  id: string
+  type: ReservationType
+  date: string
+  time_slot: string
+  is_closed: boolean
+  max_groups: number | null
+  max_people: number | null
+  note: string | null
+  created_at: string
+}
+
 export interface Reservation {
   id: string
   type: ReservationType

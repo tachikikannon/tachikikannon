@@ -13,6 +13,7 @@ const navItems: NavItem[] = [
   // ── 予約・体験 ──
   { href: '/admin/reservations',  label: '予約管理',         icon: '📋', group: '予約・体験' },
   { href: '/admin/reservations/schedule', label: '予約スケジュール', icon: '🗓️', group: '予約・体験' },
+  { href: '/admin/reservations/availability', label: '空き状況の詳細設定', icon: '🕒', group: '予約・体験' },
   { href: '/admin/blocked-dates', label: '予約不可日',       icon: '🚫', group: '予約・体験' },
   { href: '/admin/capacity',      label: '定員設定',         icon: '👥', group: '予約・体験' },
   // ── 行事 ──
