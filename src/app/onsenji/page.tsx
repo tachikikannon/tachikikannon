@@ -221,14 +221,15 @@ export default async function OnsenjPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { src: '/images/onsen.png', sub: 'Onsen', href: '/onsenji/onsen' },
-              { src: '/images/onsen-syakyou-card.png', sub: 'Shakyou', href: '/onsenji/experience/shakyou' },
-              { src: '/images/onsen-syabutu-card.png', sub: 'Shabutu', href: '/onsenji/experience/shabutu' },
-            ].map(({ src, sub, href }, i) => (
+              { src: '/images/onsen.png', sub: 'Onsen', href: '/onsenji/onsen', fit: 'cover' as const },
+              { src: '/images/onsen-syakyou-card.png', sub: 'Shakyou', href: '/onsenji/experience/shakyou', fit: 'contain' as const },
+              { src: '/images/onsen-syabutu-card.png', sub: 'Shabutu', href: '/onsenji/experience/shabutu', fit: 'contain' as const },
+            ].map(({ src, sub, href, fit }, i) => (
               <Link key={href} href={href}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                <div className="relative h-32">
-                  <Image src={src} alt={menuCards[i]?.title || sub} fill className="object-cover" />
+                <div className={`relative h-40 ${fit === 'contain' ? 'bg-onsenji/5' : ''}`}>
+                  <Image src={src} alt={menuCards[i]?.title || sub} fill
+                    className={fit === 'contain' ? 'object-contain p-3' : 'object-cover'} />
                 </div>
                 <div className="p-5">
                   <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">{sub}</p>
