@@ -17,6 +17,7 @@ const FEE_OPTIONS = [
   { price: '30,000円', size: '42.5㎝' },
 ]
 const EC_SITE_URL = 'https://chuzenji.official.ec/'
+const CASH_MAIL_FORM_URL = '/downloads/shogatsu-moushikomisho.pdf'
 
 function WishSelect({ value, onChange, required }: { value: string; onChange: (v: string) => void; required?: boolean }) {
   return (
@@ -35,6 +36,7 @@ export default function ShogatsuApplyForm() {
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState<Status>('idle')
   const [showEcConfirm, setShowEcConfirm] = useState(false)
+  const [showCashMail, setShowCashMail] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -137,7 +139,7 @@ export default function ShogatsuApplyForm() {
         {/* お申し込み方法の選択 */}
         <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
           <p className="font-medium text-navy text-sm mb-4">お申し込み方法をお選びください</p>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-3 gap-4">
             <a href="#apply-form"
               className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors">
               <span className="text-2xl">📦</span>
@@ -149,6 +151,12 @@ export default function ShogatsuApplyForm() {
               <span className="text-2xl">🛒</span>
               <span className="font-medium text-navy text-sm">ECサイトを利用</span>
               <span className="text-xs text-gray-500 leading-relaxed">オンラインショップからお申し込みいただけます。</span>
+            </button>
+            <button type="button" onClick={() => setShowCashMail(true)}
+              className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors text-left">
+              <span className="text-2xl">✉️</span>
+              <span className="font-medium text-navy text-sm">現金書留で申し込む</span>
+              <span className="text-xs text-gray-500 leading-relaxed">申込書に必要事項をご記入の上、現金書留にてお送りください。</span>
             </button>
           </div>
         </div>
@@ -290,6 +298,44 @@ export default function ShogatsuApplyForm() {
                 はい
               </a>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 現金書留モーダル */}
+      {showCashMail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowCashMail(false)}>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
+            onClick={e => e.stopPropagation()}>
+            <p className="font-medium text-navy text-sm mb-4">現金書留でのお申し込み手順</p>
+            <ol className="space-y-3 mb-6">
+              <li className="flex gap-3 text-sm text-gray-700 leading-relaxed">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center font-bold">1</span>
+                <p>現金書留の封筒を郵便局で購入する</p>
+              </li>
+              <li className="flex gap-3 text-sm text-gray-700 leading-relaxed">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center font-bold">2</span>
+                <p>申込書をダウンロードして、必要事項を記入する</p>
+              </li>
+              <li className="flex gap-3 text-sm text-gray-700 leading-relaxed">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center font-bold">3</span>
+                <p>御札の金額と送料1,000円（例：5,000円の御札なら5,000円＋1,000円で6,000円）を現金封筒に入れて立木観音に送る</p>
+              </li>
+            </ol>
+            <a href={CASH_MAIL_FORM_URL} target="_blank" rel="noopener"
+              className="block w-full text-center py-2.5 bg-gold text-navy font-medium rounded-full text-sm hover:opacity-90 transition-colors mb-4">
+              📄 申込書をダウンロード
+            </a>
+            <div className="bg-cream-alt rounded-lg p-3 text-xs text-gray-600 mb-4">
+              <p className="font-medium text-navy mb-1">送付先</p>
+              <p>〒321-1661 栃木県日光市中宮祠2578　日光山中禅寺 立木観音</p>
+            </div>
+            <button type="button" onClick={() => setShowCashMail(false)}
+              className="w-full py-2.5 border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+              閉じる
+            </button>
           </div>
         </div>
       )}
