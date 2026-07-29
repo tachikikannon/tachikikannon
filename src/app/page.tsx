@@ -169,7 +169,7 @@ export default async function HomePage() {
                   className="card overflow-hidden flex flex-col group">
                   <div className="relative h-40 overflow-hidden">
                     <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                    <div className="absolute inset-0 bg-navy/30 group-hover:bg-navy/20 transition-colors" />
+                    <div className="absolute inset-0 bg-navy/30 group-hover:bg-navy/5 transition-colors" />
                   </div>
                   <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
                     <p className="font-serif text-navy font-medium text-sm group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>

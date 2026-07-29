@@ -177,7 +177,7 @@ export default async function OnsenjPage() {
                   className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 flex flex-col group">
                   <div className="relative h-40 overflow-hidden">
                     <Image src={img} alt={aboutCards[i]?.label ?? ''} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-                    <div className="absolute inset-0 bg-onsenji/30 group-hover:bg-onsenji/20 transition-colors" />
+                    <div className="absolute inset-0 bg-onsenji/30 group-hover:bg-onsenji/5 transition-colors" />
                   </div>
                   <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
                     <p className="font-serif text-onsenji font-medium text-sm group-hover:text-[#2d6b57] transition-colors">{aboutCards[i]?.label}</p>
