@@ -21,7 +21,16 @@ const SECTIONS: Section[] = [
       { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は管理画面の「お知らせ管理」で編集）', defaultValue: 'お知らせ' },
       { key: 'onsenji_heading_events', label: '「年間行事」見出し（行事の内容自体は下の「年間行事一覧」セクションで編集）', defaultValue: '年間行事' },
       { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について' },
-      { key: 'onsenji_about_body',  label: '「温泉寺について」本文', multiline: true, defaultValue: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。' },
+      {
+        key: 'onsenji_about_cards', label: 'カード（歴史・拝観料金・境内案内・年間行事の順、4件固定）', type: 'list',
+        listFields: [{ key: 'label', label: 'タイトル' }, { key: 'desc', label: '説明' }],
+        defaultValue: J([
+          { label: '温泉寺の歴史', desc: '歴史と縁起' },
+          { label: '拝観料金',     desc: '拝観料・各種料金' },
+          { label: '境内のご案内', desc: '見どころ・境内マップ' },
+          { label: '年間行事',     desc: '法要・行事のご案内' },
+        ]),
+      },
       { key: 'onsenji_access_address', label: 'アクセス 所在地', defaultValue: '栃木県日光市湯元2559' },
       { key: 'onsenji_access_car',  label: 'アクセス お車での説明', multiline: true, defaultValue: '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり' },
       { key: 'onsenji_access_bus',  label: 'アクセス バスでの説明', multiline: true, defaultValue: '東武日光駅・JR日光駅よりバスで「西参道」バス停下車、徒歩約10分\nまたは「表参道」バス停より徒歩約15分' },

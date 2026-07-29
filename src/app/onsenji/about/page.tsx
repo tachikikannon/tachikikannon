@@ -63,7 +63,7 @@ export default async function OnsenjAboutPage() {
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
 
           {/* 拝観時間・料金 */}
-          <section>
+          <section id="hours">
             <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_about_heading_hours}</h2>
             <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
             <div className="overflow-x-auto">

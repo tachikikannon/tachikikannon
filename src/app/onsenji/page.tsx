@@ -14,6 +14,12 @@ export const metadata: Metadata = {
   description: '中禅寺湖畔に佇む、癒しと祈りの霊場 日光山温泉寺',
 }
 
+const DEFAULT_ABOUT_CARDS = [
+  { label: '温泉寺の歴史', desc: '歴史と縁起' },
+  { label: '拝観料金',     desc: '拝観料・各種料金' },
+  { label: '境内のご案内', desc: '見どころ・境内マップ' },
+  { label: '年間行事',     desc: '法要・行事のご案内' },
+]
 const DEFAULT_GORYAKU_CARDS = [
   { icon: '🌿', title: '病気平癒', desc: '薬師瑠璃光如来の御力で病気の回復をお祈りします' },
   { icon: '💧', title: '健康増進', desc: '大地から湧く温泉と仏縁で心身ともに清まります' },
@@ -51,7 +57,7 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_heading_events: '年間行事',
   onsenji_events_list: JSON.stringify(DEFAULT_EVENTS),
   onsenji_about_title: '温泉寺について',
-  onsenji_about_body: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。',
+  onsenji_about_cards: JSON.stringify(DEFAULT_ABOUT_CARDS),
   onsenji_heading_goryaku: '主なご利益',
   onsenji_heading_menu:    '温泉・体験メニュー',
   onsenji_heading_goshuin: '御朱印',
@@ -87,6 +93,7 @@ async function getContent(): Promise<Record<string, string>> {
 
 export default async function OnsenjPage() {
   const c = await getContent()
+  const aboutCards   = pj<typeof DEFAULT_ABOUT_CARDS>(c.onsenji_about_cards, DEFAULT_ABOUT_CARDS)
   const goryakuCards = pj<typeof DEFAULT_GORYAKU_CARDS>(c.onsenji_goryaku_cards, DEFAULT_GORYAKU_CARDS)
   const menuCards    = pj<typeof DEFAULT_MENU_CARDS>(c.onsenji_menu_cards, DEFAULT_MENU_CARDS)
   const events       = pj<typeof DEFAULT_EVENTS>(c.onsenji_events_list, DEFAULT_EVENTS)
@@ -172,22 +179,33 @@ export default async function OnsenjPage() {
         </section>
 
         {/* 温泉寺について */}
-        <section className="max-w-4xl mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">About</p>
-            <h2 className="font-serif text-3xl text-onsenji tracking-widest">{c.onsenji_about_title}</h2>
-            <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
-          </div>
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg">
-              <ZoomableImage src="/images/yakusido.png" alt="薬師堂" fill className="object-cover" />
+        <section className="py-12 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="text-center mb-8">
+              <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">About</p>
+              <h2 className="font-serif text-2xl md:text-3xl text-onsenji tracking-widest">{c.onsenji_about_title}</h2>
+              <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
             </div>
-            <div>
-              <p className="text-gray-700 leading-loose text-sm">{c.onsenji_about_body}</p>
-              <Link href="/onsenji/history"
-                className="inline-block mt-6 text-onsenji text-sm border-b border-onsenji/40 hover:border-onsenji transition-colors">
-                詳しい歴史・由来 →
-              </Link>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { img: '/images/yakusido.png', href: '/onsenji/history' },
+                { img: '/images/onsenmado.png', href: '/onsenji/about#hours' },
+                { img: '/images/onsenji-gaikan.png', href: '/onsenji/grounds' },
+                { img: '/images/温泉寺法楽/saitougoma-onsen.JPEG', href: '/onsenji/events' },
+              ].map(({ img, href }, i) => (
+                <a key={href} href={href}
+                  className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 flex flex-col group">
+                  <div className="relative h-40 overflow-hidden">
+                    <Image src={img} alt={aboutCards[i]?.label ?? ''} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <div className="absolute inset-0 bg-onsenji/30 group-hover:bg-onsenji/20 transition-colors" />
+                  </div>
+                  <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
+                    <p className="font-serif text-onsenji font-medium text-sm group-hover:text-[#2d6b57] transition-colors">{aboutCards[i]?.label}</p>
+                    <p className="text-xs text-gray-500">{aboutCards[i]?.desc}</p>
+                    <span className="mt-auto inline-block text-xs bg-onsenji text-white rounded px-3 py-1.5">詳しく見る</span>
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
         </section>

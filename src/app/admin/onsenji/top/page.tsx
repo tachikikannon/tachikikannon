@@ -9,7 +9,16 @@ const FIELDS = [
   { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを' },
   { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は「お知らせ管理」で編集）', defaultValue: 'お知らせ' },
   { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について' },
-  { key: 'onsenji_about_body',  label: '「温泉寺について」本文', multiline: true, defaultValue: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。' },
+  {
+    key: 'onsenji_about_cards', label: 'カード（歴史・拝観料金・境内案内・年間行事の順、4件固定）', type: 'list' as const,
+    listFields: [{ key: 'label', label: 'タイトル' }, { key: 'desc', label: '説明' }],
+    defaultValue: J([
+      { label: '温泉寺の歴史', desc: '歴史と縁起' },
+      { label: '拝観料金',     desc: '拝観料・各種料金' },
+      { label: '境内のご案内', desc: '見どころ・境内マップ' },
+      { label: '年間行事',     desc: '法要・行事のご案内' },
+    ]),
+  },
   { key: 'onsenji_heading_goryaku', label: '「主なご利益」見出し', defaultValue: '主なご利益' },
   {
     key: 'onsenji_goryaku_cards', label: 'ご利益カード（4件固定）', type: 'list' as const,
