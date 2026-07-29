@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 
 const navLinks = [
   { href: '/onsenji/about',              label: '拝観案内' },
+  { href: '/onsenji/grounds',            label: '境内のご案内' },
   { href: '/onsenji#access',             label: 'アクセス' },
   { href: '/onsenji#experience',         label: '体験' },
   { href: '/onsenji/goshuin',            label: '御朱印' },

@@ -4,16 +4,18 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
+import OnsenjiGroundsSpots from '@/components/OnsenjiGroundsSpots'
+import ZoomableImage from '@/components/ZoomableImage'
 
 export const metadata: Metadata = { title: '境内のご案内 | 日光山温泉寺' }
 
 const DEFAULT_SPOTS = [
-  { num: '①', name: '山門', desc: '境内への入口。拝観受付はこちらで行います。' },
-  { num: '②', name: '本堂（薬師堂）', desc: 'ご本尊・薬師如来をお祀りする本堂。病気平癒・健康長寿の御加護をお授けいただけます。' },
-  { num: '③', name: '薬師の湯', desc: '中禅寺湖から湧き出る温泉。参拝後にご利用いただける足湯・手湯があります。' },
-  { num: '④', name: '御朱印所', desc: '御朱印・お守りをお受けいただけます。' },
-  { num: '⑤', name: '鐘楼', desc: '境内に響き渡る鐘の音。早朝には特に厳かな雰囲気を味わえます。' },
-  { num: '⑥', name: '湖畔展望台', desc: '中禅寺湖と男体山を一望できる展望スポット。四季折々の絶景が広がります。' },
+  { name: '温泉寺表参道', image: '/images/onsenji-sandou.png', desc: '石灯籠が並ぶ緑豊かな参道。入浴者用駐車場から境内へと続きます。' },
+  { name: '鐘楼', image: '/images/onsenji-syourou.png', desc: '境内に響き渡る鐘の音。早朝には特に厳かな雰囲気を味わえます。' },
+  { name: '薬師の湯と本殿の外観', image: '/images/onsenji-gaikan.png', desc: '受付を兼ねた建物と、薬師の湯・本殿の外観。四季折々の景色とともに参拝者を迎えます。' },
+  { name: '客殿・休憩室', image: '/images/onsenji-kyukeishitsu.png', desc: '畳敷きの落ち着いた空間で、参拝の合間にひと休みいただけます。' },
+  { name: '薬師の湯', image: '/images/onsenji-yakushinoyu-yu.png', desc: '中禅寺湖から湧き出る温泉。参拝後にご利用いただけます。' },
+  { name: '本殿（写経・写仏体験会場）', image: '/images/onsenji-kaijou.jpg', desc: 'ご本尊・薬師如来をお祀りする本殿。写経・写仏体験もこちらで行います。' },
 ]
 const DEFAULT_FLOW = [
   { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。受付は閉門30分前に終了いたします。' },
@@ -24,7 +26,8 @@ const DEFAULT_FLOW = [
 
 const DEFAULTS: Record<string, string> = {
   onsenji_grounds_subtitle: '見どころ・薬師の湯・境内マップ',
-  onsenji_grounds_heading_spots: '主な見どころ',
+  onsenji_grounds_heading_map: '境内マップ・主な見どころ',
+  onsenji_grounds_map_hint: '地図上のピンをクリックすると各スポットの詳細が見られます',
   onsenji_grounds_spots: JSON.stringify(DEFAULT_SPOTS),
   onsenji_grounds_heading_onsen: '薬師の湯（温泉）',
   onsenji_grounds_onsen_text: '境内には令和8年4月11日に開湯した「薬師の湯」があります。泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（泉温71.4℃）の完全かけ流し。加水すると乳白色に変わる神秘的な湯は、参拝者に開放されています。薬師如来の御加護とともに心身を清めていただけます。',
@@ -52,7 +55,9 @@ async function getContent() {
 
 export default async function OnsenjGroundsPage() {
   const c = await getContent()
-  const spots = pj<typeof DEFAULT_SPOTS>(c.onsenji_grounds_spots, DEFAULT_SPOTS)
+  const rawSpots = pj<{ name?: string; image?: string; desc?: string }[]>(c.onsenji_grounds_spots, DEFAULT_SPOTS)
+  // 旧フォーマット（imageなし）の場合はDEFAULT_SPOTSを使用
+  const spots = rawSpots.some(s => s.image) ? rawSpots as typeof DEFAULT_SPOTS : DEFAULT_SPOTS
   const flow  = pj<typeof DEFAULT_FLOW>(c.onsenji_grounds_flow, DEFAULT_FLOW)
 
   return (
@@ -64,27 +69,19 @@ export default async function OnsenjGroundsPage() {
             <Link href="/onsenji">ホーム</Link> &gt; 境内のご案内
           </div>
         </div>
-        <section className="bg-onsenji py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">Grounds</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">境内のご案内</h1>
-          <p className="text-white/60 text-sm mt-3 relative">{c.onsenji_grounds_subtitle}</p>
+        <section className="relative h-64 md:h-80">
+          <ZoomableImage src="/images/onsenji-gaikan.png" alt="境内のご案内" fill className="object-cover" />
+          <div className="absolute inset-0 bg-onsenji/60 flex flex-col items-center justify-center text-white">
+            <h1 className="font-serif text-3xl md:text-4xl tracking-widest">境内のご案内</h1>
+            <p className="text-white/70 text-sm mt-2">{c.onsenji_grounds_subtitle}</p>
+          </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
-            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_grounds_heading_spots}</h2>
-            <div className="w-10 h-0.5 bg-[#7ec8a4] mb-6" />
-            <div className="grid md:grid-cols-2 gap-4">
-              {spots.map(({ num, name, desc }, i) => (
-                <div key={i} className="flex gap-4 bg-white rounded-xl p-4 shadow-sm">
-                  <span className="text-[#7ec8a4] font-serif text-2xl leading-none flex-shrink-0">{num}</span>
-                  <div>
-                    <p className="font-medium text-onsenji text-sm">{name}</p>
-                    <p className="text-xs text-gray-600 mt-1 leading-relaxed">{desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_grounds_heading_map}</h2>
+            <div className="w-10 h-0.5 bg-[#7ec8a4] mb-2" />
+            <p className="text-xs text-gray-400 mb-6">{c.onsenji_grounds_map_hint}</p>
+            <OnsenjiGroundsSpots spots={spots} />
           </section>
           <section>
             <h2 className="text-2xl font-serif text-onsenji mb-1">{c.onsenji_grounds_heading_onsen}</h2>
