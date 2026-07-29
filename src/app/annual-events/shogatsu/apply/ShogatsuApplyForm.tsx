@@ -17,7 +17,7 @@ const FEE_OPTIONS = [
   { price: '30,000円', size: '42.5㎝' },
 ]
 const EC_SITE_URL = 'https://chuzenji.official.ec/'
-const CASH_MAIL_FORM_URL = '/downloads/shogatsu-moushikomisho.pdf'
+const CASH_MAIL_FORM_URL = '/images/gomamousikomi.pdf'
 
 function WishSelect({ value, onChange, required }: { value: string; onChange: (v: string) => void; required?: boolean }) {
   return (
