@@ -19,7 +19,6 @@ const SECTIONS: Section[] = [
       { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場' },
       { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを' },
       { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は管理画面の「お知らせ管理」で編集）', defaultValue: 'お知らせ' },
-      { key: 'onsenji_heading_events', label: '「年間行事」見出し（行事の内容自体は下の「年間行事一覧」セクションで編集）', defaultValue: '年間行事' },
       { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について' },
       {
         key: 'onsenji_about_cards', label: 'カード（歴史・拝観料金・境内案内・年間行事の順、4件固定）', type: 'list',

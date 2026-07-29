@@ -31,31 +31,12 @@ const DEFAULT_MENU_CARDS = [
   { title: '写経体験', desc: '1,000円・約15分・毎日実施。特別御朱印授与。心を静めてお経をお写しいただけます。' },
   { title: '写仏体験', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
 ]
-const DEFAULT_EVENTS = [
-  {
-    month: '8月',
-    date: '8月8日',
-    time: '午前11時〜',
-    name: '薬師講大祭・採灯大護摩供',
-    desc: '湯の湖畔にて、山伏によって採灯大護摩供が焚かれます。写経が御本尊に奉じられ、護摩の炎で焚き上げられる、温泉寺最大の法要です。',
-  },
-  {
-    month: '1月',
-    date: '1月下旬',
-    time: '午前11時〜',
-    name: '温泉寺 節分大祭',
-    desc: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。',
-  },
-]
-const EVENT_HREFS = ['/onsenji/events/yakushiko', '/onsenji/events/setsubun']
 
 const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_en:    'Nikkozan Onsenji Temple',
   onsenji_hero_title: '千二百余年の祈りを宿す\n薬師の霊場',
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_heading_news: 'お知らせ',
-  onsenji_heading_events: '年間行事',
-  onsenji_events_list: JSON.stringify(DEFAULT_EVENTS),
   onsenji_about_title: '温泉寺について',
   onsenji_about_cards: JSON.stringify(DEFAULT_ABOUT_CARDS),
   onsenji_heading_goryaku: '主なご利益',
@@ -96,7 +77,6 @@ export default async function OnsenjPage() {
   const aboutCards   = pj<typeof DEFAULT_ABOUT_CARDS>(c.onsenji_about_cards, DEFAULT_ABOUT_CARDS)
   const goryakuCards = pj<typeof DEFAULT_GORYAKU_CARDS>(c.onsenji_goryaku_cards, DEFAULT_GORYAKU_CARDS)
   const menuCards    = pj<typeof DEFAULT_MENU_CARDS>(c.onsenji_menu_cards, DEFAULT_MENU_CARDS)
-  const events       = pj<typeof DEFAULT_EVENTS>(c.onsenji_events_list, DEFAULT_EVENTS)
 
   const supabase = await createServerClient()
   const { data: newsList } = await supabase
@@ -256,35 +236,6 @@ export default async function OnsenjPage() {
                 </div>
               </Link>
             ))}
-          </div>
-        </section>
-
-        {/* 年間行事 */}
-        <section className="max-w-4xl mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Annual Events</p>
-            <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_events}</h2>
-            <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
-          </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            {events.map((ev, i) => (
-              <Link key={ev.date} href={EVENT_HREFS[i] ?? '/onsenji/events'}
-                className="group bg-white rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1 p-5 flex gap-4 items-start">
-                <div className="bg-onsenji text-white text-center rounded-xl px-3 py-2 min-w-[64px] flex-shrink-0">
-                  <p className="text-[10px] text-[#7ec8a4]">{ev.month}</p>
-                  <p className="text-sm font-serif leading-tight mt-0.5">{ev.date}</p>
-                </div>
-                <div>
-                  <p className="font-serif text-onsenji font-medium text-sm mb-1 group-hover:underline">{ev.name}</p>
-                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{ev.desc}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link href="/onsenji/events" className="text-onsenji text-sm border-b border-onsenji/40 hover:border-onsenji transition-colors">
-              年間行事をすべて見る →
-            </Link>
           </div>
         </section>
 

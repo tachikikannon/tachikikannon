@@ -40,7 +40,6 @@ const FIELDS = [
       { title: '写仏体験', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
     ]),
   },
-  { key: 'onsenji_heading_events', label: '「年間行事」見出し（行事の内容自体は「温泉寺 年間行事一覧」で編集）', defaultValue: '年間行事' },
   { key: 'onsenji_heading_goshuin', label: '「御朱印」見出し', defaultValue: '御朱印' },
   { key: 'onsenji_goshuin_desc',    label: '「御朱印」説明文', multiline: true, defaultValue: '温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。' },
   { key: 'onsenji_heading_access', label: '「アクセス」見出し', defaultValue: 'アクセス' },
