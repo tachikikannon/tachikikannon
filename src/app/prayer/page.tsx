@@ -38,6 +38,9 @@ const DEFAULTS: Record<string, string> = {
   prayer_birth_title: '安産祈願',
   prayer_birth_fee: '5,000円',
   prayer_birth_note: '※腹帯の持ち込みも可能です。詳しくはお問い合わせください。',
+  prayer_753_title: '七五三祈願',
+  prayer_753_fee: '5,000円',
+  prayer_753_note: '※三歳・五歳・七歳のお子様の健やかな成長をお祝いする御祈願です。',
   prayer_cta_heading: '御祈願のお申し込み',
   prayer_cta_sub: 'ご不明な点はお気軽にお問い合わせください。',
 }
@@ -165,6 +168,18 @@ export default async function PrayerPage() {
                   </tbody>
                 </table>
                 <p className="text-xs text-gray-400">{c.prayer_birth_note}</p>
+              </div>
+              <div className="bg-white rounded-xl p-5 shadow-sm">
+                <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">{c.prayer_753_title}</h3>
+                <table className="w-full text-sm border-collapse mb-2">
+                  <tbody>
+                    <tr className="border border-gray-100">
+                      <td className="px-4 py-2 text-gray-500 bg-gray-50 w-32">お子様お1人につき</td>
+                      <td className="px-4 py-2 font-bold text-navy">{c.prayer_753_fee}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p className="text-xs text-gray-400">{c.prayer_753_note}</p>
               </div>
             </div>
           </section>

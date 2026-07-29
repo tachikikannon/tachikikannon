@@ -37,6 +37,9 @@ const FIELDS = [
   { key: 'prayer_birth_title', label: '安産祈願 タイトル', defaultValue: '安産祈願' },
   { key: 'prayer_birth_fee', label: '安産祈願 料金', defaultValue: '5,000円' },
   { key: 'prayer_birth_note', label: '安産祈願 備考', defaultValue: '※腹帯の持ち込みも可能です。詳しくはお問い合わせください。' },
+  { key: 'prayer_753_title', label: '七五三祈願 タイトル', defaultValue: '七五三祈願' },
+  { key: 'prayer_753_fee', label: '七五三祈願 料金', defaultValue: '5,000円' },
+  { key: 'prayer_753_note', label: '七五三祈願 備考', defaultValue: '※三歳・五歳・七歳のお子様の健やかな成長をお祝いする御祈願です。' },
   { key: 'prayer_cta_heading', label: 'CTA見出し', defaultValue: '御祈願のお申し込み' },
   { key: 'prayer_cta_sub', label: 'CTA補足文', defaultValue: 'ご不明な点はお気軽にお問い合わせください。' },
 ] as const
