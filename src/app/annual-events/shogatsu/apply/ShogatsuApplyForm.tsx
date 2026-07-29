@@ -321,7 +321,7 @@ export default function ShogatsuApplyForm() {
               </li>
               <li className="flex gap-3 text-sm text-gray-700 leading-relaxed">
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-navy text-white text-xs flex items-center justify-center font-bold">3</span>
-                <p>御札の金額と送料1,000円（例：5,000円の御札なら5,000円＋1,000円で6,000円）を現金封筒に入れて立木観音に送る</p>
+                <p>御札の金額と送料1,000円を現金封筒に入れて立木観音に送る（例：5,000円の御札なら5,000円＋1,000円で6,000円）</p>
               </li>
             </ol>
             <a href={CASH_MAIL_FORM_URL} target="_blank" rel="noopener"
