@@ -26,11 +26,18 @@ const DEFAULT_EVENTS = [
     name: '船禅頂（ふなぜんじょう）',
     desc: '日光開山 勝道上人の霊跡を船で巡拝する伝統行事です。中禅寺湖を舞台に、上人が切り開いた修験の道を水上から辿ります。湖上から望む男体山と中禅寺の景観とともに、千二百余年の歴史に思いを馳せる特別な体験です。',
   },
+  {
+    month: '1月',
+    date: '1月1日',
+    time: '午前0時〜',
+    name: '正月元旦特別護摩祈願',
+    desc: '新しい年の始まりにあたり、皆様の一年の無病息災・家内安全・開運招福を祈願する特別な護摩祈祷です。御札は5,000円〜30,000円よりお選びいただけます。事前申し込み・最大5名まで同時申込可。',
+  },
 ]
-const EVENT_IMAGES = ['/images/gyouji.JPEG', '/images/mizuumi.jpg']
-const EVENT_ALTS = ['観音講・大護摩供・地蔵流し', '中禅寺湖・船禅頂']
-const EVENT_HREFS = ['/annual-events/kannonko', '/annual-events/funazento']
-const EVENT_APPLIES = ['/annual-events/kannonko/apply', '/annual-events/funazento/apply']
+const EVENT_IMAGES = ['/images/gyouji.JPEG', '/images/mizuumi.jpg', '/images/goma.png']
+const EVENT_ALTS = ['観音講・大護摩供・地蔵流し', '中禅寺湖・船禅頂', '正月元旦特別護摩祈願']
+const EVENT_HREFS = ['/annual-events/kannonko', '/annual-events/funazento', '/annual-events/shogatsu']
+const EVENT_APPLIES = ['/annual-events/kannonko/apply', '/annual-events/funazento/apply', '/annual-events/shogatsu/apply']
 
 const DEFAULTS: Record<string, string> = {
   annual_events_subtitle: '毎年恒例の法要・行事のご案内',
