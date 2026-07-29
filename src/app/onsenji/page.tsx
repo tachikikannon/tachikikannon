@@ -286,8 +286,17 @@ export default async function OnsenjPage() {
                 <p className="text-sm text-gray-700 whitespace-pre-line">{c.onsenji_access_bus}</p>
               </div>
             </div>
-            <div className="rounded-2xl h-64 flex items-center justify-center text-gray-400 text-sm" style={{backgroundColor: 'rgba(26,74,58,0.1)'}}>
-              地図表示エリア
+            <div className="rounded-2xl overflow-hidden shadow-sm">
+              <iframe
+                src="https://maps.google.com/maps?q=日光山温泉寺+栃木県日光市湯元2559&output=embed&hl=ja&z=16"
+                width="100%"
+                height="256"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="日光山温泉寺 地図"
+              />
             </div>
           </div>
         </section>
