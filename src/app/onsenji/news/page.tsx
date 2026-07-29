@@ -1,22 +1,22 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import HeaderOnsenji from '@/components/HeaderOnsenji'
+import FooterOnsenji from '@/components/FooterOnsenji'
 import { createServerClient } from '@/lib/supabase-server'
 import type { News, NewsCategory } from '@/types'
 
-export const metadata: Metadata = { title: 'お知らせ' }
+export const metadata: Metadata = { title: 'お知らせ | 日光山温泉寺' }
 
 const CAT_COLORS: Record<string, string> = {
-  'お知らせ':       'bg-navy/10 text-navy',
-  '行事案内':       'bg-gold/20 text-amber-800',
-  '季節のお知らせ': 'bg-teal/20 text-teal-800',
+  'お知らせ':       'bg-onsenji/10 text-onsenji',
+  '行事案内':       'bg-[#7ec8a4]/20 text-[#2d6b57]',
+  '季節のお知らせ': 'bg-teal-100 text-teal-800',
   '交通情報':       'bg-red-100 text-red-700',
   '授与品のお知らせ':'bg-purple-100 text-purple-700',
 }
 
-export default async function NewsPage({
+export default async function OnsenjiNewsPage({
   searchParams,
 }: {
   searchParams: Promise<{ category?: string }>
@@ -27,7 +27,7 @@ export default async function NewsPage({
     .from('news')
     .select('id, title, excerpt, body, cover_url, category, published_at, created_at')
     .eq('is_published', true)
-    .eq('site', 'chuzenji')
+    .eq('site', 'onsenji')
     .order('published_at', { ascending: false })
 
   if (category) {
@@ -41,28 +41,28 @@ export default async function NewsPage({
 
   return (
     <>
-      <Header />
+      <HeaderOnsenji />
       <main className="pt-16">
-        <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
-          <div className="max-w-4xl mx-auto"><Link href="/">ホーム</Link> &gt; お知らせ</div>
+        <div className="bg-onsenji/5 px-4 py-2 text-xs text-gray-400">
+          <div className="max-w-4xl mx-auto"><Link href="/onsenji">ホーム</Link> &gt; お知らせ</div>
         </div>
 
-        <section className="bg-navy py-20 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
-          <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">News</p>
+        <section className="bg-onsenji py-20 text-center relative overflow-hidden">
+          <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
+          <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">News</p>
           <h1 className="font-serif text-4xl text-white tracking-widest relative">お知らせ</h1>
         </section>
 
         <div className="max-w-4xl mx-auto px-4 py-10">
           {/* カテゴリフィルター */}
           <div className="flex flex-wrap gap-2 mb-8">
-            <Link href="/news"
-              className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${!category ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
+            <Link href="/onsenji/news"
+              className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${!category ? 'bg-onsenji text-white border-onsenji' : 'text-gray-600 border-gray-300 hover:border-onsenji'}`}>
               すべて
             </Link>
             {CATEGORIES.map(cat => (
-              <Link key={cat} href={`/news?category=${encodeURIComponent(cat)}`}
-                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${category === cat ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
+              <Link key={cat} href={`/onsenji/news?category=${encodeURIComponent(cat)}`}
+                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${category === cat ? 'bg-onsenji text-white border-onsenji' : 'text-gray-600 border-gray-300 hover:border-onsenji'}`}>
                 {cat}
               </Link>
             ))}
@@ -72,12 +72,12 @@ export default async function NewsPage({
             <div className="space-y-6">
               {/* 最新記事（大カード） */}
               {news[0] && !category && (
-                <Link href={`/news/${news[0].id}`} className="group block bg-white rounded-2xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
+                <Link href={`/onsenji/news/${news[0].id}`} className="group block bg-white rounded-2xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
                   <div className="md:flex">
-                    <div className="md:w-80 h-52 md:h-auto flex-shrink-0 bg-cream-alt relative">
+                    <div className="md:w-80 h-52 md:h-auto flex-shrink-0 bg-onsenji/5 relative">
                       {news[0].cover_url
                         ? <Image src={news[0].cover_url} alt={news[0].title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-                        : <div className="flex items-center justify-center h-full text-4xl">🏛️</div>
+                        : <div className="flex items-center justify-center h-full text-4xl">♨️</div>
                       }
                     </div>
                     <div className="p-6 flex flex-col justify-center">
@@ -87,11 +87,11 @@ export default async function NewsPage({
                           {new Date(news[0].published_at ?? news[0].created_at).toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' })}
                         </time>
                       </div>
-                      <h2 className="font-serif text-xl text-navy mb-2 group-hover:text-gold transition-colors leading-snug">{news[0].title}</h2>
+                      <h2 className="font-serif text-xl text-onsenji mb-2 group-hover:text-[#2d6b57] transition-colors leading-snug">{news[0].title}</h2>
                       <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
                         {news[0].excerpt || news[0].body.slice(0, 100)}
                       </p>
-                      <span className="mt-4 text-xs text-gold">続きを読む →</span>
+                      <span className="mt-4 text-xs text-[#2d6b57]">続きを読む →</span>
                     </div>
                   </div>
                 </Link>
@@ -100,10 +100,10 @@ export default async function NewsPage({
               {/* 残りの記事（リスト） */}
               <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
                 {(category ? news : news.slice(1)).map(item => (
-                  <Link key={item.id} href={`/news/${item.id}`}
-                    className="flex items-start gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
+                  <Link key={item.id} href={`/onsenji/news/${item.id}`}
+                    className="flex items-start gap-4 px-5 py-4 hover:bg-onsenji/5 transition-colors group">
                     {item.cover_url && (
-                      <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden relative bg-cream-alt">
+                      <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden relative bg-onsenji/5">
                         <Image src={item.cover_url} alt={item.title} fill className="object-cover" />
                       </div>
                     )}
@@ -114,10 +114,10 @@ export default async function NewsPage({
                           {new Date(item.published_at ?? item.created_at).toLocaleDateString('ja-JP')}
                         </time>
                       </div>
-                      <p className="text-sm font-medium text-navy group-hover:text-gold transition-colors leading-snug">{item.title}</p>
+                      <p className="text-sm font-medium text-onsenji group-hover:text-[#2d6b57] transition-colors leading-snug">{item.title}</p>
                       {item.excerpt && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{item.excerpt}</p>}
                     </div>
-                    <span className="text-gray-300 group-hover:text-gold transition-colors flex-shrink-0 text-lg">›</span>
+                    <span className="text-gray-300 group-hover:text-[#2d6b57] transition-colors flex-shrink-0 text-lg">›</span>
                   </Link>
                 ))}
               </div>
@@ -130,7 +130,7 @@ export default async function NewsPage({
           )}
         </div>
       </main>
-      <Footer />
+      <FooterOnsenji />
     </>
   )
 }

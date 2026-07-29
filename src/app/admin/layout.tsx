@@ -8,7 +8,7 @@ type NavItem = { href: string; label: string; icon: string; group?: string }
 
 const navItems: NavItem[] = [
   { href: '/admin',               label: 'ダッシュボード',   icon: '🏠' },
-  { href: '/admin/news',          label: 'お知らせ',         icon: '📢' },
+  { href: '/admin/news',          label: 'お知らせ（立木観音）', icon: '📢' },
   { href: '/admin/blog',          label: 'ブログ',           icon: '✏️' },
   // ── 予約・体験 ──
   { href: '/admin/reservations',  label: '予約管理',         icon: '📋', group: '予約・体験' },
@@ -40,6 +40,7 @@ const navItems: NavItem[] = [
   { href: '/admin/chuzenji/events/funazento',  label: '船禅頂（8/4）',    icon: '⛵', group: '立木観音' },
   // ── 温泉寺 ──
   { href: '/admin/onsenji/top',           label: 'トップページ',   icon: '🏠', group: '温泉寺' },
+  { href: '/admin/onsenji/news',          label: 'お知らせ管理',   icon: '📢', group: '温泉寺' },
   { href: '/admin/onsenji/history',       label: '歴史',           icon: '📜', group: '温泉寺' },
   { href: '/admin/onsenji/grounds',       label: '境内のご案内',   icon: '🗺️', group: '温泉寺' },
   { href: '/admin/onsenji/about',         label: '拝観案内',       icon: '🎫', group: '温泉寺' },

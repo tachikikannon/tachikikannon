@@ -27,7 +27,8 @@ export default async function AdminDashboard() {
   ]
 
   const quickLinks = [
-    { href: '/admin/news?new=1',       label: 'お知らせを書く', icon: '📢' },
+    { href: '/admin/news?new=1',       label: 'お知らせを書く（立木観音）', icon: '📢' },
+    { href: '/admin/onsenji/news?new=1', label: 'お知らせを書く（温泉寺）', icon: '📢' },
     { href: '/admin/blog?new=1',       label: 'ブログを書く',   icon: '✏️' },
     { href: '/admin/events?new=1',     label: '行事を登録する', icon: '📅' },
     { href: '/admin/reservations',     label: '予約を確認する', icon: '📋' },

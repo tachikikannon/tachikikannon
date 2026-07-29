@@ -64,6 +64,7 @@ export default async function HomePage() {
     .from('news')
     .select('*')
     .eq('is_published', true)
+    .eq('site', 'chuzenji')
     .order('published_at', { ascending: false })
     .limit(5)
 

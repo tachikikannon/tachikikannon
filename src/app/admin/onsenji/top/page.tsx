@@ -7,14 +7,7 @@ const FIELDS = [
   { key: 'onsenji_hero_en',    label: 'ヒーロー 英語サブタイトル', defaultValue: 'Nikkozan Onsenji Temple' },
   { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場' },
   { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを' },
-  { key: 'onsenji_heading_news', label: '「お知らせ」見出し', defaultValue: 'お知らせ' },
-  {
-    key: 'onsenji_news', label: 'お知らせ一覧', type: 'list' as const,
-    listFields: [{ key: 'date', label: '日付（例: 2026.04.11）' }, { key: 'title', label: 'タイトル' }, { key: 'body', label: '本文', multiline: true }],
-    defaultValue: J([
-      { date: '2026.04.11', title: '「薬師の湯」開湯', body: '境内に薬師の湯が開湯いたしました。参拝後にご利用いただけます。' },
-    ]),
-  },
+  { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は「お知らせ管理」で編集）', defaultValue: 'お知らせ' },
   { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について' },
   { key: 'onsenji_about_body',  label: '「温泉寺について」本文', multiline: true, defaultValue: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。' },
   { key: 'onsenji_heading_goryaku', label: '「主なご利益」見出し', defaultValue: '主なご利益' },

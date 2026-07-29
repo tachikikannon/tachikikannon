@@ -1,4 +1,5 @@
 export type NewsCategory = 'お知らせ' | '行事案内' | '季節のお知らせ' | '交通情報' | '授与品のお知らせ'
+export type NewsSite = 'chuzenji' | 'onsenji'
 
 export interface News {
   id: string
@@ -7,6 +8,7 @@ export interface News {
   body: string
   cover_url: string | null
   category: NewsCategory
+  site: NewsSite
   is_published: boolean
   published_at: string | null
   created_at: string

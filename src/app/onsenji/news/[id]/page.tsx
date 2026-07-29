@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import HeaderOnsenji from '@/components/HeaderOnsenji'
+import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
 import type { News } from '@/types'
@@ -10,19 +10,19 @@ import type { News } from '@/types'
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const supabase = await createServerClient()
-  const { data } = await supabase.from('news').select('title, excerpt').eq('id', id).single()
-  return { title: data?.title ?? 'お知らせ', description: data?.excerpt ?? undefined }
+  const { data } = await supabase.from('news').select('title, excerpt').eq('id', id).eq('site', 'onsenji').single()
+  return { title: data ? `${data.title} | 日光山温泉寺` : 'お知らせ | 日光山温泉寺', description: data?.excerpt ?? undefined }
 }
 
 const CAT_COLORS: Record<string, string> = {
-  'お知らせ':       'bg-navy/10 text-navy',
-  '行事案内':       'bg-gold/20 text-amber-800',
-  '季節のお知らせ': 'bg-teal/20 text-teal-800',
+  'お知らせ':       'bg-onsenji/10 text-onsenji',
+  '行事案内':       'bg-[#7ec8a4]/20 text-[#2d6b57]',
+  '季節のお知らせ': 'bg-teal-100 text-teal-800',
   '交通情報':       'bg-red-100 text-red-700',
   '授与品のお知らせ':'bg-purple-100 text-purple-700',
 }
 
-export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function OnsenjiNewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createServerClient()
 
@@ -31,7 +31,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
     .select('*')
     .eq('id', id)
     .eq('is_published', true)
-    .eq('site', 'chuzenji')
+    .eq('site', 'onsenji')
     .single()
 
   if (!item) notFound()
@@ -42,7 +42,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
     .from('news')
     .select('id, title, category, published_at, created_at')
     .eq('is_published', true)
-    .eq('site', 'chuzenji')
+    .eq('site', 'onsenji')
     .eq('category', news.category)
     .neq('id', news.id)
     .order('published_at', { ascending: false })
@@ -50,12 +50,12 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <>
-      <Header />
+      <HeaderOnsenji />
       <main className="pt-16">
         {/* パンくず */}
-        <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
+        <div className="bg-onsenji/5 px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/">ホーム</Link> &gt; <Link href="/news">お知らせ</Link> &gt; <span className="text-gray-600">{news.title}</span>
+            <Link href="/onsenji">ホーム</Link> &gt; <Link href="/onsenji/news">お知らせ</Link> &gt; <span className="text-gray-600">{news.title}</span>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
         {news.cover_url && (
           <div className="relative h-56 md:h-72">
             <ZoomableImage src={news.cover_url} alt={news.title} fill className="object-cover" />
-            <div className="absolute inset-0 bg-navy/30" />
+            <div className="absolute inset-0 bg-onsenji/30" />
           </div>
         )}
 
@@ -80,11 +80,11 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
             </div>
 
             {/* タイトル */}
-            <h1 className="font-serif text-2xl md:text-3xl text-navy leading-relaxed mb-6">{news.title}</h1>
+            <h1 className="font-serif text-2xl md:text-3xl text-onsenji leading-relaxed mb-6">{news.title}</h1>
 
             {/* 概要 */}
             {news.excerpt && (
-              <p className="text-sm text-gray-500 border-l-4 border-gold pl-4 mb-8 leading-relaxed">{news.excerpt}</p>
+              <p className="text-sm text-gray-500 border-l-4 border-[#7ec8a4] pl-4 mb-8 leading-relaxed">{news.excerpt}</p>
             )}
 
             {/* 本文 */}
@@ -96,12 +96,12 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
           {/* 関連記事 */}
           {related && related.length > 0 && (
             <div className="mt-10">
-              <h2 className="text-base font-serif text-navy pl-3 border-l-4 border-gold mb-4">同じカテゴリのお知らせ</h2>
+              <h2 className="text-base font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">同じカテゴリのお知らせ</h2>
               <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
                 {related.map(r => (
-                  <Link key={r.id} href={`/news/${r.id}`}
-                    className="flex items-center justify-between px-5 py-3 hover:bg-cream-alt transition-colors group">
-                    <span className="text-sm text-navy group-hover:text-gold transition-colors">{r.title}</span>
+                  <Link key={r.id} href={`/onsenji/news/${r.id}`}
+                    className="flex items-center justify-between px-5 py-3 hover:bg-onsenji/5 transition-colors group">
+                    <span className="text-sm text-onsenji group-hover:text-[#2d6b57] transition-colors">{r.title}</span>
                     <time className="text-xs text-gray-400 flex-shrink-0 ml-4">
                       {new Date(r.published_at ?? r.created_at).toLocaleDateString('ja-JP')}
                     </time>
@@ -112,13 +112,13 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
           )}
 
           <div className="mt-8 text-center">
-            <Link href="/news" className="inline-flex items-center gap-1 text-navy text-sm hover:text-gold transition-colors">
+            <Link href="/onsenji/news" className="inline-flex items-center gap-1 text-onsenji text-sm hover:text-[#2d6b57] transition-colors">
               ← お知らせ一覧に戻る
             </Link>
           </div>
         </div>
       </main>
-      <Footer />
+      <FooterOnsenji />
     </>
   )
 }

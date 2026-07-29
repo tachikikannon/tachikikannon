@@ -6,6 +6,8 @@ import Image from 'next/image'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
+import { createServerClient } from '@/lib/supabase-server'
+import type { News } from '@/types'
 
 export const metadata: Metadata = {
   title: '日光山 温泉寺',
@@ -22,9 +24,6 @@ const DEFAULT_MENU_CARDS = [
   { title: '薬師の湯', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
   { title: '写経体験', desc: '1,000円・約15分・毎日実施。特別御朱印授与。心を静めてお経をお写しいただけます。' },
   { title: '写仏体験', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
-]
-const DEFAULT_NEWS = [
-  { date: '2026.04.11', title: '「薬師の湯」開湯', body: '境内に薬師の湯が開湯いたしました。参拝後にご利用いただけます。' },
 ]
 const DEFAULT_EVENTS = [
   {
@@ -49,7 +48,6 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_title: '千二百余年の祈りを宿す\n薬師の霊場',
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_heading_news: 'お知らせ',
-  onsenji_news: JSON.stringify(DEFAULT_NEWS),
   onsenji_heading_events: '年間行事',
   onsenji_events_list: JSON.stringify(DEFAULT_EVENTS),
   onsenji_about_title: '温泉寺について',
@@ -91,8 +89,17 @@ export default async function OnsenjPage() {
   const c = await getContent()
   const goryakuCards = pj<typeof DEFAULT_GORYAKU_CARDS>(c.onsenji_goryaku_cards, DEFAULT_GORYAKU_CARDS)
   const menuCards    = pj<typeof DEFAULT_MENU_CARDS>(c.onsenji_menu_cards, DEFAULT_MENU_CARDS)
-  const news         = pj<typeof DEFAULT_NEWS>(c.onsenji_news, DEFAULT_NEWS)
   const events       = pj<typeof DEFAULT_EVENTS>(c.onsenji_events_list, DEFAULT_EVENTS)
+
+  const supabase = await createServerClient()
+  const { data: newsList } = await supabase
+    .from('news')
+    .select('*')
+    .eq('is_published', true)
+    .eq('site', 'onsenji')
+    .order('published_at', { ascending: false })
+    .limit(5)
+  const news = (newsList ?? []) as News[]
 
   return (
     <>
@@ -137,16 +144,29 @@ export default async function OnsenjPage() {
               <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_news}</h2>
               <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
             </div>
-            <div className="space-y-3">
-              {news.map(({ date, title, body }, i) => (
-                <div key={i} className="bg-white rounded-xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-6">
-                  <span className="text-xs text-[#2d6b57] tracking-wide flex-shrink-0">{date}</span>
-                  <div>
-                    <p className="font-medium text-onsenji text-sm mb-1">{title}</p>
-                    {body && <p className="text-xs text-gray-600 leading-relaxed">{body}</p>}
-                  </div>
-                </div>
-              ))}
+            {news.length > 0 ? (
+              <ul className="divide-y divide-gray-200 bg-white rounded-lg shadow-sm">
+                {news.map(n => (
+                  <li key={n.id}>
+                    <Link href={`/onsenji/news/${n.id}`} className="flex items-start gap-4 px-5 py-4 hover:bg-onsenji/5 transition-colors group">
+                      <span className="text-xs text-gray-400 whitespace-nowrap pt-0.5 w-24 flex-shrink-0">
+                        {new Date(n.published_at ?? n.created_at).toLocaleDateString('ja-JP')}
+                      </span>
+                      <span className="badge bg-onsenji/10 text-onsenji text-[10px] flex-shrink-0">{n.category}</span>
+                      <span className="text-sm leading-relaxed group-hover:text-[#2d6b57] transition-colors">{n.title}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="bg-white rounded-lg shadow-sm px-5 py-8 text-center text-gray-400 text-sm">
+                現在お知らせはありません
+              </div>
+            )}
+            <div className="text-center mt-6">
+              <Link href="/onsenji/news" className="text-onsenji text-sm border-b border-onsenji/40 hover:border-[#2d6b57] hover:text-[#2d6b57] transition-colors pb-0.5">
+                お知らせ一覧を見る →
+              </Link>
             </div>
           </div>
         </section>

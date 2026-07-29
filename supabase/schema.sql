@@ -16,6 +16,7 @@ create table if not exists news (
   body        text not null default '',
   cover_url   text,
   category    text not null default 'お知らせ',
+  site        text not null default 'chuzenji' check (site in ('chuzenji','onsenji')),
   is_published boolean not null default false,
   published_at timestamptz,
   created_at  timestamptz not null default now(),
@@ -25,6 +26,8 @@ create table if not exists news (
 -- 既存テーブルへのカラム追加（再実行時用）
 alter table news add column if not exists excerpt   text;
 alter table news add column if not exists cover_url text;
+alter table news add column if not exists site      text not null default 'chuzenji' check (site in ('chuzenji','onsenji'));
+create index if not exists idx_news_site on news(site);
 
 -- ブログ
 create table if not exists posts (
