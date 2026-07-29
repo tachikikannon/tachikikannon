@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 type Spot = { name: string; image: string; desc: string }
 
-// 地図上の各スポット位置（画像サイズ 1053×1493 に対するパーセント、配列順が参拝図の①〜⑥に対応）
+// 地図上の各スポット位置（画像サイズ 1054×1493 に対するパーセント、配列順が参拝図の①〜⑥に対応）
 const MAP_PINS: { name: string; x: number; y: number }[] = [
   { name: '温泉寺表参道',       x: 39, y: 82 },
   { name: '鐘楼',               x: 29, y: 57 },
@@ -35,7 +35,7 @@ export default function OnsenjiGroundsSpots({ spots }: { spots: Spot[] }) {
     <>
       {/* インタラクティブ地図 */}
       <div className="relative rounded-xl overflow-hidden shadow-sm mb-10">
-        <Image src="/images/onsenji-map.png" alt="温泉寺参拝図" width={1053} height={1493} className="w-full h-auto" />
+        <Image src="/images/onsenji-map.png" alt="温泉寺参拝図" width={1054} height={1493} className="w-full h-auto" />
         {MAP_PINS.map(({ name, x, y }) => {
           const spot = spots.find(s => s.name === name)
           if (!spot) return null
