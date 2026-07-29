@@ -16,7 +16,7 @@ const FEE_OPTIONS = [
   { price: '20,000円', size: '38㎝' },
   { price: '30,000円', size: '42.5㎝' },
 ]
-const PAYMENT_OPTIONS = ['ECサイト', '代引き']
+const EC_SITE_URL = 'https://chuzenji.official.ec/'
 
 function WishSelect({ value, onChange, required }: { value: string; onChange: (v: string) => void; required?: boolean }) {
   return (
@@ -31,10 +31,10 @@ export default function ShogatsuApplyForm() {
   const supabase = createClient()
   const [form, setForm] = useState({ name: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
   const [fee, setFee] = useState('')
-  const [payment, setPayment] = useState('')
   const [applicants, setApplicants] = useState<Applicant[]>(Array.from({ length: 4 }, emptyApplicant))
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState<Status>('idle')
+  const [showEcConfirm, setShowEcConfirm] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -63,7 +63,7 @@ export default function ShogatsuApplyForm() {
       `住所：${form.address}`,
       `お願い事：${[form.wish1, form.wish2].filter(Boolean).join('、')}`,
       `御札：${fee}`,
-      `お支払い方法：${payment}`,
+      `お支払い方法：代金引換（代引き）`,
       applicantLines ? `\n【申込者一覧】\n${applicantLines}` : '',
       notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
@@ -134,16 +134,35 @@ export default function ShogatsuApplyForm() {
           </div>
         </div>
 
+        {/* お申し込み方法の選択 */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+          <p className="font-medium text-navy text-sm mb-4">お申し込み方法をお選びください</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <a href="#apply-form"
+              className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors">
+              <span className="text-2xl">📦</span>
+              <span className="font-medium text-navy text-sm">代金引換（代引き）で申し込む</span>
+              <span className="text-xs text-gray-500 leading-relaxed">下記フォームよりお申し込みください。送料・手数料は別途ご負担いただきます。</span>
+            </a>
+            <button type="button" onClick={() => setShowEcConfirm(true)}
+              className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors text-left">
+              <span className="text-2xl">🛒</span>
+              <span className="font-medium text-navy text-sm">ECサイトを利用</span>
+              <span className="text-xs text-gray-500 leading-relaxed">オンラインショップからお申し込みいただけます。</span>
+            </button>
+          </div>
+        </div>
+
         {/* 注意事項 */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 space-y-2">
-          <p className="font-medium text-amber-800 text-sm mb-2">📋 お申し込みの前にご確認ください</p>
+          <p className="font-medium text-amber-800 text-sm mb-2">📋 代引きでのお申し込みについて</p>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">⛩️</span>
             <p>御札は<strong>4種類（5,000円〜30,000円）</strong>からお選びいただけます。</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">💴</span>
-            <p>お支払いは<strong>ECサイト・代引き</strong>からお選びいただけます。</p>
+            <p>下記フォームは<strong>代金引換（代引き）</strong>専用です。送料・手数料は別途ご負担いただきます。</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">👥</span>
@@ -152,7 +171,7 @@ export default function ShogatsuApplyForm() {
         </div>
 
         {/* フォーム */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form id="apply-form" onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="admin-label">代表者名 <span className="text-red-500 text-xs">※必須</span></label>
             <input required className="admin-input" placeholder="山田 太郎" value={form.name} onChange={set('name')} />
@@ -184,20 +203,6 @@ export default function ShogatsuApplyForm() {
                     checked={fee === price} onChange={() => setFee(price)} />
                   <span className="font-bold text-navy text-sm">{price}</span>
                   <span className="text-xs text-gray-500">{size}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="border-t border-gray-200 pt-5">
-            <p className="text-sm font-medium text-navy mb-3">お支払い方法 <span className="text-red-500 text-xs">※必須</span></p>
-            <div className="grid grid-cols-2 gap-3">
-              {PAYMENT_OPTIONS.map(p => (
-                <label key={p}
-                  className={`flex items-center justify-center gap-2 rounded-xl border p-3 cursor-pointer transition-colors ${payment === p ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
-                  <input type="radio" name="payment" required className="sr-only" value={p}
-                    checked={payment === p} onChange={() => setPayment(p)} />
-                  <span className="text-sm font-medium text-navy">{p}</span>
                 </label>
               ))}
             </div>
@@ -262,6 +267,32 @@ export default function ShogatsuApplyForm() {
           <p className="text-xs text-gray-400 mt-1">受付時間：拝観時間内（8時〜17時）</p>
         </div>
       </div>
+
+      {/* ECサイト確認モーダル */}
+      {showEcConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowEcConfirm(false)}>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6"
+            onClick={e => e.stopPropagation()}>
+            <p className="font-medium text-navy text-sm mb-2">ECサイトでのお申し込みについて</p>
+            <p className="text-sm text-gray-700 leading-relaxed mb-6">
+              こちらから申し込みの方は備考欄に必ず「<strong>正月元旦護摩希望</strong>」とご記入ください。
+            </p>
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setShowEcConfirm(false)}
+                className="flex-1 py-2.5 border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                キャンセル
+              </button>
+              <a href={EC_SITE_URL} target="_blank" rel="noopener"
+                onClick={() => setShowEcConfirm(false)}
+                className="flex-1 py-2.5 bg-navy text-white rounded-full text-sm text-center hover:bg-navy/80 transition-colors">
+                はい
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }

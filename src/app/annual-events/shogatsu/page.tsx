@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 const DEFAULT_NOTES = [
   { text: '事前の申し込みが必要です。1回のお申し込みで最大5名様までまとめてお申し込みいただけます。' },
   { text: '御札は5,000円（28㎝）・10,000円（32㎝）・20,000円（38㎝）・30,000円（42.5㎝）よりお選びいただけます。' },
-  { text: 'お支払い方法はECサイト・代金引換（代引き）よりお選びいただけます。' },
+  { text: 'お申し込みは、申し込みフォーム内の代金引換（代引き）またはECサイトよりお選びいただけます。代引きの場合、送料・手数料は別途ご負担いただきます。' },
   { text: '天候・状況により内容が変更・中止となる場合がございます。詳細はお電話にてご確認ください。' },
 ]
 
@@ -35,7 +35,7 @@ const DEFAULTS: Record<string, string> = {
   shogatsu_heading_fees: '御札の種類',
   shogatsu_heading_notes: 'ご参加にあたって',
   shogatsu_cta_heading: '正月元旦特別護摩祈願 お申し込み',
-  shogatsu_cta_text: '最大5名まで同時にお申し込みいただけます。\nお支払いはECサイト・代引きからお選びいただけます。',
+  shogatsu_cta_text: '最大5名まで同時にお申し込みいただけます。\n代金引換（代引き）・ECサイトのいずれからもお申し込みいただけます。',
   shogatsu_notes: JSON.stringify(DEFAULT_NOTES),
   shogatsu_fees: JSON.stringify(DEFAULT_FEES),
 }
