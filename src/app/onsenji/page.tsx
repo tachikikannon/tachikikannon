@@ -23,20 +23,22 @@ const DEFAULT_MENU_CARDS = [
   { title: '写経体験', desc: '1,000円・約15分・毎日実施。特別御朱印授与。心を静めてお経をお写しいただけます。' },
   { title: '写仏体験', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
 ]
+const DEFAULT_NEWS = [
+  { date: '2026.04.11', title: '「薬師の湯」開湯', body: '境内に薬師の湯が開湯いたしました。参拝後にご利用いただけます。' },
+]
 
 const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_en:    'Nikkozan Onsenji Temple',
   onsenji_hero_title: '千二百余年の祈りを宿す\n薬師の霊場',
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
-  onsenji_notice_bar: '令和8年4月11日より「薬師の湯」開湯。泉質：含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（71.4℃）完全かけ流し。',
+  onsenji_heading_news: 'お知らせ',
+  onsenji_news: JSON.stringify(DEFAULT_NEWS),
   onsenji_about_title: '温泉寺について',
   onsenji_about_body: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。',
   onsenji_heading_goryaku: '主なご利益',
   onsenji_heading_menu:    '温泉・体験メニュー',
   onsenji_heading_goshuin: '御朱印',
   onsenji_goshuin_desc: '温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。',
-  onsenji_history_label: '温泉寺の歴史',
-  onsenji_grounds_label: '境内のご案内',
   onsenji_heading_access: 'アクセス',
   onsenji_access_address: '栃木県日光市湯元2559',
   onsenji_access_car:  '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり',
@@ -70,6 +72,7 @@ export default async function OnsenjPage() {
   const c = await getContent()
   const goryakuCards = pj<typeof DEFAULT_GORYAKU_CARDS>(c.onsenji_goryaku_cards, DEFAULT_GORYAKU_CARDS)
   const menuCards    = pj<typeof DEFAULT_MENU_CARDS>(c.onsenji_menu_cards, DEFAULT_MENU_CARDS)
+  const news         = pj<typeof DEFAULT_NEWS>(c.onsenji_news, DEFAULT_NEWS)
 
   return (
     <>
@@ -106,12 +109,27 @@ export default async function OnsenjPage() {
           </div>
         </section>
 
-        {/* お知らせバー */}
-        <div className="bg-[#7ec8a4]/20 border-y border-[#7ec8a4]/30 py-3 px-4">
-          <div className="max-w-4xl mx-auto text-center text-sm text-onsenji">
-            {c.onsenji_notice_bar}
+        {/* お知らせ */}
+        <section className="py-14" style={{backgroundColor: 'rgba(126,200,164,0.08)'}}>
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="text-center mb-8">
+              <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">News</p>
+              <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_news}</h2>
+              <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
+            </div>
+            <div className="space-y-3">
+              {news.map(({ date, title, body }, i) => (
+                <div key={i} className="bg-white rounded-xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-6">
+                  <span className="text-xs text-[#2d6b57] tracking-wide flex-shrink-0">{date}</span>
+                  <div>
+                    <p className="font-medium text-onsenji text-sm mb-1">{title}</p>
+                    {body && <p className="text-xs text-gray-600 leading-relaxed">{body}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
 
         {/* 温泉寺について */}
         <section className="max-w-4xl mx-auto px-4 py-20">
@@ -202,30 +220,6 @@ export default async function OnsenjPage() {
                   <h3 className="font-serif text-onsenji font-medium mb-2">{c.onsenji_heading_goshuin}</h3>
                   <p className="text-xs text-gray-600 leading-relaxed">{c.onsenji_goshuin_desc}</p>
                   <p className="text-onsenji text-xs mt-2 group-hover:underline">詳しく見る →</p>
-                </div>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* 境内・歴史 */}
-        <section className="bg-onsenji py-16">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Link href="/onsenji/history"
-                className="group relative rounded-2xl overflow-hidden h-48 bg-onsenji-light flex items-end p-6 hover:opacity-90 transition-opacity">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="relative">
-                  <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">History</p>
-                  <p className="text-white font-serif text-lg">{c.onsenji_history_label}</p>
-                </div>
-              </Link>
-              <Link href="/onsenji/grounds"
-                className="group relative rounded-2xl overflow-hidden h-48 bg-onsenji-light flex items-end p-6 hover:opacity-90 transition-opacity">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="relative">
-                  <p className="text-[#7ec8a4] text-xs tracking-widest mb-1">Grounds</p>
-                  <p className="text-white font-serif text-lg">{c.onsenji_grounds_label}</p>
                 </div>
               </Link>
             </div>
