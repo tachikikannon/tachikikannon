@@ -265,28 +265,14 @@ export default async function OnsenjPage() {
         </section>
 
         {/* アクセス */}
-        <section id="access" className="max-w-4xl mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Access</p>
-            <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_access}</h2>
-            <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
-          </div>
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            <div className="space-y-4">
-              <div className="bg-white rounded-xl p-5 shadow-sm border-l-4 border-[#7ec8a4]">
-                <p className="text-xs text-[#2d6b57] tracking-widest mb-2">所在地</p>
-                <p className="text-sm text-gray-700 whitespace-pre-line">{c.onsenji_access_address}</p>
-              </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border-l-4 border-[#7ec8a4]">
-                <p className="text-xs text-[#2d6b57] tracking-widest mb-2">お車でお越しの方</p>
-                <p className="text-sm text-gray-700 whitespace-pre-line">{c.onsenji_access_car}</p>
-              </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border-l-4 border-[#7ec8a4]">
-                <p className="text-xs text-[#2d6b57] tracking-widest mb-2">バスでお越しの方</p>
-                <p className="text-sm text-gray-700 whitespace-pre-line">{c.onsenji_access_bus}</p>
-              </div>
+        <section id="access" className="py-16" style={{backgroundColor: 'rgba(126,200,164,0.08)'}}>
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="text-center mb-8">
+              <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Access</p>
+              <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_access}</h2>
+              <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
             </div>
-            <div className="rounded-2xl overflow-hidden shadow-sm">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <iframe
                 src="https://maps.google.com/maps?q=日光山温泉寺+栃木県日光市湯元2559&output=embed&hl=ja&z=16"
                 width="100%"
@@ -297,6 +283,18 @@ export default async function OnsenjPage() {
                 referrerPolicy="no-referrer-when-downgrade"
                 title="日光山温泉寺 地図"
               />
+              <div className="p-6 grid md:grid-cols-3 gap-4">
+                {[
+                  { icon: '📍', title: '住所', body: c.onsenji_access_address },
+                  { icon: '🚗', title: '車でのアクセス', body: c.onsenji_access_car },
+                  { icon: '🚌', title: '電車・バスでのアクセス', body: c.onsenji_access_bus },
+                ].map(({ icon, title, body }) => (
+                  <div key={title}>
+                    <p className="font-medium text-onsenji text-sm mb-1">{icon} {title}</p>
+                    <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-line">{body}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
