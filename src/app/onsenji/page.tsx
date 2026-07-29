@@ -26,6 +26,23 @@ const DEFAULT_MENU_CARDS = [
 const DEFAULT_NEWS = [
   { date: '2026.04.11', title: '「薬師の湯」開湯', body: '境内に薬師の湯が開湯いたしました。参拝後にご利用いただけます。' },
 ]
+const DEFAULT_EVENTS = [
+  {
+    month: '8月',
+    date: '8月8日',
+    time: '午前11時〜',
+    name: '薬師講大祭・採灯大護摩供',
+    desc: '湯の湖畔にて、山伏によって採灯大護摩供が焚かれます。写経が御本尊に奉じられ、護摩の炎で焚き上げられる、温泉寺最大の法要です。',
+  },
+  {
+    month: '1月',
+    date: '1月下旬',
+    time: '午前11時〜',
+    name: '温泉寺 節分大祭',
+    desc: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。',
+  },
+]
+const EVENT_HREFS = ['/onsenji/events/yakushiko', '/onsenji/events/setsubun']
 
 const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_en:    'Nikkozan Onsenji Temple',
@@ -33,6 +50,8 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_heading_news: 'お知らせ',
   onsenji_news: JSON.stringify(DEFAULT_NEWS),
+  onsenji_heading_events: '年間行事',
+  onsenji_events_list: JSON.stringify(DEFAULT_EVENTS),
   onsenji_about_title: '温泉寺について',
   onsenji_about_body: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。',
   onsenji_heading_goryaku: '主なご利益',
@@ -73,6 +92,7 @@ export default async function OnsenjPage() {
   const goryakuCards = pj<typeof DEFAULT_GORYAKU_CARDS>(c.onsenji_goryaku_cards, DEFAULT_GORYAKU_CARDS)
   const menuCards    = pj<typeof DEFAULT_MENU_CARDS>(c.onsenji_menu_cards, DEFAULT_MENU_CARDS)
   const news         = pj<typeof DEFAULT_NEWS>(c.onsenji_news, DEFAULT_NEWS)
+  const events       = pj<typeof DEFAULT_EVENTS>(c.onsenji_events_list, DEFAULT_EVENTS)
 
   return (
     <>
@@ -198,6 +218,35 @@ export default async function OnsenjPage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </section>
+
+        {/* 年間行事 */}
+        <section className="max-w-4xl mx-auto px-4 py-20">
+          <div className="text-center mb-12">
+            <p className="text-[#2d6b57] text-xs tracking-[0.3em] mb-2">Annual Events</p>
+            <h2 className="font-serif text-2xl text-onsenji tracking-widest">{c.onsenji_heading_events}</h2>
+            <div className="w-12 h-0.5 bg-[#7ec8a4] mx-auto mt-4" />
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            {events.map((ev, i) => (
+              <Link key={ev.date} href={EVENT_HREFS[i] ?? '/onsenji/events'}
+                className="group bg-white rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1 p-5 flex gap-4 items-start">
+                <div className="bg-onsenji text-white text-center rounded-xl px-3 py-2 min-w-[64px] flex-shrink-0">
+                  <p className="text-[10px] text-[#7ec8a4]">{ev.month}</p>
+                  <p className="text-sm font-serif leading-tight mt-0.5">{ev.date}</p>
+                </div>
+                <div>
+                  <p className="font-serif text-onsenji font-medium text-sm mb-1 group-hover:underline">{ev.name}</p>
+                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{ev.desc}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/onsenji/events" className="text-onsenji text-sm border-b border-onsenji/40 hover:border-onsenji transition-colors">
+              年間行事をすべて見る →
+            </Link>
           </div>
         </section>
 

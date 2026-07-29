@@ -26,6 +26,7 @@ const SECTIONS: Section[] = [
           { date: '2026.04.11', title: '「薬師の湯」開湯', body: '境内に薬師の湯が開湯いたしました。参拝後にご利用いただけます。' },
         ]),
       },
+      { key: 'onsenji_heading_events', label: '「年間行事」見出し（行事の内容自体は下の「年間行事一覧」セクションで編集）', defaultValue: '年間行事' },
       { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について' },
       { key: 'onsenji_about_body',  label: '「温泉寺について」本文', multiline: true, defaultValue: '日光山温泉寺は、延暦7年（788年）に勝道上人によって開かれた世界遺産「日光山輪王寺」の別院です。ご本尊は薬師瑠璃光如来で、健康増進・延命長寿のご利益で知られています。江戸時代には輪王寺宮の直轄寺院として栄え、現在も多くの参拝者が訪れます。' },
       { key: 'onsenji_access_address', label: 'アクセス 所在地', defaultValue: '栃木県日光市湯元2559' },
