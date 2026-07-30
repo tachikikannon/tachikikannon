@@ -1,10 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import type { Application } from '@/types'
 
 export default function AdminApplicationsPage() {
   const supabase = createClient()
+  const router = useRouter()
   const [list, setList] = useState<Application[]>([])
   const [selected, setSelected] = useState<Application | null>(null)
 
@@ -18,6 +20,7 @@ export default function AdminApplicationsPage() {
     await supabase.from('applications').update({ is_read: true }).eq('id', id)
     setList(prev => prev.map(a => a.id === id ? { ...a, is_read: true } : a))
     if (selected?.id === id) setSelected({ ...selected, is_read: true })
+    router.refresh()
   }
 
   async function remove(id: string) {

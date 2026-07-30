@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import type { AdminProfile, Contact, ContactStatus } from '@/types'
@@ -17,6 +18,7 @@ const STATUS_OPTIONS: ContactStatus[] = ['unread', 'checking', 'replied', 'compl
 
 export default function AdminContactsPage() {
   const supabase = createClient()
+  const router = useRouter()
   const { profile, canEditContacts: canEdit } = useAdminProfile()
   const [list, setList] = useState<Contact[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
@@ -40,12 +42,14 @@ export default function AdminContactsPage() {
     await supabase.from('contacts').update({ is_read: true }).eq('id', id)
     setList(prev => prev.map(c => c.id === id ? { ...c, is_read: true } : c))
     if (selected?.id === id) setSelected(s => s ? { ...s, is_read: true } : s)
+    router.refresh()
   }
 
   async function updateStatus(id: string, status: ContactStatus) {
     await supabase.from('contacts').update({ status }).eq('id', id)
     load()
     if (selected?.id === id) setSelected(s => s ? { ...s, status } : s)
+    router.refresh()
   }
 
   async function updateAssignee(id: string, assigned_admin_id: string) {
@@ -68,7 +72,7 @@ export default function AdminContactsPage() {
       <div className="print:hidden flex items-center justify-between mb-6">
         <h1 className="text-2xl font-serif text-navy">お問い合わせ管理</h1>
         <span className="badge bg-red-100 text-red-700">
-          未読 {list.filter(c => !c.is_read).length} 件
+          未読 {list.filter(c => c.status === 'unread').length} 件
         </span>
       </div>
 

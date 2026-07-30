@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import type { AdminProfile, CodOrder, CodOrderStatus } from '@/types'
@@ -24,6 +25,7 @@ const STATUS_OPTIONS: CodOrderStatus[] = ['unconfirmed', 'in_progress', 'confirm
 
 export default function AdminCodOrdersPage() {
   const supabase = createClient()
+  const router = useRouter()
   const { profile, canEditReservations: canEdit } = useAdminProfile()
   const [list, setList] = useState<CodOrder[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
@@ -44,6 +46,7 @@ export default function AdminCodOrdersPage() {
     await supabase.from('cod_orders').update({ status }).eq('id', id)
     load()
     if (detail?.id === id) setDetail(d => d ? { ...d, status } : d)
+    router.refresh()
   }
 
   async function updateAssignee(id: string, assigned_admin_id: string) {

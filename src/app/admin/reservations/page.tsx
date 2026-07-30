@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import ReservationCalendar from '@/components/ReservationCalendar'
@@ -44,6 +45,7 @@ const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_p
 
 export default function AdminReservationsPage() {
   const supabase = createClient()
+  const router = useRouter()
   const { profile, canEditReservations: canEdit } = useAdminProfile()
   const [list, setList] = useState<Reservation[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
@@ -104,6 +106,7 @@ export default function AdminReservationsPage() {
     await supabase.from('reservations').update({ status }).eq('id', id)
     load()
     if (detail?.id === id) setDetail(d => d ? { ...d, status } : d)
+    router.refresh()
 
     if (status === 'confirmed' && target) {
       setMailNotice('確定メールを送信中…')

@@ -1,6 +1,8 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboard() {
   const supabase = await createServerSupabaseClient()
 
@@ -11,10 +13,10 @@ export default async function AdminDashboard() {
     { count: unreadEventApplications },
     { count: pendingCodOrders },
   ] = await Promise.all([
-    supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('is_read', false).eq('source', 'contact'),
-    supabase.from('reservations').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'unread').eq('source', 'contact'),
+    supabase.from('reservations').select('*', { count: 'exact', head: true }).in('status', ['unconfirmed', 'pending']),
     supabase.from('applications').select('*', { count: 'exact', head: true }).eq('is_read', false),
-    supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('is_read', false).eq('source', 'event_application'),
+    supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'unread').eq('source', 'event_application'),
     supabase.from('cod_orders').select('*', { count: 'exact', head: true }).eq('status', 'unconfirmed'),
   ])
 
