@@ -8,10 +8,13 @@ export default function AdminBlogPage() {
   const [list, setList] = useState<Post[]>([])
   const [editing, setEditing] = useState<Partial<Post> | null>(null)
   const [galleryText, setGalleryText] = useState('')
+  const [dateStr, setDateStr] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function load() {
-    const { data } = await supabase.from('posts').select('*').order('created_at', { ascending: false })
+    const { data } = await supabase.from('posts').select('*')
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false })
     setList(data ?? [])
   }
   useEffect(() => {
@@ -29,19 +32,27 @@ export default function AdminBlogPage() {
     return text.split('\n').map(s => s.trim()).filter(Boolean)
   }
 
+  function toDateInputValue(iso: string | null | undefined) {
+    return (iso ?? new Date().toISOString()).slice(0, 10)
+  }
+
   function openEditor(post: Partial<Post> | null) {
     setEditing(post)
     setGalleryText((post?.gallery_urls ?? []).join('\n'))
+    setDateStr(toDateInputValue(post?.published_at))
   }
 
   async function save() {
     if (!editing) return
     setLoading(true)
+    // 投稿日は常にこの日付欄の値を使う（過去の実績など、記事を書いた日と
+    // 実際の出来事の日付がずれるケースに対応するため、公開時に自動採番しない）。
+    const publishedAt = new Date(`${dateStr}T00:00:00`).toISOString()
     const payload = {
       ...editing,
       gallery_urls: toGalleryUrls(galleryText),
       slug: editing.slug || toSlug(editing.title ?? ''),
-      published_at: editing.is_published ? (editing.published_at ?? new Date().toISOString()) : null,
+      published_at: editing.is_published ? publishedAt : null,
       updated_at: new Date().toISOString(),
     }
     if (editing.id) {
@@ -81,6 +92,12 @@ export default function AdminBlogPage() {
                 value={editing.slug ?? ''} onChange={e => setEditing({...editing, slug: e.target.value})} />
             </div>
             <div>
+              <label className="admin-label">投稿日</label>
+              <input type="date" className="admin-input w-48" value={dateStr}
+                onChange={e => setDateStr(e.target.value)} />
+              <p className="text-xs text-gray-400 mt-1">過去の行事の記事は、実際に行われた日付を指定できます。一覧・トップページはこの日付の新しい順に並びます。</p>
+            </div>
+            <div>
               <label className="admin-label">概要（一覧ページに表示）</label>
               <textarea className="admin-input min-h-[60px]" value={editing.excerpt ?? ''} onChange={e => setEditing({...editing, excerpt: e.target.value})} />
             </div>
@@ -117,7 +134,7 @@ export default function AdminBlogPage() {
             <tr>
               <th className="text-left px-4 py-3 text-xs text-gray-500">タイトル</th>
               <th className="text-left px-4 py-3 text-xs text-gray-500">状態</th>
-              <th className="text-left px-4 py-3 text-xs text-gray-500">作成日</th>
+              <th className="text-left px-4 py-3 text-xs text-gray-500">投稿日</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
@@ -130,7 +147,9 @@ export default function AdminBlogPage() {
                     {p.is_published ? '公開中' : '下書き'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-gray-500 text-xs">{new Date(p.created_at).toLocaleDateString('ja-JP')}</td>
+                <td className="px-4 py-3 text-gray-500 text-xs">
+                  {p.published_at ? new Date(p.published_at).toLocaleDateString('ja-JP') : '—'}
+                </td>
                 <td className="px-4 py-3 flex gap-2 justify-end">
                   <button onClick={() => openEditor(p)} className="text-navy hover:underline text-xs">編集</button>
                   <button onClick={() => remove(p.id)} className="text-red-500 hover:underline text-xs">削除</button>
