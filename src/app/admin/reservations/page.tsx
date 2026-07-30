@@ -58,6 +58,7 @@ export default function AdminReservationsPage() {
   const [newRes, setNewRes] = useState(NEW_RESERVATION_DEFAULTS)
   const [createError, setCreateError] = useState<string | null>(null)
   const [createSaving, setCreateSaving] = useState(false)
+  const [ritsWarning, setRitsWarning] = useState<string | null>(null)
 
   async function load() {
     const query = supabase.from('reservations').select('*').order('date').order('created_at', { ascending: false })
@@ -69,6 +70,28 @@ export default function AdminReservationsPage() {
     setCategories(categoryData ?? [])
   }
   useEffect(() => { load() }, [])
+
+  // リッツの予約を入力しようとしている時、その同時刻にリッツ以外の数珠づくり・
+  // 護摩祈願が両方とも既に入っている場合は、リッツ用の枠が確保できないため
+  // 入力時に忠告文を出す（送信自体は止めない）。
+  useEffect(() => {
+    const ritsCategoryId = categories.find(c => c.name.includes('リッツ'))?.id
+    if (!ritsCategoryId || newRes.category_id !== ritsCategoryId || !newRes.date || !newRes.time_slot) {
+      setRitsWarning(null)
+      return
+    }
+    supabase.from('reservations').select('type,category_id')
+      .eq('date', newRes.date).eq('time_slot', newRes.time_slot)
+      .in('type', ['jyuzu', 'prayer'])
+      .then(({ data }) => {
+        const others = (data ?? []).filter(r => r.category_id !== ritsCategoryId)
+        const hasJyuzu = others.some(r => r.type === 'jyuzu')
+        const hasPrayer = others.some(r => r.type === 'prayer')
+        setRitsWarning(hasJyuzu && hasPrayer
+          ? 'リッツ予約不可（この時間帯はリッツ以外の数珠づくり・護摩祈願が両方とも入っているため、リッツの枠を確保できません）'
+          : null)
+      })
+  }, [newRes.category_id, newRes.date, newRes.time_slot, categories])
 
   function openDetail(r: Reservation | null) {
     setDetail(r)
@@ -320,6 +343,12 @@ export default function AdminReservationsPage() {
               </select>
               <p className="text-[11px] text-gray-400 mt-1">電話等で直接受けた予約は「予約確定」のままで問題ありません。</p>
             </div>
+
+            {ritsWarning && (
+              <p className="text-amber-700 bg-amber-50 border border-amber-200 rounded-lg text-sm p-3 mb-3">
+                ⚠️ {ritsWarning}
+              </p>
+            )}
 
             {createError && <p className="text-red-600 text-sm mb-3">{createError}</p>}
 
