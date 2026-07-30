@@ -42,14 +42,14 @@ export default async function PhotosPage() {
             <p className="text-center text-gray-400 text-sm py-16">現在、貸出用の写真はありません。</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-              {photos.map(item => (
+              {photos.map((item, i) => (
                 <div key={item.id} className="bg-white rounded-xl shadow-sm overflow-hidden border">
                   <div className="relative h-36">
-                    <ZoomableImage src={item.public_url} alt={item.alt ?? item.filename} fill className="object-cover" />
+                    <ZoomableImage src={item.public_url} alt={`貸出用写真 ${i + 1}`} fill className="object-cover" />
                   </div>
                   <div className="p-3">
-                    <p className="text-xs text-gray-600 truncate mb-2">{item.alt ?? item.filename}</p>
-                    <Link href={`/apply?category=${encodeURIComponent('写真使用・貸出し許可申請')}&photo=${encodeURIComponent(item.alt ?? item.filename)}`}
+                    <p className="text-xs text-gray-600 mb-2">写真 {i + 1}</p>
+                    <Link href={`/apply?category=${encodeURIComponent('写真使用・貸出し許可申請')}&photo=${encodeURIComponent(item.id)}`}
                       className="block text-center text-xs px-3 py-2 bg-navy text-white rounded-full hover:bg-navy/80 transition-colors">
                       この写真を申請する
                     </Link>

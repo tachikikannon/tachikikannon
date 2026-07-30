@@ -1,9 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import type { AdminProfile, Application, ApplicationStatus } from '@/types'
+import type { AdminProfile, Application, ApplicationStatus, Media } from '@/types'
 
 const STATUS_LABELS: Record<ApplicationStatus, string> = {
   unread: '未読', checking: '対応中', replied: '返信済み', completed: '完了',
@@ -24,6 +25,7 @@ export default function AdminApplicationsPage() {
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [selected, setSelected] = useState<Application | null>(null)
   const [pendingStatus, setPendingStatus] = useState<ApplicationStatus | null>(null)
+  const [photoMedia, setPhotoMedia] = useState<Media | null>(null)
 
   async function load() {
     const { data } = await supabase.from('applications').select('*').order('created_at', { ascending: false })
@@ -32,6 +34,15 @@ export default function AdminApplicationsPage() {
     setAdmins(adminData ?? [])
   }
   useEffect(() => { load() }, [])
+
+  // 対象写真はborrower側には写真名を見せない仕様のため、送られてくるphoto_refは
+  // 写真の名前ではなくmedia.idそのもの。管理側だけはここで実物を引いて表示する。
+  useEffect(() => {
+    setPhotoMedia(null)
+    if (!selected?.photo_ref) return
+    supabase.from('media').select('*').eq('id', selected.photo_ref).maybeSingle()
+      .then(({ data }) => setPhotoMedia(data as Media | null))
+  }, [selected?.photo_ref])
 
   function openDetail(a: Application | null) {
     setSelected(a)
@@ -116,7 +127,23 @@ export default function AdminApplicationsPage() {
               <dt className="text-gray-500 text-xs">メール</dt>
               <dd><a href={`mailto:${selected.email}`} className="text-navy underline">{selected.email}</a></dd>
               <dt className="text-gray-500 text-xs">電話番号</dt><dd>{selected.phone || '（未入力）'}</dd>
-              {selected.photo_ref && (<><dt className="text-gray-500 text-xs">対象写真</dt><dd>{selected.photo_ref}</dd></>)}
+              {selected.photo_ref && (
+                <>
+                  <dt className="text-gray-500 text-xs">対象写真</dt>
+                  <dd>
+                    {photoMedia ? (
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-12 h-12 rounded overflow-hidden flex-shrink-0 border">
+                          <Image src={photoMedia.public_url} alt={photoMedia.filename} fill className="object-cover" />
+                        </div>
+                        <span className="text-xs text-gray-600 truncate">{photoMedia.filename}</span>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gray-400">{selected.photo_ref}</span>
+                    )}
+                  </dd>
+                </>
+              )}
               <dt className="text-gray-500 text-xs">受信日</dt>
               <dd className="text-xs text-gray-500">{new Date(selected.created_at).toLocaleString('ja-JP')}</dd>
               <dt className="text-gray-500 text-xs">更新日時</dt>
