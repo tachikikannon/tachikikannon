@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
-import { getTimeSlots } from '@/lib/reservationSlots'
+import { getTimeSlots, blockedDateMatchesType } from '@/lib/reservationSlots'
 
 const DAY_LABELS = ['日','月','火','水','木','金','土']
 
@@ -87,9 +87,7 @@ export default function ReservationCalendar({
   }, [weekStart, reservationType])
 
   function isDateBlocked(dateStr: string) {
-    return blockedDates.find(b =>
-      b.date === dateStr && (b.type === 'all' || b.type === reservationType)
-    ) ?? null
+    return blockedDates.find(b => b.date === dateStr && blockedDateMatchesType(b.type, reservationType)) ?? null
   }
 
   function getOverride(dateStr: string, slot: string) {

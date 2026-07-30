@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import { BLOCKED_DATE_TYPE_LABELS } from '@/lib/reservationSlots'
 
 type BlockedDate = {
   id: string
@@ -10,13 +11,7 @@ type BlockedDate = {
   created_at: string
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  all:     '全種別',
-  prayer:  '護摩祈願のみ',
-  shakyou: '写経のみ',
-  shabutu: '写仏のみ',
-  jyuzu:   '数珠づくりのみ',
-}
+const TYPE_LABELS: Record<string, string> = BLOCKED_DATE_TYPE_LABELS
 
 export default function BlockedDatesPage() {
   const supabase = createClient()

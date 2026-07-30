@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import { getTimeSlots } from '@/lib/reservationSlots'
+import { getTimeSlots, blockedDateMatchesType } from '@/lib/reservationSlots'
 import type { ReservationType, SlotOverride } from '@/types'
 
 const TYPES: { value: ReservationType; label: string }[] = [
@@ -72,7 +72,7 @@ export default function AvailabilityPage() {
   useEffect(() => { load(); setSelected(null) }, [weekStart, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function isDateBlocked(dateStr: string) {
-    return blockedDates.find(b => b.date === dateStr && (b.type === 'all' || b.type === type)) ?? null
+    return blockedDates.find(b => b.date === dateStr && blockedDateMatchesType(b.type, type)) ?? null
   }
 
   function getOverride(dateStr: string, slot: string) {
