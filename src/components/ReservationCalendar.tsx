@@ -136,9 +136,13 @@ export default function ReservationCalendar({
     const override = getOverride(dateStr, slot)
     const maxGroups = override?.max_groups ?? capacity?.max_groups
     const maxPeople = override?.max_people ?? capacity?.max_people
-    // 「リッツ」区分の予約は別枠のため、この種別の通常定員（一般のお客様向け）には数えない。
-    const slotReservations = reservations.filter(r => r.date === dateStr && r.time_slot === slot &&
-      !(ISOLATED_POOL_CAPACITY_TYPES.includes(reservationType) && isolatedPoolCategoryId != null && r.category_id === isolatedPoolCategoryId))
+    // 「リッツ」区分の予約は別枠のため、この種別の通常の定員・バッファ判定（一般のお客様向け）
+    // からは完全に除外する。定員カウントだけでなく、この後の同種別バッファ判定でも使うため
+    // ここで除外済みの一覧を作っておく。
+    const isIsolated = (r: Reservation) =>
+      ISOLATED_POOL_CAPACITY_TYPES.includes(reservationType) && isolatedPoolCategoryId != null && r.category_id === isolatedPoolCategoryId
+    const generalReservations = reservations.filter(r => !isIsolated(r))
+    const slotReservations = generalReservations.filter(r => r.date === dateStr && r.time_slot === slot)
     const groupCount = slotReservations.length
     const peopleCount = slotReservations.reduce((sum, r) => sum + (r.party_size ?? 1), 0)
     const overCapacity = (maxGroups != null && groupCount >= maxGroups) || (maxPeople != null && peopleCount >= maxPeople)
@@ -166,7 +170,7 @@ export default function ReservationCalendar({
     const bufferMinutes = capacity?.buffer_minutes ?? 0
     const slotMinutes = parseSlotMinutes(slot)
     if (bufferMinutes > 0 && slotMinutes != null) {
-      const overlapping = reservations.some(r => {
+      const overlapping = generalReservations.some(r => {
         if (r.date !== dateStr) return false
         const rMinutes = parseSlotMinutes(r.time_slot)
         return rMinutes != null && Math.abs(rMinutes - slotMinutes) < bufferMinutes
