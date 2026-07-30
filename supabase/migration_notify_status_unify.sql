@@ -16,7 +16,12 @@ alter table applications add column if not exists updated_by uuid references adm
 alter table applications add column if not exists updated_at timestamptz not null default now();
 
 -- 既存の「ログインしていれば誰でも全操作可」ポリシーを、contacts と同じロール別制御に差し替える
+-- （再実行しても失敗しないよう、作り直す前に一旦すべて削除する）
 drop policy if exists "admin all applications" on applications;
+drop policy if exists "admin select applications" on applications;
+drop policy if exists "admin write applications" on applications;
+drop policy if exists "admin update applications" on applications;
+drop policy if exists "admin delete applications" on applications;
 
 create policy "admin select applications" on applications for select
   using (current_admin_role() in ('super_admin','admin','viewer'));
