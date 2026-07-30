@@ -58,6 +58,7 @@ export default function ReservationCalendar({
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([])
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [crossReservations, setCrossReservations] = useState<Reservation[]>([])
+  const [crossBuffers, setCrossBuffers] = useState<Partial<Record<ReservationType, number>>>({})
   const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
   const [overrides, setOverrides] = useState<SlotOverride[]>([])
 
@@ -92,8 +93,15 @@ export default function ReservationCalendar({
     if (crossTypes.length > 0) {
       supabase.rpc('public_reservation_slots', { from_date: from, to_date: to, res_types: crossTypes })
         .then(({ data }) => setCrossReservations(data ?? []))
+      // 相手側の体験（数珠づくり等）自身の「前後バッファ」設定を、こちら側の
+      // 予約不可判定にもそのまま利用する（数珠づくりの所要時間ぶん、前後の
+      // 護摩の枠も塞がる）。
+      Promise.all(crossTypes.map(t =>
+        supabase.rpc('public_capacity_setting', { res_type: t }).then(({ data }) => [t, data?.[0]?.buffer_minutes ?? 0] as const)
+      )).then(entries => setCrossBuffers(Object.fromEntries(entries)))
     } else {
       setCrossReservations([])
+      setCrossBuffers({})
     }
 
     supabase.from('slot_overrides').select('date,time_slot,is_closed,max_groups,max_people')
@@ -121,8 +129,18 @@ export default function ReservationCalendar({
     if (overCapacity) return true
 
     // 同じ担当者・場所を共有する体験（例: 護摩祈願と数珠づくり）は、
-    // 一方が予約されている時間帯はもう一方も予約不可にする。
-    if (crossReservations.some(r => r.date === dateStr && r.time_slot === slot)) return true
+    // 一方が予約されている時間帯はもう一方も予約不可にする。相手側に前後バッファが
+    // 設定されている場合は、その分数未満しか離れていない前後の枠も合わせて塞ぐ。
+    const slotMinutesForCross = parseSlotMinutes(slot)
+    const crossBlocked = crossReservations.some(r => {
+      if (r.date !== dateStr) return false
+      if (r.time_slot === slot) return true
+      const buffer = crossBuffers[r.type as ReservationType] ?? 0
+      if (buffer <= 0 || slotMinutesForCross == null) return false
+      const rMinutes = parseSlotMinutes(r.time_slot)
+      return rMinutes != null && Math.abs(rMinutes - slotMinutesForCross) < buffer
+    })
+    if (crossBlocked) return true
 
     // 前後バッファ（分）: 実際の所要時間が枠の間隔より長い体験（護摩祈祷など）向け。
     // 既存予約の開始時刻からバッファ分数未満しか離れていない枠は、時間が重なるため予約不可にする。
