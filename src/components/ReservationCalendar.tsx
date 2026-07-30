@@ -7,9 +7,10 @@ import { getTimeSlots, blockedDateMatchesType } from '@/lib/reservationSlots'
 const DAY_LABELS = ['日','月','火','水','木','金','土']
 
 type BlockedDate = { date: string; type: string; reason: string }
-type Reservation = { date: string; time_slot: string; type: string; party_size: number }
+type Reservation = { date: string; time_slot: string; type: string; party_size: number; category_id: string | null }
 type CapacitySetting = { max_groups: number; max_people: number; buffer_minutes: number }
 type SlotOverride = { date: string; time_slot: string; is_closed: boolean; max_groups: number | null; max_people: number | null }
+type Category = { id: string; name: string }
 
 // "9:00" "10:30" のような時刻表記のみ分に変換できる。"午前"/"午後" などのラベル枠はnullを返す。
 function parseSlotMinutes(slot: string): number | null {
@@ -23,6 +24,11 @@ function parseSlotMinutes(slot: string): number | null {
 const CROSS_BLOCKING_TYPES: Partial<Record<ReservationType, ReservationType[]>> = {
   prayer: ['jyuzu'],
 }
+
+// 「リッツ」区分の予約は別枠扱い。この区分の数珠づくり予約だけが護摩祈願を
+// ふさぐ対象になり、一般の数珠づくりの定員（max_groups/max_people）には数えない。
+const ISOLATED_POOL_CATEGORY_KEYWORD = 'リッツ'
+const ISOLATED_POOL_CAPACITY_TYPES: ReservationType[] = ['jyuzu']
 
 interface Props {
   reservationType: ReservationType
@@ -61,6 +67,7 @@ export default function ReservationCalendar({
   const [crossBuffers, setCrossBuffers] = useState<Partial<Record<ReservationType, number>>>({})
   const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
   const [overrides, setOverrides] = useState<SlotOverride[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
 
   // 今週の7日間
   const weekDays = Array.from({ length: 7 }, (_, i) => {
@@ -75,6 +82,13 @@ export default function ReservationCalendar({
     supabase.rpc('public_capacity_setting', { res_type: reservationType })
       .then(({ data }) => setCapacity(data?.[0] ?? null))
   }, [reservationType])
+
+  useEffect(() => {
+    supabase.from('reservation_categories').select('id,name')
+      .then(({ data }) => setCategories(data ?? []))
+  }, [])
+
+  const isolatedPoolCategoryId = categories.find(c => c.name.includes(ISOLATED_POOL_CATEGORY_KEYWORD))?.id ?? null
 
   useEffect(() => {
     const from = toDateStr(weekDays[0])
@@ -122,18 +136,22 @@ export default function ReservationCalendar({
     const override = getOverride(dateStr, slot)
     const maxGroups = override?.max_groups ?? capacity?.max_groups
     const maxPeople = override?.max_people ?? capacity?.max_people
-    const slotReservations = reservations.filter(r => r.date === dateStr && r.time_slot === slot)
+    // 「リッツ」区分の予約は別枠のため、この種別の通常定員（一般のお客様向け）には数えない。
+    const slotReservations = reservations.filter(r => r.date === dateStr && r.time_slot === slot &&
+      !(ISOLATED_POOL_CAPACITY_TYPES.includes(reservationType) && isolatedPoolCategoryId != null && r.category_id === isolatedPoolCategoryId))
     const groupCount = slotReservations.length
     const peopleCount = slotReservations.reduce((sum, r) => sum + (r.party_size ?? 1), 0)
     const overCapacity = (maxGroups != null && groupCount >= maxGroups) || (maxPeople != null && peopleCount >= maxPeople)
     if (overCapacity) return true
 
     // 同じ担当者・場所を共有する体験（例: 護摩祈願と数珠づくり）は、
-    // 一方が予約されている時間帯はもう一方も予約不可にする。相手側に前後バッファが
-    // 設定されている場合は、その分数未満しか離れていない前後の枠も合わせて塞ぐ。
+    // 一方が予約されている時間帯はもう一方も予約不可にする。ただし対象は「リッツ」区分の
+    // 予約のみ。一般の数珠づくりは護摩祈願をふさがない。相手側に前後バッファが設定されて
+    // いる場合は、その分数未満しか離れていない前後の枠も合わせて塞ぐ。
     const slotMinutesForCross = parseSlotMinutes(slot)
-    const crossBlocked = crossReservations.some(r => {
+    const crossBlocked = isolatedPoolCategoryId != null && crossReservations.some(r => {
       if (r.date !== dateStr) return false
+      if (r.category_id !== isolatedPoolCategoryId) return false
       if (r.time_slot === slot) return true
       const buffer = crossBuffers[r.type as ReservationType] ?? 0
       if (buffer <= 0 || slotMinutesForCross == null) return false
