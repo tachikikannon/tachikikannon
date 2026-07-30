@@ -69,9 +69,10 @@ export default function ReservationCalendar({
   })
 
   useEffect(() => {
-    supabase.from('capacity_settings').select('max_groups,max_people,buffer_minutes')
-      .eq('type', reservationType).single()
-      .then(({ data }) => setCapacity(data ?? null))
+    // capacity_settings はダッシュボード管理のテーブルでRLSがリポジトリ管理外のため、
+    // 未ログインでも確実に取得できるSECURITY DEFINER関数経由で取得する。
+    supabase.rpc('public_capacity_setting', { res_type: reservationType })
+      .then(({ data }) => setCapacity(data?.[0] ?? null))
   }, [reservationType])
 
   useEffect(() => {
@@ -82,16 +83,14 @@ export default function ReservationCalendar({
       .gte('date', from).lte('date', to)
       .then(({ data }) => setBlockedDates(data ?? []))
 
-    supabase.from('reservations').select('date,time_slot,type,party_size')
-      .gte('date', from).lte('date', to)
-      .eq('type', reservationType)
+    // reservations には個人情報が含まれるため未ログインでは直接SELECTできない。
+    // 日付・時間帯・種別・人数だけを返すSECURITY DEFINER関数経由で空き状況を取得する。
+    supabase.rpc('public_reservation_slots', { from_date: from, to_date: to, res_types: [reservationType] })
       .then(({ data }) => setReservations(data ?? []))
 
     const crossTypes = CROSS_BLOCKING_TYPES[reservationType] ?? []
     if (crossTypes.length > 0) {
-      supabase.from('reservations').select('date,time_slot,type,party_size')
-        .gte('date', from).lte('date', to)
-        .in('type', crossTypes)
+      supabase.rpc('public_reservation_slots', { from_date: from, to_date: to, res_types: crossTypes })
         .then(({ data }) => setCrossReservations(data ?? []))
     } else {
       setCrossReservations([])
