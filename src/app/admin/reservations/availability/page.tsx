@@ -274,6 +274,12 @@ export default function AvailabilityPage() {
                 </div>
               </div>
 
+              {(form.max_groups === '0' || form.max_people === '0') && (
+                <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded p-2 mb-4">
+                  ⚠️ 上限を「0」にすると、予約の有無に関わらずこの枠は常に予約不可になります。この時間帯だけ受付を止めたい場合は、上の「受付を停止する」にチェックし、上限欄は空欄のままにしてください。
+                </p>
+              )}
+
               <div className="mb-5">
                 <label className="admin-label">メモ（任意・内部用）</label>
                 <input className="admin-input" placeholder="例：住職不在のため"
