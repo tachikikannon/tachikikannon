@@ -159,6 +159,8 @@ export interface AdminActivityLog {
   created_at: string
 }
 
+export type MediaSite = 'chuzenji' | 'onsenji'
+
 export interface Media {
   id: string
   filename: string
@@ -168,6 +170,7 @@ export interface Media {
   size_bytes: number | null
   mime_type: string | null
   is_lendable: boolean
+  site: MediaSite
   created_at: string
 }
 

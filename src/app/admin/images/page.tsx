@@ -2,7 +2,9 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase'
-import type { Media } from '@/types'
+import type { Media, MediaSite } from '@/types'
+
+const SITE_LABELS: Record<MediaSite, string> = { chuzenji: '立木観音', onsenji: '温泉寺' }
 
 export default function AdminImagesPage() {
   const supabase = createClient()
@@ -10,6 +12,8 @@ export default function AdminImagesPage() {
   const [uploading, setUploading] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [uploadSite, setUploadSite] = useState<MediaSite>('chuzenji')
+  const [filterSite, setFilterSite] = useState<MediaSite | 'all'>('all')
   const fileRef = useRef<HTMLInputElement>(null)
 
   async function load() {
@@ -36,6 +40,7 @@ export default function AdminImagesPage() {
         public_url: publicUrl,
         size_bytes: file.size,
         mime_type: file.type,
+        site: uploadSite,
       })
       if (insertError) errors.push(`${file.name}: ${insertError.message}`)
     }
@@ -57,20 +62,44 @@ export default function AdminImagesPage() {
     setList(prev => prev.map(m => m.id === item.id ? { ...m, is_lendable: !m.is_lendable } : m))
   }
 
+  async function changeSite(item: Media, site: MediaSite) {
+    await supabase.from('media').update({ site }).eq('id', item.id)
+    setList(prev => prev.map(m => m.id === item.id ? { ...m, site } : m))
+  }
+
   function copyUrl(url: string) {
     navigator.clipboard.writeText(url)
     setCopied(url)
     setTimeout(() => setCopied(null), 2000)
   }
 
+  const filtered = filterSite === 'all' ? list : list.filter(m => m.site === filterSite)
+
   return (
     <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="text-2xl font-serif text-navy">画像管理</h1>
-        <label className={`btn-primary text-sm px-4 py-2 cursor-pointer ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
-          {uploading ? 'アップロード中...' : '＋ 画像をアップロード'}
-          <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
-        </label>
+        <div className="flex items-center gap-3">
+          <select className="admin-input text-sm py-2" value={uploadSite}
+            onChange={e => setUploadSite(e.target.value as MediaSite)}>
+            <option value="chuzenji">立木観音の写真としてアップロード</option>
+            <option value="onsenji">温泉寺の写真としてアップロード</option>
+          </select>
+          <label className={`btn-primary text-sm px-4 py-2 cursor-pointer ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+            {uploading ? 'アップロード中...' : '＋ 画像をアップロード'}
+            <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
+          </label>
+        </div>
+      </div>
+
+      <div className="flex gap-2 mb-4">
+        {(['all', 'chuzenji', 'onsenji'] as const).map(s => (
+          <button key={s} onClick={() => setFilterSite(s)}
+            className={`px-3 py-1 rounded text-xs font-medium transition-colors ${filterSite === s ? 'bg-navy text-white' : 'bg-white text-gray-600 border hover:bg-gray-50'}`}>
+            {s === 'all' ? 'すべて' : SITE_LABELS[s]}
+            <span className="ml-1">({s === 'all' ? list.length : list.filter(m => m.site === s).length})</span>
+          </button>
+        ))}
       </div>
 
       {uploadError && (
@@ -80,10 +109,13 @@ export default function AdminImagesPage() {
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {list.map(item => (
+        {filtered.map(item => (
           <div key={item.id} className="bg-white rounded-xl shadow overflow-hidden group">
             <div className="relative h-32">
               <Image src={item.public_url} alt={item.alt ?? item.filename} fill className="object-cover" />
+              <span className={`absolute top-1.5 left-1.5 badge text-[10px] ${item.site === 'onsenji' ? 'bg-teal-100 text-teal-700' : 'bg-navy/10 text-navy'}`}>
+                {SITE_LABELS[item.site]}
+              </span>
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                 <button onClick={() => copyUrl(item.public_url)}
                   className="bg-white text-navy text-xs px-2 py-1 rounded font-medium hover:bg-gold">
@@ -93,6 +125,11 @@ export default function AdminImagesPage() {
             </div>
             <div className="p-2">
               <p className="text-xs text-gray-600 truncate">{item.filename}</p>
+              <select className="admin-input text-[10px] py-1 mt-1.5" value={item.site}
+                onChange={e => changeSite(item, e.target.value as MediaSite)}>
+                <option value="chuzenji">立木観音</option>
+                <option value="onsenji">温泉寺</option>
+              </select>
               <label className="flex items-center gap-1.5 mt-1.5 text-[10px] text-gray-500 cursor-pointer">
                 <input type="checkbox" checked={item.is_lendable} onChange={() => toggleLendable(item)} className="w-3 h-3" />
                 貸出可（写真一覧に表示）
@@ -101,9 +138,9 @@ export default function AdminImagesPage() {
             </div>
           </div>
         ))}
-        {list.length === 0 && !uploading && (
+        {filtered.length === 0 && !uploading && (
           <div className="col-span-full py-16 text-center text-gray-400 text-sm">
-            画像がまだありません。アップロードしてください。
+            画像がありません。
           </div>
         )}
       </div>

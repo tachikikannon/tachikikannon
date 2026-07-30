@@ -55,6 +55,7 @@ export default async function FooterOnsenji() {
           <ul className="flex gap-4">
             <li><Link href="/privacy" className="hover:text-[#7ec8a4] transition-colors">プライバシーポリシー</Link></li>
             <li><Link href="/onsenji/contact" className="hover:text-[#7ec8a4] transition-colors">お問い合わせ</Link></li>
+            <li><Link href="/onsenji/apply" className="hover:text-[#7ec8a4] transition-colors">各種申請のお問い合わせ</Link></li>
           </ul>
           <p>&copy; {new Date().getFullYear()} 日光山 温泉寺. All Rights Reserved.</p>
         </div>
