@@ -53,7 +53,9 @@ export default function AdminImagesPage() {
   async function remove(item: Media) {
     if (!confirm(`「${item.filename}」を削除しますか？`)) return
     await supabase.storage.from('temple-images').remove([item.storage_path])
-    await supabase.from('media').delete().eq('id', item.id)
+    const { data, error } = await supabase.from('media').delete().eq('id', item.id).select('id')
+    if (error) { alert('削除に失敗しました：' + error.message); return }
+    if (!data || data.length === 0) { alert('削除できませんでした（権限がない可能性があります）。管理者にご確認ください。'); return }
     load()
   }
 

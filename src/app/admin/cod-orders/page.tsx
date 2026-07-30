@@ -57,7 +57,9 @@ export default function AdminCodOrdersPage() {
 
   async function remove(id: string) {
     if (!confirm('この申込を削除しますか？削除すると元に戻せません。')) return
-    await supabase.from('cod_orders').delete().eq('id', id)
+    const { data, error } = await supabase.from('cod_orders').delete().eq('id', id).select('id')
+    if (error) { alert('削除に失敗しました：' + error.message); return }
+    if (!data || data.length === 0) { alert('削除できませんでした（権限がない可能性があります）。管理者にご確認ください。'); return }
     setDetail(null)
     load()
   }

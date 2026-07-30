@@ -60,7 +60,9 @@ export default function AdminContactsPage() {
 
   async function remove(id: string) {
     if (!confirm('削除しますか？')) return
-    await supabase.from('contacts').delete().eq('id', id)
+    const { data, error } = await supabase.from('contacts').delete().eq('id', id).select('id')
+    if (error) { alert('削除に失敗しました：' + error.message); return }
+    if (!data || data.length === 0) { alert('削除できませんでした（権限がない可能性があります）。管理者にご確認ください。'); return }
     setSelected(null)
     load()
   }

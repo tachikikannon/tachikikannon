@@ -145,7 +145,9 @@ export default function AdminReservationsPage() {
 
   async function remove(id: string) {
     if (!confirm('この予約を削除しますか？削除すると元に戻せません。')) return
-    await supabase.from('reservations').delete().eq('id', id)
+    const { data, error } = await supabase.from('reservations').delete().eq('id', id).select('id')
+    if (error) { alert('削除に失敗しました：' + error.message); return }
+    if (!data || data.length === 0) { alert('削除できませんでした（権限がない可能性があります）。管理者にご確認ください。'); return }
     setDetail(null)
     load()
   }
