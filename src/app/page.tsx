@@ -5,7 +5,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import type { News, Event } from '@/types'
+import type { News, Event, Post } from '@/types'
 
 const DEFAULT_ABOUT_CARDS = [
   { label: '立木観音の歴史', desc: '歴史と縁起' },
@@ -36,6 +36,7 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_heading_events:     '近日の行事',
   top_heading_experience: '祈る・体験する',
   top_heading_service:    '受ける',
+  top_heading_records:    '過去の実績',
   top_heading_access:     'アクセス',
   top_about_cards:      JSON.stringify(DEFAULT_ABOUT_CARDS),
   top_experience_cards: JSON.stringify(DEFAULT_EXPERIENCE_CARDS),
@@ -67,6 +68,13 @@ export default async function HomePage() {
     .eq('site', 'chuzenji')
     .order('published_at', { ascending: false })
     .limit(5)
+
+  const { data: pastRecords } = await supabase
+    .from('posts')
+    .select('id, title, slug, excerpt, cover_url, published_at')
+    .eq('is_published', true)
+    .order('published_at', { ascending: false })
+    .limit(6)
 
   const today = new Date().toISOString().split('T')[0]
   const { data: upcomingEvents } = await supabase
@@ -276,6 +284,46 @@ export default async function HomePage() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* 過去の実績 */}
+        <section className="py-16 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="section-title">{content.top_heading_records}</h2>
+            <div className="section-divider" />
+            {pastRecords && pastRecords.length > 0 ? (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {(pastRecords as Post[]).map(post => (
+                    <Link key={post.id} href={`/blog/${post.slug}`}
+                      className="group card overflow-hidden flex flex-col">
+                      <div className="relative h-32 bg-white overflow-hidden">
+                        {post.cover_url
+                          ? <img src={post.cover_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          : <div className="flex items-center justify-center h-full text-gray-300 text-xs">画像なし</div>
+                        }
+                      </div>
+                      <div className="p-3 flex-1 flex flex-col">
+                        <time className="text-[10px] text-gray-400">
+                          {new Date(post.published_at ?? '').toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' })}
+                        </time>
+                        <p className="text-xs text-navy font-medium mt-1 leading-snug line-clamp-2 group-hover:text-gold transition-colors">{post.title}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="text-center mt-6">
+                  <Link href="/blog" className="text-navy text-sm border-b border-navy pb-0.5 hover:text-gold hover:border-gold transition-colors">
+                    過去の実績をもっと見る →
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <div className="bg-white rounded-lg shadow-sm px-5 py-8 text-center text-gray-400 text-sm">
+                現在掲載している実績はありません
+              </div>
+            )}
           </div>
         </section>
 

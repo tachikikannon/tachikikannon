@@ -54,6 +54,16 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
               {post.body}
             </div>
+
+            {post.gallery_urls && post.gallery_urls.length > 0 && (
+              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {post.gallery_urls.map((url: string, i: number) => (
+                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden">
+                    <ZoomableImage src={url} alt={`${post.title} 写真${i + 1}`} fill className="object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="mt-8 text-center">
             <Link href="/blog" className="text-navy text-sm hover:underline">← ブログ一覧に戻る</Link>

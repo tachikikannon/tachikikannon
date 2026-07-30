@@ -77,6 +77,12 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     ],
   },
   {
+    section: '過去の実績',
+    fields: [
+      { key: 'top_heading_records', label: 'セクション見出し', defaultValue: '過去の実績', hint: '記事の中身は「ブログ管理」から追加・編集してください。ここでは公開済みブログ記事の最新6件が自動で表示されます。' },
+    ],
+  },
+  {
     section: 'アクセス',
     fields: [
       { key: 'top_heading_access', label: 'セクション見出し', defaultValue: 'アクセス' },

@@ -7,6 +7,7 @@ export default function AdminBlogPage() {
   const supabase = createClient()
   const [list, setList] = useState<Post[]>([])
   const [editing, setEditing] = useState<Partial<Post> | null>(null)
+  const [galleryText, setGalleryText] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function load() {
@@ -16,7 +17,7 @@ export default function AdminBlogPage() {
   useEffect(() => {
     load()
     if (new URLSearchParams(window.location.search).get('new') === '1') {
-      setEditing({ title:'', body:'', excerpt:'', is_published:false })
+      openEditor({ title:'', body:'', excerpt:'', is_published:false })
     }
   }, [])
 
@@ -24,11 +25,21 @@ export default function AdminBlogPage() {
     return encodeURIComponent(title.trim().replace(/\s+/g, '-').toLowerCase()).slice(0, 60)
   }
 
+  function toGalleryUrls(text: string): string[] {
+    return text.split('\n').map(s => s.trim()).filter(Boolean)
+  }
+
+  function openEditor(post: Partial<Post> | null) {
+    setEditing(post)
+    setGalleryText((post?.gallery_urls ?? []).join('\n'))
+  }
+
   async function save() {
     if (!editing) return
     setLoading(true)
     const payload = {
       ...editing,
+      gallery_urls: toGalleryUrls(galleryText),
       slug: editing.slug || toSlug(editing.title ?? ''),
       published_at: editing.is_published ? (editing.published_at ?? new Date().toISOString()) : null,
       updated_at: new Date().toISOString(),
@@ -38,7 +49,7 @@ export default function AdminBlogPage() {
     } else {
       await supabase.from('posts').insert(payload)
     }
-    setEditing(null)
+    openEditor(null)
     setLoading(false)
     load()
   }
@@ -53,7 +64,7 @@ export default function AdminBlogPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-serif text-navy">ブログ管理</h1>
-        <button onClick={() => setEditing({ title:'', body:'', excerpt:'', is_published:false })} className="btn-primary text-sm px-4 py-2">＋ 記事を書く</button>
+        <button onClick={() => openEditor({ title:'', body:'', excerpt:'', is_published:false })} className="btn-primary text-sm px-4 py-2">＋ 記事を書く</button>
       </div>
 
       {editing && (
@@ -81,13 +92,20 @@ export default function AdminBlogPage() {
               <label className="admin-label">カバー画像URL（画像管理からコピー）</label>
               <input className="admin-input" value={editing.cover_url ?? ''} onChange={e => setEditing({...editing, cover_url: e.target.value})} />
             </div>
+            <div>
+              <label className="admin-label">ギャラリー画像URL（画像管理からコピー。1行に1枚、10枚程度まで目安）</label>
+              <textarea className="admin-input min-h-[120px] font-mono text-xs"
+                placeholder={'https://.../photo1.jpg\nhttps://.../photo2.jpg'}
+                value={galleryText}
+                onChange={e => setGalleryText(e.target.value)} />
+            </div>
             <div className="flex items-center gap-3">
               <input type="checkbox" id="pub" checked={editing.is_published ?? false} onChange={e => setEditing({...editing, is_published: e.target.checked})} />
               <label htmlFor="pub" className="text-sm">公開する</label>
             </div>
             <div className="flex gap-3">
               <button onClick={save} disabled={loading} className="btn-primary text-sm px-4 py-2 disabled:opacity-50">{loading ? '保存中...' : '保存'}</button>
-              <button onClick={() => setEditing(null)} className="text-sm px-4 py-2 border rounded text-gray-600">キャンセル</button>
+              <button onClick={() => openEditor(null)} className="text-sm px-4 py-2 border rounded text-gray-600">キャンセル</button>
             </div>
           </div>
         </div>
@@ -114,7 +132,7 @@ export default function AdminBlogPage() {
                 </td>
                 <td className="px-4 py-3 text-gray-500 text-xs">{new Date(p.created_at).toLocaleDateString('ja-JP')}</td>
                 <td className="px-4 py-3 flex gap-2 justify-end">
-                  <button onClick={() => setEditing(p)} className="text-navy hover:underline text-xs">編集</button>
+                  <button onClick={() => openEditor(p)} className="text-navy hover:underline text-xs">編集</button>
                   <button onClick={() => remove(p.id)} className="text-red-500 hover:underline text-xs">削除</button>
                 </td>
               </tr>

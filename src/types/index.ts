@@ -22,6 +22,7 @@ export interface Post {
   excerpt: string | null
   body: string
   cover_url: string | null
+  gallery_urls: string[] | null
   is_published: boolean
   published_at: string | null
   created_at: string
