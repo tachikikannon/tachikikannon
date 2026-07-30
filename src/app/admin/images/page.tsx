@@ -9,6 +9,7 @@ export default function AdminImagesPage() {
   const [list, setList] = useState<Media[]>([])
   const [uploading, setUploading] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   async function load() {
@@ -21,20 +22,24 @@ export default function AdminImagesPage() {
     const files = e.target.files
     if (!files || files.length === 0) return
     setUploading(true)
+    setUploadError(null)
+    const errors: string[] = []
     for (const file of Array.from(files)) {
       const ext = file.name.split('.').pop()
       const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
       const { error } = await supabase.storage.from('temple-images').upload(path, file)
-      if (error) continue
+      if (error) { errors.push(`${file.name}: ${error.message}`); continue }
       const { data: { publicUrl } } = supabase.storage.from('temple-images').getPublicUrl(path)
-      await supabase.from('media').insert({
+      const { error: insertError } = await supabase.from('media').insert({
         filename: file.name,
         storage_path: path,
         public_url: publicUrl,
         size_bytes: file.size,
         mime_type: file.type,
       })
+      if (insertError) errors.push(`${file.name}: ${insertError.message}`)
     }
+    if (errors.length > 0) setUploadError(errors.join('\n'))
     setUploading(false)
     load()
     if (fileRef.current) fileRef.current.value = ''
@@ -67,6 +72,12 @@ export default function AdminImagesPage() {
           <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
         </label>
       </div>
+
+      {uploadError && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-4 whitespace-pre-wrap">
+          アップロードに失敗しました：{'\n'}{uploadError}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {list.map(item => (
