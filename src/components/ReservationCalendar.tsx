@@ -164,14 +164,16 @@ export default function ReservationCalendar({
     })
     if (crossBlocked) return true
 
-    // 前後バッファ（分）: 実際の所要時間が枠の間隔より長い体験（護摩祈祷など）向け。
-    // 既存予約の開始時刻からバッファ分数未満しか離れていない枠は、時間が重なるため予約不可にする。
-    // 同じ枠（距離0）もバッファが設定されていれば含まれるため、1枠1組運用にもそのまま使える。
+    // 前後バッファ（分）: 実際の所要時間が枠の間隔より長い体験（護摩祈祷・数珠づくりなど）向け。
+    // 既存予約の開始時刻からバッファ分数未満しか離れていない「別の」枠は、時間が重なるため
+    // 予約不可にする。同じ枠（距離0）は定員チェック（上のoverCapacity）に任せる。ここも対象に
+    // 含めてしまうと、数珠づくりのように複数組を同じ枠で受け付ける体験で、定員に余裕があっても
+    // 1組でも予約が入った時点でその枠自体が予約不可になってしまう。
     const bufferMinutes = capacity?.buffer_minutes ?? 0
     const slotMinutes = parseSlotMinutes(slot)
     if (bufferMinutes > 0 && slotMinutes != null) {
       const overlapping = generalReservations.some(r => {
-        if (r.date !== dateStr) return false
+        if (r.date !== dateStr || r.time_slot === slot) return false
         const rMinutes = parseSlotMinutes(r.time_slot)
         return rMinutes != null && Math.abs(rMinutes - slotMinutes) < bufferMinutes
       })
