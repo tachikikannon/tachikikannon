@@ -8,8 +8,15 @@ const DAY_LABELS = ['日','月','火','水','木','金','土']
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; type: string; party_size: number }
-type CapacitySetting = { max_groups: number; max_people: number }
+type CapacitySetting = { max_groups: number; max_people: number; buffer_minutes: number }
 type SlotOverride = { date: string; time_slot: string; is_closed: boolean; max_groups: number | null; max_people: number | null }
+
+// "9:00" "10:30" のような時刻表記のみ分に変換できる。"午前"/"午後" などのラベル枠はnullを返す。
+function parseSlotMinutes(slot: string): number | null {
+  const m = slot.match(/^(\d{1,2}):(\d{2})$/)
+  if (!m) return null
+  return Number(m[1]) * 60 + Number(m[2])
+}
 
 interface Props {
   reservationType: ReservationType
@@ -55,7 +62,7 @@ export default function ReservationCalendar({
   })
 
   useEffect(() => {
-    supabase.from('capacity_settings').select('max_groups,max_people')
+    supabase.from('capacity_settings').select('max_groups,max_people,buffer_minutes')
       .eq('type', reservationType).single()
       .then(({ data }) => setCapacity(data ?? null))
   }, [reservationType])
@@ -93,11 +100,27 @@ export default function ReservationCalendar({
     const override = getOverride(dateStr, slot)
     const maxGroups = override?.max_groups ?? capacity?.max_groups
     const maxPeople = override?.max_people ?? capacity?.max_people
-    if (maxGroups == null && maxPeople == null) return false
     const slotReservations = reservations.filter(r => r.date === dateStr && r.time_slot === slot)
     const groupCount = slotReservations.length
     const peopleCount = slotReservations.reduce((sum, r) => sum + (r.party_size ?? 1), 0)
-    return (maxGroups != null && groupCount >= maxGroups) || (maxPeople != null && peopleCount >= maxPeople)
+    const overCapacity = (maxGroups != null && groupCount >= maxGroups) || (maxPeople != null && peopleCount >= maxPeople)
+    if (overCapacity) return true
+
+    // 前後バッファ（分）: 実際の所要時間が枠の間隔より長い体験（護摩祈祷など）向け。
+    // 既存予約の開始時刻からバッファ分数未満しか離れていない枠は、時間が重なるため予約不可にする。
+    // 同じ枠（距離0）もバッファが設定されていれば含まれるため、1枠1組運用にもそのまま使える。
+    const bufferMinutes = capacity?.buffer_minutes ?? 0
+    const slotMinutes = parseSlotMinutes(slot)
+    if (bufferMinutes > 0 && slotMinutes != null) {
+      const overlapping = reservations.some(r => {
+        if (r.date !== dateStr) return false
+        const rMinutes = parseSlotMinutes(r.time_slot)
+        return rMinutes != null && Math.abs(rMinutes - slotMinutes) < bufferMinutes
+      })
+      if (overlapping) return true
+    }
+
+    return false
   }
 
   function prevWeek() {

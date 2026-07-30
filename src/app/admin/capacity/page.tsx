@@ -14,6 +14,7 @@ type CapacitySetting = {
   type: ReservationType
   max_groups: number
   max_people: number
+  buffer_minutes: number
 }
 
 export default function CapacityPage() {
@@ -23,19 +24,19 @@ export default function CapacityPage() {
   const [saved, setSaved] = useState<ReservationType | null>(null)
 
   useEffect(() => {
-    supabase.from('capacity_settings').select('type,max_groups,max_people')
+    supabase.from('capacity_settings').select('type,max_groups,max_people,buffer_minutes')
       .then(({ data }) => {
         if (!data) return
         // 取得データをマージ（未設定の種別はデフォルト値）
         const merged = TYPES.map(t => {
           const found = data.find(d => d.type === t.value)
-          return found ?? { type: t.value, max_groups: 5, max_people: 20 }
+          return found ?? { type: t.value, max_groups: 5, max_people: 20, buffer_minutes: 0 }
         })
         setSettings(merged as CapacitySetting[])
       })
   }, [])
 
-  function update(type: ReservationType, field: 'max_groups' | 'max_people', value: number) {
+  function update(type: ReservationType, field: 'max_groups' | 'max_people' | 'buffer_minutes', value: number) {
     setSettings(prev => prev.map(s => s.type === type ? { ...s, [field]: value } : s))
   }
 
@@ -43,7 +44,8 @@ export default function CapacityPage() {
     const s = settings.find(s => s.type === type)
     if (!s) return
     setSaving(type)
-    await supabase.from('capacity_settings').upsert({ type, max_groups: s.max_groups, max_people: s.max_people }, { onConflict: 'type' })
+    await supabase.from('capacity_settings')
+      .upsert({ type, max_groups: s.max_groups, max_people: s.max_people, buffer_minutes: s.buffer_minutes }, { onConflict: 'type' })
     setSaving(null)
     setSaved(type)
     setTimeout(() => setSaved(null), 2000)
@@ -92,6 +94,21 @@ export default function CapacityPage() {
                 >
                   {saving === s.type ? '保存中...' : saved === s.type ? '✓ 保存しました' : '保存'}
                 </button>
+              </div>
+              <div className="mt-4">
+                <label className="admin-label">前後バッファ（分）</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number" min={0} max={240}
+                    className="admin-input w-20"
+                    value={s.buffer_minutes}
+                    onChange={e => update(s.type, 'buffer_minutes', Number(e.target.value))}
+                  />
+                  <span className="text-sm text-gray-500">分</span>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">
+                  実際の所要時間が枠の間隔より長い体験向けの設定です。予約が入った時刻から前後この分数未満の枠は、時間が重なるため自動的に×になります（0で無効）。
+                </p>
               </div>
             </div>
           )
