@@ -1,6 +1,7 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { sendLinePush } from '@/lib/line'
+import { sendGmail } from '@/lib/gmail'
 
 export async function POST(req: Request) {
   try {
@@ -34,34 +35,33 @@ export async function POST(req: Request) {
       `,
       }),
 
-      // 送信者への自動返信
-      resend.emails.send({
-      from: 'noreply@resend.dev',
-      to: email,
-      subject: '【立木観音】お問い合わせを受け付けました',
-      html: `
-        <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
-          <div style="background:#1a2a4a;padding:24px;text-align:center;">
-            <h1 style="color:#c8a96e;margin:0;font-size:20px;">日光山中禅寺 立木観音</h1>
-          </div>
-          <div style="padding:32px 24px;">
-            <p>${name} 様</p>
-            <p>お問い合わせいただきありがとうございます。<br>内容を確認のうえ、担当者よりご連絡いたします。</p>
-            <div style="background:#f5f2ec;padding:16px;border-radius:6px;font-size:13px;margin:20px 0;">
-              <strong>件名：</strong>${subject}<br><br>
-              <strong>内容：</strong><br>
-              <span style="white-space:pre-wrap;">${message}</span>
+      // 送信者への自動返信（Resendはドメイン未認証のため、Gmail経由で直接送信）
+      sendGmail(
+        email,
+        '【立木観音】お問い合わせを受け付けました',
+        `
+          <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
+            <div style="background:#1a2a4a;padding:24px;text-align:center;">
+              <h1 style="color:#c8a96e;margin:0;font-size:20px;">日光山中禅寺 立木観音</h1>
             </div>
-            <p style="font-size:13px;color:#555;">
-              TEL：0288-55-0013（受付時間：拝観時間内）
-            </p>
+            <div style="padding:32px 24px;">
+              <p>${name} 様</p>
+              <p>お問い合わせいただきありがとうございます。<br>内容を確認のうえ、担当者よりご連絡いたします。</p>
+              <div style="background:#f5f2ec;padding:16px;border-radius:6px;font-size:13px;margin:20px 0;">
+                <strong>件名：</strong>${subject}<br><br>
+                <strong>内容：</strong><br>
+                <span style="white-space:pre-wrap;">${message}</span>
+              </div>
+              <p style="font-size:13px;color:#555;">
+                TEL：0288-55-0013（受付時間：拝観時間内）
+              </p>
+            </div>
+            <div style="background:#f5f2ec;padding:16px;text-align:center;font-size:11px;color:#999;">
+              〒321-1661 栃木県日光市中宮祠2578
+            </div>
           </div>
-          <div style="background:#f5f2ec;padding:16px;text-align:center;font-size:11px;color:#999;">
-            〒321-1661 栃木県日光市中宮祠2578
-          </div>
-        </div>
-      `,
-      }),
+        `
+      ),
     ])
 
     return NextResponse.json({ ok: true })
