@@ -37,6 +37,16 @@ export function getSeason(month: number): 'peak' | 'shoulder' | 'winter' {
   return 'winter'
 }
 
+// startHour:00 から endHour:00 まで30分刻みの時刻文字列を生成する。
+function halfHourSlots(startHour: number, endHour: number): string[] {
+  const slots: string[] = []
+  for (let h = startHour; h <= endHour; h++) {
+    slots.push(`${h}:00`)
+    if (h < endHour) slots.push(`${h}:30`)
+  }
+  return slots
+}
+
 export function getTimeSlots(type: ReservationType, month: number): string[] {
   const season = getSeason(month)
   if (type === 'prayer') {
@@ -46,9 +56,9 @@ export function getTimeSlots(type: ReservationType, month: number): string[] {
     return ['午前', '午後']
   }
   if (type === 'jyuzu') {
-    if (season === 'peak')     return ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00']
-    if (season === 'shoulder') return ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00']
-    return ['9:00', '10:00', '11:00', '12:00', '13:00']
+    if (season === 'peak')     return halfHourSlots(9, 15)
+    if (season === 'shoulder') return halfHourSlots(9, 14)
+    return halfHourSlots(9, 13)
   }
   return []
 }
