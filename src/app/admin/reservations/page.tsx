@@ -87,8 +87,8 @@ export default function AdminReservationsPage() {
   }
 
   async function submitCreate() {
-    if (!newRes.date || !newRes.time_slot || !newRes.name || !newRes.name_kana || !newRes.email || !newRes.phone) {
-      setCreateError('日時・お名前・フリガナ・メール・電話番号は必須です。')
+    if (!newRes.date || !newRes.time_slot) {
+      setCreateError('日時を選択してください。')
       return
     }
     setCreateSaving(true)
