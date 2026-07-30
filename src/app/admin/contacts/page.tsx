@@ -166,6 +166,13 @@ export default function AdminContactsPage() {
               {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
             </div>
 
+            <div className="mb-5 print:hidden">
+              <p className="text-xs text-gray-500 mb-2">自動返信メール</p>
+              {selected.auto_reply_sent
+                ? <p className="text-sm text-green-700">✉️ 送信済み</p>
+                : <p className="text-sm text-gray-400">✉️ 未送信</p>}
+            </div>
+
             <div className="flex gap-3 print:hidden">
               <a href={`mailto:${selected.email}?subject=Re: ${selected.subject}`}
                 className="btn-primary text-sm px-4 py-2">返信する（メール）</a>

@@ -70,7 +70,9 @@ export default function ShogatsuApplyForm() {
       notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
 
+    const id = crypto.randomUUID()
     const { error } = await supabase.from('contacts').insert({
+      id,
       name: form.name,
       email: form.email,
       subject: '【1月1日】正月元旦特別護摩祈願 申し込み',
@@ -81,7 +83,7 @@ export default function ShogatsuApplyForm() {
     await fetch('/api/notify/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name, email: form.email, subject: '【1月1日】正月元旦特別護摩祈願 申し込み', message }),
+      body: JSON.stringify({ id, name: form.name, email: form.email, subject: '【1月1日】正月元旦特別護摩祈願 申し込み', message }),
     }).catch(() => {})
     setStatus('done')
   }

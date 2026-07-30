@@ -2,25 +2,60 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import type { Application } from '@/types'
+import { useAdminProfile } from '@/lib/useAdminProfile'
+import type { AdminProfile, Application, ApplicationStatus } from '@/types'
+
+const STATUS_LABELS: Record<ApplicationStatus, string> = {
+  unread: '未読', checking: '対応中', replied: '返信済み', completed: '完了',
+}
+const STATUS_COLORS: Record<ApplicationStatus, string> = {
+  unread: 'bg-red-100 text-red-700',
+  checking: 'bg-yellow-100 text-yellow-700',
+  replied: 'bg-green-100 text-green-700',
+  completed: 'bg-gray-200 text-gray-600',
+}
+const STATUS_OPTIONS: ApplicationStatus[] = ['unread', 'checking', 'replied', 'completed']
 
 export default function AdminApplicationsPage() {
   const supabase = createClient()
   const router = useRouter()
+  const { profile, canEditContacts: canEdit } = useAdminProfile()
   const [list, setList] = useState<Application[]>([])
+  const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [selected, setSelected] = useState<Application | null>(null)
+  const [pendingStatus, setPendingStatus] = useState<ApplicationStatus | null>(null)
 
   async function load() {
     const { data } = await supabase.from('applications').select('*').order('created_at', { ascending: false })
     setList(data ?? [])
+    const { data: adminData } = await supabase.from('admin_profiles').select('*').eq('is_active', true)
+    setAdmins(adminData ?? [])
   }
   useEffect(() => { load() }, [])
+
+  function openDetail(a: Application | null) {
+    setSelected(a)
+    setPendingStatus(null)
+  }
 
   async function markRead(id: string) {
     await supabase.from('applications').update({ is_read: true }).eq('id', id)
     setList(prev => prev.map(a => a.id === id ? { ...a, is_read: true } : a))
-    if (selected?.id === id) setSelected({ ...selected, is_read: true })
+    if (selected?.id === id) setSelected(s => s ? { ...s, is_read: true } : s)
     router.refresh()
+  }
+
+  async function updateStatus(id: string, status: ApplicationStatus) {
+    await supabase.from('applications').update({ status }).eq('id', id)
+    load()
+    if (selected?.id === id) setSelected(s => s ? { ...s, status } : s)
+    router.refresh()
+  }
+
+  async function updateAssignee(id: string, assigned_admin_id: string) {
+    await supabase.from('applications').update({ assigned_admin_id: assigned_admin_id || null }).eq('id', id)
+    load()
+    if (selected?.id === id) setSelected(s => s ? { ...s, assigned_admin_id: assigned_admin_id || null } : s)
   }
 
   async function remove(id: string) {
@@ -29,6 +64,8 @@ export default function AdminApplicationsPage() {
     setSelected(null)
     load()
   }
+
+  const adminName = (id: string | null) => admins.find(a => a.id === id)?.name || '未割当'
 
   return (
     <div className="p-8">
@@ -39,12 +76,12 @@ export default function AdminApplicationsPage() {
         </span>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-4">
+      <div className="grid lg:grid-cols-2 gap-4 items-start">
         {/* 一覧 */}
-        <div className="bg-white rounded-xl shadow overflow-hidden">
+        <div className="bg-white rounded-xl shadow overflow-y-auto lg:max-h-[calc(100vh-14rem)]">
           <ul className="divide-y divide-gray-100">
             {list.map(a => (
-              <li key={a.id} onClick={() => { setSelected(a); if(!a.is_read) markRead(a.id) }}
+              <li key={a.id} onClick={() => { openDetail(a); if(!a.is_read && canEdit) markRead(a.id) }}
                 className={`px-5 py-4 cursor-pointer hover:bg-blue-50 transition-colors
                   ${selected?.id === a.id ? 'bg-blue-50' : ''}`}>
                 <div className="flex items-start justify-between gap-2">
@@ -52,8 +89,10 @@ export default function AdminApplicationsPage() {
                     <div className="flex items-center gap-2">
                       {!a.is_read && <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />}
                       <p className="font-medium text-sm truncate">{a.name}</p>
+                      <span className={`badge ${STATUS_COLORS[a.status]} flex-shrink-0`}>{STATUS_LABELS[a.status]}</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5 truncate">{a.category}</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">担当: {adminName(a.assigned_admin_id)}</p>
                   </div>
                   <span className="text-[10px] text-gray-400 whitespace-nowrap">
                     {new Date(a.created_at).toLocaleDateString('ja-JP')}
@@ -67,10 +106,10 @@ export default function AdminApplicationsPage() {
 
         {/* 詳細 */}
         {selected && (
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white rounded-xl shadow p-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-medium text-navy">{selected.category}</h2>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+              <h2 className="font-medium text-navy text-lg">{selected.category}</h2>
+              <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
             </div>
             <dl className="grid grid-cols-[5rem_1fr] gap-x-3 gap-y-2 text-sm mb-5">
               <dt className="text-gray-500 text-xs">お名前</dt><dd>{selected.name}</dd>
@@ -80,14 +119,63 @@ export default function AdminApplicationsPage() {
               {selected.photo_ref && (<><dt className="text-gray-500 text-xs">対象写真</dt><dd>{selected.photo_ref}</dd></>)}
               <dt className="text-gray-500 text-xs">受信日</dt>
               <dd className="text-xs text-gray-500">{new Date(selected.created_at).toLocaleString('ja-JP')}</dd>
+              <dt className="text-gray-500 text-xs">更新日時</dt>
+              <dd className="text-xs text-gray-500">{selected.updated_at ? new Date(selected.updated_at).toLocaleString('ja-JP') : '—'}</dd>
             </dl>
             <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap mb-4">
               {selected.message}
             </div>
+
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2">担当者</p>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-sm">{adminName(selected.assigned_admin_id)}</span>
+                {canEdit && profile && selected.assigned_admin_id !== profile.id && (
+                  <button onClick={() => updateAssignee(selected.id, profile.id)} className="text-xs text-navy underline">
+                    自分を担当にする
+                  </button>
+                )}
+                {canEdit && selected.assigned_admin_id && (
+                  <button onClick={() => updateAssignee(selected.id, '')} className="text-xs text-gray-400 underline">
+                    担当を外す
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2">対応状況</p>
+              <div className="flex gap-2 flex-wrap">
+                {STATUS_OPTIONS.map(s => (
+                  <button key={s} onClick={() => setPendingStatus(s)}
+                    disabled={!canEdit || selected.status === s}
+                    className={`text-xs px-3 py-1.5 rounded font-medium transition-colors disabled:opacity-40 ${STATUS_COLORS[s]} ${pendingStatus === s ? 'ring-2 ring-offset-1 ring-navy' : ''}`}>
+                    {STATUS_LABELS[s]}
+                  </button>
+                ))}
+              </div>
+              {pendingStatus && pendingStatus !== selected.status && (
+                <div className="mt-3 flex items-center gap-2 flex-wrap">
+                  <span className="text-xs text-gray-500">「{STATUS_LABELS[pendingStatus]}」に変更しますか？</span>
+                  <button onClick={() => { updateStatus(selected.id, pendingStatus); setPendingStatus(null) }}
+                    className="btn-primary text-xs px-3 py-1.5">確定する</button>
+                  <button onClick={() => setPendingStatus(null)} className="text-xs text-gray-400 underline">キャンセル</button>
+                </div>
+              )}
+              {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
+            </div>
+
+            <div className="mb-5">
+              <p className="text-xs text-gray-500 mb-2">自動返信メール</p>
+              {selected.auto_reply_sent
+                ? <p className="text-sm text-green-700">✉️ 送信済み</p>
+                : <p className="text-sm text-gray-400">✉️ 未送信</p>}
+            </div>
+
             <div className="flex gap-3">
               <a href={`mailto:${selected.email}?subject=Re: ${selected.category}`}
                 className="btn-primary text-sm px-4 py-2">返信する（メール）</a>
-              <button onClick={() => remove(selected.id)} className="text-red-500 text-sm hover:underline">削除</button>
+              {canEdit && <button onClick={() => remove(selected.id)} className="text-red-500 text-sm hover:underline">削除</button>}
             </div>
           </div>
         )}

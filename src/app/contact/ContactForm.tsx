@@ -10,12 +10,13 @@ export default function ContactForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('loading')
-    const { error } = await supabase.from('contacts').insert(form)
+    const id = crypto.randomUUID()
+    const { error } = await supabase.from('contacts').insert({ ...form, id })
     if (error) { setStatus('error'); return }
     await fetch('/api/notify/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, id }),
     }).catch(() => {})
     setStatus('done')
   }

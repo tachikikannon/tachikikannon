@@ -2,18 +2,19 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { sendLinePush } from '@/lib/line'
 import { sendGmail } from '@/lib/gmail'
+import { markAutoReplySent } from '@/lib/notifyStatus'
 
 export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
-    const { category, name, email, phone, message, photo_ref } = await req.json()
+    const { id, category, name, email, phone, message, photo_ref } = await req.json()
     const toEmail = process.env.NOTIFY_EMAIL!
     const adminUrl = `${process.env.SITE_URL ?? ''}/admin/applications`
     const receivedAt = new Date().toLocaleString('ja-JP')
 
     // LINEグループ通知・お寺への通知メール・送信者への自動返信は並行して実行し、
     // どれかが失敗しても申請登録そのものは成功として扱う（失敗はログのみ）。
-    await Promise.allSettled([
+    const [, , replyResult] = await Promise.allSettled([
       sendLinePush(
         `【新規申請】\n申請区分: ${category}\n氏名: ${name}\n受信日時: ${receivedAt}\n管理画面: ${adminUrl}`
       ),
@@ -65,6 +66,8 @@ export async function POST(req: Request) {
         `
       ),
     ])
+
+    if (replyResult.status === 'fulfilled') await markAutoReplySent('applications', id)
 
     return NextResponse.json({ ok: true })
   } catch (err) {

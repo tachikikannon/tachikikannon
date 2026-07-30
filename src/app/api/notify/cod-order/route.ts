@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { sendLinePush } from '@/lib/line'
 import { sendGmail } from '@/lib/gmail'
+import { markAutoReplySent } from '@/lib/notifyStatus'
 import type { CodOrderItem } from '@/types'
 
 function itemsRows(items: CodOrderItem[]) {
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
     const toEmail = process.env.NOTIFY_EMAIL!
     const adminUrl = `${process.env.SITE_URL ?? ''}/admin/cod-orders`
 
-    await Promise.allSettled([
+    const [, , replyResult] = await Promise.allSettled([
       sendLinePush(
         `【代金引換 新規申込】\n申込番号: ${id ?? '(不明)'}\n氏名: ${name}\n${itemsText(items)}\n合計: ¥${(total_amount ?? 0).toLocaleString()}（送料別）\n管理画面: ${adminUrl}`
       ),
@@ -76,6 +77,8 @@ export async function POST(req: Request) {
         `
       ),
     ])
+
+    if (replyResult.status === 'fulfilled') await markAutoReplySent('cod_orders', id)
 
     return NextResponse.json({ ok: true })
   } catch (err) {

@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { sendLinePush } from '@/lib/line'
 import { sendGmail } from '@/lib/gmail'
+import { markAutoReplySent } from '@/lib/notifyStatus'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer:  '護摩祈願',
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
 
     // メール通知とLINEグループ通知は並行して実行し、どちらかが失敗しても
     // 予約登録そのものは成功として扱う（LINE失敗はログのみ）。
-    await Promise.allSettled([
+    const [, , replyResult] = await Promise.allSettled([
       sendLinePush(
         `【新規予約】\n予約番号: ${id ?? '(不明)'}\n氏名: ${name}\n予約日時: ${date} ${time_slot}\n人数: ${party_size}名\n体験内容: ${typeLabel}\n管理画面: ${adminUrl}`
       ),
@@ -81,6 +82,8 @@ export async function POST(req: Request) {
       `
     ),
     ])
+
+    if (replyResult.status === 'fulfilled') await markAutoReplySent('reservations', id)
 
     return NextResponse.json({ ok: true })
   } catch (err) {

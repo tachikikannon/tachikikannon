@@ -20,12 +20,13 @@ export default function ApplyForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('loading')
-    const { error } = await supabase.from('applications').insert(form)
+    const id = crypto.randomUUID()
+    const { error } = await supabase.from('applications').insert({ ...form, id })
     if (error) { setStatus('error'); return }
     await fetch('/api/notify/application', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, id }),
     }).catch(() => {})
     setStatus('done')
   }

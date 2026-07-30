@@ -79,6 +79,7 @@ export interface Reservation {
   assigned_admin_id: string | null
   updated_by: string | null
   confirmation_email_sent: boolean
+  auto_reply_sent: boolean
   updated_at: string
   created_at: string
 }
@@ -105,6 +106,7 @@ export interface CodOrder {
   status: CodOrderStatus
   assigned_admin_id: string | null
   updated_by: string | null
+  auto_reply_sent: boolean
   updated_at: string
   created_at: string
 }
@@ -129,6 +131,7 @@ export interface Contact {
   source: ContactSource
   assigned_admin_id: string | null
   updated_by: string | null
+  auto_reply_sent: boolean
   updated_at: string
   created_at: string
 }
@@ -176,6 +179,8 @@ export const APPLICATION_CATEGORIES = [
 ] as const
 export type ApplicationCategory = typeof APPLICATION_CATEGORIES[number]
 
+export type ApplicationStatus = 'unread' | 'checking' | 'replied' | 'completed'
+
 export interface Application {
   id: string
   category: string
@@ -185,5 +190,10 @@ export interface Application {
   message: string
   photo_ref: string | null
   is_read: boolean
+  status: ApplicationStatus
+  assigned_admin_id: string | null
+  updated_by: string | null
+  auto_reply_sent: boolean
+  updated_at: string
   created_at: string
 }

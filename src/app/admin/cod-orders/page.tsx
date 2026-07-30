@@ -188,6 +188,13 @@ export default function AdminCodOrdersPage() {
               </div>
               {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
             </div>
+
+            <div className="mt-5 border-t pt-4">
+              <p className="text-xs text-gray-500 mb-2">自動返信メール</p>
+              {detail.auto_reply_sent
+                ? <p className="text-sm text-green-700">✉️ 送信済み</p>
+                : <p className="text-sm text-gray-400">✉️ 未送信</p>}
+            </div>
           </div>
         )}
       </div>

@@ -2,18 +2,19 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { sendLinePush } from '@/lib/line'
 import { sendGmail } from '@/lib/gmail'
+import { markAutoReplySent } from '@/lib/notifyStatus'
 
 export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
-    const { name, email, subject, message } = await req.json()
+    const { id, name, email, subject, message } = await req.json()
     const toEmail = process.env.NOTIFY_EMAIL!
     const adminUrl = `${process.env.SITE_URL ?? ''}/admin/contacts`
     const receivedAt = new Date().toLocaleString('ja-JP')
 
     // メール通知とLINEグループ通知は並行して実行し、どちらかが失敗しても
     // 問い合わせ登録そのものは成功として扱う（LINE失敗はログのみ）。
-    await Promise.allSettled([
+    const [, , replyResult] = await Promise.allSettled([
       sendLinePush(
         `【新規お問い合わせ】\n氏名: ${name}\n件名: ${subject}\n受信日時: ${receivedAt}\n管理画面: ${adminUrl}`
       ),
@@ -63,6 +64,8 @@ export async function POST(req: Request) {
         `
       ),
     ])
+
+    if (replyResult.status === 'fulfilled') await markAutoReplySent('contacts', id)
 
     return NextResponse.json({ ok: true })
   } catch (err) {

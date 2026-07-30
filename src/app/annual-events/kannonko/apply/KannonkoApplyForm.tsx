@@ -56,7 +56,9 @@ export default function KannonkoApplyForm() {
       notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
 
+    const id = crypto.randomUUID()
     const { error } = await supabase.from('contacts').insert({
+      id,
       name: form.name,
       email: form.email,
       subject: '【6月18日】観音講・大護摩供・地蔵流し 御札申し込み',
@@ -67,7 +69,7 @@ export default function KannonkoApplyForm() {
     await fetch('/api/notify/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name, email: form.email, subject: '【6月18日】観音講・大護摩供・地蔵流し 御札申し込み', message }),
+      body: JSON.stringify({ id, name: form.name, email: form.email, subject: '【6月18日】観音講・大護摩供・地蔵流し 御札申し込み', message }),
     }).catch(() => {})
     setStatus('done')
   }

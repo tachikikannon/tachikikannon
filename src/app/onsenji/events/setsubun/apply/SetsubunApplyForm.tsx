@@ -26,7 +26,9 @@ export default function SetsubunApplyForm() {
       form.wish2 ? `【願い事2】${form.wish2}` : '',
     ].filter(Boolean).join('\n')
 
+    const id = crypto.randomUUID()
     const { error } = await supabase.from('contacts').insert({
+      id,
       name: form.name,
       email: form.email,
       subject: '【1月下旬】温泉寺 節分大祭 御札申し込み',
@@ -37,7 +39,7 @@ export default function SetsubunApplyForm() {
     await fetch('/api/notify/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name, email: form.email, subject: '【1月下旬】温泉寺 節分大祭 御札申し込み', message }),
+      body: JSON.stringify({ id, name: form.name, email: form.email, subject: '【1月下旬】温泉寺 節分大祭 御札申し込み', message }),
     }).catch(() => {})
     setStatus('done')
   }

@@ -193,6 +193,7 @@ export default function AdminReservationsPage() {
                 <th className="text-left px-4 py-3 text-xs text-gray-500">お名前</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">担当者</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">状態</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500">自動返信</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">確定メール</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">更新日時</th>
               </tr>
@@ -213,6 +214,11 @@ export default function AdminReservationsPage() {
                     <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
                   </td>
                   <td className="px-4 py-3 text-xs whitespace-nowrap">
+                    {r.auto_reply_sent
+                      ? <span className="text-green-700">✉️ 送信済み</span>
+                      : <span className="text-gray-300">—</span>}
+                  </td>
+                  <td className="px-4 py-3 text-xs whitespace-nowrap">
                     {r.confirmation_email_sent
                       ? <span className="text-green-700">✉️ 送信済み</span>
                       : <span className="text-gray-300">—</span>}
@@ -222,7 +228,7 @@ export default function AdminReservationsPage() {
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400 text-sm">予約がありません</td></tr>}
+              {filtered.length === 0 && <tr><td colSpan={9} className="px-4 py-8 text-center text-gray-400 text-sm">予約がありません</td></tr>}
             </tbody>
           </table>
         </div>
@@ -403,6 +409,13 @@ export default function AdminReservationsPage() {
               )}
               {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
               {mailNotice && <p className="text-[11px] text-gray-500 mt-2">✉️ {mailNotice}</p>}
+            </div>
+
+            <div className="mt-5 border-t pt-4">
+              <p className="text-xs text-gray-500 mb-2">自動返信メール（受付時）</p>
+              {detail.auto_reply_sent
+                ? <p className="text-sm text-green-700">✉️ 送信済み</p>
+                : <p className="text-sm text-gray-400">✉️ 未送信</p>}
             </div>
 
             <div className="mt-5 border-t pt-4">
