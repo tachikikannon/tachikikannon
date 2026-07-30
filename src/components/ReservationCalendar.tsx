@@ -18,6 +18,12 @@ function parseSlotMinutes(slot: string): number | null {
   return Number(m[1]) * 60 + Number(m[2])
 }
 
+// 同じ担当者・場所を共有していて同時に受けられない体験の組み合わせ。
+// 例: 数珠づくり体験の予約が入っている時間は、護摩祈願も受け付けない。
+const CROSS_BLOCKING_TYPES: Partial<Record<ReservationType, ReservationType[]>> = {
+  prayer: ['jyuzu'],
+}
+
 interface Props {
   reservationType: ReservationType
   selectedDate: string
@@ -51,6 +57,7 @@ export default function ReservationCalendar({
   })
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([])
   const [reservations, setReservations] = useState<Reservation[]>([])
+  const [crossReservations, setCrossReservations] = useState<Reservation[]>([])
   const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
   const [overrides, setOverrides] = useState<SlotOverride[]>([])
 
@@ -80,6 +87,16 @@ export default function ReservationCalendar({
       .eq('type', reservationType)
       .then(({ data }) => setReservations(data ?? []))
 
+    const crossTypes = CROSS_BLOCKING_TYPES[reservationType] ?? []
+    if (crossTypes.length > 0) {
+      supabase.from('reservations').select('date,time_slot,type,party_size')
+        .gte('date', from).lte('date', to)
+        .in('type', crossTypes)
+        .then(({ data }) => setCrossReservations(data ?? []))
+    } else {
+      setCrossReservations([])
+    }
+
     supabase.from('slot_overrides').select('date,time_slot,is_closed,max_groups,max_people')
       .gte('date', from).lte('date', to)
       .eq('type', reservationType)
@@ -103,6 +120,10 @@ export default function ReservationCalendar({
     const peopleCount = slotReservations.reduce((sum, r) => sum + (r.party_size ?? 1), 0)
     const overCapacity = (maxGroups != null && groupCount >= maxGroups) || (maxPeople != null && peopleCount >= maxPeople)
     if (overCapacity) return true
+
+    // 同じ担当者・場所を共有する体験（例: 護摩祈願と数珠づくり）は、
+    // 一方が予約されている時間帯はもう一方も予約不可にする。
+    if (crossReservations.some(r => r.date === dateStr && r.time_slot === slot)) return true
 
     // 前後バッファ（分）: 実際の所要時間が枠の間隔より長い体験（護摩祈祷など）向け。
     // 既存予約の開始時刻からバッファ分数未満しか離れていない枠は、時間が重なるため予約不可にする。
