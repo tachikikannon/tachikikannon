@@ -34,7 +34,7 @@ const DEFAULT_EVENTS = [
     desc: '新しい年の始まりにあたり、皆様の一年の無病息災・家内安全・開運招福を祈願する特別な護摩祈祷です。御札は5,000円〜30,000円よりお選びいただけます。事前申し込み・最大5名まで同時申込可。',
   },
 ]
-const EVENT_IMAGES = ['/images/gyouji.JPEG', '/images/mizuumi.jpg', '/images/goma.png']
+const EVENT_IMAGES = ['/images/gyouji.JPEG', '/images/mizuumi.jpg', '/images/ganjitsu-goma-1920.jpg']
 const EVENT_ALTS = ['観音講・大護摩供・地蔵流し', '中禅寺湖・船禅頂', '正月元旦特別護摩祈願']
 const EVENT_HREFS = ['/annual-events/kannonko', '/annual-events/funazento', '/annual-events/shogatsu']
 const EVENT_APPLIES = ['/annual-events/kannonko/apply', '/annual-events/funazento/apply', '/annual-events/shogatsu/apply']
