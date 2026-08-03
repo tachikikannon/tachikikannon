@@ -74,7 +74,7 @@ export default async function ShogatsuPage() {
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <ZoomableImage src="/images/goma.png" alt="正月元旦特別護摩祈願" fill className="object-cover" />
+          <ZoomableImage src="/images/ganjitsu-goma-2.jpg" alt="正月元旦特別護摩祈願" fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-2">January 1st  Annual Event</p>
