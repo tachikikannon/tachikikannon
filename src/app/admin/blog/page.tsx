@@ -25,7 +25,7 @@ export default function AdminBlogPage() {
   }, [])
 
   function toSlug(title: string) {
-    return encodeURIComponent(title.trim().replace(/\s+/g, '-').toLowerCase()).slice(0, 60)
+    return encodeURIComponent(title.trim().replace(/\s+/g, '-').toLowerCase().slice(0, 30))
   }
 
   function toGalleryUrls(text: string): string[] {
