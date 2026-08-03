@@ -84,6 +84,7 @@ type EventCard = {
 }
 
 function monthNumOf(label: string): number {
+  if (label.includes('毎月')) return 0
   const n = parseInt(label, 10)
   return Number.isFinite(n) && n >= 1 && n <= 12 ? n : 13
 }
@@ -121,7 +122,7 @@ export default async function OnsenjEventsPage() {
     })),
   ]
 
-  const monthGroups = Array.from({ length: 12 }, (_, i) => i + 1)
+  const monthGroups = Array.from({ length: 13 }, (_, i) => i)
     .map(m => ({ month: m, cards: cards.filter(c => c.monthNum === m) }))
     .filter(g => g.cards.length > 0)
 
@@ -146,7 +147,7 @@ export default async function OnsenjEventsPage() {
           {monthGroups.map(group => (
             <section key={group.month}>
               <div className="flex items-center gap-4 mb-6">
-                <h2 className="font-serif text-2xl text-onsenji whitespace-nowrap">{group.month}月</h2>
+                <h2 className="font-serif text-2xl text-onsenji whitespace-nowrap">{group.month === 0 ? '毎月' : `${group.month}月`}</h2>
                 <div className="h-px flex-1 bg-[#7ec8a4]/30" />
               </div>
               <div className="space-y-10">
