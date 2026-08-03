@@ -55,6 +55,7 @@ const navItems: NavItem[] = [
   { href: '/admin/onsenji/events/annual',      label: '年間行事一覧',     icon: '📅', group: '温泉寺' },
   { href: '/admin/onsenji/events/yakushiko',   label: '薬師講大祭（8/8）', icon: '🔥', group: '温泉寺' },
   { href: '/admin/onsenji/events/setsubun',    label: '節分大祭（1月）',   icon: '🫘', group: '温泉寺' },
+  { href: '/admin/onsenji/events/minor',       label: 'こまごました行事',   icon: '📌', group: '温泉寺' },
   // ── サイト管理 ──
   { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️', group: 'サイト管理' },
   { href: '/admin/images',        label: '画像管理',         icon: '🖼️', group: 'サイト管理' },

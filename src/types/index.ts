@@ -44,6 +44,7 @@ export interface MinorEvent {
   id: string
   title: string
   slug: string
+  site: NewsSite
   month_label: string
   date_label: string
   time_label: string | null

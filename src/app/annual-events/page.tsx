@@ -68,7 +68,7 @@ async function getMinorEvents(): Promise<MinorEvent[]> {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   try {
     const res = await fetch(
-      `${url}/rest/v1/minor_events?is_published=eq.true&select=*&order=sort_order.asc,created_at.desc`,
+      `${url}/rest/v1/minor_events?site=eq.chuzenji&is_published=eq.true&select=*&order=sort_order.asc,created_at.desc`,
       { headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store' }
     )
     if (!res.ok) return []

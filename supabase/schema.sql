@@ -60,6 +60,7 @@ create table if not exists minor_events (
   id          uuid primary key default gen_random_uuid(),
   title       text not null,
   slug        text not null unique,
+  site        text not null default 'chuzenji' check (site in ('chuzenji','onsenji')),
   month_label text not null,
   date_label  text not null,
   time_label  text,
@@ -72,6 +73,7 @@ create table if not exists minor_events (
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
+create index if not exists idx_minor_events_site on minor_events(site);
 
 -- ============================================================
 -- 管理者プロフィール（複数管理者アカウント + ロール制御）
