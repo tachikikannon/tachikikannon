@@ -122,7 +122,7 @@ export default async function OnsenjEventsPage() {
     })),
   ]
 
-  const monthGroups = Array.from({ length: 13 }, (_, i) => i)
+  const monthGroups = [...Array.from({ length: 12 }, (_, i) => i + 1), 0]
     .map(m => ({ month: m, cards: cards.filter(c => c.monthNum === m) }))
     .filter(g => g.cards.length > 0)
 
