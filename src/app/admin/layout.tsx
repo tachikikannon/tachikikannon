@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
   { href: '/admin/chuzenji/events/kannonko',   label: '観音講（6/18）',   icon: '🎋', group: '立木観音' },
   { href: '/admin/chuzenji/events/funazento',  label: '船禅頂（8/4）',    icon: '⛵', group: '立木観音' },
   { href: '/admin/chuzenji/events/shogatsu',   label: '正月元旦特別護摩祈願（1/1）', icon: '🎍', group: '立木観音' },
-  { href: '/admin/chuzenji/events/minor',      label: 'こまごました行事',   icon: '📌', group: '立木観音' },
+  { href: '/admin/chuzenji/events/minor',      label: '立木法要',   icon: '📌', group: '立木観音' },
   // ── 温泉寺 ──
   { href: '/admin/onsenji/top',           label: 'トップページ',   icon: '🏠', group: '温泉寺' },
   { href: '/admin/onsenji/news',          label: 'お知らせ管理',   icon: '📢', group: '温泉寺' },
@@ -55,7 +55,7 @@ const navItems: NavItem[] = [
   { href: '/admin/onsenji/events/annual',      label: '年間行事一覧',     icon: '📅', group: '温泉寺' },
   { href: '/admin/onsenji/events/yakushiko',   label: '薬師講大祭（8/8）', icon: '🔥', group: '温泉寺' },
   { href: '/admin/onsenji/events/setsubun',    label: '節分大祭（1月）',   icon: '🫘', group: '温泉寺' },
-  { href: '/admin/onsenji/events/minor',       label: 'こまごました行事',   icon: '📌', group: '温泉寺' },
+  { href: '/admin/onsenji/events/minor',       label: '温泉寺法要',   icon: '📌', group: '温泉寺' },
   // ── サイト管理 ──
   { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️', group: 'サイト管理' },
   { href: '/admin/images',        label: '画像管理',         icon: '🖼️', group: 'サイト管理' },

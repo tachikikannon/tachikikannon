@@ -51,6 +51,8 @@ export interface MinorEvent {
   desc_text: string
   cover_url: string | null
   hero_url: string | null
+  gallery_urls: string[]
+  gallery_placement: 'above' | 'below'
   apply_url: string | null
   sort_order: number
   is_published: boolean

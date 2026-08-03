@@ -26,6 +26,11 @@ alter table minor_events add column if not exists site text not null default 'ch
 alter table minor_events drop constraint if exists minor_events_site_check;
 alter table minor_events add constraint minor_events_site_check check (site in ('chuzenji','onsenji'));
 
+alter table minor_events add column if not exists gallery_urls text[] not null default '{}';
+alter table minor_events add column if not exists gallery_placement text not null default 'below';
+alter table minor_events drop constraint if exists minor_events_gallery_placement_check;
+alter table minor_events add constraint minor_events_gallery_placement_check check (gallery_placement in ('above','below'));
+
 create index if not exists idx_minor_events_site on minor_events(site);
 
 alter table minor_events enable row level security;

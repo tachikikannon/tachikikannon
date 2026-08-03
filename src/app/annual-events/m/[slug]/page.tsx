@@ -49,9 +49,31 @@ export default async function MinorEventDetailPage({ params }: { params: Promise
           <div className="bg-white rounded-2xl shadow-sm p-8">
             <p className="text-xs text-gold tracking-widest">{ev.month_label}　{ev.date_label}　{ev.time_label}</p>
             <h1 className="font-serif text-2xl text-navy mt-2 mb-6 leading-relaxed">{ev.title}</h1>
+
+            {ev.gallery_placement === 'above' && ev.gallery_urls?.length > 0 && (
+              <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {ev.gallery_urls.map((url: string, i: number) => (
+                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden">
+                    <ZoomableImage src={url} alt={`${ev.title} 写真${i + 1}`} fill className="object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
               {ev.desc_text}
             </div>
+
+            {ev.gallery_placement !== 'above' && ev.gallery_urls?.length > 0 && (
+              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {ev.gallery_urls.map((url: string, i: number) => (
+                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden">
+                    <ZoomableImage src={url} alt={`${ev.title} 写真${i + 1}`} fill className="object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="mt-8">
               <Link href={ev.apply_url || '/contact'}
                 className="inline-block px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">

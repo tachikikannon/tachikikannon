@@ -67,6 +67,8 @@ create table if not exists minor_events (
   desc_text   text not null default '',
   cover_url   text,
   hero_url    text,
+  gallery_urls text[] not null default '{}',
+  gallery_placement text not null default 'below' check (gallery_placement in ('above','below')),
   apply_url   text,
   sort_order  int not null default 0,
   is_published boolean not null default false,

@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { MinorEvent, NewsSite } from '@/types'
 
-export default function MinorEventsAdmin({ site, siteLabel, accent = 'chuzenji' }: { site: NewsSite; siteLabel: string; accent?: 'chuzenji' | 'onsenji' }) {
+export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: { site: NewsSite; title: string; accent?: 'chuzenji' | 'onsenji' }) {
   const supabase = createClient()
   const [list, setList] = useState<MinorEvent[]>([])
   const [editing, setEditing] = useState<Partial<MinorEvent> | null>(null)
+  const [galleryText, setGalleryText] = useState('')
   const [loading, setLoading] = useState(false)
 
   const accentBtn = accent === 'onsenji' ? 'bg-onsenji hover:bg-onsenji/90' : 'btn-primary'
@@ -27,8 +28,13 @@ export default function MinorEventsAdmin({ site, siteLabel, accent = 'chuzenji' 
     return encodeURIComponent(title.trim().replace(/\s+/g, '-').toLowerCase().slice(0, 30))
   }
 
+  function toGalleryUrls(text: string): string[] {
+    return text.split('\n').map(s => s.trim()).filter(Boolean)
+  }
+
   function openEditor(ev: Partial<MinorEvent> | null) {
     setEditing(ev)
+    setGalleryText((ev?.gallery_urls ?? []).join('\n'))
   }
 
   async function save() {
@@ -37,6 +43,7 @@ export default function MinorEventsAdmin({ site, siteLabel, accent = 'chuzenji' 
     const payload = {
       ...editing,
       site,
+      gallery_urls: toGalleryUrls(galleryText),
       slug: editing.slug || toSlug(editing.title ?? ''),
       updated_at: new Date().toISOString(),
     }
@@ -62,10 +69,10 @@ export default function MinorEventsAdmin({ site, siteLabel, accent = 'chuzenji' 
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className={`text-2xl font-serif ${accentText}`}>{siteLabel} こまごました行事</h1>
+          <h1 className={`text-2xl font-serif ${accentText}`}>{title}</h1>
           <p className="text-xs text-gray-400 mt-1">年間行事ページの、専用ページを持たない追加行事です。一覧のカードと簡単な詳細ページのみになります。</p>
         </div>
-        <button onClick={() => openEditor({ title:'', site, month_label:'', date_label:'', time_label:'', desc_text:'', sort_order: 0, is_published:false })} className={`text-white text-sm px-4 py-2 rounded ${accentBtn}`}>＋ 行事を追加</button>
+        <button onClick={() => openEditor({ title:'', site, month_label:'', date_label:'', time_label:'', desc_text:'', gallery_placement:'below', sort_order: 0, is_published:false })} className={`text-white text-sm px-4 py-2 rounded ${accentBtn}`}>＋ 行事を追加</button>
       </div>
 
       {editing && (
@@ -106,6 +113,21 @@ export default function MinorEventsAdmin({ site, siteLabel, accent = 'chuzenji' 
             <div>
               <label className="admin-label">ヒーロー写真URL（詳細ページ上部。空欄ならカード写真を使用）</label>
               <input className="admin-input" value={editing.hero_url ?? ''} onChange={e => setEditing({...editing, hero_url: e.target.value})} />
+            </div>
+            <div>
+              <label className="admin-label">ギャラリー写真URL（画像管理からコピー。1行に1枚、10枚程度まで目安）</label>
+              <textarea className="admin-input min-h-[100px] font-mono text-xs"
+                placeholder={'https://.../photo1.jpg\nhttps://.../photo2.jpg'}
+                value={galleryText}
+                onChange={e => setGalleryText(e.target.value)} />
+            </div>
+            <div>
+              <label className="admin-label">ギャラリー写真の位置</label>
+              <select className="admin-input w-48" value={editing.gallery_placement ?? 'below'}
+                onChange={e => setEditing({...editing, gallery_placement: e.target.value as 'above' | 'below'})}>
+                <option value="below">説明文の下</option>
+                <option value="above">説明文の上</option>
+              </select>
             </div>
             <div>
               <label className="admin-label">申し込みフォームURL（空欄ならお問い合わせページへ）</label>
