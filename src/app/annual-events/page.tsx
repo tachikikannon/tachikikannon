@@ -76,9 +76,61 @@ async function getMinorEvents(): Promise<MinorEvent[]> {
   } catch { return [] }
 }
 
+type EventCard = {
+  key: string
+  monthNum: number
+  monthLabel: string
+  dateLabel: string
+  timeLabel: string
+  name: string
+  desc: string
+  image: string
+  alt: string
+  href: string
+  applyHref: string | null
+}
+
+function monthNumOf(label: string): number {
+  const n = parseInt(label, 10)
+  return Number.isFinite(n) && n >= 1 && n <= 12 ? n : 13
+}
+
 export default async function AnnualEventsPage() {
   const [c, minorEvents] = await Promise.all([getContent(), getMinorEvents()])
   const events = pj<typeof DEFAULT_EVENTS>(c.annual_events_list, DEFAULT_EVENTS)
+
+  const cards: EventCard[] = [
+    ...events.map((ev, i): EventCard => ({
+      key: `fixed-${ev.date}`,
+      monthNum: monthNumOf(ev.month),
+      monthLabel: ev.month,
+      dateLabel: ev.date,
+      timeLabel: ev.time,
+      name: ev.name,
+      desc: ev.desc,
+      image: EVENT_IMAGES[i] ?? '/images/gyouji.JPEG',
+      alt: EVENT_ALTS[i] ?? ev.name,
+      href: EVENT_HREFS[i] ?? '/annual-events',
+      applyHref: EVENT_APPLIES[i] ?? '/contact',
+    })),
+    ...minorEvents.map((ev): EventCard => ({
+      key: `minor-${ev.id}`,
+      monthNum: monthNumOf(ev.month_label),
+      monthLabel: ev.month_label,
+      dateLabel: ev.date_label,
+      timeLabel: ev.time_label ?? '',
+      name: ev.title,
+      desc: ev.desc_text,
+      image: ev.cover_url ?? '/images/gyouji.JPEG',
+      alt: ev.title,
+      href: `/annual-events/m/${ev.slug}`,
+      applyHref: ev.apply_url,
+    })),
+  ]
+
+  const monthGroups = Array.from({ length: 12 }, (_, i) => i + 1)
+    .map(m => ({ month: m, cards: cards.filter(c => c.monthNum === m) }))
+    .filter(g => g.cards.length > 0)
 
   return (
     <>
@@ -97,65 +149,46 @@ export default async function AnnualEventsPage() {
           <p className="text-white/60 text-sm mt-3 relative">{c.annual_events_subtitle}</p>
         </section>
 
-        <div className="max-w-3xl mx-auto px-4 py-14 space-y-10">
-          {events.map((ev, i) => (
-            <article key={ev.date} className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-              <div className="relative h-56 md:h-72">
-                <ZoomableImage src={EVENT_IMAGES[i] ?? '/images/gyouji.JPEG'} alt={EVENT_ALTS[i] ?? ev.name} fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6">
-                  <p className="text-gold text-xs tracking-widest mb-1">{ev.date}　{ev.time}</p>
-                  <h2 className="font-serif text-2xl text-white">{ev.name}</h2>
-                </div>
-                <div className="absolute top-4 left-4 w-14 h-14 rounded-xl bg-navy/80 backdrop-blur-sm flex items-center justify-center">
-                  <span className="text-gold text-sm font-medium">{ev.month}</span>
-                </div>
+        <div className="max-w-3xl mx-auto px-4 py-14 space-y-14">
+          {monthGroups.map(group => (
+            <section key={group.month}>
+              <div className="flex items-center gap-4 mb-6">
+                <h2 className="font-serif text-2xl text-navy whitespace-nowrap">{group.month}月</h2>
+                <div className="h-px flex-1 bg-gold/30" />
               </div>
-              <div className="p-6 space-y-4">
-                <p className="text-sm text-gray-700 leading-loose">{ev.desc}</p>
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <Link href={EVENT_HREFS[i] ?? '/annual-events'}
-                    className="flex-1 text-center px-6 py-2.5 bg-navy text-white text-sm font-medium rounded-full hover:bg-navy/80 transition-colors">
-                    詳細を見る
-                  </Link>
-                  <Link href={EVENT_APPLIES[i] ?? '/contact'}
-                    className="flex-1 text-center px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
-                    申し込みフォーム
-                  </Link>
-                </div>
+              <div className="space-y-10">
+                {group.cards.map(ev => (
+                  <article key={ev.key} className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+                    <div className="relative h-56 md:h-72">
+                      <ZoomableImage src={ev.image} alt={ev.alt} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
+                      <div className="absolute bottom-0 left-0 p-6">
+                        <p className="text-gold text-xs tracking-widest mb-1">{ev.dateLabel}　{ev.timeLabel}</p>
+                        <h3 className="font-serif text-2xl text-white">{ev.name}</h3>
+                      </div>
+                      <div className="absolute top-4 left-4 w-14 h-14 rounded-xl bg-navy/80 backdrop-blur-sm flex items-center justify-center">
+                        <span className="text-gold text-sm font-medium">{ev.monthLabel}</span>
+                      </div>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      <p className="text-sm text-gray-700 leading-loose">{ev.desc}</p>
+                      <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                        <Link href={ev.href}
+                          className="flex-1 text-center px-6 py-2.5 bg-navy text-white text-sm font-medium rounded-full hover:bg-navy/80 transition-colors">
+                          詳細を見る
+                        </Link>
+                        {ev.applyHref && (
+                          <Link href={ev.applyHref}
+                            className="flex-1 text-center px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
+                            申し込みフォーム
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </article>
+                ))}
               </div>
-            </article>
-          ))}
-
-          {minorEvents.map(ev => (
-            <article key={ev.id} className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-              <div className="relative h-56 md:h-72">
-                <ZoomableImage src={ev.cover_url ?? '/images/gyouji.JPEG'} alt={ev.title} fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6">
-                  <p className="text-gold text-xs tracking-widest mb-1">{ev.date_label}　{ev.time_label}</p>
-                  <h2 className="font-serif text-2xl text-white">{ev.title}</h2>
-                </div>
-                <div className="absolute top-4 left-4 w-14 h-14 rounded-xl bg-navy/80 backdrop-blur-sm flex items-center justify-center">
-                  <span className="text-gold text-sm font-medium">{ev.month_label}</span>
-                </div>
-              </div>
-              <div className="p-6 space-y-4">
-                <p className="text-sm text-gray-700 leading-loose">{ev.desc_text}</p>
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <Link href={`/annual-events/m/${ev.slug}`}
-                    className="flex-1 text-center px-6 py-2.5 bg-navy text-white text-sm font-medium rounded-full hover:bg-navy/80 transition-colors">
-                    詳細を見る
-                  </Link>
-                  {ev.apply_url && (
-                    <Link href={ev.apply_url}
-                      className="flex-1 text-center px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
-                      申し込みフォーム
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </article>
+            </section>
           ))}
 
           <div className="bg-cream-alt rounded-2xl p-6 text-center text-sm text-gray-600">
