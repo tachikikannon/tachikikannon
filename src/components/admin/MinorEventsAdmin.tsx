@@ -8,6 +8,7 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
   const [list, setList] = useState<MinorEvent[]>([])
   const [editing, setEditing] = useState<Partial<MinorEvent> | null>(null)
   const [galleryText, setGalleryText] = useState('')
+  const [hasApply, setHasApply] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const accentBtn = accent === 'onsenji' ? 'bg-onsenji hover:bg-onsenji/90' : 'btn-primary'
@@ -35,6 +36,7 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
   function openEditor(ev: Partial<MinorEvent> | null) {
     setEditing(ev)
     setGalleryText((ev?.gallery_urls ?? []).join('\n'))
+    setHasApply(!!ev?.apply_url)
   }
 
   async function save() {
@@ -44,6 +46,7 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
       ...editing,
       site,
       gallery_urls: toGalleryUrls(galleryText),
+      apply_url: hasApply ? (editing.apply_url || null) : null,
       slug: editing.slug || toSlug(editing.title ?? ''),
       updated_at: new Date().toISOString(),
     }
@@ -130,8 +133,13 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
               </select>
             </div>
             <div>
-              <label className="admin-label">申し込みフォームURL（空欄ならお問い合わせページへ）</label>
-              <input className="admin-input" value={editing.apply_url ?? ''} onChange={e => setEditing({...editing, apply_url: e.target.value})} />
+              <div className="flex items-center gap-3">
+                <input type="checkbox" id="hasApply" checked={hasApply} onChange={e => setHasApply(e.target.checked)} />
+                <label htmlFor="hasApply" className="text-sm">申し込みフォームを設ける</label>
+              </div>
+              {hasApply && (
+                <input className="admin-input mt-2" placeholder="https://..." value={editing.apply_url ?? ''} onChange={e => setEditing({...editing, apply_url: e.target.value})} />
+              )}
             </div>
             <div>
               <label className="admin-label">並び順（小さいほど上に表示）</label>

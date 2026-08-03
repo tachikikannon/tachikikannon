@@ -140,10 +140,12 @@ export default async function OnsenjEventsPage() {
                     className="flex-1 text-center px-6 py-2.5 bg-onsenji text-white text-sm font-medium rounded-full hover:bg-onsenji/80 transition-colors">
                     詳細を見る
                   </Link>
-                  <Link href={ev.apply_url || '/onsenji/contact'}
-                    className="flex-1 text-center px-6 py-2.5 bg-[#7ec8a4] text-onsenji text-sm font-medium rounded-full hover:bg-[#a0d8bc] transition-colors">
-                    申し込みフォーム
-                  </Link>
+                  {ev.apply_url && (
+                    <Link href={ev.apply_url}
+                      className="flex-1 text-center px-6 py-2.5 bg-[#7ec8a4] text-onsenji text-sm font-medium rounded-full hover:bg-[#a0d8bc] transition-colors">
+                      申し込みフォーム
+                    </Link>
+                  )}
                 </div>
               </div>
             </article>

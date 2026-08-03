@@ -147,10 +147,12 @@ export default async function AnnualEventsPage() {
                     className="flex-1 text-center px-6 py-2.5 bg-navy text-white text-sm font-medium rounded-full hover:bg-navy/80 transition-colors">
                     詳細を見る
                   </Link>
-                  <Link href={ev.apply_url || '/contact'}
-                    className="flex-1 text-center px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
-                    申し込みフォーム
-                  </Link>
+                  {ev.apply_url && (
+                    <Link href={ev.apply_url}
+                      className="flex-1 text-center px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
+                      申し込みフォーム
+                    </Link>
+                  )}
                 </div>
               </div>
             </article>

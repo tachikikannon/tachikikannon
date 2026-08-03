@@ -74,12 +74,14 @@ export default async function OnsenjMinorEventDetailPage({ params }: { params: P
               </div>
             )}
 
-            <div className="mt-8">
-              <Link href={ev.apply_url || '/onsenji/contact'}
-                className="inline-block px-6 py-2.5 bg-[#7ec8a4] text-onsenji text-sm font-medium rounded-full hover:bg-[#a0d8bc] transition-colors">
-                申し込みフォーム
-              </Link>
-            </div>
+            {ev.apply_url && (
+              <div className="mt-8">
+                <Link href={ev.apply_url}
+                  className="inline-block px-6 py-2.5 bg-[#7ec8a4] text-onsenji text-sm font-medium rounded-full hover:bg-[#a0d8bc] transition-colors">
+                  申し込みフォーム
+                </Link>
+              </div>
+            )}
           </div>
           <div className="mt-8 text-center">
             <Link href="/onsenji/events" className="text-onsenji text-sm hover:underline">← 年間行事に戻る</Link>

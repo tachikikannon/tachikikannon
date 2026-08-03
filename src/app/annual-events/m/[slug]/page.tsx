@@ -74,12 +74,14 @@ export default async function MinorEventDetailPage({ params }: { params: Promise
               </div>
             )}
 
-            <div className="mt-8">
-              <Link href={ev.apply_url || '/contact'}
-                className="inline-block px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
-                申し込みフォーム
-              </Link>
-            </div>
+            {ev.apply_url && (
+              <div className="mt-8">
+                <Link href={ev.apply_url}
+                  className="inline-block px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
+                  申し込みフォーム
+                </Link>
+              </div>
+            )}
           </div>
           <div className="mt-8 text-center">
             <Link href="/annual-events" className="text-navy text-sm hover:underline">← 年間行事に戻る</Link>
