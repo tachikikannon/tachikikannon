@@ -39,6 +39,7 @@ const navItems: NavItem[] = [
   { href: '/admin/chuzenji/events/kannonko',   label: '観音講（6/18）',   icon: '🎋', group: '立木観音' },
   { href: '/admin/chuzenji/events/funazento',  label: '船禅頂（8/4）',    icon: '⛵', group: '立木観音' },
   { href: '/admin/chuzenji/events/shogatsu',   label: '正月元旦特別護摩祈願（1/1）', icon: '🎍', group: '立木観音' },
+  { href: '/admin/chuzenji/events/minor',      label: 'こまごました行事',   icon: '📌', group: '立木観音' },
   // ── 温泉寺 ──
   { href: '/admin/onsenji/top',           label: 'トップページ',   icon: '🏠', group: '温泉寺' },
   { href: '/admin/onsenji/news',          label: 'お知らせ管理',   icon: '📢', group: '温泉寺' },

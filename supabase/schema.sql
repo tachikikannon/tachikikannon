@@ -55,6 +55,24 @@ create table if not exists events (
   created_at  timestamptz not null default now()
 );
 
+-- 年間行事ページの「こまごました行事」（専用ページを持たない追加行事）
+create table if not exists minor_events (
+  id          uuid primary key default gen_random_uuid(),
+  title       text not null,
+  slug        text not null unique,
+  month_label text not null,
+  date_label  text not null,
+  time_label  text,
+  desc_text   text not null default '',
+  cover_url   text,
+  hero_url    text,
+  apply_url   text,
+  sort_order  int not null default 0,
+  is_published boolean not null default false,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
 -- ============================================================
 -- 管理者プロフィール（複数管理者アカウント + ロール制御）
 -- reservations/contacts から参照されるため先に定義する
@@ -146,6 +164,7 @@ create table if not exists media (
 alter table news              enable row level security;
 alter table posts             enable row level security;
 alter table events            enable row level security;
+alter table minor_events      enable row level security;
 alter table reservations      enable row level security;
 alter table contacts          enable row level security;
 alter table media             enable row level security;
@@ -156,6 +175,7 @@ alter table admin_activity_logs enable row level security;
 create policy "public read news"   on news   for select using (is_published = true);
 create policy "public read posts"  on posts  for select using (is_published = true);
 create policy "public read events" on events for select using (true);
+create policy "public read minor_events" on minor_events for select using (is_published = true);
 
 -- 予約・お問い合わせはINSERTのみ許可（匿名ユーザー）
 create policy "public insert reservations" on reservations for insert with check (true);
@@ -165,6 +185,7 @@ create policy "public insert contacts"     on contacts     for insert with check
 create policy "admin all news"         on news         for all using (auth.role() = 'authenticated');
 create policy "admin all posts"        on posts        for all using (auth.role() = 'authenticated');
 create policy "admin all events"       on events       for all using (auth.role() = 'authenticated');
+create policy "admin all minor_events" on minor_events for all using (auth.role() = 'authenticated');
 create policy "admin all media"        on media        for all using (auth.role() = 'authenticated');
 
 -- reservations / contacts はロール別に制御（viewerは閲覧のみ、admin/super_adminは書き込み可）

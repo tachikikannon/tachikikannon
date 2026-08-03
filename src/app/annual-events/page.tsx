@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
+import type { MinorEvent } from '@/types'
 
 export const metadata: Metadata = {
   title: '年間行事 | 日光山中禅寺 立木観音',
@@ -62,8 +63,21 @@ async function getContent() {
   } catch { return DEFAULTS }
 }
 
+async function getMinorEvents(): Promise<MinorEvent[]> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const res = await fetch(
+      `${url}/rest/v1/minor_events?is_published=eq.true&select=*&order=sort_order.asc,created_at.desc`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store' }
+    )
+    if (!res.ok) return []
+    return await res.json()
+  } catch { return [] }
+}
+
 export default async function AnnualEventsPage() {
-  const c = await getContent()
+  const [c, minorEvents] = await Promise.all([getContent(), getMinorEvents()])
   const events = pj<typeof DEFAULT_EVENTS>(c.annual_events_list, DEFAULT_EVENTS)
 
   return (
@@ -105,6 +119,35 @@ export default async function AnnualEventsPage() {
                     詳細を見る
                   </Link>
                   <Link href={EVENT_APPLIES[i] ?? '/contact'}
+                    className="flex-1 text-center px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
+                    申し込みフォーム
+                  </Link>
+                </div>
+              </div>
+            </article>
+          ))}
+
+          {minorEvents.map(ev => (
+            <article key={ev.id} className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+              <div className="relative h-56 md:h-72">
+                <ZoomableImage src={ev.cover_url ?? '/images/gyouji.JPEG'} alt={ev.title} fill className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 p-6">
+                  <p className="text-gold text-xs tracking-widest mb-1">{ev.date_label}　{ev.time_label}</p>
+                  <h2 className="font-serif text-2xl text-white">{ev.title}</h2>
+                </div>
+                <div className="absolute top-4 left-4 w-14 h-14 rounded-xl bg-navy/80 backdrop-blur-sm flex items-center justify-center">
+                  <span className="text-gold text-sm font-medium">{ev.month_label}</span>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <p className="text-sm text-gray-700 leading-loose">{ev.desc_text}</p>
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <Link href={`/annual-events/m/${ev.slug}`}
+                    className="flex-1 text-center px-6 py-2.5 bg-navy text-white text-sm font-medium rounded-full hover:bg-navy/80 transition-colors">
+                    詳細を見る
+                  </Link>
+                  <Link href={ev.apply_url || '/contact'}
                     className="flex-1 text-center px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
                     申し込みフォーム
                   </Link>
