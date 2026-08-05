@@ -10,7 +10,7 @@ const FIELDS = [
     key: 'onsenji_faq_items', label: 'FAQ一覧', type: 'list' as const,
     listFields: [{ key: 'q', label: '質問', multiline: true }, { key: 'a', label: '回答', multiline: true }],
     defaultValue: J([
-      { q: '温泉（薬師の湯）は誰でも利用できますか？', a: 'はい、志納金（大人500円・小人300円）をお納めいただいた方はどなたでもご利用いただけます。令和8年4月11日より開湯した源泉かけ流しの温泉です。タオルをご持参ください。' },
+      { q: '温泉（薬師の湯）は誰でも利用できますか？', a: 'はい、志納金（大人500円・小中学生300円）をお納めいただいた方はどなたでもご利用いただけます。令和8年4月11日より開湯した源泉かけ流しの温泉です。タオルをご持参ください。' },
       { q: '薬師の湯の泉質を教えてください。', a: '泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉で、泉温は71.4℃です。完全かけ流しで、加水すると乳白色に変わる美しい湯です。' },
       { q: '御祈願は予約が必要ですか？', a: 'はい、御祈願は予約制となっております。事前にお電話またはお問い合わせフォームよりご連絡ください。' },
       { q: '写経体験はできますか？', a: 'はい、毎日実施しています。体験料1,000円で特別御朱印もお授けします。所要時間は約15分です。予約不要で、受付時にお申し付けください。' },
@@ -19,7 +19,7 @@ const FIELDS = [
     ]),
     translatable: true,
     defaultValueEn: J([
-      { q: 'Can anyone use the hot spring (Yakushi-no-Yu)?', a: 'Yes, anyone who pays the visiting donation (adults ¥500, children ¥300) may use it. This fully sourced hot spring opened on April 11, 2026. Please bring your own towel.' },
+      { q: 'Can anyone use the hot spring (Yakushi-no-Yu)?', a: 'Yes, anyone who pays the visiting donation (adults ¥500, elementary/junior high school students ¥300) may use it. This fully sourced hot spring opened on April 11, 2026. Please bring your own towel.' },
       { q: 'What is the water quality of Yakushi-no-Yu?', a: 'The spring is sulfur–calcium–sodium–sulfate–bicarbonate with a water temperature of 71.4°C. It is fully sourced and turns a beautiful milky white when mixed with water.' },
       { q: 'Do I need a reservation for a prayer service?', a: 'Yes, prayer services require a reservation. Please contact us in advance by phone or through the inquiry form.' },
       { q: 'Can I try the sutra copying experience?', a: 'Yes, it is offered daily. The fee is ¥1,000 and includes a special goshuin stamp. It takes about 15 minutes. No reservation is needed — just ask at reception.' },

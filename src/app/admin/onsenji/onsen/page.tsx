@@ -11,7 +11,7 @@ const FIELDS = [
   { key: 'onsenji_onsen_flow', label: '湯の種類', defaultValue: '完全かけ流し（加水あり）', translatable: true },
   { key: 'onsenji_onsen_color', label: '湯の色', defaultValue: '加水すると乳白色に変わります', translatable: true },
   { key: 'onsenji_onsen_hours', label: '利用時間', multiline: true, defaultValue: '8時00分〜17時00分（受付：8時00分〜16時00分）\n※12月〜4月上旬は冬季休業', translatable: true },
-  { key: 'onsenji_onsen_fee_note', label: '料金', defaultValue: '志納金（大人500円・小人300円）に含まれます。別途料金はかかりません。', translatable: true },
+  { key: 'onsenji_onsen_fee_note', label: '料金', defaultValue: '志納金（大人500円・小中学生300円）に含まれます。別途料金はかかりません。', translatable: true },
   { key: 'onsenji_onsen_heading_notes', label: '「ご利用の注意」見出し', defaultValue: 'ご利用の注意', translatable: true },
   { key: 'onsenji_onsen_note', label: 'ご利用の注意（本文）', multiline: true, defaultValue: 'タオルをご持参ください。貸し出しは行っておりません。', translatable: true },
 ] as const

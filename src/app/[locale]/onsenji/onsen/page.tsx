@@ -39,8 +39,8 @@ const DEFAULTS: Record<string, string> = {
   onsenji_onsen_color_en: 'Turns milky white when mixed with water',
   onsenji_onsen_hours:     '8時00分〜17時00分（受付：8時00分〜16時00分）\n※12月〜4月上旬は冬季休業',
   onsenji_onsen_hours_en: '8:00 AM – 5:00 PM (reception: 8:00 AM – 4:00 PM)\n*Closed for winter from December to early April',
-  onsenji_onsen_fee_note:  '志納金（大人500円・小人300円）に含まれます。別途料金はかかりません。',
-  onsenji_onsen_fee_note_en: 'Included in the visiting donation (adults ¥500, children ¥300). No additional fee is required.',
+  onsenji_onsen_fee_note:  '志納金（大人500円・小中学生300円）に含まれます。別途料金はかかりません。',
+  onsenji_onsen_fee_note_en: 'Included in the visiting donation (adults ¥500, elementary/junior high school students ¥300). No additional fee is required.',
   onsenji_onsen_note:      'タオルをご持参ください。貸し出しは行っておりません。',
   onsenji_onsen_note_en: 'Please bring your own towel. Towel rental is not available.',
 }
