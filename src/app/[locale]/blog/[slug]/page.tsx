@@ -1,20 +1,31 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
+import type { Locale } from '@/i18n/routing'
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
+  const { slug, locale } = await params
   const supabase = await createServerClient()
   const { data } = await supabase.from('posts').select('title').eq('slug', slug).single()
-  return { title: data?.title ?? 'ブログ' }
+  const t = await getTranslations({ locale, namespace: 'blog' })
+  return { title: data?.title ?? t('title') }
 }
 
-export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>
+}) {
+  const { slug, locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('blog')
+  const tc = await getTranslations('common')
+  const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
   const supabase = await createServerClient()
   const { data: post } = await supabase
     .from('posts')
@@ -31,7 +42,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
       <main className="pt-16">
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/">ホーム</Link> &gt; <Link href="/blog">ブログ</Link> &gt; {post.title}
+            <Link href="/">{tc('breadcrumbHome')}</Link> &gt; <Link href="/blog">{t('title')}</Link> &gt; {post.title}
           </div>
         </div>
 
@@ -45,7 +56,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         <div className="max-w-3xl mx-auto px-4 py-12">
           <div className="bg-white rounded-2xl shadow-sm p-8">
             <time className="text-xs text-gray-400">
-              {new Date(post.published_at ?? post.created_at).toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' })}
+              {new Date(post.published_at ?? post.created_at).toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
             </time>
             <h1 className="font-serif text-2xl text-navy mt-2 mb-6 leading-relaxed">{post.title}</h1>
             {post.excerpt && (
@@ -66,7 +77,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             )}
           </div>
           <div className="mt-8 text-center">
-            <Link href="/blog" className="text-navy text-sm hover:underline">← ブログ一覧に戻る</Link>
+            <Link href="/blog" className="text-navy text-sm hover:underline">{t('backToBlog')}</Link>
           </div>
         </div>
       </main>
