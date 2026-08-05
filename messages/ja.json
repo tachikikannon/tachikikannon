@@ -1,6 +1,7 @@
 {
   "common": {
-    "langSwitch": "English"
+    "langSwitch": "English",
+    "breadcrumbHome": "ホーム"
   },
   "header": {
     "about": "拝観案内",
@@ -31,5 +32,48 @@
     "accessAddressLabel": "住所",
     "accessCarLabel": "車でのアクセス",
     "accessBusLabel": "電車・バスでのアクセス"
+  },
+  "about": {
+    "title": "拝観案内",
+    "tableHours": "拝観時間",
+    "tableFee": "拝観料",
+    "tableGroupFee": "団体料金（20名様以上）",
+    "tableHoliday": "定休日",
+    "adult": "大人",
+    "child": "子供",
+    "periodPeak": "4月〜10月",
+    "periodShoulder": "11月・3月",
+    "periodWinter": "12月〜2月",
+    "groundsCta": "境内のご案内へ →",
+    "quickAccess": "アクセス",
+    "quickPrayer": "御祈願",
+    "quickGoshuin": "御朱印",
+    "quickFaq": "よくある質問"
+  },
+  "prayer": {
+    "title": "御祈願",
+    "tableFeeHeader": "御祈願料",
+    "tableSizeHeader": "御札サイズ",
+    "excludeNoteLabel": "※除外日",
+    "perCar": "1台",
+    "perPerson": "お1人につき",
+    "perChild": "お子様お1人につき",
+    "reserveCta": "オンライン予約はこちら",
+    "contactCta": "お問い合わせ"
+  },
+  "goshuin": {
+    "title": "御朱印",
+    "receptionPlace": "受付場所：御朱印所",
+    "photoPending": "写真準備中",
+    "applyPrefix": "写経・写仏体験のお申し込みは",
+    "applyLinkText": "体験予約ページ",
+    "applySuffix": "よりご確認ください。",
+    "quickAbout": "参拝について",
+    "quickPrayer": "御祈願",
+    "quickExperience": "写経・写仏体験",
+    "quickGoods": "授与品・通販"
+  },
+  "faq": {
+    "title": "よくある質問"
   }
 }

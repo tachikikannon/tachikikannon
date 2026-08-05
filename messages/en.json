@@ -1,6 +1,7 @@
 {
   "common": {
-    "langSwitch": "日本語"
+    "langSwitch": "日本語",
+    "breadcrumbHome": "Home"
   },
   "header": {
     "about": "Visiting",
@@ -31,5 +32,48 @@
     "accessAddressLabel": "Address",
     "accessCarLabel": "By Car",
     "accessBusLabel": "By Train / Bus"
+  },
+  "about": {
+    "title": "Visiting Guide",
+    "tableHours": "Visiting Hours",
+    "tableFee": "Admission Fee",
+    "tableGroupFee": "Group Rate (20+ people)",
+    "tableHoliday": "Holidays",
+    "adult": "Adult",
+    "child": "Child",
+    "periodPeak": "April – October",
+    "periodShoulder": "November, March",
+    "periodWinter": "December – February",
+    "groundsCta": "View Grounds Guide →",
+    "quickAccess": "Access",
+    "quickPrayer": "Prayer Services",
+    "quickGoshuin": "Goshuin Stamps",
+    "quickFaq": "FAQ"
+  },
+  "prayer": {
+    "title": "Prayer Services",
+    "tableFeeHeader": "Offering",
+    "tableSizeHeader": "Ofuda Size",
+    "excludeNoteLabel": "※Excluded Dates",
+    "perCar": "Per vehicle",
+    "perPerson": "Per person",
+    "perChild": "Per child",
+    "reserveCta": "Reserve Online",
+    "contactCta": "Contact Us"
+  },
+  "goshuin": {
+    "title": "Goshuin Stamps",
+    "receptionPlace": "Reception: Goshuin Office",
+    "photoPending": "Photo coming soon",
+    "applyPrefix": "Please see the ",
+    "applyLinkText": "Experience Reservation Page",
+    "applySuffix": " to apply for the sutra-copying or Buddha-image-tracing experience.",
+    "quickAbout": "About Visiting",
+    "quickPrayer": "Prayer Services",
+    "quickExperience": "Sutra Copying & Buddha Tracing",
+    "quickGoods": "Amulets & Mail Order"
+  },
+  "faq": {
+    "title": "FAQ"
   }
 }
