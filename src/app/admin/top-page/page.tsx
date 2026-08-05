@@ -5,7 +5,7 @@ import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
 const J = (v: unknown) => JSON.stringify(v)
 
-type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text' }
+type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
 type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string }
 type Field = TextField | ListFieldDef
 
@@ -14,20 +14,20 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     section: 'ヒーローセクション',
     fields: [
       { key: 'hero_en',    label: '英語サブタイトル', hint: '例：Nikkozan Chuzenji Temple', defaultValue: 'Nikkozan Chuzenji Temple' },
-      { key: 'hero_title', label: 'キャッチコピー', hint: '改行は「\\n」で入力してください', multiline: true, defaultValue: '中禅寺湖畔に佇む、\n祈りと巡礼の寺' },
+      { key: 'hero_title', label: 'キャッチコピー', hint: '改行は「\\n」で入力してください', multiline: true, defaultValue: '中禅寺湖畔に佇む、\n祈りと巡礼の寺', translatable: true },
     ],
   },
   {
     section: 'お知らせ・SNS',
     fields: [
-      { key: 'top_sns_heading',  label: 'SNSバナーの見出し', defaultValue: '公式SNSでも最新情報を発信中' },
-      { key: 'top_heading_news', label: '「お知らせ」見出し', defaultValue: 'お知らせ' },
+      { key: 'top_sns_heading',  label: 'SNSバナーの見出し', defaultValue: '公式SNSでも最新情報を発信中', translatable: true },
+      { key: 'top_heading_news', label: '「お知らせ」見出し', defaultValue: 'お知らせ', translatable: true },
     ],
   },
   {
     section: '立木観音について',
     fields: [
-      { key: 'top_heading_about', label: 'セクション見出し', defaultValue: '立木観音について' },
+      { key: 'top_heading_about', label: 'セクション見出し', defaultValue: '立木観音について', translatable: true },
       {
         key: 'top_about_cards', label: 'カード（歴史・拝観料金・境内案内・年間行事の順、4件固定）', type: 'list',
         listFields: [{ key: 'label', label: 'タイトル' }, { key: 'desc', label: '説明' }],
@@ -43,7 +43,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
   {
     section: '近日の行事',
     fields: [
-      { key: 'top_heading_events', label: 'セクション見出し', defaultValue: '近日の行事' },
+      { key: 'top_heading_events', label: 'セクション見出し', defaultValue: '近日の行事', translatable: true },
     ],
   },
   {
@@ -65,7 +65,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
   {
     section: '受ける',
     fields: [
-      { key: 'top_heading_service', label: 'セクション見出し', defaultValue: '受ける' },
+      { key: 'top_heading_service', label: 'セクション見出し', defaultValue: '受ける', translatable: true },
       {
         key: 'top_service_cards', label: 'カード（御朱印・授与品通販の順、2件固定。授与品カードには通販サイト／代金引換の2ボタンを表示）', type: 'list',
         listFields: [{ key: 'title', label: 'タイトル' }, { key: 'text', label: '説明文', multiline: true }, { key: 'info', label: '価格・補足' }],
@@ -79,16 +79,16 @@ const FIELDS: { section: string; fields: Field[] }[] = [
   {
     section: '過去の実績',
     fields: [
-      { key: 'top_heading_records', label: 'セクション見出し', defaultValue: '過去の実績', hint: '記事の中身は「ブログ管理」から追加・編集してください。ここでは公開済みブログ記事の最新6件が自動で表示されます。' },
+      { key: 'top_heading_records', label: 'セクション見出し', defaultValue: '過去の実績', hint: '記事の中身は「ブログ管理」から追加・編集してください。ここでは公開済みブログ記事の最新6件が自動で表示されます。', translatable: true },
     ],
   },
   {
     section: 'アクセス',
     fields: [
-      { key: 'top_heading_access', label: 'セクション見出し', defaultValue: 'アクセス' },
-      { key: 'access_address', label: '住所', multiline: true, defaultValue: '〒321-1661\n栃木県日光市中宮祠2578' },
-      { key: 'access_car',     label: '車でのアクセス', multiline: true, defaultValue: '日光宇都宮道路 日光ICより約40分\n（いろは坂経由）' },
-      { key: 'access_bus',     label: '電車・バスでのアクセス', multiline: true, defaultValue: '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩3分' },
+      { key: 'top_heading_access', label: 'セクション見出し', defaultValue: 'アクセス', translatable: true },
+      { key: 'access_address', label: '住所', multiline: true, defaultValue: '〒321-1661\n栃木県日光市中宮祠2578', translatable: true },
+      { key: 'access_car',     label: '車でのアクセス', multiline: true, defaultValue: '日光宇都宮道路 日光ICより約40分\n（いろは坂経由）', translatable: true },
+      { key: 'access_bus',     label: '電車・バスでのアクセス', multiline: true, defaultValue: '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩3分', translatable: true },
     ],
   },
 ]
@@ -164,6 +164,34 @@ export default function TopPageEditor() {
                       {saving === field.key ? '保存中...' : saved === field.key ? '✓ 保存しました' : '保存'}
                     </button>
                   </div>
+                  {'translatable' in field && field.translatable && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
+                      {field.multiline ? (
+                        <textarea
+                          className="admin-input min-h-[80px]"
+                          value={values[`${field.key}_en`] ?? ''}
+                          onChange={e => setValues(v => ({ ...v, [`${field.key}_en`]: e.target.value }))}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          className="admin-input"
+                          value={values[`${field.key}_en`] ?? ''}
+                          onChange={e => setValues(v => ({ ...v, [`${field.key}_en`]: e.target.value }))}
+                        />
+                      )}
+                      <div className="mt-2 flex justify-end">
+                        <button
+                          onClick={() => save(`${field.key}_en`)}
+                          disabled={saving === `${field.key}_en`}
+                          className="btn-primary text-sm px-5 py-2 disabled:opacity-50"
+                        >
+                          {saving === `${field.key}_en` ? '保存中...' : saved === `${field.key}_en` ? '✓ 保存しました' : '保存'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

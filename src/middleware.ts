@@ -1,7 +1,11 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import createIntlMiddleware from 'next-intl/middleware'
+import { routing } from './i18n/routing'
 
-export async function middleware(request: NextRequest) {
+const intlMiddleware = createIntlMiddleware(routing)
+
+async function adminAuthMiddleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -64,6 +68,15 @@ export async function middleware(request: NextRequest) {
   return supabaseResponse
 }
 
+export async function middleware(request: NextRequest) {
+  // 管理画面は [locale] の外にあるため、ロケール解決を行わず認証のみ実施
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    return adminAuthMiddleware(request)
+  }
+
+  return intlMiddleware(request)
+}
+
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/((?!api|_next|_vercel|.*\\..*).*)'],
 }

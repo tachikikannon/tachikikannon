@@ -1,0 +1,35 @@
+{
+  "common": {
+    "langSwitch": "English"
+  },
+  "header": {
+    "about": "拝観案内",
+    "access": "アクセス",
+    "prayer": "御祈願",
+    "experience": "体験",
+    "goshuin": "御朱印",
+    "goods": "授与品・通販",
+    "annualEvents": "年間行事",
+    "faq": "よくある質問",
+    "contact": "お問い合わせ",
+    "onsenjiLink": "→ 日光山温泉寺サイトへ"
+  },
+  "home": {
+    "ctaAbout": "参拝のご案内",
+    "ctaPrayer": "御祈願を見る",
+    "ctaAccess": "アクセスを見る",
+    "seeMore": "詳しく見る",
+    "newsEmpty": "現在お知らせはありません",
+    "newsMore": "お知らせ一覧を見る →",
+    "eventsMore": "行事カレンダーをすべて見る →",
+    "recordsMore": "過去の実績をもっと見る →",
+    "recordsEmpty": "現在掲載している実績はありません",
+    "noImage": "画像なし",
+    "shopLink": "通販サイトへ",
+    "codLink": "代金引換で申し込む",
+    "experienceHeading": "祈る・体験する",
+    "accessAddressLabel": "住所",
+    "accessCarLabel": "車でのアクセス",
+    "accessBusLabel": "電車・バスでのアクセス"
+  }
+}

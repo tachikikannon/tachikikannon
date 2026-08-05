@@ -1,29 +1,38 @@
 'use client'
-import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-
-const navLinks = [
-  { href: '/about',          label: '拝観案内' },
-  { href: '/#access',        label: 'アクセス' },
-  { href: '/prayer',         label: '御祈願' },
-  { href: '/#experience',    label: '体験' },
-  { href: '/goshuin',        label: '御朱印' },
-  { href: 'https://chuzenji.official.ec/', label: '授与品・通販', external: true },
-  { href: '/annual-events',  label: '年間行事' },
-  { href: '/faq',            label: 'よくある質問' },
-  { href: '/contact',        label: 'お問い合わせ' },
-]
+import { useLocale, useTranslations } from 'next-intl'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const locale = useLocale()
+  const pathname = usePathname()
+  const router = useRouter()
+  const t = useTranslations('header')
+  const tc = useTranslations('common')
+
+  const navLinks = [
+    { href: '/about',          label: t('about') },
+    { href: '/#access',        label: t('access') },
+    { href: '/prayer',         label: t('prayer') },
+    { href: '/#experience',    label: t('experience') },
+    { href: '/goshuin',        label: t('goshuin') },
+    { href: 'https://chuzenji.official.ec/', label: t('goods'), external: true },
+    { href: '/annual-events',  label: t('annualEvents') },
+    { href: '/faq',            label: t('faq') },
+    { href: '/contact',        label: t('contact') },
+  ]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  const otherLocale = locale === 'ja' ? 'en' : 'ja'
+  const switchLocale = () => router.replace(pathname, { locale: otherLocale })
 
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-shadow duration-300 bg-navy ${scrolled ? 'shadow-lg' : ''}`}>
@@ -52,7 +61,7 @@ export default function Header() {
         </div>
 
         {/* PC ナビ */}
-        <nav className="hidden md:flex gap-6">
+        <nav className="hidden md:flex items-center gap-6">
           {navLinks.map(({ href, label, external }) => (
             external
               ? <a key={href} href={href} target="_blank" rel="noopener"
@@ -60,6 +69,10 @@ export default function Header() {
               : <Link key={href} href={href}
                   className="text-white/80 hover:text-gold text-sm tracking-wide transition-colors">{label}</Link>
           ))}
+          <button onClick={switchLocale}
+            className="text-white/60 hover:text-gold text-xs tracking-wide border border-white/30 rounded px-2 py-1 transition-colors">
+            {tc('langSwitch')}
+          </button>
         </nav>
 
         {/* ハンバーガー */}
@@ -84,8 +97,12 @@ export default function Header() {
           ))}
           <Link href="/onsenji" onClick={() => setMenuOpen(false)}
             className="block px-6 py-3 text-[#7ec8a4]/80 hover:text-[#7ec8a4] border-b border-white/10 text-sm">
-            → 日光山温泉寺サイトへ
+            {t('onsenjiLink')}
           </Link>
+          <button onClick={() => { switchLocale(); setMenuOpen(false) }}
+            className="block w-full text-left px-6 py-3 text-white/60 hover:text-gold text-sm">
+            {tc('langSwitch')}
+          </button>
         </div>
       )}
     </header>

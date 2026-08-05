@@ -1,0 +1,35 @@
+{
+  "common": {
+    "langSwitch": "日本語"
+  },
+  "header": {
+    "about": "Visiting",
+    "access": "Access",
+    "prayer": "Prayer Services",
+    "experience": "Experiences",
+    "goshuin": "Goshuin Stamps",
+    "goods": "Shop / Mail Order",
+    "annualEvents": "Annual Events",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "onsenjiLink": "→ Nikkozan Onsenji Temple Site"
+  },
+  "home": {
+    "ctaAbout": "Visit Information",
+    "ctaPrayer": "View Prayer Services",
+    "ctaAccess": "View Access",
+    "seeMore": "Learn More",
+    "newsEmpty": "No announcements at this time",
+    "newsMore": "View All Announcements →",
+    "eventsMore": "View Full Event Calendar →",
+    "recordsMore": "View More Past Events →",
+    "recordsEmpty": "No past events listed at this time",
+    "noImage": "No Image",
+    "shopLink": "Online Shop",
+    "codLink": "Order by Cash on Delivery",
+    "experienceHeading": "Prayer & Experiences",
+    "accessAddressLabel": "Address",
+    "accessCarLabel": "By Car",
+    "accessBusLabel": "By Train / Bus"
+  }
+}
