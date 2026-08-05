@@ -1,20 +1,33 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
+import { getLocalizedContent } from '@/lib/site-content'
+import type { Locale } from '@/i18n/routing'
 
-export const metadata: Metadata = {
-  title: '薬師講大祭・採灯大護摩供（8月8日） | 日光山温泉寺',
-  description: '毎年8月8日開催。湯の湖畔にて山伏による採灯大護摩供を厳修。温泉寺最大の法要のご案内。',
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'onsenjiYakushiko' })
+  const dateSuffix = locale === 'en' ? ' (August 8)' : '（8月8日）'
+  return {
+    title: `${t('title')}${dateSuffix} | 日光山温泉寺`,
+    description: '毎年8月8日開催。湯の湖畔にて山伏による採灯大護摩供を厳修。温泉寺最大の法要のご案内。',
+  }
 }
 
 const DEFAULT_SCHEDULE = [
   { time: '11:00', title: '薬師講大祭', desc: '薬師堂にてご本尊・薬師瑠璃光如来への法要を執り行います。ご信徒・参拝者の皆様とともに薬師経をお唱えし、健康増進・病気平癒をご祈念いたします。' },
   { time: '11:30', title: '採灯大護摩供', desc: '湯の湖畔にて、山伏装束に身を包んだ僧侶たちによる採灯大護摩供を厳修いたします。護摩の炎に願い事を記した護摩木や写経を奉じ、薬師如来の御加護を祈ります。' },
   { time: '終了後', title: '写経奉納・御朱印授与', desc: '写経体験でお写しいただいた写経を御本尊に奉納いたします。特別御朱印のお授けも行います。' },
+]
+const DEFAULT_SCHEDULE_EN = [
+  { time: '11:00', title: 'Yakushiko Grand Ceremony', desc: 'A ceremony to the principal image, Yakushi Ruriko Nyorai, is held at the Yakushi Hall. Together with devotees and visitors, we chant the Yakushi Sutra and pray for improved health and recovery from illness.' },
+  { time: '11:30', title: 'Saito Goma Fire Ritual', desc: 'On the shore of Lake Yunoko, monks dressed as mountain ascetics (yamabushi) solemnly perform the Saito Goma fire ritual. Wooden goma sticks inscribed with wishes and copied sutras are offered to the flames, praying for the protection of Yakushi Nyorai.' },
+  { time: 'After the Ceremony', title: 'Sutra Offering & Goshuin Distribution', desc: 'Sutras copied during the sutra-copying experience are offered to the principal image. A special goshuin stamp is also given.' },
 ]
 
 const DEFAULT_NOTES = [
@@ -23,21 +36,40 @@ const DEFAULT_NOTES = [
   { text: 'お支払いは当日・現地にてお受けいたします。' },
   { text: '詳細・変更がある場合は当サイトまたはお電話にてご確認ください。' },
 ]
+const DEFAULT_NOTES_EN = [
+  { text: 'Attendance is open to all — no advance registration required. If you would like an ofuda talisman or wish offering, please apply via the application form.' },
+  { text: 'The sutra-copying experience (¥1,000) is accepted daily during the open season. Same-day sutra offering is also possible.' },
+  { text: 'Payment is accepted on the day, on site.' },
+  { text: 'Please check our website or call us for any details or changes.' },
+]
 
 const DEFAULTS: Record<string, string> = {
   yakushiko_subtitle: '毎年8月8日　午前11時より',
+  yakushiko_subtitle_en: 'Held every year on August 8, from 11:00 AM',
   yakushiko_heading_about: '行事について',
+  yakushiko_heading_about_en: 'About the Event',
   yakushiko_about: '毎年8月8日、温泉寺では湯の湖畔を舞台に、山伏によって採灯大護摩供が焚かれます。写経体験でお写しいただいた写経が御本尊に奉じられ、護摩の炎で焚き上げられます。薬師如来の御加護のもと、参拝者の願いが天に届けられる、温泉寺最大の法要です。',
+  yakushiko_about_en: 'Every August 8, mountain ascetics (yamabushi) perform the Saito Goma fire ritual on the shore of Lake Yunoko. Sutras copied during the sutra-copying experience are offered to the principal image and burned in the goma flames. Under the protection of Yakushi Nyorai, visitors\' wishes are carried to the heavens — the largest ceremony of the year at Onsenji.',
   yakushiko_info_date: '8月8日（毎年）',
+  yakushiko_info_date_en: 'August 8 (annually)',
   yakushiko_info_time: '午前11時〜',
+  yakushiko_info_time_en: 'From 11:00 AM',
   yakushiko_info_join: '自由（申し込み不要）',
+  yakushiko_info_join_en: 'Open to all (no registration needed)',
   yakushiko_heading_schedule: 'タイムスケジュール',
+  yakushiko_heading_schedule_en: 'Schedule',
   yakushiko_heading_gallery: '行事の様子',
+  yakushiko_heading_gallery_en: 'Photos from the Event',
   yakushiko_heading_notes: 'ご参列にあたって',
+  yakushiko_heading_notes_en: 'Notes for Attendees',
   yakushiko_cta_heading: '御札のお申し込み',
+  yakushiko_cta_heading_en: 'Ofuda Talisman Application',
   yakushiko_cta_text: '大護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
+  yakushiko_cta_text_en: 'If you would like an ofuda talisman burned in the grand goma fire ritual,\nplease apply via the application form.\nPayment is accepted on the day, on site.',
   yakushiko_schedule: JSON.stringify(DEFAULT_SCHEDULE),
+  yakushiko_schedule_en: JSON.stringify(DEFAULT_SCHEDULE_EN),
   yakushiko_notes: JSON.stringify(DEFAULT_NOTES),
+  yakushiko_notes_en: JSON.stringify(DEFAULT_NOTES_EN),
 }
 
 const GALLERY_IMAGES = [
@@ -67,10 +99,19 @@ async function getContent() {
   } catch { return DEFAULTS }
 }
 
-export default async function YakushikoPage() {
-  const c = await getContent()
-  const schedule = pj<typeof DEFAULT_SCHEDULE>(c.yakushiko_schedule, DEFAULT_SCHEDULE)
-  const notes    = pj<typeof DEFAULT_NOTES>(c.yakushiko_notes, DEFAULT_NOTES)
+export default async function YakushikoPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('onsenjiYakushiko')
+  const tc = await getTranslations('common')
+  const content = await getContent()
+  const g = (key: string) => getLocalizedContent(content, key, loc)
+  const schedule = pj<typeof DEFAULT_SCHEDULE>(g('yakushiko_schedule'), DEFAULT_SCHEDULE)
+  const notes    = pj<typeof DEFAULT_NOTES>(g('yakushiko_notes'), DEFAULT_NOTES)
 
   return (
     <>
@@ -78,17 +119,17 @@ export default async function YakushikoPage() {
       <main className="pt-16">
         <div className="bg-onsenji/5 px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/onsenji">ホーム</Link> &gt; <Link href="/onsenji/events">年間行事</Link> &gt; 薬師講大祭・採灯大護摩供
+            <Link href="/onsenji">{tc('breadcrumbHome')}</Link> &gt; <Link href="/onsenji/events">{t('eventsLabel')}</Link> &gt; {t('breadcrumb')}
           </div>
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <ZoomableImage src="/images/温泉寺法楽/saitougoma-onsen.JPEG" alt="薬師講大祭・採灯大護摩供" fill className="object-cover" />
+          <ZoomableImage src="/images/温泉寺法楽/saitougoma-onsen.JPEG" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-onsenji via-onsenji/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
-            <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">August 8th  Annual Event</p>
-            <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">薬師講大祭・採灯大護摩供</h1>
-            <p className="text-white/70 text-sm mt-3">{c.yakushiko_subtitle}</p>
+            <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">{t('eraLabel')}</p>
+            <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">{t('title')}</h1>
+            <p className="text-white/70 text-sm mt-3">{g('yakushiko_subtitle')}</p>
           </div>
         </section>
 
@@ -97,14 +138,14 @@ export default async function YakushikoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_about}</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{g('yakushiko_heading_about')}</h2>
             </div>
-            <p className="text-sm text-gray-700 leading-loose">{c.yakushiko_about}</p>
+            <p className="text-sm text-gray-700 leading-loose">{g('yakushiko_about')}</p>
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: '開催日', value: c.yakushiko_info_date },
-                { label: '開始時間', value: c.yakushiko_info_time },
-                { label: '参列', value: c.yakushiko_info_join },
+                { label: t('infoDate'), value: g('yakushiko_info_date') },
+                { label: t('infoTime'), value: g('yakushiko_info_time') },
+                { label: t('infoJoin'), value: g('yakushiko_info_join') },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-onsenji/5 rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-400 mb-1">{label}</p>
@@ -117,7 +158,7 @@ export default async function YakushikoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_schedule}</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{g('yakushiko_heading_schedule')}</h2>
             </div>
             <ol className="relative border-l-2 border-[#7ec8a4]/40 ml-5 space-y-8">
               {schedule.map(({ time, title, desc }, i) => (
@@ -140,7 +181,7 @@ export default async function YakushikoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_gallery}</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{g('yakushiko_heading_gallery')}</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {GALLERY_IMAGES.map((src, i) => (
@@ -154,7 +195,7 @@ export default async function YakushikoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-[#7ec8a4] rounded-full" />
-              <h2 className="font-serif text-2xl text-onsenji">{c.yakushiko_heading_notes}</h2>
+              <h2 className="font-serif text-2xl text-onsenji">{g('yakushiko_heading_notes')}</h2>
             </div>
             <div className="space-y-3">
               {notes.map(({ text }, i) => (
@@ -167,20 +208,20 @@ export default async function YakushikoPage() {
           </section>
 
           <div className="bg-onsenji rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-xl mb-2">{c.yakushiko_cta_heading}</p>
+            <p className="font-serif text-xl mb-2">{g('yakushiko_cta_heading')}</p>
             <p className="text-white/70 text-sm mb-6">
-              {c.yakushiko_cta_text.split('\n').map((line: string, i: number) => (
+              {g('yakushiko_cta_text').split('\n').map((line: string, i: number) => (
                 <span key={i}>{line}<br /></span>
               ))}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/onsenji/events/yakushiko/apply"
                 className="inline-block px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm">
-                申し込みフォームへ
+                {t('applyCta')}
               </Link>
               <Link href="/onsenji/contact"
                 className="inline-block px-8 py-3 border border-white/40 text-white rounded-full hover:bg-white/10 transition-colors text-sm">
-                お問い合わせ
+                {t('contactCta')}
               </Link>
             </div>
           </div>
@@ -188,11 +229,11 @@ export default async function YakushikoPage() {
           <div className="flex gap-4">
             <Link href="/onsenji/events"
               className="flex-1 text-center py-3 border border-onsenji/20 rounded-xl text-sm text-onsenji hover:bg-onsenji hover:text-white transition-colors">
-              ← 年間行事一覧
+              {t('quickEvents')}
             </Link>
             <Link href="/onsenji/events/setsubun"
               className="flex-1 text-center py-3 border border-onsenji/20 rounded-xl text-sm text-onsenji hover:bg-onsenji hover:text-white transition-colors">
-              1月 節分大祭 →
+              {t('quickSetsubun')}
             </Link>
           </div>
         </div>
