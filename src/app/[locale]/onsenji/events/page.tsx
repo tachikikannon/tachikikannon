@@ -1,15 +1,22 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
+import { getLocalizedContent } from '@/lib/site-content'
+import type { Locale } from '@/i18n/routing'
 import type { MinorEvent } from '@/types'
 
-export const metadata: Metadata = {
-  title: '年間行事 | 日光山温泉寺',
-  description: '日光山温泉寺の年間行事・法要のご案内。8月8日 薬師講大祭・採灯大護摩供、1月下旬 節分大祭。',
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'onsenjiEvents' })
+  return {
+    title: `${t('title')} | 日光山温泉寺`,
+    description: '日光山温泉寺の年間行事・法要のご案内。8月8日 薬師講大祭・採灯大護摩供、1月下旬 節分大祭。',
+  }
 }
 
 const DEFAULT_EVENTS = [
@@ -28,6 +35,22 @@ const DEFAULT_EVENTS = [
     desc: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。',
   },
 ]
+const DEFAULT_EVENTS_EN = [
+  {
+    month: 'August',
+    date: 'August 8',
+    time: 'From 11:00 AM',
+    name: 'Yakushiko Grand Festival & Saito Goma Fire Ritual',
+    desc: 'On the shore of Lake Yunoko, mountain ascetics (yamabushi) perform the Saito Goma fire ritual. Copied sutras are offered to the principal image and burned in the goma flames — the largest ceremony of the year at Onsenji.',
+  },
+  {
+    month: 'January',
+    date: 'Late January',
+    time: 'From 11:00 AM',
+    name: 'Onsenji Setsubun Grand Festival',
+    desc: 'A Setsubun ceremony to drive away misfortune and welcome good luck for the new year. Bean-throwing and a goma fire ritual pray for the health and happiness of all visitors in the year ahead.',
+  },
+]
 const EVENT_IMAGES = ['/images/温泉寺法楽/saitougoma-onsen.JPEG', '/images/温泉寺節分/onsenji-setubun-hiro.JPG']
 const EVENT_ALTS = ['薬師講大祭・採灯大護摩供', '節分大祭']
 const EVENT_HREFS = ['/onsenji/events/yakushiko', '/onsenji/events/setsubun']
@@ -35,7 +58,9 @@ const EVENT_APPLIES = ['/onsenji/events/yakushiko/apply', '/onsenji/events/setsu
 
 const DEFAULTS: Record<string, string> = {
   onsenji_events_subtitle: '温泉寺の法要・行事のご案内',
+  onsenji_events_subtitle_en: 'Onsenji Ceremonies & Events',
   onsenji_events_list: JSON.stringify(DEFAULT_EVENTS),
+  onsenji_events_list_en: JSON.stringify(DEFAULT_EVENTS_EN),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -89,14 +114,25 @@ function monthNumOf(label: string): number {
   return Number.isFinite(n) && n >= 1 && n <= 12 ? n : 13
 }
 
-export default async function OnsenjEventsPage() {
+const MONTH_NAMES_EN = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+export default async function OnsenjEventsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('onsenjiEvents')
+  const tc = await getTranslations('common')
   const [c, minorEvents] = await Promise.all([getContent(), getMinorEvents()])
-  const events = pj<typeof DEFAULT_EVENTS>(c.onsenji_events_list, DEFAULT_EVENTS)
+  const g = (key: string) => getLocalizedContent(c, key, loc)
+  const events = pj<typeof DEFAULT_EVENTS>(g('onsenji_events_list'), DEFAULT_EVENTS)
 
   const cards: EventCard[] = [
     ...events.map((ev, i): EventCard => ({
-      key: `fixed-${ev.date}`,
-      monthNum: monthNumOf(ev.month),
+      key: `fixed-${i}`,
+      monthNum: monthNumOf(DEFAULT_EVENTS[i]?.month ?? ev.month),
       monthLabel: ev.month,
       dateLabel: ev.date,
       timeLabel: ev.time,
@@ -132,22 +168,24 @@ export default async function OnsenjEventsPage() {
       <main className="pt-16">
         <div className="bg-onsenji/5 px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/onsenji">ホーム</Link> &gt; 年間行事
+            <Link href="/onsenji">{tc('breadcrumbHome')}</Link> &gt; {t('title')}
           </div>
         </div>
 
         <section className="bg-onsenji py-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#7ec8a4 0,#7ec8a4 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3 relative">Annual Events</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">年間行事</h1>
-          <p className="text-white/60 text-sm mt-3 relative">{c.onsenji_events_subtitle}</p>
+          <h1 className="font-serif text-4xl text-white tracking-widest relative">{t('title')}</h1>
+          <p className="text-white/60 text-sm mt-3 relative">{g('onsenji_events_subtitle')}</p>
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-14 space-y-14">
           {monthGroups.map(group => (
             <section key={group.month}>
               <div className="flex items-center gap-4 mb-6">
-                <h2 className="font-serif text-2xl text-onsenji whitespace-nowrap">{group.month === 0 ? '毎月' : `${group.month}月`}</h2>
+                <h2 className="font-serif text-2xl text-onsenji whitespace-nowrap">
+                  {group.month === 0 ? t('everyMonth') : (loc === 'en' ? MONTH_NAMES_EN[group.month] : `${group.month}月`)}
+                </h2>
                 <div className="h-px flex-1 bg-[#7ec8a4]/30" />
               </div>
               <div className="space-y-10">
@@ -169,12 +207,12 @@ export default async function OnsenjEventsPage() {
                       <div className="flex flex-col sm:flex-row gap-3 pt-2">
                         <Link href={ev.href}
                           className="flex-1 text-center px-6 py-2.5 bg-onsenji text-white text-sm font-medium rounded-full hover:bg-onsenji/80 transition-colors">
-                          詳細を見る
+                          {t('detailCta')}
                         </Link>
                         {ev.applyHref && (
                           <Link href={ev.applyHref}
                             className="flex-1 text-center px-6 py-2.5 bg-[#7ec8a4] text-onsenji text-sm font-medium rounded-full hover:bg-[#a0d8bc] transition-colors">
-                            申し込みフォーム
+                            {t('applyCta')}
                           </Link>
                         )}
                       </div>
@@ -186,7 +224,7 @@ export default async function OnsenjEventsPage() {
           ))}
 
           <div className="bg-onsenji/5 border border-onsenji/10 rounded-2xl p-6 text-center text-sm text-gray-600">
-            ご不明な点はお電話（<a href="tel:0288-55-0013" className="text-onsenji font-medium">0288-55-0013</a>）またはお問い合わせフォームにてお気軽にお問い合わせください。
+            {t('contactPrefix')}<a href="tel:0288-55-0013" className="text-onsenji font-medium">0288-55-0013</a>{t('contactSuffix')}
           </div>
         </div>
       </main>

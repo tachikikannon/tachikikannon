@@ -317,7 +317,7 @@ const SECTIONS: Section[] = [
     section: '年間行事一覧',
     href: '/onsenji/events',
     fields: [
-      { key: 'onsenji_events_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '温泉寺の法要・行事のご案内' },
+      { key: 'onsenji_events_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '温泉寺の法要・行事のご案内', translatable: true },
       {
         key: 'onsenji_events_list', label: '行事一覧（画像・リンク先は固定・2件）', type: 'list',
         listFields: [

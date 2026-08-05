@@ -56,6 +56,14 @@
     "quickGrounds": "Grounds Guide",
     "quickFaq": "FAQ"
   },
+  "onsenjiEvents": {
+    "title": "Annual Events",
+    "everyMonth": "Monthly",
+    "detailCta": "View Details",
+    "applyCta": "Application Form",
+    "contactPrefix": "For questions, please feel free to call (",
+    "contactSuffix": ") or use the contact form."
+  },
   "onsenjiFaq": {
     "title": "FAQ"
   },

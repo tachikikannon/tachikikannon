@@ -4,7 +4,7 @@ import SectionEditor from '@/components/admin/SectionEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
-  { key: 'onsenji_events_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '温泉寺の法要・行事のご案内' },
+  { key: 'onsenji_events_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '温泉寺の法要・行事のご案内', translatable: true },
   {
     key: 'onsenji_events_list', label: '行事一覧（画像・リンク先は固定・2件）', type: 'list' as const,
     listFields: [
