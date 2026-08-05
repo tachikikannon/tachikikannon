@@ -36,6 +36,15 @@
     "accessCarLabel": "By Car",
     "accessBusLabel": "By Train / Bus"
   },
+  "onsenjiAbout": {
+    "title": "Visiting",
+    "tableHours": "Visiting Hours",
+    "tableFee": "Admission Fee",
+    "tableHoliday": "Closure Period",
+    "quickOnsen": "Yakushi-no-Yu Hot Spring",
+    "quickGoshuin": "Goshuin Stamps",
+    "quickFaq": "FAQ"
+  },
   "home": {
     "ctaAbout": "Visit Information",
     "ctaPrayer": "View Prayer Services",

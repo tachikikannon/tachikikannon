@@ -109,12 +109,12 @@ const SECTIONS: Section[] = [
     section: '拝観案内',
     href: '/onsenji/about',
     fields: [
-      { key: 'onsenji_about_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '拝観時間・参拝料のご案内' },
-      { key: 'onsenji_about_heading_hours', label: '「拝観時間・参拝料」見出し', defaultValue: '拝観時間・参拝料' },
-      { key: 'onsenji_about_hours_open',   label: '拝観時間', defaultValue: '8時00分〜17時00分' },
-      { key: 'onsenji_about_fee', label: '参拝料', defaultValue: '無料' },
-      { key: 'onsenji_about_hours_winter', label: '冬季休業期間', defaultValue: '12月〜4月上旬は冬季休業。閉湯・開湯の日程は公式ホームページをご確認ください。' },
-      { key: 'onsenji_about_heading_notes', label: '「ご参拝の注意事項」見出し', defaultValue: 'ご参拝の注意事項' },
+      { key: 'onsenji_about_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '拝観時間・参拝料のご案内', translatable: true },
+      { key: 'onsenji_about_heading_hours', label: '「拝観時間・参拝料」見出し', defaultValue: '拝観時間・参拝料', translatable: true },
+      { key: 'onsenji_about_hours_open',   label: '拝観時間', defaultValue: '8時00分〜17時00分', translatable: true },
+      { key: 'onsenji_about_fee', label: '参拝料', defaultValue: '無料', translatable: true },
+      { key: 'onsenji_about_hours_winter', label: '冬季休業期間', defaultValue: '12月〜4月上旬は冬季休業。閉湯・開湯の日程は公式ホームページをご確認ください。', translatable: true },
+      { key: 'onsenji_about_heading_notes', label: '「ご参拝の注意事項」見出し', defaultValue: 'ご参拝の注意事項', translatable: true },
       {
         key: 'onsenji_about_notes', label: 'ご参拝の注意事項', type: 'list',
         listFields: [{ key: 'text', label: '注意事項', multiline: true }],

@@ -36,6 +36,15 @@
     "accessCarLabel": "車でのアクセス",
     "accessBusLabel": "電車・バスでのアクセス"
   },
+  "onsenjiAbout": {
+    "title": "拝観案内",
+    "tableHours": "拝観時間",
+    "tableFee": "参拝料",
+    "tableHoliday": "休業期間",
+    "quickOnsen": "薬師の湯（温泉）",
+    "quickGoshuin": "御朱印",
+    "quickFaq": "よくある質問"
+  },
   "home": {
     "ctaAbout": "参拝のご案内",
     "ctaPrayer": "御祈願を見る",
