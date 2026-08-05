@@ -56,6 +56,21 @@
     "quickGrounds": "境内のご案内",
     "quickFaq": "よくある質問"
   },
+  "contact": {
+    "title": "お問い合わせ",
+    "intro": "ご質問・ご不明な点はお気軽にお問い合わせください。",
+    "nameLabel": "お名前",
+    "emailLabel": "メールアドレス",
+    "subjectLabel": "件名",
+    "messageLabel": "お問い合わせ内容",
+    "submitError": "送信に失敗しました。しばらく経ってから再度お試しください。",
+    "submitting": "送信中...",
+    "submit": "送信する",
+    "phoneContactTitle": "お電話でのお問い合わせ",
+    "phoneHours": "受付時間：拝観時間内",
+    "doneTitle": "お問い合わせを受け付けました",
+    "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。"
+  },
   "annualEvents": {
     "title": "年間行事",
     "eventsLabel": "行事カレンダー",

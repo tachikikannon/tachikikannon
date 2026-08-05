@@ -56,6 +56,21 @@
     "quickGrounds": "Grounds Guide",
     "quickFaq": "FAQ"
   },
+  "contact": {
+    "title": "Contact",
+    "intro": "For questions or anything unclear, please feel free to contact us.",
+    "nameLabel": "Name",
+    "emailLabel": "Email Address",
+    "subjectLabel": "Subject",
+    "messageLabel": "Message",
+    "submitError": "Submission failed. Please try again later.",
+    "submitting": "Submitting...",
+    "submit": "Send",
+    "phoneContactTitle": "Contact by Phone",
+    "phoneHours": "During visiting hours",
+    "doneTitle": "Your Message Has Been Received",
+    "doneText": "We will reply within 3–5 business days. Thank you for your patience."
+  },
   "annualEvents": {
     "title": "Annual Events",
     "eventsLabel": "Event Calendar",
