@@ -1,10 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
 import { getTimeSlots, blockedDateMatchesType } from '@/lib/reservationSlots'
-
-const DAY_LABELS = ['日','月','火','水','木','金','土']
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; type: string; party_size: number; category_id: string | null }
@@ -54,6 +53,10 @@ export default function ReservationCalendar({
   reservationType, selectedDate, selectedTime, onSelectSlot
 }: Props) {
   const supabase = createClient()
+  const t = useTranslations('reservationCalendar')
+  const locale = useLocale()
+  const dateLocale = locale === 'en' ? 'en-US' : 'ja-JP'
+  const DAY_LABELS = t.raw('days') as string[]
   const today = new Date()
   today.setHours(0,0,0,0)
 
@@ -203,14 +206,14 @@ export default function ReservationCalendar({
       <div className="flex items-center justify-between mb-3">
         <button type="button" onClick={prevWeek} disabled={!canGoPrev}
           className="text-sm px-3 py-1.5 border border-gray-200 rounded-lg disabled:opacity-30 hover:border-navy transition-colors">
-          ← 前の1週間
+          {t('prevWeek')}
         </button>
         <span className="text-sm text-gray-500">
           {weekDays[0].getMonth()+1}/{weekDays[0].getDate()} 〜 {weekDays[6].getMonth()+1}/{weekDays[6].getDate()}
         </span>
         <button type="button" onClick={nextWeek}
           className="text-sm px-3 py-1.5 border border-gray-200 rounded-lg hover:border-navy transition-colors">
-          次の1週間 →
+          {t('nextWeek')}
         </button>
       </div>
 
@@ -218,7 +221,7 @@ export default function ReservationCalendar({
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr>
-            <th className="w-14 border border-gray-200 bg-gray-50 px-2 py-2 text-xs text-gray-500">時間</th>
+            <th className="w-14 border border-gray-200 bg-gray-50 px-2 py-2 text-xs text-gray-500">{t('timeHeader')}</th>
             {weekDays.map(d => {
               const dateStr = toDateStr(d)
               const isPast = d < today
@@ -237,7 +240,7 @@ export default function ReservationCalendar({
                     ${dow === 0 ? 'text-red-500' : dow === 6 ? 'text-blue-500' : 'text-navy'}`}>
                     {d.getDate()}
                   </div>
-                  {isToday && <div className="text-[10px] text-gold font-medium">今日</div>}
+                  {isToday && <div className="text-[10px] text-gold font-medium">{t('today')}</div>}
                 </th>
               )
             })}
@@ -292,15 +295,15 @@ export default function ReservationCalendar({
 
       {/* 凡例 */}
       <div className="flex gap-5 mt-3 text-xs text-gray-500">
-        <span className="flex items-center gap-1.5"><span className="text-teal text-base leading-none">○</span> 予約できます</span>
-        <span className="flex items-center gap-1.5"><span className="text-gray-300 text-base leading-none font-bold">×</span> 予約できません</span>
-        <span className="flex items-center gap-1.5"><span className="bg-navy text-white text-xs px-1 rounded">✓</span> 選択中</span>
+        <span className="flex items-center gap-1.5"><span className="text-teal text-base leading-none">○</span> {t('legendAvailable')}</span>
+        <span className="flex items-center gap-1.5"><span className="text-gray-300 text-base leading-none font-bold">×</span> {t('legendUnavailable')}</span>
+        <span className="flex items-center gap-1.5"><span className="bg-navy text-white text-xs px-1 rounded">✓</span> {t('legendSelected')}</span>
       </div>
 
       {/* 選択中の表示 */}
       {selectedDate && selectedTime && (
         <div className="mt-3 bg-navy/5 border border-navy/20 rounded-lg px-4 py-3 text-sm text-navy">
-          ✓ {new Date(selectedDate + 'T00:00:00').toLocaleDateString('ja-JP', { month: 'long', day: 'numeric', weekday: 'short' })} {selectedTime} を選択しています
+          ✓ {new Date(selectedDate + 'T00:00:00').toLocaleDateString(dateLocale, { month: 'long', day: 'numeric', weekday: 'short' })} {selectedTime}{t('selectedPrefix')}
         </div>
       )}
     </div>
