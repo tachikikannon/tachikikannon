@@ -56,6 +56,29 @@
     "quickGrounds": "境内のご案内",
     "quickFaq": "よくある質問"
   },
+  "photos": {
+    "title": "貸出用写真一覧",
+    "intro": "使用・貸出が可能な写真をご紹介しています。ご希望の写真がございましたら「この写真を申請する」ボタンより申請フォームにお進みください。",
+    "empty": "現在、貸出用の写真はありません。",
+    "photoLabel": "写真",
+    "applyCta": "この写真を申請する"
+  },
+  "news": {
+    "title": "お知らせ",
+    "filterAll": "すべて",
+    "readMore": "続きを読む →",
+    "emptyTitle": "現在お知らせはありません",
+    "emptyText": "お知らせが公開されるとここに表示されます。",
+    "catNews": "お知らせ",
+    "catEvent": "行事案内",
+    "catSeasonal": "季節のお知らせ",
+    "catTraffic": "交通情報",
+    "catGoods": "授与品のお知らせ"
+  },
+  "newsDetail": {
+    "relatedHeading": "同じカテゴリのお知らせ",
+    "backToNews": "← お知らせ一覧に戻る"
+  },
   "codOrder": {
     "title": "代金引換でのお申し込み",
     "breadcrumbGoods": "授与品・通販",

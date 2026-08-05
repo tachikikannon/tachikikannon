@@ -1,12 +1,18 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { createServerClient } from '@/lib/supabase-server'
+import type { Locale } from '@/i18n/routing'
 import type { News, NewsCategory } from '@/types'
 
-export const metadata: Metadata = { title: 'お知らせ' }
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'news' })
+  return { title: t('title') }
+}
 
 const CAT_COLORS: Record<string, string> = {
   'お知らせ':       'bg-navy/10 text-navy',
@@ -17,11 +23,17 @@ const CAT_COLORS: Record<string, string> = {
 }
 
 export default async function NewsPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>
   searchParams: Promise<{ category?: string }>
 }) {
+  const { locale } = await params
+  const loc = locale as Locale
   const { category } = await searchParams
+  const t = await getTranslations('news')
+  const tc = await getTranslations('common')
   const supabase = await createServerClient()
   let query = supabase
     .from('news')
@@ -38,19 +50,27 @@ export default async function NewsPage({
   const news = (items ?? []) as News[]
 
   const CATEGORIES: NewsCategory[] = ['お知らせ','行事案内','季節のお知らせ','交通情報','授与品のお知らせ']
+  const CAT_LABELS: Record<string, string> = {
+    'お知らせ': t('catNews'),
+    '行事案内': t('catEvent'),
+    '季節のお知らせ': t('catSeasonal'),
+    '交通情報': t('catTraffic'),
+    '授与品のお知らせ': t('catGoods'),
+  }
+  const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
 
   return (
     <>
       <Header />
       <main className="pt-16">
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
-          <div className="max-w-4xl mx-auto"><Link href="/">ホーム</Link> &gt; お知らせ</div>
+          <div className="max-w-4xl mx-auto"><Link href="/">{tc('breadcrumbHome')}</Link> &gt; {t('title')}</div>
         </div>
 
         <section className="bg-navy py-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">News</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">お知らせ</h1>
+          <h1 className="font-serif text-4xl text-white tracking-widest relative">{t('title')}</h1>
         </section>
 
         <div className="max-w-4xl mx-auto px-4 py-10">
@@ -58,12 +78,12 @@ export default async function NewsPage({
           <div className="flex flex-wrap gap-2 mb-8">
             <Link href="/news"
               className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${!category ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
-              すべて
+              {t('filterAll')}
             </Link>
             {CATEGORIES.map(cat => (
               <Link key={cat} href={`/news?category=${encodeURIComponent(cat)}`}
                 className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${category === cat ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
-                {cat}
+                {CAT_LABELS[cat] ?? cat}
               </Link>
             ))}
           </div>
@@ -82,16 +102,16 @@ export default async function NewsPage({
                     </div>
                     <div className="p-6 flex flex-col justify-center">
                       <div className="flex items-center gap-2 mb-3">
-                        <span className={`text-xs rounded px-2 py-0.5 ${CAT_COLORS[news[0].category] ?? 'bg-gray-100 text-gray-600'}`}>{news[0].category}</span>
+                        <span className={`text-xs rounded px-2 py-0.5 ${CAT_COLORS[news[0].category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[news[0].category] ?? news[0].category}</span>
                         <time className="text-xs text-gray-400">
-                          {new Date(news[0].published_at ?? news[0].created_at).toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' })}
+                          {new Date(news[0].published_at ?? news[0].created_at).toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
                         </time>
                       </div>
                       <h2 className="font-serif text-xl text-navy mb-2 group-hover:text-gold transition-colors leading-snug">{news[0].title}</h2>
                       <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
                         {news[0].excerpt || news[0].body.slice(0, 100)}
                       </p>
-                      <span className="mt-4 text-xs text-gold">続きを読む →</span>
+                      <span className="mt-4 text-xs text-gold">{t('readMore')}</span>
                     </div>
                   </div>
                 </Link>
@@ -109,9 +129,9 @@ export default async function NewsPage({
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] rounded px-1.5 py-0.5 ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{item.category}</span>
+                        <span className={`text-[10px] rounded px-1.5 py-0.5 ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
                         <time className="text-xs text-gray-400">
-                          {new Date(item.published_at ?? item.created_at).toLocaleDateString('ja-JP')}
+                          {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
                         </time>
                       </div>
                       <p className="text-sm font-medium text-navy group-hover:text-gold transition-colors leading-snug">{item.title}</p>
@@ -124,8 +144,8 @@ export default async function NewsPage({
             </div>
           ) : (
             <div className="text-center py-20 text-gray-400">
-              <p className="text-lg mb-2">現在お知らせはありません</p>
-              <p className="text-sm">お知らせが公開されるとここに表示されます。</p>
+              <p className="text-lg mb-2">{t('emptyTitle')}</p>
+              <p className="text-sm">{t('emptyText')}</p>
             </div>
           )}
         </div>

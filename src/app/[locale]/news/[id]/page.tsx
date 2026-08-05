@@ -1,17 +1,20 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
+import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-  const { id } = await params
+export async function generateMetadata({ params }: { params: Promise<{ id: string; locale: string }> }): Promise<Metadata> {
+  const { id, locale } = await params
   const supabase = await createServerClient()
   const { data } = await supabase.from('news').select('title, excerpt').eq('id', id).single()
-  return { title: data?.title ?? 'お知らせ', description: data?.excerpt ?? undefined }
+  const t = await getTranslations({ locale, namespace: 'news' })
+  return { title: data?.title ?? t('title'), description: data?.excerpt ?? undefined }
 }
 
 const CAT_COLORS: Record<string, string> = {
@@ -22,8 +25,16 @@ const CAT_COLORS: Record<string, string> = {
   '授与品のお知らせ':'bg-purple-100 text-purple-700',
 }
 
-export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+export default async function NewsDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string; locale: string }>
+}) {
+  const { id, locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('news')
+  const tDetail = await getTranslations('newsDetail')
+  const tc = await getTranslations('common')
   const supabase = await createServerClient()
 
   const { data: item } = await supabase
@@ -48,6 +59,15 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
     .order('published_at', { ascending: false })
     .limit(3)
 
+  const CAT_LABELS: Record<string, string> = {
+    'お知らせ': t('catNews'),
+    '行事案内': t('catEvent'),
+    '季節のお知らせ': t('catSeasonal'),
+    '交通情報': t('catTraffic'),
+    '授与品のお知らせ': t('catGoods'),
+  }
+  const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
+
   return (
     <>
       <Header />
@@ -55,7 +75,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
         {/* パンくず */}
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/">ホーム</Link> &gt; <Link href="/news">お知らせ</Link> &gt; <span className="text-gray-600">{news.title}</span>
+            <Link href="/">{tc('breadcrumbHome')}</Link> &gt; <Link href="/news">{t('title')}</Link> &gt; <span className="text-gray-600">{news.title}</span>
           </div>
         </div>
 
@@ -72,10 +92,10 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
             {/* メタ情報 */}
             <div className="flex items-center gap-3 mb-4">
               <span className={`text-xs rounded px-2 py-0.5 ${CAT_COLORS[news.category] ?? 'bg-gray-100 text-gray-600'}`}>
-                {news.category}
+                {CAT_LABELS[news.category] ?? news.category}
               </span>
               <time className="text-xs text-gray-400">
-                {new Date(news.published_at ?? news.created_at).toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' })}
+                {new Date(news.published_at ?? news.created_at).toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
               </time>
             </div>
 
@@ -96,14 +116,14 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
           {/* 関連記事 */}
           {related && related.length > 0 && (
             <div className="mt-10">
-              <h2 className="text-base font-serif text-navy pl-3 border-l-4 border-gold mb-4">同じカテゴリのお知らせ</h2>
+              <h2 className="text-base font-serif text-navy pl-3 border-l-4 border-gold mb-4">{tDetail('relatedHeading')}</h2>
               <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
                 {related.map(r => (
                   <Link key={r.id} href={`/news/${r.id}`}
                     className="flex items-center justify-between px-5 py-3 hover:bg-cream-alt transition-colors group">
                     <span className="text-sm text-navy group-hover:text-gold transition-colors">{r.title}</span>
                     <time className="text-xs text-gray-400 flex-shrink-0 ml-4">
-                      {new Date(r.published_at ?? r.created_at).toLocaleDateString('ja-JP')}
+                      {new Date(r.published_at ?? r.created_at).toLocaleDateString(dateLocale)}
                     </time>
                   </Link>
                 ))}
@@ -113,7 +133,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
 
           <div className="mt-8 text-center">
             <Link href="/news" className="inline-flex items-center gap-1 text-navy text-sm hover:text-gold transition-colors">
-              ← お知らせ一覧に戻る
+              {tDetail('backToNews')}
             </Link>
           </div>
         </div>

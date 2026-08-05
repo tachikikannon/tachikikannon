@@ -56,6 +56,29 @@
     "quickGrounds": "Grounds Guide",
     "quickFaq": "FAQ"
   },
+  "photos": {
+    "title": "Photos Available for Loan",
+    "intro": "Browse photos available for use and loan. If you find one you'd like, click \"Apply to Use This Photo\" to go to the application form.",
+    "empty": "No photos are currently available for loan.",
+    "photoLabel": "Photo",
+    "applyCta": "Apply to Use This Photo"
+  },
+  "news": {
+    "title": "News",
+    "filterAll": "All",
+    "readMore": "Read More →",
+    "emptyTitle": "No announcements at this time",
+    "emptyText": "Announcements will appear here once published.",
+    "catNews": "News",
+    "catEvent": "Event Info",
+    "catSeasonal": "Seasonal Notice",
+    "catTraffic": "Traffic Info",
+    "catGoods": "Amulet & Goods Notice"
+  },
+  "newsDetail": {
+    "relatedHeading": "More in This Category",
+    "backToNews": "← Back to News"
+  },
   "codOrder": {
     "title": "Cash on Delivery Order",
     "breadcrumbGoods": "Shop / Mail Order",
