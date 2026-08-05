@@ -50,6 +50,11 @@
     "aboutHours": "Hours & Admission Fee",
     "history": "History of Onsenji"
   },
+  "onsenjiHistory": {
+    "title": "History of Onsenji",
+    "quickAbout": "About Visiting",
+    "quickGrounds": "Grounds Guide"
+  },
   "home": {
     "ctaAbout": "Visit Information",
     "ctaPrayer": "View Prayer Services",

@@ -50,6 +50,11 @@
     "aboutHours": "拝観時間・料金",
     "history": "温泉寺の歴史"
   },
+  "onsenjiHistory": {
+    "title": "温泉寺の歴史",
+    "quickAbout": "参拝について",
+    "quickGrounds": "境内のご案内"
+  },
   "home": {
     "ctaAbout": "参拝のご案内",
     "ctaPrayer": "御祈願を見る",
