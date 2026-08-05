@@ -55,6 +55,18 @@
     "quickAbout": "About Visiting",
     "quickGrounds": "Grounds Guide"
   },
+  "onsenjiOnsen": {
+    "title": "Yakushi-no-Yu",
+    "breadcrumb": "Yakushi-no-Yu (Hot Spring)",
+    "tableQuality": "Spring Type",
+    "tableTemp": "Water Temperature",
+    "tableFlow": "Water Flow",
+    "tableColor": "Water Color",
+    "tableHours": "Hours",
+    "tableFee": "Fee",
+    "quickAbout": "Hours & Admission Fee",
+    "quickFaq": "FAQ"
+  },
   "home": {
     "ctaAbout": "Visit Information",
     "ctaPrayer": "View Prayer Services",

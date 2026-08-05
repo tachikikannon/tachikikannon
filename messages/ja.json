@@ -55,6 +55,18 @@
     "quickAbout": "参拝について",
     "quickGrounds": "境内のご案内"
   },
+  "onsenjiOnsen": {
+    "title": "薬師の湯",
+    "breadcrumb": "薬師の湯（温泉）",
+    "tableQuality": "泉質",
+    "tableTemp": "泉温",
+    "tableFlow": "湯の種類",
+    "tableColor": "湯の色",
+    "tableHours": "利用時間",
+    "tableFee": "料金",
+    "quickAbout": "拝観時間・料金",
+    "quickFaq": "よくある質問"
+  },
   "home": {
     "ctaAbout": "参拝のご案内",
     "ctaPrayer": "御祈願を見る",
