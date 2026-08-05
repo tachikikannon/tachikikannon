@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import SetsubunApplyForm from './SetsubunApplyForm'
 
-export const metadata: Metadata = { title: '節分大祭 申し込み | 日光山温泉寺' }
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'onsenjiSetsubunApply' })
+  return { title: `${t('formTitle')} | 日光山温泉寺` }
+}
 
 export default function SetsubunApplyPage() {
   return (
