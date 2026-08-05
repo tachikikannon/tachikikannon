@@ -1,10 +1,13 @@
 export const dynamic = 'force-dynamic'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { getLocalizedContent } from '@/lib/site-content'
+import type { Locale } from '@/i18n/routing'
 import type { News, Event, Post } from '@/types'
 
 const DEFAULT_ABOUT_CARDS = [
@@ -45,7 +48,14 @@ const DEFAULT_CONTENT: Record<string, string> = {
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
 
-export default async function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('home')
   const supabase = await createServerSupabaseClient()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -84,6 +94,19 @@ export default async function HomePage() {
     .order('start_date')
     .limit(4)
 
+  const heroEn = getLocalizedContent(content, 'hero_en', loc)
+  const heroTitle = getLocalizedContent(content, 'hero_title', loc)
+  const accessAddress = getLocalizedContent(content, 'access_address', loc)
+  const accessCar = getLocalizedContent(content, 'access_car', loc)
+  const accessBus = getLocalizedContent(content, 'access_bus', loc)
+  const headingSns = getLocalizedContent(content, 'top_sns_heading', loc)
+  const headingNews = getLocalizedContent(content, 'top_heading_news', loc)
+  const headingAbout = getLocalizedContent(content, 'top_heading_about', loc)
+  const headingEvents = getLocalizedContent(content, 'top_heading_events', loc)
+  const headingService = getLocalizedContent(content, 'top_heading_service', loc)
+  const headingRecords = getLocalizedContent(content, 'top_heading_records', loc)
+  const headingAccess = getLocalizedContent(content, 'top_heading_access', loc)
+
   return (
     <>
       <Header />
@@ -93,16 +116,16 @@ export default async function HomePage() {
           <ZoomableImage src="/images/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-navy/50" />
           <div className="relative text-center text-white px-4">
-            <p className="text-gold text-xs tracking-[0.3em] mb-4">{content.hero_en}</p>
+            <p className="text-gold text-xs tracking-[0.3em] mb-4">{heroEn}</p>
             <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-snug mb-6">
-              {content.hero_title.split('\\n').map((line, i) => (
-                <span key={i}>{line}{i < content.hero_title.split('\\n').length - 1 && <br />}</span>
+              {heroTitle.split('\\n').map((line, i) => (
+                <span key={i}>{line}{i < heroTitle.split('\\n').length - 1 && <br />}</span>
               ))}
             </h1>
             <div className="flex flex-wrap gap-3 justify-center">
-              <Link href="/about" className="btn-gold">参拝のご案内</Link>
-              <Link href="/prayer" className="btn-outline">御祈願を見る</Link>
-              <Link href="/#access" className="btn-outline">アクセスを見る</Link>
+              <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>
+              <Link href="/prayer" className="btn-outline">{t('ctaPrayer')}</Link>
+              <Link href="/#access" className="btn-outline">{t('ctaAccess')}</Link>
             </div>
           </div>
         </section>
@@ -110,7 +133,7 @@ export default async function HomePage() {
         {/* SNSバナー */}
         <section className="bg-navy py-6">
           <div className="max-w-4xl mx-auto px-4">
-            <p className="text-white/60 text-xs text-center tracking-widest mb-4">{content.top_sns_heading}</p>
+            <p className="text-white/60 text-xs text-center tracking-widest mb-4">{headingSns}</p>
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
               {[
                 { href:'https://www.instagram.com/tachikikannon/', label:'Instagram', id:'@tachikikannon', bg:'bg-gradient-to-br from-pink-500 to-purple-600' },
@@ -132,7 +155,7 @@ export default async function HomePage() {
         {/* お知らせ */}
         <section className="py-16 bg-cream-alt">
           <div className="max-w-3xl mx-auto px-4">
-            <h2 className="section-title">{content.top_heading_news}</h2>
+            <h2 className="section-title">{headingNews}</h2>
             <div className="section-divider" />
             {newsList && newsList.length > 0 ? (
               <ul className="divide-y divide-gray-200 bg-white rounded-lg shadow-sm">
@@ -150,12 +173,12 @@ export default async function HomePage() {
               </ul>
             ) : (
               <div className="bg-white rounded-lg shadow-sm px-5 py-8 text-center text-gray-400 text-sm">
-                現在お知らせはありません
+                {t('newsEmpty')}
               </div>
             )}
             <div className="text-center mt-6">
               <Link href="/news" className="text-navy text-sm border-b border-navy pb-0.5 hover:text-gold hover:border-gold transition-colors">
-                お知らせ一覧を見る →
+                {t('newsMore')}
               </Link>
             </div>
           </div>
@@ -164,7 +187,7 @@ export default async function HomePage() {
         {/* 立木観音について */}
         <section className="py-12 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">{content.top_heading_about}</h2>
+            <h2 className="section-title">{headingAbout}</h2>
             <div className="section-divider" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
@@ -182,7 +205,7 @@ export default async function HomePage() {
                   <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
                     <p className="font-serif text-navy font-medium text-sm group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>
                     <p className="text-xs text-gray-500">{aboutCards[i]?.desc}</p>
-                    <span className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5">詳しく見る</span>
+                    <span className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5">{t('seeMore')}</span>
                   </div>
                 </a>
               ))}
@@ -194,7 +217,7 @@ export default async function HomePage() {
         {upcomingEvents && upcomingEvents.length > 0 && (
           <section className="py-16">
             <div className="max-w-3xl mx-auto px-4">
-              <h2 className="section-title">{content.top_heading_events}</h2>
+              <h2 className="section-title">{headingEvents}</h2>
               <div className="section-divider" />
               <div className="grid md:grid-cols-2 gap-4">
                 {(upcomingEvents as Event[]).map((ev) => (
@@ -212,7 +235,7 @@ export default async function HomePage() {
               </div>
               <div className="text-center mt-6">
                 <Link href="/events" className="text-navy text-sm border-b border-navy pb-0.5 hover:text-gold hover:border-gold transition-colors">
-                  行事カレンダーをすべて見る →
+                  {t('eventsMore')}
                 </Link>
               </div>
             </div>
@@ -222,7 +245,7 @@ export default async function HomePage() {
         {/* 祈る・体験する */}
         <section id="experience" className="py-16 bg-cream-alt">
           <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">祈る・体験する</h2>
+            <h2 className="section-title">{t('experienceHeading')}</h2>
             <div className="section-divider" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
@@ -240,7 +263,7 @@ export default async function HomePage() {
                     <p className="font-medium text-navy text-sm">{experienceCards[i]?.label}</p>
                     <p className="text-xs text-gray-500">{experienceCards[i]?.sub}</p>
                     <span className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5">
-                      詳しく見る
+                      {t('seeMore')}
                     </span>
                   </div>
                 </Link>
@@ -252,7 +275,7 @@ export default async function HomePage() {
         {/* 受ける */}
         <section className="py-16">
           <div className="max-w-4xl mx-auto px-4">
-            <h2 className="section-title">{content.top_heading_service}</h2>
+            <h2 className="section-title">{headingService}</h2>
             <div className="section-divider" />
             <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               <Link href="/goshuin" className="card card-selectable p-6 text-center block">
@@ -262,7 +285,7 @@ export default async function HomePage() {
                 <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[0]?.title}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[0]?.text}</p>
                 <p className="text-xs text-gold font-medium mb-4">{serviceCards[0]?.info}</p>
-                <span className="btn-primary text-sm px-4 py-2">詳しく見る</span>
+                <span className="btn-primary text-sm px-4 py-2">{t('seeMore')}</span>
               </Link>
 
               <div className="card p-6 text-center">
@@ -275,11 +298,11 @@ export default async function HomePage() {
                 <div className="flex flex-wrap gap-3 justify-center">
                   <a href="https://chuzenji.official.ec/" target="_blank" rel="noopener"
                     className="btn-primary text-sm px-4 py-2 whitespace-nowrap">
-                    通販サイトへ
+                    {t('shopLink')}
                   </a>
                   <Link href="/order/cod"
                     className="inline-block border-2 border-navy text-navy text-sm px-4 py-2 rounded font-medium tracking-wider hover:bg-navy hover:text-white transition-colors whitespace-nowrap">
-                    代金引換で申し込む
+                    {t('codLink')}
                   </Link>
                 </div>
               </div>
@@ -290,7 +313,7 @@ export default async function HomePage() {
         {/* 過去の実績 */}
         <section className="py-16 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">{content.top_heading_records}</h2>
+            <h2 className="section-title">{headingRecords}</h2>
             <div className="section-divider" />
             {pastRecords && pastRecords.length > 0 ? (
               <>
@@ -301,7 +324,7 @@ export default async function HomePage() {
                       <div className="relative h-32 bg-white overflow-hidden">
                         {post.cover_url
                           ? <img src={post.cover_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                          : <div className="flex items-center justify-center h-full text-gray-300 text-xs">画像なし</div>
+                          : <div className="flex items-center justify-center h-full text-gray-300 text-xs">{t('noImage')}</div>
                         }
                       </div>
                       <div className="p-3 flex-1 flex flex-col">
@@ -315,13 +338,13 @@ export default async function HomePage() {
                 </div>
                 <div className="text-center mt-6">
                   <Link href="/blog" className="text-navy text-sm border-b border-navy pb-0.5 hover:text-gold hover:border-gold transition-colors">
-                    過去の実績をもっと見る →
+                    {t('recordsMore')}
                   </Link>
                 </div>
               </>
             ) : (
               <div className="bg-white rounded-lg shadow-sm px-5 py-8 text-center text-gray-400 text-sm">
-                現在掲載している実績はありません
+                {t('recordsEmpty')}
               </div>
             )}
           </div>
@@ -330,7 +353,7 @@ export default async function HomePage() {
         {/* アクセス */}
         <section id="access" className="py-16 bg-cream-alt">
           <div className="max-w-3xl mx-auto px-4">
-            <h2 className="section-title">{content.top_heading_access}</h2>
+            <h2 className="section-title">{headingAccess}</h2>
             <div className="section-divider" />
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <iframe
@@ -344,9 +367,9 @@ export default async function HomePage() {
               />
               <div className="p-6 grid md:grid-cols-3 gap-4">
                 {[
-                  { icon:'📍', title:'住所', body: content.access_address },
-                  { icon:'🚗', title:'車でのアクセス', body: content.access_car },
-                  { icon:'🚌', title:'電車・バスでのアクセス', body: content.access_bus },
+                  { icon:'📍', title: t('accessAddressLabel'), body: accessAddress },
+                  { icon:'🚗', title: t('accessCarLabel'), body: accessCar },
+                  { icon:'🚌', title: t('accessBusLabel'), body: accessBus },
                 ].map(({ icon, title, body }) => (
                   <div key={title}>
                     <p className="font-medium text-navy text-sm mb-1">{icon} {title}</p>
