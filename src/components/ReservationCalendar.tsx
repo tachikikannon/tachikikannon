@@ -57,7 +57,9 @@ export default function ReservationCalendar({
   const locale = useLocale()
   const dateLocale = locale === 'en' ? 'en-US' : 'ja-JP'
   const DAY_LABELS = t.raw('days') as string[]
-  const today = new Date()
+  const now = new Date()
+  const nowMinutes = now.getHours() * 60 + now.getMinutes()
+  const today = new Date(now)
   today.setHours(0,0,0,0)
 
   const [weekStart, setWeekStart] = useState(() => {
@@ -256,12 +258,17 @@ export default function ReservationCalendar({
               {weekDays.map(d => {
                 const dateStr = toDateStr(d)
                 const isPast = d < today
+                const isToday = dateStr === toDateStr(today)
+                const slotMinutes = parseSlotMinutes(slot)
+                // 今日の枠は、開始時刻を過ぎていたら（例: 現在16時なら9:00〜15:30の枠）予約不可にする。
+                // "午前"/"午後" のようなラベル枠は時刻を特定できないためここでは対象外。
+                const slotTimePassed = isToday && slotMinutes != null && slotMinutes <= nowMinutes
                 const blocked = isDateBlocked(dateStr)
                 const override = getOverride(dateStr, slot)
                 const full = isSlotFull(dateStr, slot)
                 const isSelected = selectedDate === dateStr && selectedTime === slot
                 const validSlots = getTimeSlots(reservationType, d.getMonth() + 1)
-                const unavailable = isPast || !!blocked || !!override?.is_closed || full || !validSlots.includes(slot)
+                const unavailable = isPast || slotTimePassed || !!blocked || !!override?.is_closed || full || !validSlots.includes(slot)
 
                 return (
                   <td key={dateStr} className="border border-gray-200 p-1 text-center">
