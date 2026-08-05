@@ -6,15 +6,20 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
+import { pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string; locale: string }> }): Promise<Metadata> {
   const { id, locale } = await params
+  const loc = locale as Locale
   const supabase = await createServerClient()
-  const { data } = await supabase.from('news').select('title, excerpt').eq('id', id).single()
+  const { data } = await supabase.from('news').select('*').eq('id', id).single()
   const t = await getTranslations({ locale, namespace: 'news' })
-  return { title: data?.title ?? t('title'), description: data?.excerpt ?? undefined }
+  return {
+    title: data ? pickLocalized(loc, data.title, data.title_en) : t('title'),
+    description: data ? (pickLocalized(loc, data.excerpt ?? '', data.excerpt_en) || undefined) : undefined,
+  }
 }
 
 const CAT_COLORS: Record<string, string> = {
@@ -51,7 +56,7 @@ export default async function NewsDetailPage({
   // 関連記事（同カテゴリ・最新3件）
   const { data: related } = await supabase
     .from('news')
-    .select('id, title, category, published_at, created_at')
+    .select('*')
     .eq('is_published', true)
     .eq('site', 'chuzenji')
     .eq('category', news.category)
@@ -67,6 +72,9 @@ export default async function NewsDetailPage({
     '授与品のお知らせ': t('catGoods'),
   }
   const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
+  const title = pickLocalized(loc, news.title, news.title_en)
+  const excerpt = pickLocalized(loc, news.excerpt ?? '', news.excerpt_en)
+  const body = pickLocalized(loc, news.body, news.body_en)
 
   return (
     <>
@@ -75,14 +83,14 @@ export default async function NewsDetailPage({
         {/* パンくず */}
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/">{tc('breadcrumbHome')}</Link> &gt; <Link href="/news">{t('title')}</Link> &gt; <span className="text-gray-600">{news.title}</span>
+            <Link href="/">{tc('breadcrumbHome')}</Link> &gt; <Link href="/news">{t('title')}</Link> &gt; <span className="text-gray-600">{title}</span>
           </div>
         </div>
 
         {/* カバー画像 */}
         {news.cover_url && (
           <div className="relative h-56 md:h-72">
-            <ZoomableImage src={news.cover_url} alt={news.title} fill className="object-cover" />
+            <ZoomableImage src={news.cover_url} alt={title} fill className="object-cover" />
             <div className="absolute inset-0 bg-navy/30" />
           </div>
         )}
@@ -100,16 +108,16 @@ export default async function NewsDetailPage({
             </div>
 
             {/* タイトル */}
-            <h1 className="font-serif text-2xl md:text-3xl text-navy leading-relaxed mb-6">{news.title}</h1>
+            <h1 className="font-serif text-2xl md:text-3xl text-navy leading-relaxed mb-6">{title}</h1>
 
             {/* 概要 */}
-            {news.excerpt && (
-              <p className="text-sm text-gray-500 border-l-4 border-gold pl-4 mb-8 leading-relaxed">{news.excerpt}</p>
+            {excerpt && (
+              <p className="text-sm text-gray-500 border-l-4 border-gold pl-4 mb-8 leading-relaxed">{excerpt}</p>
             )}
 
             {/* 本文 */}
             <div className="prose prose-sm max-w-none text-gray-700 leading-[2] whitespace-pre-wrap">
-              {news.body}
+              {body}
             </div>
           </div>
 
@@ -121,7 +129,7 @@ export default async function NewsDetailPage({
                 {related.map(r => (
                   <Link key={r.id} href={`/news/${r.id}`}
                     className="flex items-center justify-between px-5 py-3 hover:bg-cream-alt transition-colors group">
-                    <span className="text-sm text-navy group-hover:text-gold transition-colors">{r.title}</span>
+                    <span className="text-sm text-navy group-hover:text-gold transition-colors">{pickLocalized(loc, r.title, r.title_en)}</span>
                     <time className="text-xs text-gray-400 flex-shrink-0 ml-4">
                       {new Date(r.published_at ?? r.created_at).toLocaleDateString(dateLocale)}
                     </time>

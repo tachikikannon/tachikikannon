@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { createServerClient } from '@/lib/supabase-server'
+import { pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -26,7 +27,7 @@ export default async function BlogPage({
   const supabase = await createServerClient()
   const { data: posts } = await supabase
     .from('posts')
-    .select('id, title, slug, excerpt, cover_url, published_at')
+    .select('*')
     .eq('is_published', true)
     .order('published_at', { ascending: false })
 
@@ -47,25 +48,29 @@ export default async function BlogPage({
         <div className="max-w-4xl mx-auto px-4 py-12">
           {posts && posts.length > 0 ? (
             <div className="grid md:grid-cols-2 gap-6">
-              {posts.map(post => (
-                <Link key={post.id} href={`/blog/${post.slug}`}
-                  className="group bg-white rounded-xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
-                  <div className="h-44 bg-cream-alt relative overflow-hidden">
-                    {post.cover_url
-                      ? <Image src={post.cover_url} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-                      : <div className="flex items-center justify-center h-full text-gray-300 text-sm">{t('noImage')}</div>
-                    }
-                  </div>
-                  <div className="p-5">
-                    <time className="text-xs text-gray-400">
-                      {new Date(post.published_at ?? '').toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
-                    </time>
-                    <h2 className="font-medium text-navy mt-2 mb-2 leading-snug group-hover:text-gold transition-colors">{post.title}</h2>
-                    {post.excerpt && <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{post.excerpt}</p>}
-                    <span className="inline-block mt-3 text-xs text-gold">{t('readMore')}</span>
-                  </div>
-                </Link>
-              ))}
+              {posts.map(post => {
+                const title = pickLocalized(loc, post.title, post.title_en)
+                const excerpt = pickLocalized(loc, post.excerpt ?? '', post.excerpt_en)
+                return (
+                  <Link key={post.id} href={`/blog/${post.slug}`}
+                    className="group bg-white rounded-xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
+                    <div className="h-44 bg-cream-alt relative overflow-hidden">
+                      {post.cover_url
+                        ? <Image src={post.cover_url} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                        : <div className="flex items-center justify-center h-full text-gray-300 text-sm">{t('noImage')}</div>
+                      }
+                    </div>
+                    <div className="p-5">
+                      <time className="text-xs text-gray-400">
+                        {new Date(post.published_at ?? '').toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
+                      </time>
+                      <h2 className="font-medium text-navy mt-2 mb-2 leading-snug group-hover:text-gold transition-colors">{title}</h2>
+                      {excerpt && <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{excerpt}</p>}
+                      <span className="inline-block mt-3 text-xs text-gold">{t('readMore')}</span>
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           ) : (
             <div className="text-center py-20 text-gray-400">

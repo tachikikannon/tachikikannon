@@ -128,6 +128,23 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                   value={editing.body ?? ''} onChange={e => setEditing({...editing, body: e.target.value})} />
                 <p className="text-xs text-gray-400 mt-1">改行・空行はそのまま表示されます</p>
               </div>
+
+              <div className="pt-3 border-t border-gray-100 space-y-4">
+                <p className="text-xs text-gray-400">英語訳（未入力の場合は日本語が表示されます）</p>
+                <div>
+                  <label className="admin-label">タイトル（英語）</label>
+                  <input className="admin-input" value={editing.title_en ?? ''} onChange={e => setEditing({...editing, title_en: e.target.value})} />
+                </div>
+                <div>
+                  <label className="admin-label">概要文（英語）</label>
+                  <textarea className="admin-input min-h-[60px]" value={editing.excerpt_en ?? ''} onChange={e => setEditing({...editing, excerpt_en: e.target.value})} />
+                </div>
+                <div>
+                  <label className="admin-label">本文（英語）</label>
+                  <textarea className="admin-input min-h-[180px] font-mono text-sm" value={editing.body_en ?? ''} onChange={e => setEditing({...editing, body_en: e.target.value})} />
+                </div>
+              </div>
+
               <div className="flex items-center gap-3">
                 <input type="checkbox" id="pub" checked={editing.is_published ?? false}
                   onChange={e => setEditing({...editing, is_published: e.target.checked})} />

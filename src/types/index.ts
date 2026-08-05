@@ -4,8 +4,11 @@ export type NewsSite = 'chuzenji' | 'onsenji'
 export interface News {
   id: string
   title: string
+  title_en?: string | null
   excerpt: string | null
+  excerpt_en?: string | null
   body: string
+  body_en?: string | null
   cover_url: string | null
   category: NewsCategory
   site: NewsSite
@@ -18,9 +21,12 @@ export interface News {
 export interface Post {
   id: string
   title: string
+  title_en?: string | null
   slug: string
   excerpt: string | null
+  excerpt_en?: string | null
   body: string
+  body_en?: string | null
   cover_url: string | null
   gallery_urls: string[] | null
   is_published: boolean
@@ -43,12 +49,14 @@ export interface Event {
 export interface MinorEvent {
   id: string
   title: string
+  title_en?: string | null
   slug: string
   site: NewsSite
   month_label: string
   date_label: string
   time_label: string | null
   desc_text: string
+  desc_text_en?: string | null
   cover_url: string | null
   hero_url: string | null
   gallery_urls: string[]

@@ -109,6 +109,19 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
               <label className="admin-label">説明文</label>
               <textarea className="admin-input min-h-[120px]" value={editing.desc_text ?? ''} onChange={e => setEditing({...editing, desc_text: e.target.value})} />
             </div>
+
+            <div className="pt-3 border-t border-gray-100 space-y-4">
+              <p className="text-xs text-gray-400">英語訳（未入力の場合は日本語が表示されます）</p>
+              <div>
+                <label className="admin-label">行事名（英語）</label>
+                <input className="admin-input" value={editing.title_en ?? ''} onChange={e => setEditing({...editing, title_en: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-label">説明文（英語）</label>
+                <textarea className="admin-input min-h-[120px]" value={editing.desc_text_en ?? ''} onChange={e => setEditing({...editing, desc_text_en: e.target.value})} />
+              </div>
+            </div>
+
             <div>
               <label className="admin-label">カード写真URL（画像管理からコピー）</label>
               <input className="admin-input" value={editing.cover_url ?? ''} onChange={e => setEditing({...editing, cover_url: e.target.value})} />

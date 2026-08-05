@@ -6,7 +6,7 @@ import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
-import { getLocalizedContent } from '@/lib/site-content'
+import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 import type { MinorEvent } from '@/types'
 
@@ -163,8 +163,8 @@ export default async function AnnualEventsPage({
       monthLabel: ev.month_label,
       dateLabel: ev.date_label,
       timeLabel: ev.time_label ?? '',
-      name: ev.title,
-      desc: ev.desc_text,
+      name: pickLocalized(loc, ev.title, ev.title_en),
+      desc: pickLocalized(loc, ev.desc_text, ev.desc_text_en),
       image: ev.cover_url ?? '/images/gyouji.JPEG',
       alt: ev.title,
       href: `/annual-events/m/${ev.slug}`,

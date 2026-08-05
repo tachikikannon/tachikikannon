@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import { createServerClient } from '@/lib/supabase-server'
+import { pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 import type { News, NewsCategory } from '@/types'
 
@@ -37,7 +38,7 @@ export default async function OnsenjiNewsPage({
   const supabase = await createServerClient()
   let query = supabase
     .from('news')
-    .select('id, title, excerpt, body, cover_url, category, published_at, created_at')
+    .select('*')
     .eq('is_published', true)
     .eq('site', 'onsenji')
     .order('published_at', { ascending: false })
@@ -91,55 +92,64 @@ export default async function OnsenjiNewsPage({
           {news.length > 0 ? (
             <div className="space-y-6">
               {/* 最新記事（大カード） */}
-              {news[0] && !category && (
-                <Link href={`/onsenji/news/${news[0].id}`} className="group block bg-white rounded-2xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
-                  <div className="md:flex">
-                    <div className="md:w-80 h-52 md:h-auto flex-shrink-0 bg-onsenji/5 relative">
-                      {news[0].cover_url
-                        ? <Image src={news[0].cover_url} alt={news[0].title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-                        : <div className="flex items-center justify-center h-full text-4xl">♨️</div>
-                      }
-                    </div>
-                    <div className="p-6 flex flex-col justify-center">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className={`text-xs rounded px-2 py-0.5 ${CAT_COLORS[news[0].category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[news[0].category] ?? news[0].category}</span>
-                        <time className="text-xs text-gray-400">
-                          {new Date(news[0].published_at ?? news[0].created_at).toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
-                        </time>
+              {news[0] && !category && (() => {
+                const title0 = pickLocalized(loc, news[0].title, news[0].title_en)
+                const excerpt0 = pickLocalized(loc, news[0].excerpt ?? '', news[0].excerpt_en)
+                const body0 = pickLocalized(loc, news[0].body, news[0].body_en)
+                return (
+                  <Link href={`/onsenji/news/${news[0].id}`} className="group block bg-white rounded-2xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
+                    <div className="md:flex">
+                      <div className="md:w-80 h-52 md:h-auto flex-shrink-0 bg-onsenji/5 relative">
+                        {news[0].cover_url
+                          ? <Image src={news[0].cover_url} alt={title0} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                          : <div className="flex items-center justify-center h-full text-4xl">♨️</div>
+                        }
                       </div>
-                      <h2 className="font-serif text-xl text-onsenji mb-2 group-hover:text-[#2d6b57] transition-colors leading-snug">{news[0].title}</h2>
-                      <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
-                        {news[0].excerpt || news[0].body.slice(0, 100)}
-                      </p>
-                      <span className="mt-4 text-xs text-[#2d6b57]">{t('readMore')}</span>
+                      <div className="p-6 flex flex-col justify-center">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className={`text-xs rounded px-2 py-0.5 ${CAT_COLORS[news[0].category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[news[0].category] ?? news[0].category}</span>
+                          <time className="text-xs text-gray-400">
+                            {new Date(news[0].published_at ?? news[0].created_at).toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
+                          </time>
+                        </div>
+                        <h2 className="font-serif text-xl text-onsenji mb-2 group-hover:text-[#2d6b57] transition-colors leading-snug">{title0}</h2>
+                        <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                          {excerpt0 || body0.slice(0, 100)}
+                        </p>
+                        <span className="mt-4 text-xs text-[#2d6b57]">{t('readMore')}</span>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              )}
+                  </Link>
+                )
+              })()}
 
               {/* 残りの記事（リスト） */}
               <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
-                {(category ? news : news.slice(1)).map(item => (
-                  <Link key={item.id} href={`/onsenji/news/${item.id}`}
-                    className="flex items-start gap-4 px-5 py-4 hover:bg-onsenji/5 transition-colors group">
-                    {item.cover_url && (
-                      <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden relative bg-onsenji/5">
-                        <Image src={item.cover_url} alt={item.title} fill className="object-cover" />
+                {(category ? news : news.slice(1)).map(item => {
+                  const title = pickLocalized(loc, item.title, item.title_en)
+                  const excerpt = pickLocalized(loc, item.excerpt ?? '', item.excerpt_en)
+                  return (
+                    <Link key={item.id} href={`/onsenji/news/${item.id}`}
+                      className="flex items-start gap-4 px-5 py-4 hover:bg-onsenji/5 transition-colors group">
+                      {item.cover_url && (
+                        <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden relative bg-onsenji/5">
+                          <Image src={item.cover_url} alt={title} fill className="object-cover" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`text-[10px] rounded px-1.5 py-0.5 ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
+                          <time className="text-xs text-gray-400">
+                            {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
+                          </time>
+                        </div>
+                        <p className="text-sm font-medium text-onsenji group-hover:text-[#2d6b57] transition-colors leading-snug">{title}</p>
+                        {excerpt && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{excerpt}</p>}
                       </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] rounded px-1.5 py-0.5 ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
-                        <time className="text-xs text-gray-400">
-                          {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
-                        </time>
-                      </div>
-                      <p className="text-sm font-medium text-onsenji group-hover:text-[#2d6b57] transition-colors leading-snug">{item.title}</p>
-                      {item.excerpt && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{item.excerpt}</p>}
-                    </div>
-                    <span className="text-gray-300 group-hover:text-[#2d6b57] transition-colors flex-shrink-0 text-lg">›</span>
-                  </Link>
-                ))}
+                      <span className="text-gray-300 group-hover:text-[#2d6b57] transition-colors flex-shrink-0 text-lg">›</span>
+                    </Link>
+                  )
+                })}
               </div>
             </div>
           ) : (
