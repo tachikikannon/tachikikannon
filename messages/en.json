@@ -56,6 +56,9 @@
     "quickGrounds": "Grounds Guide",
     "quickFaq": "FAQ"
   },
+  "onsenjiFaq": {
+    "title": "FAQ"
+  },
   "onsenjiHistory": {
     "title": "History of Onsenji",
     "quickAbout": "About Visiting",
