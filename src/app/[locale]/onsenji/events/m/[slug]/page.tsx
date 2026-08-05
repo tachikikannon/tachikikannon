@@ -1,20 +1,24 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
+  const { slug, locale } = await params
   const supabase = await createServerClient()
   const { data } = await supabase.from('minor_events').select('title').eq('slug', slug).eq('site', 'onsenji').single()
-  return { title: data?.title ?? '年間行事' }
+  const t = await getTranslations({ locale, namespace: 'onsenjiMinorEvent' })
+  return { title: data?.title ?? t('fallbackTitle') }
 }
 
 export default async function OnsenjMinorEventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  const t = await getTranslations('onsenjiMinorEvent')
+  const tc = await getTranslations('common')
   const supabase = await createServerClient()
   const { data: ev } = await supabase
     .from('minor_events')
@@ -34,7 +38,7 @@ export default async function OnsenjMinorEventDetailPage({ params }: { params: P
       <main className="pt-16">
         <div className="bg-onsenji/5 px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/onsenji">ホーム</Link> &gt; <Link href="/onsenji/events">年間行事</Link> &gt; {ev.title}
+            <Link href="/onsenji">{tc('breadcrumbHome')}</Link> &gt; <Link href="/onsenji/events">{t('eventsLabel')}</Link> &gt; {ev.title}
           </div>
         </div>
 
@@ -78,13 +82,13 @@ export default async function OnsenjMinorEventDetailPage({ params }: { params: P
               <div className="mt-8">
                 <Link href={ev.apply_url}
                   className="inline-block px-6 py-2.5 bg-[#7ec8a4] text-onsenji text-sm font-medium rounded-full hover:bg-[#a0d8bc] transition-colors">
-                  申し込みフォーム
+                  {t('applyCta')}
                 </Link>
               </div>
             )}
           </div>
           <div className="mt-8 text-center">
-            <Link href="/onsenji/events" className="text-onsenji text-sm hover:underline">← 年間行事に戻る</Link>
+            <Link href="/onsenji/events" className="text-onsenji text-sm hover:underline">{t('backToEvents')}</Link>
           </div>
         </div>
       </main>

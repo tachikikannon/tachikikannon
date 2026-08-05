@@ -1,17 +1,20 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
+import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-  const { id } = await params
+export async function generateMetadata({ params }: { params: Promise<{ id: string; locale: string }> }): Promise<Metadata> {
+  const { id, locale } = await params
   const supabase = await createServerClient()
   const { data } = await supabase.from('news').select('title, excerpt').eq('id', id).eq('site', 'onsenji').single()
-  return { title: data ? `${data.title} | 日光山温泉寺` : 'お知らせ | 日光山温泉寺', description: data?.excerpt ?? undefined }
+  const t = await getTranslations({ locale, namespace: 'onsenjiNews' })
+  return { title: data ? `${data.title} | 日光山温泉寺` : `${t('title')} | 日光山温泉寺`, description: data?.excerpt ?? undefined }
 }
 
 const CAT_COLORS: Record<string, string> = {
@@ -22,8 +25,16 @@ const CAT_COLORS: Record<string, string> = {
   '授与品のお知らせ':'bg-purple-100 text-purple-700',
 }
 
-export default async function OnsenjiNewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+export default async function OnsenjiNewsDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string; locale: string }>
+}) {
+  const { id, locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('onsenjiNews')
+  const tDetail = await getTranslations('onsenjiNewsDetail')
+  const tc = await getTranslations('common')
   const supabase = await createServerClient()
 
   const { data: item } = await supabase
@@ -48,6 +59,15 @@ export default async function OnsenjiNewsDetailPage({ params }: { params: Promis
     .order('published_at', { ascending: false })
     .limit(3)
 
+  const CAT_LABELS: Record<string, string> = {
+    'お知らせ': t('catNews'),
+    '行事案内': t('catEvent'),
+    '季節のお知らせ': t('catSeasonal'),
+    '交通情報': t('catTraffic'),
+    '授与品のお知らせ': t('catGoods'),
+  }
+  const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
+
   return (
     <>
       <HeaderOnsenji />
@@ -55,7 +75,7 @@ export default async function OnsenjiNewsDetailPage({ params }: { params: Promis
         {/* パンくず */}
         <div className="bg-onsenji/5 px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/onsenji">ホーム</Link> &gt; <Link href="/onsenji/news">お知らせ</Link> &gt; <span className="text-gray-600">{news.title}</span>
+            <Link href="/onsenji">{tc('breadcrumbHome')}</Link> &gt; <Link href="/onsenji/news">{t('title')}</Link> &gt; <span className="text-gray-600">{news.title}</span>
           </div>
         </div>
 
@@ -72,10 +92,10 @@ export default async function OnsenjiNewsDetailPage({ params }: { params: Promis
             {/* メタ情報 */}
             <div className="flex items-center gap-3 mb-4">
               <span className={`text-xs rounded px-2 py-0.5 ${CAT_COLORS[news.category] ?? 'bg-gray-100 text-gray-600'}`}>
-                {news.category}
+                {CAT_LABELS[news.category] ?? news.category}
               </span>
               <time className="text-xs text-gray-400">
-                {new Date(news.published_at ?? news.created_at).toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' })}
+                {new Date(news.published_at ?? news.created_at).toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
               </time>
             </div>
 
@@ -96,14 +116,14 @@ export default async function OnsenjiNewsDetailPage({ params }: { params: Promis
           {/* 関連記事 */}
           {related && related.length > 0 && (
             <div className="mt-10">
-              <h2 className="text-base font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">同じカテゴリのお知らせ</h2>
+              <h2 className="text-base font-serif text-onsenji pl-3 border-l-4 border-[#7ec8a4] mb-4">{tDetail('relatedHeading')}</h2>
               <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
                 {related.map(r => (
                   <Link key={r.id} href={`/onsenji/news/${r.id}`}
                     className="flex items-center justify-between px-5 py-3 hover:bg-onsenji/5 transition-colors group">
                     <span className="text-sm text-onsenji group-hover:text-[#2d6b57] transition-colors">{r.title}</span>
                     <time className="text-xs text-gray-400 flex-shrink-0 ml-4">
-                      {new Date(r.published_at ?? r.created_at).toLocaleDateString('ja-JP')}
+                      {new Date(r.published_at ?? r.created_at).toLocaleDateString(dateLocale)}
                     </time>
                   </Link>
                 ))}
@@ -113,7 +133,7 @@ export default async function OnsenjiNewsDetailPage({ params }: { params: Promis
 
           <div className="mt-8 text-center">
             <Link href="/onsenji/news" className="inline-flex items-center gap-1 text-onsenji text-sm hover:text-[#2d6b57] transition-colors">
-              ← お知らせ一覧に戻る
+              {tDetail('backToNews')}
             </Link>
           </div>
         </div>
