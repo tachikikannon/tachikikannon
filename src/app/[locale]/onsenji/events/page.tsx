@@ -146,9 +146,9 @@ export default async function OnsenjEventsPage({
     ...minorEvents.map((ev): EventCard => ({
       key: `minor-${ev.id}`,
       monthNum: monthNumOf(ev.month_label),
-      monthLabel: ev.month_label,
-      dateLabel: ev.date_label,
-      timeLabel: ev.time_label ?? '',
+      monthLabel: pickLocalized(loc, ev.month_label, ev.month_label_en),
+      dateLabel: pickLocalized(loc, ev.date_label, ev.date_label_en),
+      timeLabel: pickLocalized(loc, ev.time_label ?? '', ev.time_label_en),
       name: pickLocalized(loc, ev.title, ev.title_en),
       desc: pickLocalized(loc, ev.desc_text, ev.desc_text_en),
       image: ev.cover_url ?? '/images/gyouji.JPEG',

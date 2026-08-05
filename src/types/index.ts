@@ -53,8 +53,11 @@ export interface MinorEvent {
   slug: string
   site: NewsSite
   month_label: string
+  month_label_en?: string | null
   date_label: string
+  date_label_en?: string | null
   time_label: string | null
+  time_label_en?: string | null
   desc_text: string
   desc_text_en?: string | null
   cover_url: string | null

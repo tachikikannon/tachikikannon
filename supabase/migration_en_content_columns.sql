@@ -17,3 +17,6 @@ alter table posts add column if not exists body_en text;
 
 alter table minor_events add column if not exists title_en text;
 alter table minor_events add column if not exists desc_text_en text;
+alter table minor_events add column if not exists month_label_en text;
+alter table minor_events add column if not exists date_label_en text;
+alter table minor_events add column if not exists time_label_en text;

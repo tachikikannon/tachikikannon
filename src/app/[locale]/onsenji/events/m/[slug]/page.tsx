@@ -36,6 +36,9 @@ export default async function OnsenjMinorEventDetailPage({ params }: { params: P
 
   const title = pickLocalized(loc, ev.title, ev.title_en)
   const descText = pickLocalized(loc, ev.desc_text, ev.desc_text_en)
+  const monthLabel = pickLocalized(loc, ev.month_label, ev.month_label_en)
+  const dateLabel = pickLocalized(loc, ev.date_label, ev.date_label_en)
+  const timeLabel = pickLocalized(loc, ev.time_label ?? '', ev.time_label_en)
   const heroSrc = ev.hero_url || ev.cover_url
 
   return (
@@ -57,7 +60,7 @@ export default async function OnsenjMinorEventDetailPage({ params }: { params: P
 
         <div className="max-w-3xl mx-auto px-4 py-12">
           <div className="bg-white rounded-2xl shadow-sm p-8">
-            <p className="text-xs text-[#7ec8a4] tracking-widest">{ev.month_label}　{ev.date_label}　{ev.time_label}</p>
+            <p className="text-xs text-[#7ec8a4] tracking-widest">{monthLabel}　{dateLabel}　{timeLabel}</p>
             <h1 className="font-serif text-2xl text-onsenji mt-2 mb-6 leading-relaxed">{title}</h1>
 
             {ev.gallery_placement === 'above' && ev.gallery_urls?.length > 0 && (
