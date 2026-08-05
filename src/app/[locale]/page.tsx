@@ -16,34 +16,64 @@ const DEFAULT_ABOUT_CARDS = [
   { label: '境内のご案内',   desc: '見どころ・境内マップ' },
   { label: '年間行事',       desc: '法要・行事のご案内' },
 ]
+const DEFAULT_ABOUT_CARDS_EN = [
+  { label: 'History of Tachiki Kannon', desc: 'History & origins' },
+  { label: 'Admission Fees',            desc: 'Admission & other fees' },
+  { label: 'Grounds Guide',             desc: 'Highlights & temple map' },
+  { label: 'Annual Events',             desc: 'Services & event information' },
+]
 const DEFAULT_EXPERIENCE_CARDS = [
   { label: '御祈願',        sub: '御祈願料：5,000円〜' },
   { label: '数珠づくり体験', sub: '2,000円〜' },
   { label: '写経体験',      sub: '約15分 / 1,000円' },
   { label: '写仏体験',      sub: '1,000円' },
 ]
+const DEFAULT_EXPERIENCE_CARDS_EN = [
+  { label: 'Prayer Service',           sub: 'From ¥5,000' },
+  { label: 'Juzu Bracelet Making',     sub: 'From ¥2,000' },
+  { label: 'Sutra Copying',            sub: 'Approx. 15 min / ¥1,000' },
+  { label: 'Buddhist Image Tracing',   sub: '¥1,000' },
+]
 const DEFAULT_SERVICE_CARDS = [
   { title: '御朱印',       text: '中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info: '御朱印代：500円〜' },
   { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。通販サイトのほか、代金引換でもお求めいただけます。', info: '通販サイト／代金引換からお選びいただけます' },
+]
+const DEFAULT_SERVICE_CARDS_EN = [
+  { title: 'Goshuin Stamps',    text: "Receive Chuzenji's own goshuin stamp, either hand-written or pre-inscribed.", info: 'From ¥500' },
+  { title: 'Amulets & Mail Order', text: 'Omamori charms, ofuda tablets, and other items are available online or by cash-on-delivery order.', info: 'Choose online shop or cash-on-delivery' },
 ]
 
 const DEFAULT_CONTENT: Record<string, string> = {
   hero_en:        'Nikkozan Chuzenji Temple',
   hero_title:     '中禅寺湖畔に佇む、\n祈りと巡礼の寺',
+  hero_title_en:  'A temple of prayer and pilgrimage\non the shore of Lake Chuzenji',
   access_address: '〒321-1661\n栃木県日光市中宮祠2578',
+  access_address_en: '2578 Chugushi, Nikko, Tochigi 321-1661, Japan',
   access_car:     '日光宇都宮道路 日光ICより約40分\n（いろは坂経由）',
+  access_car_en:  'Approx. 40 min from Nikko IC on the Nikko-Utsunomiya Road\n(via Irohazaka)',
   access_bus:     '東武日光駅よりバスで約50分\n「中禅寺温泉」バス停より徒歩3分',
+  access_bus_en:  'Approx. 50 min by bus from Tobu-Nikko Station\n3 min walk from "Chuzenji-Onsen" bus stop',
   top_sns_heading:      '公式SNSでも最新情報を発信中',
+  top_sns_heading_en:   'Follow us on social media for the latest updates',
   top_heading_news:       'お知らせ',
+  top_heading_news_en:    'News',
   top_heading_about:      '立木観音について',
+  top_heading_about_en:   'About Tachiki Kannon',
   top_heading_events:     '近日の行事',
+  top_heading_events_en:  'Upcoming Events',
   top_heading_experience: '祈る・体験する',
   top_heading_service:    '受ける',
+  top_heading_service_en: 'Receive',
   top_heading_records:    '過去の実績',
+  top_heading_records_en: 'Past Events',
   top_heading_access:     'アクセス',
+  top_heading_access_en:  'Access',
   top_about_cards:      JSON.stringify(DEFAULT_ABOUT_CARDS),
+  top_about_cards_en:   JSON.stringify(DEFAULT_ABOUT_CARDS_EN),
   top_experience_cards: JSON.stringify(DEFAULT_EXPERIENCE_CARDS),
+  top_experience_cards_en: JSON.stringify(DEFAULT_EXPERIENCE_CARDS_EN),
   top_service_cards:    JSON.stringify(DEFAULT_SERVICE_CARDS),
+  top_service_cards_en: JSON.stringify(DEFAULT_SERVICE_CARDS_EN),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -67,9 +97,9 @@ export default async function HomePage({
   const siteContentRows: { key: string; value: string }[] = siteContentRes.ok ? await siteContentRes.json() : []
   const content: Record<string, string> = { ...DEFAULT_CONTENT }
   siteContentRows.forEach(row => { if (row.value) content[row.key] = row.value })
-  const aboutCards      = pj<typeof DEFAULT_ABOUT_CARDS>(content.top_about_cards, DEFAULT_ABOUT_CARDS)
-  const experienceCards = pj<typeof DEFAULT_EXPERIENCE_CARDS>(content.top_experience_cards, DEFAULT_EXPERIENCE_CARDS)
-  const serviceCards    = pj<typeof DEFAULT_SERVICE_CARDS>(content.top_service_cards, DEFAULT_SERVICE_CARDS)
+  const aboutCards      = pj<typeof DEFAULT_ABOUT_CARDS>(getLocalizedContent(content, 'top_about_cards', loc), DEFAULT_ABOUT_CARDS)
+  const experienceCards = pj<typeof DEFAULT_EXPERIENCE_CARDS>(getLocalizedContent(content, 'top_experience_cards', loc), DEFAULT_EXPERIENCE_CARDS)
+  const serviceCards    = pj<typeof DEFAULT_SERVICE_CARDS>(getLocalizedContent(content, 'top_service_cards', loc), DEFAULT_SERVICE_CARDS)
 
   const { data: newsList } = await supabase
     .from('news')
