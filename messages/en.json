@@ -56,6 +56,11 @@
     "quickGrounds": "Grounds Guide",
     "quickFaq": "FAQ"
   },
+  "grounds": {
+    "title": "Grounds Guide",
+    "aboutHours": "Hours & Admission Fee",
+    "history": "History of Tachiki Kannon"
+  },
   "onsenjiPhotos": {
     "title": "Photos Available for Loan",
     "intro": "Browse photos available for use and loan. If you find one you'd like, click \"Apply to Use This Photo\" to go to the application form.",

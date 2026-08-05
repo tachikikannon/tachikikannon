@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
-type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text' }
+type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
 type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string }
 type Field = TextField | ListFieldDef
 type Section = { section: string; href: string; fields: Field[] }
@@ -41,9 +41,9 @@ const SECTIONS: Section[] = [
     section: '境内のご案内',
     href: '/grounds',
     fields: [
-      { key: 'grounds_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '見どころ・境内マップ' },
-      { key: 'grounds_heading_map', label: '「境内マップ・主な見どころ」見出し', defaultValue: '境内マップ・主な見どころ' },
-      { key: 'grounds_map_hint', label: '地図の操作案内文', defaultValue: '地図上のピンをクリックすると各スポットの詳細が見られます' },
+      { key: 'grounds_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '見どころ・境内マップ', translatable: true },
+      { key: 'grounds_heading_map', label: '「境内マップ・主な見どころ」見出し', defaultValue: '境内マップ・主な見どころ', translatable: true },
+      { key: 'grounds_map_hint', label: '地図の操作案内文', defaultValue: '地図上のピンをクリックすると各スポットの詳細が見られます', translatable: true },
       {
         key: 'grounds_spots', label: '主な見どころ', type: 'list',
         listFields: [{ key: 'name', label: '名称' }, { key: 'image', label: '画像パス（例: /images/sanmon.png）' }, { key: 'desc', label: '説明', multiline: true }],
@@ -62,9 +62,9 @@ const SECTIONS: Section[] = [
           { name: '五大堂', image: '/images/godaido.jpg', desc: '不動明王、降三世明王、軍荼利明王、大威徳明王、金剛夜叉明王の五大明王が安置された御祈祷の道場です。天井には、堅山南風画伯が描いた大雲龍が堂々たる威容を誇ります。また、ここ五大堂からの中禅寺湖を望む景色は、見るものの心を振るわせるほどの絶景です。' },
         ]),
       },
-      { key: 'grounds_heading_godaido', label: '「五大堂からの眺望」見出し', defaultValue: '五大堂からの眺望' },
-      { key: 'grounds_godaido_text', label: '五大堂からの眺望テキスト', multiline: true, defaultValue: '五大堂の大窓からは、中禅寺湖と男体山を一望することができます。四季折々の景色は訪れる人々を魅了し、特に紅葉の季節には多くの参拝者が訪れます。また、天井に描かれた龍の大墨絵も必見です。' },
-      { key: 'grounds_heading_flow', label: '「参拝の流れ」見出し', defaultValue: '参拝の流れ' },
+      { key: 'grounds_heading_godaido', label: '「五大堂からの眺望」見出し', defaultValue: '五大堂からの眺望', translatable: true },
+      { key: 'grounds_godaido_text', label: '五大堂からの眺望テキスト', multiline: true, defaultValue: '五大堂の大窓からは、中禅寺湖と男体山を一望することができます。四季折々の景色は訪れる人々を魅了し、特に紅葉の季節には多くの参拝者が訪れます。また、天井に描かれた龍の大墨絵も必見です。', translatable: true },
+      { key: 'grounds_heading_flow', label: '「参拝の流れ」見出し', defaultValue: '参拝の流れ', translatable: true },
       {
         key: 'grounds_flow', label: '参拝の流れ', type: 'list',
         listFields: [{ key: 'title', label: 'ステップ名' }, { key: 'text', label: '説明', multiline: true }],
@@ -466,6 +466,34 @@ export default function PagesEditor() {
                       {saving === field.key ? '保存中...' : saved === field.key ? '✓ 保存しました' : '保存'}
                     </button>
                   </div>
+                  {'translatable' in field && field.translatable && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
+                      {field.multiline ? (
+                        <textarea
+                          className="admin-input min-h-[80px]"
+                          value={values[`${field.key}_en`] ?? ''}
+                          onChange={e => setValues(v => ({ ...v, [`${field.key}_en`]: e.target.value }))}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          className="admin-input"
+                          value={values[`${field.key}_en`] ?? ''}
+                          onChange={e => setValues(v => ({ ...v, [`${field.key}_en`]: e.target.value }))}
+                        />
+                      )}
+                      <div className="mt-2 flex justify-end">
+                        <button
+                          onClick={() => save(`${field.key}_en`)}
+                          disabled={saving === `${field.key}_en`}
+                          className="btn-primary text-sm px-5 py-2 disabled:opacity-50"
+                        >
+                          {saving === `${field.key}_en` ? '保存中...' : saved === `${field.key}_en` ? '✓ 保存しました' : '保存'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

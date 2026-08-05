@@ -1,13 +1,20 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import GroundsSpots from '@/components/GroundsSpots'
 import ZoomableImage from '@/components/ZoomableImage'
+import { getLocalizedContent } from '@/lib/site-content'
+import type { Locale } from '@/i18n/routing'
 
-export const metadata: Metadata = { title: '境内のご案内' }
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'grounds' })
+  return { title: t('title') }
+}
 
 const DEFAULT_SPOTS = [
   { name: '山門', image: '/images/sanmon.png', desc: '境内への入口。拝観受付はこちらで行います。' },
@@ -23,22 +30,50 @@ const DEFAULT_SPOTS = [
   { name: '立木観音堂（本堂）', image: '/images/main2.png', desc: '勝道上人が中禅寺湖上に千手観音様をご覧になり、その姿を桂の立木に彫ったと伝えられています。観音様は、現在も地に根をはり、訪れる人々を穏やかな表情で迎えます。また、坂東三十三観音霊場の第十八番札所として多くの巡礼の方たちもご参拝になります。' },
   { name: '五大堂', image: '/images/godaido.jpg', desc: '不動明王、降三世明王、軍荼利明王、大威徳明王、金剛夜叉明王の五大明王が安置された御祈祷の道場です。天井には、堅山南風画伯が描いた大雲龍が堂々たる威容を誇ります。また、ここ五大堂からの中禅寺湖を望む景色は、見るものの心を振るわせるほどの絶景です。' },
 ]
+const DEFAULT_SPOTS_EN = [
+  { name: 'Sanmon Gate', image: '/images/sanmon.png', desc: 'The entrance to the grounds, where visiting reception is held.' },
+  { name: 'Bell Tower', image: '/images/toiawase.jpg', desc: 'The temple bell resonates across the grounds, its sound marking the hours amid the quiet spirit of the mountains.' },
+  { name: 'Enmeisui Spring', image: '/images/enmeisui.png', desc: 'A spring of clear water on the grounds, said to bring longevity to those who drink it — cherished by visitors since ancient times.' },
+  { name: 'Stone Goma Altar', image: '/images/ishigomadan.png', desc: 'The goma fire ritual is an esoteric Buddhist rite from India, in which a priest ignites the flame of Buddhist wisdom at the altar and offers various items, praying to ward off misfortune and grant blessings.' },
+  { name: 'Guest Hall & Sutra Copying', image: '/images/kyakuden.png', desc: 'Sutra copying is a practice of carefully copying the characters of a sutra, one by one, said to clear the mind and form a bond with the Buddha. The sutra-copying experience is offered at the Guest Hall.' },
+  { name: 'Goshuin Office', image: '/images/hudasyo.png', desc: 'Goshuin stamps, omamori charms, and other items can be received here.' },
+  { name: 'Aizen-do', image: '/images/aizendou.png', desc: 'Standing against the backdrop of Lake Chuzenji, Aizen-do is known for blessings of good relationships, matchmaking, marital harmony, and charm.' },
+  { name: 'Song Monument', image: '/images/kahi.png', desc: 'A monument for the song "Kimi to Itsumademo" by singer and actor Yuzo Kayama, cherished by many at this spot overlooking Lake Chuzenji.' },
+  { name: 'Omizuya', image: '/images/omizuya.png', desc: 'A water pavilion for purifying hands and mouth before worship.' },
+  { name: 'Daikokuten Hall', image: '/images/daikokutendou.png', desc: 'A prayer hall enshrining the hidden statue of Hashiri Daikokuten, known for blessings of household safety, business prosperity, traffic safety, good fortune, warding off misfortune, and safe childbirth.' },
+  { name: 'Tachiki Kannon Hall (Main Hall)', image: '/images/main2.png', desc: 'It is said that Priest Shodo saw a vision of the thousand-armed Kannon over Lake Chuzenji and carved her likeness into a living katsura tree. The Kannon still stands rooted in the earth today, greeting visitors with a serene expression. It is also the 18th sacred site of the Bando 33 Kannon Pilgrimage.' },
+  { name: 'Godaido Hall', image: '/images/godaido.jpg', desc: 'A prayer hall enshrining the Five Wisdom Kings: Fudo Myo-o, Gozanze Myo-o, Gundari Myo-o, Daiitoku Myo-o, and Kongoyasha Myo-o. The ceiling features a magnificent cloud dragon painted by Nampu Katayama. The view of Lake Chuzenji from Godaido is a breathtaking sight.' },
+]
 const DEFAULT_FLOW = [
   { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。受付は閉門30分前に終了いたします。' },
   { title: '御朱印受付', text: '山門をくぐってすぐの御朱印所にて、御朱印やお守りをお受けいただけます。' },
   { title: '本堂参拝', text: 'ご本尊・立木観音（千手観世音菩薩）にお参りください。' },
   { title: '五大堂', text: '中禅寺湖を一望できる五大堂へ。天井の龍の墨絵も必見です。' },
 ]
+const DEFAULT_FLOW_EN = [
+  { title: 'Reception (Sanmon Gate)', text: 'Please pay the admission fee at the entrance. Reception closes 30 minutes before the gate closes.' },
+  { title: 'Goshuin Reception', text: 'Just past the Sanmon Gate, receive goshuin stamps and omamori charms at the Goshuin Office.' },
+  { title: 'Worship at the Main Hall', text: 'Please worship the principal image, Tachiki Kannon (the thousand-armed Kannon Bodhisattva).' },
+  { title: 'Godaido Hall', text: 'Visit Godaido Hall for a panoramic view of Lake Chuzenji — don\'t miss the ink dragon painting on the ceiling.' },
+]
 
 const DEFAULTS: Record<string, string> = {
   grounds_subtitle: '見どころ・境内マップ',
+  grounds_subtitle_en: 'Highlights & Temple Map',
   grounds_heading_map: '境内マップ・主な見どころ',
+  grounds_heading_map_en: 'Temple Map & Highlights',
   grounds_map_hint: '地図上のピンをクリックすると各スポットの詳細が見られます',
+  grounds_map_hint_en: 'Click a pin on the map to see details for each spot',
   grounds_heading_godaido: '五大堂からの眺望',
+  grounds_heading_godaido_en: 'The View from Godaido Hall',
   grounds_heading_flow: '参拝の流れ',
+  grounds_heading_flow_en: 'Visiting Flow',
   grounds_spots: JSON.stringify(DEFAULT_SPOTS),
+  grounds_spots_en: JSON.stringify(DEFAULT_SPOTS_EN),
   grounds_godaido_text: '五大堂の大窓からは、中禅寺湖と男体山を一望することができます。四季折々の景色は訪れる人々を魅了し、特に紅葉の季節には多くの参拝者が訪れます。また、天井に描かれた龍の大墨絵も必見です。',
+  grounds_godaido_text_en: 'From Godaido Hall\'s large windows, you can take in a sweeping view of Lake Chuzenji and Mt. Nantai. The scenery changes with the seasons and captivates visitors, especially during the autumn foliage season. The large ink dragon painted on the ceiling is also not to be missed.',
   grounds_flow: JSON.stringify(DEFAULT_FLOW),
+  grounds_flow_en: JSON.stringify(DEFAULT_FLOW_EN),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -59,44 +94,53 @@ async function getContent() {
   } catch { return DEFAULTS }
 }
 
-export default async function GroundsPage() {
-  const c = await getContent()
-  const rawSpots = pj<{ name?: string; image?: string; desc?: string; num?: string }[]>(c.grounds_spots, DEFAULT_SPOTS)
+export default async function GroundsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('grounds')
+  const tc = await getTranslations('common')
+  const content = await getContent()
+  const g = (key: string) => getLocalizedContent(content, key, loc)
+  const rawSpots = pj<{ name?: string; image?: string; desc?: string; num?: string }[]>(g('grounds_spots'), DEFAULT_SPOTS)
   // 旧フォーマット（imageなし）の場合はDEFAULT_SPOTSを使用
   const spots = rawSpots.some(s => s.image) ? rawSpots as typeof DEFAULT_SPOTS : DEFAULT_SPOTS
-  const flow  = pj<typeof DEFAULT_FLOW>(c.grounds_flow, DEFAULT_FLOW)
+  const flow  = pj<typeof DEFAULT_FLOW>(g('grounds_flow'), DEFAULT_FLOW)
 
   return (
     <>
       <Header />
       <main className="pt-16">
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
-          <div className="max-w-3xl mx-auto"><Link href="/">ホーム</Link> &gt; 境内のご案内</div>
+          <div className="max-w-3xl mx-auto"><Link href="/">{tc('breadcrumbHome')}</Link> &gt; {t('title')}</div>
         </div>
         <section className="relative h-64 md:h-80">
-          <ZoomableImage src="/images/godaido.jpg" alt="境内のご案内" fill className="object-cover" />
+          <ZoomableImage src="/images/godaido.jpg" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
-            <h1 className="font-serif text-3xl md:text-4xl tracking-widest">境内のご案内</h1>
-            <p className="text-white/70 text-sm mt-2">{c.grounds_subtitle}</p>
+            <h1 className="font-serif text-3xl md:text-4xl tracking-widest">{t('title')}</h1>
+            <p className="text-white/70 text-sm mt-2">{g('grounds_subtitle')}</p>
           </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">{c.grounds_heading_map}</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{g('grounds_heading_map')}</h2>
             <div className="w-10 h-0.5 bg-gold mb-2" />
-            <p className="text-xs text-gray-400 mb-6">{c.grounds_map_hint}</p>
+            <p className="text-xs text-gray-400 mb-6">{g('grounds_map_hint')}</p>
             <GroundsSpots spots={spots} />
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">{c.grounds_heading_godaido}</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{g('grounds_heading_godaido')}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <div className="relative h-56 rounded-xl overflow-hidden mb-4">
               <ZoomableImage src="/images/haikan.png" alt="五大堂からの眺め" fill className="object-cover" />
             </div>
-            <p className="text-sm text-gray-700 leading-loose">{c.grounds_godaido_text}</p>
+            <p className="text-sm text-gray-700 leading-loose">{g('grounds_godaido_text')}</p>
           </section>
           <section>
-            <h2 className="text-2xl font-serif text-navy mb-1">{c.grounds_heading_flow}</h2>
+            <h2 className="text-2xl font-serif text-navy mb-1">{g('grounds_heading_flow')}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <ol className="relative border-l-2 border-gold ml-4 space-y-6">
               {flow.map(({ title, text }, i) => (
@@ -109,8 +153,8 @@ export default async function GroundsPage() {
             </ol>
           </section>
           <div className="grid grid-cols-2 gap-4 pt-4">
-            <Link href="/about" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">拝観時間・料金</Link>
-            <Link href="/history" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">立木観音の歴史</Link>
+            <Link href="/about" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('aboutHours')}</Link>
+            <Link href="/history" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('history')}</Link>
           </div>
         </div>
       </main>
