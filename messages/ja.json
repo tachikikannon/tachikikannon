@@ -45,6 +45,11 @@
     "quickGoshuin": "御朱印",
     "quickFaq": "よくある質問"
   },
+  "onsenjiGrounds": {
+    "title": "境内のご案内",
+    "aboutHours": "拝観時間・料金",
+    "history": "温泉寺の歴史"
+  },
   "home": {
     "ctaAbout": "参拝のご案内",
     "ctaPrayer": "御祈願を見る",
