@@ -59,6 +59,20 @@
   "onsenjiFaq": {
     "title": "FAQ"
   },
+  "onsenjiContact": {
+    "title": "Contact",
+    "intro": "For questions about visiting, prayer services, or our experiences, please feel free to contact us below.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Taro Yamada",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "example@email.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Please write your question or request.",
+    "required": "Required",
+    "submit": "Send",
+    "phonePrefix": "By phone: ",
+    "phoneSuffix": " (during visiting hours)"
+  },
   "onsenjiHistory": {
     "title": "History of Onsenji",
     "quickAbout": "About Visiting",

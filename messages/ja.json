@@ -59,6 +59,20 @@
   "onsenjiFaq": {
     "title": "よくある質問"
   },
+  "onsenjiContact": {
+    "title": "お問い合わせ",
+    "intro": "ご参拝・御祈願・各種体験についてのご質問は、下記よりお気軽にお問い合わせください。",
+    "nameLabel": "お名前",
+    "namePlaceholder": "山田 太郎",
+    "emailLabel": "メールアドレス",
+    "emailPlaceholder": "example@email.com",
+    "messageLabel": "お問い合わせ内容",
+    "messagePlaceholder": "ご質問・ご要望をご記入ください。",
+    "required": "必須",
+    "submit": "送信する",
+    "phonePrefix": "お電話でのお問い合わせ：",
+    "phoneSuffix": "（受付時間：拝観時間内）"
+  },
   "onsenjiHistory": {
     "title": "温泉寺の歴史",
     "quickAbout": "参拝について",
