@@ -18,12 +18,21 @@ export default function ReserveForm() {
     { value: 'jyuzu',    label: t('typeJyuzu'), price: '2,000円〜' },
   ]
 
+  const PURPOSES: { value: string; label: string }[] = [
+    { value: 'gokigan',      label: t('purposeGokigan') },
+    { value: 'goma',         label: t('purposeGoma') },
+    { value: 'anzan',        label: t('purposeAnzan') },
+    { value: 'shichigosan',  label: t('purposeShichigosan') },
+    { value: 'other',        label: t('purposeOther') },
+  ]
+
   const [form, setForm] = useState({
     type: 'prayer' as ReservationType,
     date: '', time_slot: '',
     name: '', name_kana: '', email: '', phone: '',
     party_size: 1, notes: '',
   })
+  const [purpose, setPurpose] = useState('gokigan')
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
 
   async function handleSubmit(e: React.FormEvent) {
@@ -33,16 +42,23 @@ export default function ReserveForm() {
     // anonロールにはreservationsのSELECT権限が無くinsert後にDB生成IDを
     // 取得できないため、この方式でIDを先に確定させてinsert/通知の両方に使う。
     const id = crypto.randomUUID()
+    // 護摩祈願の場合、御祈願の内容（御祈願／護摩祈願／安産祈願／七五三祈願／その他）を
+    // 備考欄の先頭に付記して送信する。DBにpurpose専用カラムが無いための対応。
+    const purposeLabel = PURPOSES.find(p => p.value === purpose)?.label
+    const notes = form.type === 'prayer' && purposeLabel
+      ? `【${purposeLabel}】${form.notes ? '\n' + form.notes : ''}`
+      : form.notes
+    const submission = { ...form, notes }
     const { data: defaultCategory } = await supabase
       .from('reservation_categories').select('id').eq('is_default', true).maybeSingle()
     const { error } = await supabase.from('reservations')
-      .insert({ ...form, id, status: 'pending', category_id: defaultCategory?.id ?? null })
+      .insert({ ...submission, id, status: 'pending', category_id: defaultCategory?.id ?? null })
     if (error) { setStatus('error'); return }
     // メール・LINE通知（失敗してもフォーム送信は成功扱い）
     await fetch('/api/notify/reservation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, id }),
+      body: JSON.stringify({ ...submission, id }),
     }).catch(() => {})
     setStatus('done')
   }
@@ -85,6 +101,27 @@ export default function ReserveForm() {
               ))}
             </div>
           </div>
+
+          {/* 御祈願の内容(護摩祈願選択時のみ) */}
+          {form.type === 'prayer' && (
+            <div>
+              <label className="admin-label">{t('purposeLabel')}</label>
+              <div className="grid grid-cols-2 gap-2">
+                {PURPOSES.map(p => (
+                  <label key={p.value} className={`border rounded-lg p-3 cursor-pointer transition-colors
+                    ${purpose === p.value ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
+                    <input type="radio" name="purpose" value={p.value} className="sr-only"
+                      checked={purpose === p.value}
+                      onChange={() => setPurpose(p.value)} />
+                    <p className="font-medium text-navy text-sm">{p.label}</p>
+                  </label>
+                ))}
+              </div>
+              {purpose === 'other' && (
+                <p className="text-xs text-gold mt-2">{t('purposeOtherNote')}</p>
+              )}
+            </div>
+          )}
 
           {/* カレンダー・時間帯 */}
           <div>
