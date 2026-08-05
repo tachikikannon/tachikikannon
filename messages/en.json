@@ -56,6 +56,15 @@
     "quickGrounds": "Grounds Guide",
     "quickFaq": "FAQ"
   },
+  "annualEvents": {
+    "title": "Annual Events",
+    "eventsLabel": "Event Calendar",
+    "everyMonth": "Monthly",
+    "detailCta": "View Details",
+    "applyCta": "Application Form",
+    "contactPrefix": "For questions, please feel free to call (",
+    "contactSuffix": ") or use the contact form."
+  },
   "grounds": {
     "title": "Grounds Guide",
     "aboutHours": "Hours & Admission Fee",

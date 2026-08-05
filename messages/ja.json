@@ -56,6 +56,15 @@
     "quickGrounds": "境内のご案内",
     "quickFaq": "よくある質問"
   },
+  "annualEvents": {
+    "title": "年間行事",
+    "eventsLabel": "行事カレンダー",
+    "everyMonth": "毎月",
+    "detailCta": "詳細を見る",
+    "applyCta": "申し込みフォーム",
+    "contactPrefix": "ご不明な点はお電話（",
+    "contactSuffix": "）またはお問い合わせフォームにてお気軽にお問い合わせください。"
+  },
   "grounds": {
     "title": "境内のご案内",
     "aboutHours": "拝観時間・料金",

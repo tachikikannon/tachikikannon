@@ -1,15 +1,22 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
+import { getLocalizedContent } from '@/lib/site-content'
+import type { Locale } from '@/i18n/routing'
 import type { MinorEvent } from '@/types'
 
-export const metadata: Metadata = {
-  title: '年間行事 | 日光山中禅寺 立木観音',
-  description: '日光山中禅寺 立木観音の年間行事。6月18日 観音講・大護摩供・地蔵流し、8月4日 船禅頂（ふなぜんじょう）。',
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'annualEvents' })
+  return {
+    title: t('title'),
+    description: '日光山中禅寺 立木観音の年間行事。6月18日 観音講・大護摩供・地蔵流し、8月4日 船禅頂（ふなぜんじょう）。',
+  }
 }
 
 const DEFAULT_EVENTS = [
@@ -35,6 +42,29 @@ const DEFAULT_EVENTS = [
     desc: '新しい年の始まりにあたり、皆様の一年の無病息災・家内安全・開運招福を祈願する特別な護摩祈祷です。御札は5,000円〜30,000円よりお選びいただけます。事前申し込み・最大5名まで同時申込可。',
   },
 ]
+const DEFAULT_EVENTS_EN = [
+  {
+    month: 'June',
+    date: 'June 18',
+    time: 'From 10:00 AM',
+    name: 'Kannonko, Grand Goma Fire Ritual & Jizo Nagashi',
+    desc: 'Every June 18, a grand ceremony is held with devotees in attendance. Following the Kannonko service and the grand goma fire ritual at Hashiri Daikokuten Hall, Jizo statues are floated on Lake Chuzenji in the "Jizo Nagashi" ceremony.',
+  },
+  {
+    month: 'August',
+    date: 'August 4',
+    time: 'From 10:00 AM',
+    name: 'Funazento (Boat Pilgrimage)',
+    desc: 'A traditional event tracing the sacred sites of Priest Shodo, who opened Nikko, by boat. On Lake Chuzenji, participants retrace the ascetic path he carved out, viewed from the water. A special experience reflecting on over 1,200 years of history amid views of Mt. Nantai and Chuzenji.',
+  },
+  {
+    month: 'January',
+    date: 'January 1',
+    time: 'From 12:00 AM',
+    name: 'New Year\'s Day Special Goma Prayer',
+    desc: 'At the start of the new year, a special goma fire prayer for good health, household safety, and good fortune for all. Ofuda talismans range from ¥5,000 to ¥30,000. Advance application required; up to 5 people per application.',
+  },
+]
 const EVENT_IMAGES = ['/images/gyouji.JPEG', '/images/mizuumi.jpg', '/images/ganjitsu-goma-1920.jpg']
 const EVENT_ALTS = ['観音講・大護摩供・地蔵流し', '中禅寺湖・船禅頂', '正月元旦特別護摩祈願']
 const EVENT_HREFS = ['/annual-events/kannonko', '/annual-events/funazento', '/annual-events/shogatsu']
@@ -42,7 +72,9 @@ const EVENT_APPLIES = ['/annual-events/kannonko/apply', '/annual-events/funazent
 
 const DEFAULTS: Record<string, string> = {
   annual_events_subtitle: '毎年恒例の法要・行事のご案内',
+  annual_events_subtitle_en: 'Traditional Annual Ceremonies & Events',
   annual_events_list: JSON.stringify(DEFAULT_EVENTS),
+  annual_events_list_en: JSON.stringify(DEFAULT_EVENTS_EN),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -96,14 +128,25 @@ function monthNumOf(label: string): number {
   return Number.isFinite(n) && n >= 1 && n <= 12 ? n : 13
 }
 
-export default async function AnnualEventsPage() {
+const MONTH_NAMES_EN = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+export default async function AnnualEventsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('annualEvents')
+  const tc = await getTranslations('common')
   const [c, minorEvents] = await Promise.all([getContent(), getMinorEvents()])
-  const events = pj<typeof DEFAULT_EVENTS>(c.annual_events_list, DEFAULT_EVENTS)
+  const g = (key: string) => getLocalizedContent(c, key, loc)
+  const events = pj<typeof DEFAULT_EVENTS>(g('annual_events_list'), DEFAULT_EVENTS)
 
   const cards: EventCard[] = [
     ...events.map((ev, i): EventCard => ({
-      key: `fixed-${ev.date}`,
-      monthNum: monthNumOf(ev.month),
+      key: `fixed-${i}`,
+      monthNum: monthNumOf(DEFAULT_EVENTS[i]?.month ?? ev.month),
       monthLabel: ev.month,
       dateLabel: ev.date,
       timeLabel: ev.time,
@@ -139,22 +182,24 @@ export default async function AnnualEventsPage() {
       <main className="pt-16">
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/">ホーム</Link> &gt; <Link href="/events">行事カレンダー</Link> &gt; 年間行事
+            <Link href="/">{tc('breadcrumbHome')}</Link> &gt; <Link href="/events">{t('eventsLabel')}</Link> &gt; {t('title')}
           </div>
         </div>
 
         <section className="bg-navy py-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-5" style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
           <p className="text-gold text-xs tracking-[0.3em] mb-3 relative">Annual Events</p>
-          <h1 className="font-serif text-4xl text-white tracking-widest relative">年間行事</h1>
-          <p className="text-white/60 text-sm mt-3 relative">{c.annual_events_subtitle}</p>
+          <h1 className="font-serif text-4xl text-white tracking-widest relative">{t('title')}</h1>
+          <p className="text-white/60 text-sm mt-3 relative">{g('annual_events_subtitle')}</p>
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-14 space-y-14">
           {monthGroups.map(group => (
             <section key={group.month}>
               <div className="flex items-center gap-4 mb-6">
-                <h2 className="font-serif text-2xl text-navy whitespace-nowrap">{group.month === 0 ? '毎月' : `${group.month}月`}</h2>
+                <h2 className="font-serif text-2xl text-navy whitespace-nowrap">
+                  {group.month === 0 ? t('everyMonth') : (loc === 'en' ? MONTH_NAMES_EN[group.month] : `${group.month}月`)}
+                </h2>
                 <div className="h-px flex-1 bg-gold/30" />
               </div>
               <div className="space-y-10">
@@ -176,12 +221,12 @@ export default async function AnnualEventsPage() {
                       <div className="flex flex-col sm:flex-row gap-3 pt-2">
                         <Link href={ev.href}
                           className="flex-1 text-center px-6 py-2.5 bg-navy text-white text-sm font-medium rounded-full hover:bg-navy/80 transition-colors">
-                          詳細を見る
+                          {t('detailCta')}
                         </Link>
                         {ev.applyHref && (
                           <Link href={ev.applyHref}
                             className="flex-1 text-center px-6 py-2.5 bg-gold text-navy text-sm font-medium rounded-full hover:opacity-90 transition-colors">
-                            申し込みフォーム
+                            {t('applyCta')}
                           </Link>
                         )}
                       </div>
@@ -193,7 +238,7 @@ export default async function AnnualEventsPage() {
           ))}
 
           <div className="bg-cream-alt rounded-2xl p-6 text-center text-sm text-gray-600">
-            ご不明な点はお電話（<a href="tel:0288-55-0013" className="text-navy font-medium">0288-55-0013</a>）またはお問い合わせフォームにてお気軽にお問い合わせください。
+            {t('contactPrefix')}<a href="tel:0288-55-0013" className="text-navy font-medium">0288-55-0013</a>{t('contactSuffix')}
           </div>
         </div>
       </main>
