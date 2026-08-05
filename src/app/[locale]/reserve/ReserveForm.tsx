@@ -20,7 +20,6 @@ export default function ReserveForm() {
 
   const PURPOSES: { value: string; label: string }[] = [
     { value: 'gokigan',      label: t('purposeGokigan') },
-    { value: 'goma',         label: t('purposeGoma') },
     { value: 'anzan',        label: t('purposeAnzan') },
     { value: 'shichigosan',  label: t('purposeShichigosan') },
     { value: 'other',        label: t('purposeOther') },
