@@ -56,6 +56,16 @@
     "quickGrounds": "境内のご案内",
     "quickFaq": "よくある質問"
   },
+  "onsenjiShakyou": {
+    "title": "写経体験",
+    "tableFee": "体験料",
+    "tableTime": "所要時間",
+    "tableTarget": "対象",
+    "tablePlace": "受付場所",
+    "tableHours": "受付時間",
+    "contactCta": "お問い合わせ",
+    "quickShabutu": "写仏体験"
+  },
   "onsenjiEvents": {
     "title": "年間行事",
     "everyMonth": "毎月",

@@ -56,6 +56,16 @@
     "quickGrounds": "Grounds Guide",
     "quickFaq": "FAQ"
   },
+  "onsenjiShakyou": {
+    "title": "Sutra Copying Experience",
+    "tableFee": "Fee",
+    "tableTime": "Duration",
+    "tableTarget": "Who Can Join",
+    "tablePlace": "Reception Location",
+    "tableHours": "Reception Hours",
+    "contactCta": "Contact Us",
+    "quickShabutu": "Buddhist Image Tracing"
+  },
   "onsenjiEvents": {
     "title": "Annual Events",
     "everyMonth": "Monthly",
