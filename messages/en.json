@@ -56,6 +56,27 @@
     "quickGrounds": "Grounds Guide",
     "quickFaq": "FAQ"
   },
+  "onsenjiJyuzu": {
+    "title": "Juzu Bracelet Making",
+    "tableFee": "Fee",
+    "tableTime": "Duration",
+    "tableTarget": "Who Can Join",
+    "tablePlace": "Reception Location",
+    "tableHours": "Reception Hours",
+    "contactCta": "Contact Us",
+    "quickShakyou": "Sutra Copying Experience",
+    "quickShabutu": "Buddhist Image Tracing"
+  },
+  "onsenjiShabutu": {
+    "title": "Buddhist Image Tracing",
+    "tableFee": "Fee",
+    "tableTime": "Duration",
+    "tableTarget": "Who Can Join",
+    "tablePlace": "Reception Location",
+    "tableHours": "Reception Hours",
+    "contactCta": "Contact Us",
+    "quickShakyou": "Sutra Copying Experience"
+  },
   "onsenjiShakyou": {
     "title": "Sutra Copying Experience",
     "tableFee": "Fee",
