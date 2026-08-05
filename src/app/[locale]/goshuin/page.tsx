@@ -31,7 +31,7 @@ const DEFAULT_REGULAR = [
   { title: '立木大悲殿' }, { title: 'ご詠歌' }, { title: '波之利大黒天' }, { title: '金剛閣' },
 ]
 const DEFAULT_REGULAR_EN = [
-  { title: 'Tachiki Daihiden' }, { title: 'Goeika' }, { title: 'Harinori Daikokuten' }, { title: 'Kongokaku' },
+  { title: 'Tachiki Daihiden' }, { title: 'Goeika' }, { title: 'Hashiri Daikokuten' }, { title: 'Kongokaku' },
 ]
 const DEFAULT_SPECIAL = [
   { label: '写経', title: '金紙特別朱印', sub: '立木大悲殿', desc: '十六文字写経（延命十句観音経）をお書きいただいた方にお授けします。' },
