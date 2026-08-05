@@ -59,6 +59,32 @@
   "onsenjiFaq": {
     "title": "FAQ"
   },
+  "onsenjiApply": {
+    "title": "Requests & Applications",
+    "intro": "For photo usage/loan requests, on-grounds photography permission, media inquiries, and other requests, please use the form below.",
+    "photoBannerTitle": "Looking for photos to license?",
+    "photoBannerText": "Choosing from our list of available photos will carry over directly into your request.",
+    "photoBannerCta": "View Photo List →",
+    "categoryLabel": "Request Type",
+    "categoryPlaceholder": "Please select",
+    "photoRefLabel": "Photo Reference",
+    "nameLabel": "Name",
+    "emailLabel": "Email Address",
+    "phoneLabel": "Phone Number (optional)",
+    "messageLabel": "Request Details",
+    "messagePlaceholder": "Please describe the purpose of use, shoot date/time, publication, etc. in detail.",
+    "submitError": "Submission failed. Please try again later.",
+    "submitting": "Submitting...",
+    "submit": "Submit Request",
+    "phoneContactTitle": "Contact by Phone",
+    "phoneContactHours": "During visiting hours",
+    "doneTitle": "Your Request Has Been Received",
+    "doneText": "We will reply within 3–5 business days. Thank you for your patience.",
+    "categoryPhoto": "Photo Usage / Loan Permission Request",
+    "categoryPhotography": "On-Grounds Photography Permission Request",
+    "categoryPress": "Media / Press Inquiry",
+    "categoryOther": "Other"
+  },
   "onsenjiContact": {
     "title": "Contact",
     "intro": "For questions about visiting, prayer services, or our experiences, please feel free to contact us below.",

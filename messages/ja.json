@@ -59,6 +59,32 @@
   "onsenjiFaq": {
     "title": "よくある質問"
   },
+  "onsenjiApply": {
+    "title": "各種申請のお問い合わせ",
+    "intro": "写真の使用・貸出、境内撮影、取材など各種申請はこちらのフォームからご連絡ください。",
+    "photoBannerTitle": "貸出用写真をお探しですか？",
+    "photoBannerText": "貸出可能な写真の一覧からお選びいただくと、申請にそのまま反映されます。",
+    "photoBannerCta": "写真一覧を見る →",
+    "categoryLabel": "申請区分",
+    "categoryPlaceholder": "選択してください",
+    "photoRefLabel": "対象写真",
+    "nameLabel": "お名前",
+    "emailLabel": "メールアドレス",
+    "phoneLabel": "電話番号（任意）",
+    "messageLabel": "申請内容の詳細",
+    "messagePlaceholder": "使用目的・撮影日時・掲載媒体など、詳しくご記入ください。",
+    "submitError": "送信に失敗しました。しばらく経ってから再度お試しください。",
+    "submitting": "送信中...",
+    "submit": "申請する",
+    "phoneContactTitle": "お電話でのお問い合わせ",
+    "phoneContactHours": "受付時間：拝観時間内",
+    "doneTitle": "申請を受け付けました",
+    "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。",
+    "categoryPhoto": "写真使用・貸出し許可申請",
+    "categoryPhotography": "境内撮影許可申請",
+    "categoryPress": "取材・取材協力依頼",
+    "categoryOther": "その他"
+  },
   "onsenjiContact": {
     "title": "お問い合わせ",
     "intro": "ご参拝・御祈願・各種体験についてのご質問は、下記よりお気軽にお問い合わせください。",
