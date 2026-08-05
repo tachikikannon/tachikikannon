@@ -149,7 +149,7 @@ const SECTIONS: Section[] = [
     section: '御朱印',
     href: '/onsenji/goshuin',
     fields: [
-      { key: 'onsenji_goshuin_heading_info', label: '「御朱印のご案内」見出し', defaultValue: '御朱印のご案内' },
+      { key: 'onsenji_goshuin_heading_info', label: '「御朱印のご案内」見出し', defaultValue: '御朱印のご案内', translatable: true },
       {
         key: 'onsenji_goshuin_items', label: '御朱印一覧（画像は固定・3件）', type: 'list',
         listFields: [{ key: 'title', label: 'タイトル' }, { key: 'sub', label: '副題' }],
@@ -159,8 +159,8 @@ const SECTIONS: Section[] = [
           { title: '写仏特別御朱印', sub: '写仏体験をされた方に授与' },
         ]),
       },
-      { key: 'onsenji_goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：500円　／　写経体験（1,000円）をお申し込みの方には特別御朱印を授与しています。\n受付時間は拝観受付終了時刻までとなります。' },
-      { key: 'onsenji_goshuin_heading_notes', label: '「御朱印についてのご注意」見出し', defaultValue: '御朱印についてのご注意' },
+      { key: 'onsenji_goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：500円　／　写経体験（1,000円）をお申し込みの方には特別御朱印を授与しています。\n受付時間は拝観受付終了時刻までとなります。', translatable: true },
+      { key: 'onsenji_goshuin_heading_notes', label: '「御朱印についてのご注意」見出し', defaultValue: '御朱印についてのご注意', translatable: true },
       {
         key: 'onsenji_goshuin_notes', label: '御朱印についてのご注意', type: 'list',
         listFields: [{ key: 'text', label: '注意事項', multiline: true }],

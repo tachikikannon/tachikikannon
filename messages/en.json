@@ -50,6 +50,12 @@
     "aboutHours": "Hours & Admission Fee",
     "history": "History of Onsenji"
   },
+  "onsenjiGoshuin": {
+    "title": "Goshuin Stamps",
+    "quickAbout": "About Visiting",
+    "quickGrounds": "Grounds Guide",
+    "quickFaq": "FAQ"
+  },
   "onsenjiHistory": {
     "title": "History of Onsenji",
     "quickAbout": "About Visiting",
