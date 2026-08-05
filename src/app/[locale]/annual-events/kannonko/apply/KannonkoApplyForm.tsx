@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
 type Status = 'idle' | 'loading' | 'done' | 'error'
@@ -10,10 +11,10 @@ const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安
 const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
 const emptyApplicant = (): Applicant => ({ name: '', address: '', wish1: '', wish2: '' })
 
-function WishSelect({ value, onChange, required }: { value: string; onChange: (v: string) => void; required?: boolean }) {
+function WishSelect({ value, onChange, required, placeholder }: { value: string; onChange: (v: string) => void; required?: boolean; placeholder: string }) {
   return (
     <select required={required} className="admin-input" value={value} onChange={e => onChange(e.target.value)}>
-      <option value="">選択してください</option>
+      <option value="">{placeholder}</option>
       {WISH_OPTIONS.map(w => <option key={w} value={w}>{w}</option>)}
     </select>
   )
@@ -21,6 +22,10 @@ function WishSelect({ value, onChange, required }: { value: string; onChange: (v
 
 export default function KannonkoApplyForm() {
   const supabase = createClient()
+  const t = useTranslations('kannonkoApply')
+  const tK = useTranslations('kannonko')
+  const tc = useTranslations('common')
+  const tAE = useTranslations('annualEvents')
   const [form, setForm] = useState({ name: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
   const [applicants, setApplicants] = useState<Applicant[]>(Array.from({ length: 10 }, emptyApplicant))
   const [notes, setNotes] = useState('')
@@ -78,16 +83,16 @@ export default function KannonkoApplyForm() {
     <main className="min-h-screen pt-24 flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <p className="text-5xl mb-4">🙏</p>
-        <h1 className="text-2xl font-serif text-navy mb-3">お申し込みを受け付けました</h1>
+        <h1 className="text-2xl font-serif text-navy mb-3">{t('doneTitle')}</h1>
         <p className="text-gray-600 text-sm leading-relaxed mb-2">
-          6月18日 観音講・大護摩供・地蔵流しの<br />御札申し込みを承りました。
+          {t('doneText1')}
         </p>
         <p className="text-gray-600 text-sm leading-relaxed">
-          ご不明な点はお電話（0288-55-0013）までお問い合わせください。
+          {t('doneText2')}
         </p>
         <Link href="/annual-events/kannonko"
           className="inline-block mt-8 text-sm text-navy border-b border-navy/40 hover:border-navy transition-colors">
-          ← 行事詳細に戻る
+          {t('backToEvent')}
         </Link>
       </div>
     </main>
@@ -98,7 +103,7 @@ export default function KannonkoApplyForm() {
       {/* パンくず */}
       <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
         <div className="max-w-xl mx-auto">
-          <Link href="/">ホーム</Link> &gt; <Link href="/annual-events">年間行事</Link> &gt; <Link href="/annual-events/kannonko">観音講・大護摩供・地蔵流し</Link> &gt; 申し込み
+          <Link href="/">{tc('breadcrumbHome')}</Link> &gt; <Link href="/annual-events">{tAE('title')}</Link> &gt; <Link href="/annual-events/kannonko">{tK('breadcrumb')}</Link> &gt; {t('breadcrumb')}
         </div>
       </div>
 
@@ -107,96 +112,96 @@ export default function KannonkoApplyForm() {
         <div className="absolute inset-0 opacity-5"
           style={{backgroundImage:'repeating-linear-gradient(45deg,#c8a96e 0,#c8a96e 1px,transparent 0,transparent 50%)',backgroundSize:'20px 20px'}} />
         <p className="text-gold text-xs tracking-[0.3em] mb-2 relative">Application Form</p>
-        <h1 className="font-serif text-2xl md:text-3xl text-white tracking-widest relative">御札 申し込みフォーム</h1>
-        <p className="text-white/60 text-sm mt-2 relative">観音講・大護摩供・地蔵流し（6月18日）</p>
+        <h1 className="font-serif text-2xl md:text-3xl text-white tracking-widest relative">{t('formTitle')}</h1>
+        <p className="text-white/60 text-sm mt-2 relative">{t('eventName')}</p>
       </section>
 
       <div className="max-w-xl mx-auto px-4 py-10">
         {/* イベント情報 */}
         <div className="bg-navy/5 border border-navy/10 rounded-xl p-4 mb-6 flex gap-4 items-center">
           <div className="w-14 h-14 rounded-xl bg-navy flex flex-col items-center justify-center flex-shrink-0">
-            <span className="text-gold text-xs">6月</span>
-            <span className="text-white font-bold text-lg leading-none">18</span>
+            <span className="text-gold text-xs">{t('cardMonth')}</span>
+            <span className="text-white font-bold text-lg leading-none">{t('cardDay')}</span>
           </div>
           <div>
-            <p className="font-serif text-navy font-medium">観音講・大護摩供・地蔵流し</p>
-            <p className="text-xs text-gray-500 mt-0.5">午前10時〜　日光山中禅寺 立木観音</p>
+            <p className="font-serif text-navy font-medium">{t('cardTitle')}</p>
+            <p className="text-xs text-gray-500 mt-0.5">{t('cardTime')}</p>
           </div>
         </div>
 
         {/* 注意事項 */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 space-y-2">
-          <p className="font-medium text-amber-800 text-sm mb-2">📋 お申し込みの前にご確認ください</p>
+          <p className="font-medium text-amber-800 text-sm mb-2">{t('noticeHeading')}</p>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">⛩️</span>
-            <p>お申し込みの方には大護摩供にてお焚き上げする<strong>御札</strong>をお授けいたします。</p>
+            <p>{t.rich('noticeOfuda', { b: chunks => <strong>{chunks}</strong> })}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">💴</span>
-            <p>お支払いは<strong>当日・現地でのお支払い</strong>となります。事前のお振込みは不要です。</p>
+            <p>{t.rich('noticePayment', { b: chunks => <strong>{chunks}</strong> })}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">📌</span>
-            <p>参列自体は申し込み不要です。御札をご希望の方のみお申し込みください。</p>
+            <p>{t('noticeAttendance')}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">👨‍👩‍👧‍👦</span>
-            <p>ご家族・団体でお申し込みの場合は、代表者様の情報に加えて申込者①〜⑩に人数分ご記入ください。</p>
+            <p>{t('noticeFamily')}</p>
           </div>
         </div>
 
         {/* フォーム */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="admin-label">代表者名 <span className="text-red-500 text-xs">※必須</span></label>
-            <input required className="admin-input" placeholder="山田 太郎" value={form.name} onChange={set('name')} />
+            <label className="admin-label">{t('repNameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
+            <input required className="admin-input" placeholder={t('repNamePlaceholder')} value={form.name} onChange={set('name')} />
           </div>
           <div>
-            <label className="admin-label">メールアドレス <span className="text-red-500 text-xs">※必須</span></label>
-            <input type="email" required className="admin-input" placeholder="example@email.com" value={form.email} onChange={set('email')} />
+            <label className="admin-label">{t('emailLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
+            <input type="email" required className="admin-input" placeholder={t('emailPlaceholder')} value={form.email} onChange={set('email')} />
           </div>
           <div>
-            <label className="admin-label">電話番号 <span className="text-red-500 text-xs">※必須</span></label>
-            <input type="tel" required className="admin-input" placeholder="090-0000-0000" value={form.phone} onChange={set('phone')} />
+            <label className="admin-label">{t('phoneLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
+            <input type="tel" required className="admin-input" placeholder={t('phonePlaceholder')} value={form.phone} onChange={set('phone')} />
           </div>
           <div>
-            <label className="admin-label">郵便番号 <span className="text-gray-400 text-xs">（任意）</span></label>
-            <input className="admin-input" placeholder="000-0000" value={form.postal} onChange={set('postal')} />
+            <label className="admin-label">{t('postalLabel')} <span className="text-gray-400 text-xs">{t('optional')}</span></label>
+            <input className="admin-input" placeholder={t('postalPlaceholder')} value={form.postal} onChange={set('postal')} />
           </div>
           <div>
-            <label className="admin-label">ご住所 <span className="text-red-500 text-xs">※必須</span></label>
-            <input required className="admin-input" placeholder="都道府県市区町村..." value={form.address} onChange={set('address')} />
+            <label className="admin-label">{t('addressLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
+            <input required className="admin-input" placeholder={t('addressPlaceholder')} value={form.address} onChange={set('address')} />
           </div>
 
           <div className="border-t border-gray-200 pt-5">
-            <p className="text-sm font-medium text-navy mb-1">代表者様のお願い事</p>
-            <p className="text-xs text-gray-400 mb-4">御札にお名前とともに記します</p>
+            <p className="text-sm font-medium text-navy mb-1">{t('repWishHeading')}</p>
+            <p className="text-xs text-gray-400 mb-4">{t('repWishSub')}</p>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="admin-label">願い事 1つ目 <span className="text-red-500 text-xs">※必須</span></label>
-                <WishSelect value={form.wish1} onChange={v => setForm(f => ({ ...f, wish1: v }))} required />
+                <label className="admin-label">{t('wish1Label')} <span className="text-red-500 text-xs">{t('required')}</span></label>
+                <WishSelect value={form.wish1} onChange={v => setForm(f => ({ ...f, wish1: v }))} required placeholder={t('wishSelectPlaceholder')} />
               </div>
               <div>
-                <label className="admin-label">願い事 2つ目 <span className="text-gray-400 text-xs">（任意）</span></label>
-                <WishSelect value={form.wish2} onChange={v => setForm(f => ({ ...f, wish2: v }))} />
+                <label className="admin-label">{t('wish2Label')} <span className="text-gray-400 text-xs">{t('optional')}</span></label>
+                <WishSelect value={form.wish2} onChange={v => setForm(f => ({ ...f, wish2: v }))} placeholder={t('wishSelectPlaceholder')} />
               </div>
             </div>
           </div>
 
           <div className="border-t border-gray-200 pt-5">
-            <p className="text-sm font-medium text-navy mb-1">申込者①〜⑩</p>
-            <p className="text-xs text-gray-400 mb-4">ご家族・団体でお申し込みの場合、代表者様以外の方をこちらにご記入ください（任意）</p>
+            <p className="text-sm font-medium text-navy mb-1">{t('applicantsHeading')}</p>
+            <p className="text-xs text-gray-400 mb-4">{t('applicantsSub')}</p>
             <div className="space-y-4">
               {applicants.map((a, i) => (
                 <div key={i} className="border border-gray-200 rounded-lg p-4">
-                  <p className="text-sm font-medium text-navy mb-3">申込者{CIRCLED[i]}</p>
+                  <p className="text-sm font-medium text-navy mb-3">{t('applicantLabel')}{CIRCLED[i]}</p>
                   <div className="grid sm:grid-cols-2 gap-3 mb-3">
-                    <input className="admin-input" placeholder="お名前" value={a.name} onChange={e => setApplicant(i, 'name', e.target.value)} />
-                    <input className="admin-input" placeholder="ご住所" value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
+                    <input className="admin-input" placeholder={t('applicantNamePlaceholder')} value={a.name} onChange={e => setApplicant(i, 'name', e.target.value)} />
+                    <input className="admin-input" placeholder={t('applicantAddressPlaceholder')} value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-3">
-                    <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} />
-                    <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} />
+                    <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
+                    <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} placeholder={t('wishSelectPlaceholder')} />
                   </div>
                 </div>
               ))}
@@ -204,27 +209,27 @@ export default function KannonkoApplyForm() {
           </div>
 
           <div className="border-t border-gray-200 pt-5">
-            <label className="admin-label">備考 <span className="text-gray-400 text-xs">（一覧にないお願い事がある場合はこちらにご記入ください）</span></label>
-            <textarea className="admin-input min-h-[80px]" placeholder="例：〇〇（申込者③）の願い事は「学業成就」" value={notes} onChange={e => setNotes(e.target.value)} />
+            <label className="admin-label">{t('notesLabel')} <span className="text-gray-400 text-xs">{t('notesHint')}</span></label>
+            <textarea className="admin-input min-h-[80px]" placeholder={t('notesPlaceholder')} value={notes} onChange={e => setNotes(e.target.value)} />
           </div>
 
           {status === 'error' && (
             <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-              送信に失敗しました。お電話（0288-55-0013）にてお申し込みください。
+              {t('submitError')}
             </p>
           )}
 
           <button type="submit" disabled={status === 'loading'}
             className="btn-primary w-full text-center disabled:opacity-50 py-3">
-            {status === 'loading' ? '送信中...' : '申し込む'}
+            {status === 'loading' ? t('submitting') : t('submit')}
           </button>
-          <p className="text-xs text-gray-400 text-center">送信後、確認メールをお送りします。</p>
+          <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
         </form>
 
         <div className="mt-8 p-5 bg-cream-alt rounded-xl text-sm text-gray-600">
-          <p className="font-medium text-navy mb-1">お電話でのお申し込み</p>
+          <p className="font-medium text-navy mb-1">{t('phoneApplyTitle')}</p>
           <p>TEL：<a href="tel:0288-55-0013" className="text-navy font-medium">0288-55-0013</a></p>
-          <p className="text-xs text-gray-400 mt-1">受付時間：拝観時間内（8時〜17時）</p>
+          <p className="text-xs text-gray-400 mt-1">{t('phoneHours')}</p>
         </div>
       </div>
     </main>

@@ -1,20 +1,32 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
+import { getLocalizedContent } from '@/lib/site-content'
+import type { Locale } from '@/i18n/routing'
 
-export const metadata: Metadata = {
-  title: '観音講・大護摩供・地蔵流し（6月18日） | 日光山中禅寺 立木観音',
-  description: '毎年6月18日開催。観音講・大護摩供・地蔵流しのご案内。午前10時より執り行います。',
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'kannonko' })
+  return {
+    title: `${t('title')}（6月18日） | 日光山中禅寺 立木観音`,
+    description: '毎年6月18日開催。観音講・大護摩供・地蔵流しのご案内。午前10時より執り行います。',
+  }
 }
 
 const DEFAULT_SCHEDULE = [
   { time: '10:00', title: '観音講（法要）', desc: '18日は観音様の縁日にあたり、10時より法要が厳修されます。大慈大悲の観音様の慈悲にすがり、日光の観音浄土といわれますここ中禅寺におきまして、ご参列頂きました皆様のご先祖様のご供養を執り行います。' },
   { time: '11:15', title: '波之利大黒天 大護摩供', desc: '波之利大黒天の大護摩供を厳修いたします。家内安全・商売繁盛・交通安全・湖上安全・開運・厄除け・安産など、皆様のご祈願をお焚き上げします。' },
   { time: '午後', title: '地蔵流し', desc: '船に乗り、中禅寺湖上にて「地蔵流し」を行います。「地蔵流し」とは、お地蔵様の絵姿のある御札を１枚ずつ湖に投じて、ご先祖様の冥福を祈る、大変珍しい行事です。' },
+]
+const DEFAULT_SCHEDULE_EN = [
+  { time: '10:00', title: 'Kannon-ko (Ceremony)', desc: 'The 18th is Kannon\'s sacred day, and a ceremony is solemnly held from 10:00. Calling upon the great compassion of Kannon, we perform memorial rites for the ancestors of all who attend, here at Chuzenji, said to be Nikko\'s pure land of Kannon.' },
+  { time: '11:15', title: 'Hashiri-Daikokuten Grand Goma Ritual', desc: 'A grand goma fire ritual is solemnly held for Hashiri-Daikokuten. Wishes for household safety, business prosperity, traffic safety, safety on the lake, good fortune, protection from misfortune, and safe childbirth are offered to the flames.' },
+  { time: 'Afternoon', title: 'Jizo-nagashi (Jizo Release)', desc: 'We board a boat and perform "Jizo-nagashi" on Lake Chuzenji. In this rare and unique ceremony, ofuda bearing the image of Jizo are cast into the lake one by one, praying for the repose of ancestors.' },
 ]
 
 const DEFAULT_NOTES = [
@@ -23,21 +35,40 @@ const DEFAULT_NOTES = [
   { text: 'お支払いは当日・現地にてお受けいたします。' },
   { text: '詳細・変更がある場合は当サイトにてお知らせいたします。' },
 ]
+const DEFAULT_NOTES_EN = [
+  { text: 'Attendance is open to all — no advance registration required. If you would like an ofuda talisman inscribed with a wish, please apply via the application form.' },
+  { text: 'Please wear comfortable, easy-to-move-in clothing. Weather around Lake Chuzenji can change quickly, so we recommend bringing something to layer on top.' },
+  { text: 'Payment is accepted on the day, on site.' },
+  { text: 'Any details or changes will be announced on this website.' },
+]
 
 const DEFAULTS: Record<string, string> = {
   kannonko_subtitle: '毎年6月18日　午前10時より',
+  kannonko_subtitle_en: 'Held every year on June 18th, from 10:00 AM.',
   kannonko_heading_about: '行事について',
+  kannonko_heading_about_en: 'About the Event',
   kannonko_about: '毎年6月18日、日光山中禅寺 立木観音では、ご信徒・一般参拝者の皆様をお迎えして年に一度の大法要を執り行います。観音講・大護摩供・地蔵流しと三つの行事が続き、中禅寺湖の豊かな自然のなかで千二百余年の祈りが受け継がれます。',
+  kannonko_about_en: 'Every year on June 18th, Chuzenji Tachiki Kannon welcomes devotees and visitors for its once-a-year grand ceremony. Three rites follow in succession — Kannon-ko, the Grand Goma Ritual, and Jizo-nagashi — carrying on twelve hundred years of prayer amid the rich nature of Lake Chuzenji.',
   kannonko_info_date: '6月18日（毎年）',
+  kannonko_info_date_en: 'June 18th (annually)',
   kannonko_info_time: '午前10時〜',
+  kannonko_info_time_en: 'From 10:00 AM',
   kannonko_info_join: '自由（申し込み不要）',
+  kannonko_info_join_en: 'Open to all (no registration needed)',
   kannonko_heading_schedule: 'タイムスケジュール',
+  kannonko_heading_schedule_en: 'Schedule',
   kannonko_heading_gallery: '行事の様子',
+  kannonko_heading_gallery_en: 'Photos from the Event',
   kannonko_heading_notes: 'ご参列にあたって',
+  kannonko_heading_notes_en: 'Notes for Attendees',
   kannonko_cta_heading: '御札のお申し込み',
+  kannonko_cta_heading_en: 'Ofuda Talisman Application',
   kannonko_cta_text: '大護摩供にてお焚き上げする御札をご希望の方は\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
+  kannonko_cta_text_en: 'If you would like an ofuda talisman burned in the grand goma fire ritual,\nplease apply in advance via the application form.\nPayment is accepted on the day, on site.',
   kannonko_schedule: JSON.stringify(DEFAULT_SCHEDULE),
+  kannonko_schedule_en: JSON.stringify(DEFAULT_SCHEDULE_EN),
   kannonko_notes: JSON.stringify(DEFAULT_NOTES),
+  kannonko_notes_en: JSON.stringify(DEFAULT_NOTES_EN),
 }
 
 const GALLERY_IMAGES = [
@@ -67,10 +98,20 @@ async function getContent() {
   } catch { return DEFAULTS }
 }
 
-export default async function KannonkoPage() {
-  const c = await getContent()
-  const schedule = pj<typeof DEFAULT_SCHEDULE>(c.kannonko_schedule, DEFAULT_SCHEDULE)
-  const notes    = pj<typeof DEFAULT_NOTES>(c.kannonko_notes, DEFAULT_NOTES)
+export default async function KannonkoPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const loc = locale as Locale
+  const t = await getTranslations('kannonko')
+  const tc = await getTranslations('common')
+  const tAE = await getTranslations('annualEvents')
+  const content = await getContent()
+  const g = (key: string) => getLocalizedContent(content, key, loc)
+  const schedule = pj<typeof DEFAULT_SCHEDULE>(g('kannonko_schedule'), DEFAULT_SCHEDULE)
+  const notes    = pj<typeof DEFAULT_NOTES>(g('kannonko_notes'), DEFAULT_NOTES)
 
   return (
     <>
@@ -78,17 +119,17 @@ export default async function KannonkoPage() {
       <main className="pt-16">
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
           <div className="max-w-3xl mx-auto">
-            <Link href="/">ホーム</Link> &gt; <Link href="/annual-events">年間行事</Link> &gt; 観音講・大護摩供・地蔵流し
+            <Link href="/">{tc('breadcrumbHome')}</Link> &gt; <Link href="/annual-events">{tAE('title')}</Link> &gt; {t('breadcrumb')}
           </div>
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <ZoomableImage src="/images/gyouji.JPEG" alt="観音講・大護摩供・地蔵流し" fill className="object-cover" />
+          <ZoomableImage src="/images/gyouji.JPEG" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
-            <p className="text-gold text-xs tracking-[0.3em] mb-2">June 18th  Annual Event</p>
-            <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">観音講・大護摩供・地蔵流し</h1>
-            <p className="text-white/70 text-sm mt-3">{c.kannonko_subtitle}</p>
+            <p className="text-gold text-xs tracking-[0.3em] mb-2">{t('eraLabel')}</p>
+            <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">{t('title')}</h1>
+            <p className="text-white/70 text-sm mt-3">{g('kannonko_subtitle')}</p>
           </div>
         </section>
 
@@ -97,14 +138,14 @@ export default async function KannonkoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_about}</h2>
+              <h2 className="font-serif text-2xl text-navy">{g('kannonko_heading_about')}</h2>
             </div>
-            <p className="text-sm text-gray-700 leading-loose">{c.kannonko_about}</p>
+            <p className="text-sm text-gray-700 leading-loose">{g('kannonko_about')}</p>
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: '開催日', value: c.kannonko_info_date },
-                { label: '開始時間', value: c.kannonko_info_time },
-                { label: '参列', value: c.kannonko_info_join },
+                { label: t('infoDate'), value: g('kannonko_info_date') },
+                { label: t('infoTime'), value: g('kannonko_info_time') },
+                { label: t('infoJoin'), value: g('kannonko_info_join') },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-cream-alt rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-400 mb-1">{label}</p>
@@ -117,7 +158,7 @@ export default async function KannonkoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_schedule}</h2>
+              <h2 className="font-serif text-2xl text-navy">{g('kannonko_heading_schedule')}</h2>
             </div>
             <ol className="relative border-l-2 border-gold/40 ml-5 space-y-8">
               {schedule.map(({ time, title, desc }, i) => (
@@ -140,7 +181,7 @@ export default async function KannonkoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_gallery}</h2>
+              <h2 className="font-serif text-2xl text-navy">{g('kannonko_heading_gallery')}</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {GALLERY_IMAGES.map((src, i) => (
@@ -154,7 +195,7 @@ export default async function KannonkoPage() {
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-1 h-8 bg-gold rounded-full" />
-              <h2 className="font-serif text-2xl text-navy">{c.kannonko_heading_notes}</h2>
+              <h2 className="font-serif text-2xl text-navy">{g('kannonko_heading_notes')}</h2>
             </div>
             <div className="space-y-3">
               {notes.map(({ text }, i) => (
@@ -167,20 +208,20 @@ export default async function KannonkoPage() {
           </section>
 
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
-            <p className="font-serif text-xl mb-2">{c.kannonko_cta_heading}</p>
+            <p className="font-serif text-xl mb-2">{g('kannonko_cta_heading')}</p>
             <p className="text-white/70 text-sm mb-6">
-              {c.kannonko_cta_text.split('\n').map((line: string, i: number) => (
+              {g('kannonko_cta_text').split('\n').map((line: string, i: number) => (
                 <span key={i}>{line}<br /></span>
               ))}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/annual-events/kannonko/apply"
                 className="inline-block px-8 py-3 bg-gold text-navy font-medium rounded-full hover:opacity-90 transition-colors text-sm">
-                申し込みフォームへ
+                {t('applyCta')}
               </Link>
               <Link href="/contact"
                 className="inline-block px-8 py-3 border border-white/40 text-white rounded-full hover:bg-white/10 transition-colors text-sm">
-                お問い合わせ
+                {t('contactCta')}
               </Link>
             </div>
           </div>
@@ -188,11 +229,11 @@ export default async function KannonkoPage() {
           <div className="flex gap-4">
             <Link href="/annual-events"
               className="flex-1 text-center py-3 border border-navy/20 rounded-xl text-sm text-navy hover:bg-navy hover:text-white transition-colors">
-              ← 年間行事一覧
+              {t('quickEventsList')}
             </Link>
             <Link href="/annual-events/funazento"
               className="flex-1 text-center py-3 border border-navy/20 rounded-xl text-sm text-navy hover:bg-navy hover:text-white transition-colors">
-              8月4日 船禅頂 →
+              {t('quickFunazento')}
             </Link>
           </div>
         </div>

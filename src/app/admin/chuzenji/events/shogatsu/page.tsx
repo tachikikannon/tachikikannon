@@ -4,13 +4,13 @@ import SectionEditor from '@/components/admin/SectionEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
-  { key: 'shogatsu_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '毎年1月1日　午前0時より　※事前申し込み必要' },
-  { key: 'shogatsu_heading_about', label: '「行事について」見出し', defaultValue: '行事について' },
-  { key: 'shogatsu_about', label: '行事について（説明文）', multiline: true, defaultValue: '正月元旦特別護摩祈願は、新しい年の始まりにあたり、皆様の一年の無病息災・家内安全・開運招福を祈願する特別な護摩祈祷です。元日、僧侶による厳かな護摩焚きとともに、新年の平安と幸福をお祈りいたします。御札は4種類の中からお選びいただき、お申し込み時にお願い事を2つまでお選びいただけます。' },
-  { key: 'shogatsu_info_date', label: '開催日（カード表示）', defaultValue: '1月1日（毎年）' },
-  { key: 'shogatsu_info_time', label: '開始時間（カード表示）', defaultValue: '午前0時〜' },
-  { key: 'shogatsu_info_join', label: '参加（カード表示）', defaultValue: '事前申し込み必要（最大5名まで）' },
-  { key: 'shogatsu_heading_fees', label: '「御札の種類」見出し', defaultValue: '御札の種類' },
+  { key: 'shogatsu_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '毎年1月1日　午前0時より　※事前申し込み必要', translatable: true },
+  { key: 'shogatsu_heading_about', label: '「行事について」見出し', defaultValue: '行事について', translatable: true },
+  { key: 'shogatsu_about', label: '行事について（説明文）', multiline: true, defaultValue: '正月元旦特別護摩祈願は、新しい年の始まりにあたり、皆様の一年の無病息災・家内安全・開運招福を祈願する特別な護摩祈祷です。元日、僧侶による厳かな護摩焚きとともに、新年の平安と幸福をお祈りいたします。御札は4種類の中からお選びいただき、お申し込み時にお願い事を2つまでお選びいただけます。', translatable: true },
+  { key: 'shogatsu_info_date', label: '開催日（カード表示）', defaultValue: '1月1日（毎年）', translatable: true },
+  { key: 'shogatsu_info_time', label: '開始時間（カード表示）', defaultValue: '午前0時〜', translatable: true },
+  { key: 'shogatsu_info_join', label: '参加（カード表示）', defaultValue: '事前申し込み必要（最大5名まで）', translatable: true },
+  { key: 'shogatsu_heading_fees', label: '「御札の種類」見出し', defaultValue: '御札の種類', translatable: true },
   {
     key: 'shogatsu_fees', label: '御札の種類（テーブル・申し込みフォームの選択肢とは別管理）', type: 'list' as const,
     listFields: [{ key: 'price', label: '御祈願料' }, { key: 'size', label: '御札サイズ' }],
@@ -21,7 +21,7 @@ const FIELDS = [
       { price: '30,000円', size: '42.5㎝' },
     ]),
   },
-  { key: 'shogatsu_heading_notes', label: '「ご参加にあたって」見出し', defaultValue: 'ご参加にあたって' },
+  { key: 'shogatsu_heading_notes', label: '「ご参加にあたって」見出し', defaultValue: 'ご参加にあたって', translatable: true },
   {
     key: 'shogatsu_notes', label: 'ご参加にあたって', type: 'list' as const,
     listFields: [{ key: 'text', label: '注意事項', multiline: true }],
@@ -32,8 +32,8 @@ const FIELDS = [
       { text: '天候・状況により内容が変更・中止となる場合がございます。詳細はお電話にてご確認ください。' },
     ]),
   },
-  { key: 'shogatsu_cta_heading', label: 'CTA見出し', defaultValue: '正月元旦特別護摩祈願 お申し込み' },
-  { key: 'shogatsu_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '最大5名まで同時にお申し込みいただけます。\n代金引換（代引き）・ECサイトのいずれからもお申し込みいただけます。' },
+  { key: 'shogatsu_cta_heading', label: 'CTA見出し', defaultValue: '正月元旦特別護摩祈願 お申し込み', translatable: true },
+  { key: 'shogatsu_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '最大5名まで同時にお申し込みいただけます。\n代金引換（代引き）・ECサイトのいずれからもお申し込みいただけます。', translatable: true },
 ] as const
 
 export default function AdminShogatsu() {
