@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 const DEFAULT_FAQS = [
   { q: '拝観時間を教えてください。', a: '4月〜11月は8:00〜17:00、12月〜3月は9:00〜16:00です。受付は閉門30分前までとなります。' },
-  { q: '拝観料はいくらですか？', a: '大人500円、子供200円です。' },
+  { q: '拝観料はいくらですか？', a: '大人500円、小中学生200円です。' },
   { q: '御祈願の予約は必要ですか？', a: '事前予約をお勧めしております。当日受付も可能な場合がありますが、混雑時はお断りする場合がございます。' },
   { q: '写経・写仏・数珠づくり体験の予約方法を教えてください。', a: 'ウェブサイトの「体験のご予約はこちら」よりオンラインでご予約いただけます。' },
   { q: '駐車場はありますか？', a: '中禅寺温泉周辺の有料駐車場をご利用ください。春・秋の観光シーズンはいろは坂が渋滞します。公共交通機関のご利用をお勧めします。' },
@@ -26,7 +26,7 @@ const DEFAULT_FAQS = [
 ]
 const DEFAULT_FAQS_EN = [
   { q: 'What are the visiting hours?', a: 'April–November: 8:00 AM–5:00 PM. December–March: 9:00 AM–4:00 PM. Reception closes 30 minutes before closing.' },
-  { q: 'What is the admission fee?', a: '¥500 for adults, ¥200 for children.' },
+  { q: 'What is the admission fee?', a: '¥500 for adults, ¥200 for elementary/junior high school students.' },
   { q: 'Is a reservation required for prayer services?', a: 'Reservations are recommended. Same-day reception may be possible, but may be declined during busy periods.' },
   { q: 'How do I reserve the sutra-copying, Buddha-tracing, or juzu-making experiences?', a: 'You can reserve online via the "Reserve an Experience" link on the website.' },
   { q: 'Is parking available?', a: 'Please use one of the paid parking lots around Chuzenji-Onsen. Irohazaka gets congested during spring and autumn — public transport is recommended.' },
