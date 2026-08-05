@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
-type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string }
+type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
 export type Field = TextField | ListFieldDef
 
 interface Props {
@@ -87,7 +87,26 @@ export default function SectionEditor({ title, href, fields, accent = 'navy' }: 
                 {saving === field.key ? '保存中...' : saved === field.key ? '✓ 保存しました' : '保存'}
               </button>
             </div>
-            {'translatable' in field && field.translatable && (
+            {field.type === 'list' && field.translatable && (
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
+                <ListEditor
+                  value={values[`${field.key}_en`] ?? field.defaultValueEn ?? '[]'}
+                  fields={field.listFields}
+                  onChange={val => setValues(v => ({ ...v, [`${field.key}_en`]: val }))}
+                />
+                <div className="mt-2 flex justify-end">
+                  <button
+                    onClick={() => save(`${field.key}_en`)}
+                    disabled={saving === `${field.key}_en`}
+                    className="btn-primary text-sm px-5 py-2 disabled:opacity-50"
+                  >
+                    {saving === `${field.key}_en` ? '保存中...' : saved === `${field.key}_en` ? '✓ 保存しました' : '保存'}
+                  </button>
+                </div>
+              </div>
+            )}
+            {'translatable' in field && field.type !== 'list' && field.translatable && (
               <div className="mt-3 pt-3 border-t border-gray-100">
                 <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
                 {field.multiline ? (

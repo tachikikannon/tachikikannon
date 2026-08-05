@@ -13,6 +13,12 @@ const FIELDS = [
       { title: '写経特別御朱印', sub: '写経体験をされた方に授与' },
       { title: '写仏特別御朱印', sub: '写仏体験をされた方に授与' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { title: 'Yakushi Nyorai', sub: 'Onsenji Main Hall (Regular Goshuin)' },
+      { title: 'Special Sutra Copying Stamp', sub: 'Given to those who complete the sutra copying experience' },
+      { title: 'Special Buddha Tracing Stamp', sub: 'Given to those who complete the Buddhist image tracing experience' },
+    ]),
   },
   { key: 'onsenji_goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：500円　／　写経体験（1,000円）をお申し込みの方には特別御朱印を授与しています。\n受付時間は拝観受付終了時刻までとなります。', translatable: true },
   { key: 'onsenji_goshuin_heading_notes', label: '「御朱印についてのご注意」見出し', defaultValue: '御朱印についてのご注意', translatable: true },
@@ -24,6 +30,13 @@ const FIELDS = [
       { text: '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。' },
       { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
       { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
+    ]),
+    translatable: true,
+    defaultValueEn: J([
+      { text: 'A goshuin is a proof of faith — please do not request one solely for collecting purposes.' },
+      { text: 'Reception closes 30 minutes before the temple closes. Please allow enough time.' },
+      { text: 'Hand-written stamps may take extra time during busy periods.' },
+      { text: 'Pre-inscribed stamps are also available for those without a goshuin book.' },
     ]),
   },
 ] as const

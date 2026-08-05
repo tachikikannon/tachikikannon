@@ -18,6 +18,13 @@ const FIELDS = [
       { label: '境内のご案内', desc: '見どころ・境内マップ' },
       { label: '年間行事',     desc: '法要・行事のご案内' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { label: 'History of Onsenji', desc: 'History & origins' },
+      { label: 'Admission Fees',     desc: 'Admission & other fees' },
+      { label: 'Grounds Guide',      desc: 'Highlights & temple map' },
+      { label: 'Annual Events',      desc: 'Services & event information' },
+    ]),
   },
   { key: 'onsenji_heading_goryaku', label: '「主なご利益」見出し', defaultValue: '主なご利益', translatable: true },
   {
@@ -29,6 +36,13 @@ const FIELDS = [
       { icon: '⏳', title: '延命長寿', desc: '医王如来とも呼ばれる薬師如来の御加護を' },
       { icon: '✨', title: '開運招福', desc: '千二百余年の祈りが積み重なる霊場のご加護を' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { icon: '🌿', title: 'Healing from Illness', desc: 'Prayers for recovery through the power of Yakushi Nyorai' },
+      { icon: '💧', title: 'Better Health',        desc: 'Purify body and mind with the hot spring and Buddhist blessings' },
+      { icon: '⏳', title: 'Longevity',            desc: 'The protection of Yakushi Nyorai, the "King of Medicine Buddha"' },
+      { icon: '✨', title: 'Good Fortune',         desc: 'Over 1,200 years of accumulated prayer at this sacred site' },
+    ]),
   },
   { key: 'onsenji_heading_menu', label: '「温泉・体験メニュー」見出し', defaultValue: '温泉・体験メニュー', translatable: true },
   {
@@ -38,6 +52,12 @@ const FIELDS = [
       { title: '薬師の湯', desc: '令和8年4月開湯。含硫黄泉の完全かけ流し。参拝の後、心身を清めるひとときを。' },
       { title: '写経体験', desc: '1,000円・約15分・毎日実施。特別御朱印授与。心を静めてお経をお写しいただけます。' },
       { title: '写仏体験', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
+    ]),
+    translatable: true,
+    defaultValueEn: J([
+      { title: 'Yakushi-no-Yu Hot Spring', desc: 'Opened April 2026. Fully sourced, sulfur-rich spring water. A moment to purify body and mind after worship.' },
+      { title: 'Sutra Copying',            desc: '¥1,000 · approx. 15 min · daily. Includes a special goshuin stamp. Quiet your mind while copying sutras.' },
+      { title: 'Buddhist Image Tracing',   desc: '¥1,000 · approx. 30–60 min. Trace the image of Yakushi Nyorai and receive a special goshuin stamp.' },
     ]),
   },
   { key: 'onsenji_heading_goshuin', label: '「御朱印」見出し', defaultValue: '御朱印', translatable: true },

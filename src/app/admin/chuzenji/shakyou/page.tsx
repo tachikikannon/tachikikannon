@@ -16,6 +16,11 @@ const FIELDS = [
       { icon: '📜', title: '延命十句観音経', desc: '観音様のお力を借り、長寿・安全を祈るお経。十六文字を丁寧にお写しいただきます。' },
       { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { icon: '📜', title: 'Enmei Jikku Kannon Sutra', desc: 'A sutra invoking Kannon\'s power to pray for longevity and safety. You will carefully copy its 16 characters.' },
+      { icon: '✍️', title: 'Repentance Sutra', desc: 'A sutra to repent past wrongdoing and purify the heart, paired with a gold-paper special goshuin (Dainichi Nyorai).' },
+    ]),
   },
   { key: 'shakyou_heading_flow', label: '「体験の流れ」見出し', defaultValue: '体験の流れ', translatable: true },
   {
@@ -26,6 +31,13 @@ const FIELDS = [
       { title: '用具の準備', text: '写経用紙の入ったクリアファイルと筆をご用意しますので、お教室にそのままお持ちください。' },
       { title: '体験', text: '一文字一文字丁寧に、薄墨になっているところをお書入れください。' },
       { title: '特別朱印のお授け', text: '体験終了後、三宝（木の台）に写経を収め、クリアファイルと筆を寺務所にお返しください。引き換えに御朱印をお授けします。' },
+    ]),
+    translatable: true,
+    defaultValueEn: J([
+      { title: 'Reception', text: 'Please apply at the Temple Office experience counter and pay the experience fee.' },
+      { title: 'Preparing Materials', text: 'A clear folder with a sutra sheet and a brush will be prepared — please bring them as is to the copying room.' },
+      { title: 'Copying', text: 'Carefully trace over the light-gray printed characters, one by one.' },
+      { title: 'Receiving the Special Goshuin', text: 'After finishing, place your sutra on the wooden offering stand and return the clear folder and brush to the Temple Office. You will receive a goshuin stamp in exchange.' },
     ]),
   },
   { key: 'shakyou_heading_fees', label: '「料金・所要時間」見出し', defaultValue: '料金・所要時間', translatable: true },
@@ -43,6 +55,12 @@ const FIELDS = [
       { text: '筆・硯・お経の手本はすべてご用意しています。手ぶらでお越しください。' },
       { text: '汚れてもよい服装でお越しいただくとより安心です。' },
       { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
+    ]),
+    translatable: true,
+    defaultValueEn: J([
+      { text: 'Brushes, inkstones, and sutra templates are all provided. Please come empty-handed.' },
+      { text: "It's reassuring to wear clothing you don't mind getting ink on." },
+      { text: "Don't worry about making mistakes — our staff will guide you carefully." },
     ]),
   },
   { key: 'shakyou_cta_heading', label: 'CTA見出し', defaultValue: '写経体験のご予約', translatable: true },

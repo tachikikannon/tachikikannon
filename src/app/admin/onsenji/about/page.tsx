@@ -19,6 +19,13 @@ const FIELDS = [
       { text: 'ペットの同伴は境内に限り可能です。堂内へのお連れ込みはご遠慮ください。' },
       { text: '足元が不安定な箇所があります。歩きやすい靴でお越しください。' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { text: 'Please remain quiet and respectful on the temple grounds.' },
+      { text: 'Photography is permitted outdoors only. Photography inside the main hall is prohibited.' },
+      { text: 'Pets are permitted on the grounds only; please do not bring them inside the halls.' },
+      { text: 'Some areas underfoot are uneven. Please wear comfortable, sturdy footwear.' },
+    ]),
   },
 ] as const
 

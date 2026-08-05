@@ -27,6 +27,13 @@ const FIELDS = [
       { title: 'お写しいただきます', text: 'お経の手本に沿って、一文字一文字丁寧にお写しください。係の者がご説明いたします。' },
       { title: '特別御朱印のお授け', text: '完成後、特別御朱印をお授けします。' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { title: 'Reception', text: 'Please apply at the Temple Office experience reception counter and pay the experience fee.' },
+      { title: 'Preparing Materials', text: 'Brush, inkstone, and a sutra template are provided — all on loan, so please come empty-handed.' },
+      { title: 'Copying the Sutra', text: 'Following the template, carefully copy each character one by one. Our staff will guide you.' },
+      { title: 'Receiving the Special Goshuin', text: 'Upon completion, you will receive a special goshuin stamp.' },
+    ]),
   },
   { key: 'onsenji_shakyou_heading_items', label: '「持ち物・服装」見出し', defaultValue: '持ち物・服装', translatable: true },
   {
@@ -36,6 +43,12 @@ const FIELDS = [
       { text: '筆・硯・お経の手本はすべてご用意しています。手ぶらでお越しください。' },
       { text: '汚れてもよい服装でお越しいただくとより安心です。' },
       { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
+    ]),
+    translatable: true,
+    defaultValueEn: J([
+      { text: 'Brushes, inkstones, and sutra templates are all provided. Please come empty-handed.' },
+      { text: "It's reassuring to wear clothing you don't mind getting ink on." },
+      { text: "Don't worry about making mistakes — our staff will guide you carefully." },
     ]),
   },
   { key: 'onsenji_shakyou_cta_heading', label: 'CTA見出し', defaultValue: '写経体験のご予約・お問い合わせ', translatable: true },

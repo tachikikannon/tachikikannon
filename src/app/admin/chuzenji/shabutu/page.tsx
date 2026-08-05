@@ -15,6 +15,10 @@ const FIELDS = [
     defaultValue: J([
       { title: '立木観世音菩薩', desc: '下絵に沿って、立木観音のご本尊・立木観世音菩薩のお姿をお描きいただきます。完成後は銀紙特別朱印（立木観世音）とセットでお授けします。' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { title: 'Tachiki Kanzeon Bodhisattva', desc: 'Following the template, you will trace the figure of the principal image, Tachiki Kanzeon Bodhisattva. A silver-paper special stamp (Tachiki Kanzeon) is given together upon completion.' },
+    ]),
   },
   { key: 'shabutu_heading_fees', label: '「料金・所要時間」見出し', defaultValue: '料金・所要時間', translatable: true },
   { key: 'shabutu_fee',  label: '体験料', defaultValue: '1,000円（特別御朱印込み）', translatable: true },
@@ -33,6 +37,14 @@ const FIELDS = [
       { title: '特別御朱印のお授け', text: '完成後、銀紙特別朱印（立木観世音）をお授けします。' },
       { title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { title: 'Reception', text: 'Please apply at the Temple Office experience reception counter and pay the experience fee.' },
+      { title: 'Preparing Materials', text: 'A template, brush, ink, and other materials are provided — all on loan, so you may come empty-handed.' },
+      { title: 'Tracing the Image', text: 'Following the template, slowly trace the figure of Tachiki Kanzeon Bodhisattva. Our staff will guide you.' },
+      { title: 'Receiving the Special Goshuin', text: 'Upon completion, you will receive a silver-paper special stamp (Tachiki Kanzeon).' },
+      { title: 'Taking It Home', text: 'You may take your completed tracing home. Please display it with care.' },
+    ]),
   },
   { key: 'shabutu_goshuin_note', label: '特別御朱印 補足（体験内容の下に表示）', defaultValue: '※特別御朱印は体験料に含まれています。別途購入はできません。', translatable: true },
   { key: 'shabutu_heading_items', label: '「持ち物・服装」見出し', defaultValue: '持ち物・服装', translatable: true },
@@ -43,6 +55,12 @@ const FIELDS = [
       { text: '下絵・筆・墨・硯はすべてご用意しています。手ぶらでお越しください。' },
       { text: '墨が衣服につく場合がありますので、汚れてもよい服装でお越しください。' },
       { text: '完成した作品はお持ち帰りいただけます。筒状にお渡しします。' },
+    ]),
+    translatable: true,
+    defaultValueEn: J([
+      { text: 'Templates, brushes, ink, and inkstones are all provided. Please come empty-handed.' },
+      { text: 'Ink may get on your clothing — please wear something you don\'t mind getting dirty.' },
+      { text: 'Your completed work can be taken home, presented rolled in a tube.' },
     ]),
   },
   { key: 'shabutu_cta_heading', label: 'CTA見出し', defaultValue: '写仏体験のご予約', translatable: true },

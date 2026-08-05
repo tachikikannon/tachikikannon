@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
-type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string }
+type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
 type Field = TextField | ListFieldDef
 type Section = { section: string; href: string; fields: Field[] }
 
@@ -28,6 +28,13 @@ const SECTIONS: Section[] = [
           { label: '拝観料金',     desc: '拝観料・各種料金' },
           { label: '境内のご案内', desc: '見どころ・境内マップ' },
           { label: '年間行事',     desc: '法要・行事のご案内' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { label: 'History of Onsenji', desc: 'History & origins' },
+          { label: 'Admission Fees',     desc: 'Admission & other fees' },
+          { label: 'Grounds Guide',      desc: 'Highlights & temple map' },
+          { label: 'Annual Events',      desc: 'Services & event information' },
         ]),
       },
       { key: 'onsenji_heading_goryaku', label: '「主なご利益」見出し', defaultValue: '主なご利益', translatable: true },
@@ -60,6 +67,15 @@ const SECTIONS: Section[] = [
           { year: '昭和48年（1973年）', title: '現在地に温泉寺として再建', text: '現在地（日光市山内2300）に温泉寺として再建。世界遺産「日光山輪王寺」の別院として今日に至る。' },
           { year: '令和8年（2026年）4月', title: '「薬師の湯」開湯', text: '泉質：含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（71.4℃）の源泉かけ流しの湯が参拝者に開放された。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { year: 'Enryaku 7 (788 CE)', title: 'Founded by Priest Shodo', text: 'Priest Shodo, who opened Mt. Nikko, discovered hot spring water rising from this ground. He enshrined Yakushi Nyorai here, founding Onsenji.' },
+          { year: 'Heian to Kamakura Periods', title: 'Flourished as a Tendai Sacred Site', text: 'Developed as a base for Tendai mountain ascetic practice, drawing many monks and pilgrims.' },
+          { year: 'Edo Period', title: 'Became a Directly Administered Temple of Rinnoji', text: 'Protected and maintained as a temple directly administered by the Rinnoji-no-miya princely abbot. Worship flourished alongside pilgrimages to Nikko Toshogu.' },
+          { year: 'September, Showa 41 (1966)', title: 'Landslide from a Typhoon', text: 'A typhoon caused a landslide that completely destroyed the Yakushi Hall. Remarkably, the statue of Yakushi Nyorai was found unharmed atop a fallen boulder, astonishing those who witnessed it.' },
+          { year: 'Showa 48 (1973)', title: 'Rebuilt at the Current Site as Onsenji', text: 'Rebuilt at its present location (2300 Yamauchi, Nikko) as Onsenji, continuing today as a branch temple of the World Heritage site Nikkozan Rinnoji.' },
+          { year: 'April, Reiwa 8 (2026)', title: 'Opening of "Yakushi-no-Yu"', text: 'Sulfur–calcium–sodium–sulfate–bicarbonate spring water (71.4°C), drawn directly from the source, was opened to visitors.' },
+        ]),
       },
       { key: 'onsenji_history_heading_honzon', label: '「ご本尊」見出し', defaultValue: 'ご本尊・薬師如来について', translatable: true },
       { key: 'onsenji_history_honzon', label: 'ご本尊・薬師瑠璃光如来について', multiline: true, defaultValue: '薬師瑠璃光如来（やくしるりこうにょらい）は「医王如来」とも呼ばれ、あらゆる病気や苦しみを癒す仏様として信仰されています。昭和41年の台風被害の際、薬師堂が全壊したにもかかわらず、如来像は大岩の上に無傷でご鎮座されていたという言い伝えが残り、その霊験はことのほか篤いとされています。', translatable: true },
@@ -89,6 +105,15 @@ const SECTIONS: Section[] = [
           { name: '薬師の湯', image: '/images/onsenji-yakushinoyu-yu.png', desc: '中禅寺湖から湧き出る温泉。参拝後にご利用いただけます。' },
           { name: '本殿（写経・写仏体験会場）', image: '/images/onsenji-kaijou.jpg', desc: 'ご本尊・薬師如来をお祀りする本殿。写経・写仏体験もこちらで行います。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { name: 'Onsenji Main Approach', image: '/images/onsenji-sandou.png', desc: 'A lush approach lined with stone lanterns, leading from the bathers’ parking lot to the grounds.' },
+          { name: 'Bell Tower', image: '/images/onsenji-syourou.png', desc: 'The temple bell resonates across the grounds — especially solemn in the early morning.' },
+          { name: 'Yakushi-no-Yu & Main Hall Exterior', image: '/images/onsenji-gaikan.png', desc: 'The reception building along with the exterior of Yakushi-no-Yu and the main hall, welcoming visitors amid the changing seasons.' },
+          { name: 'Guest Hall & Lounge', image: '/images/onsenji-kyukeishitsu.png', desc: 'A calm tatami-mat space to rest between periods of worship.' },
+          { name: 'Yakushi-no-Yu Hot Spring', image: '/images/onsenji-yakushinoyu-yu.png', desc: 'Hot spring water rising near Lake Chuzenji, available for use after worship.' },
+          { name: 'Main Hall (Sutra Copying & Image Tracing Venue)', image: '/images/onsenji-kaijou.jpg', desc: 'The main hall enshrining Yakushi Nyorai. Sutra copying and Buddhist image tracing are also held here.' },
+        ]),
       },
       { key: 'onsenji_grounds_heading_onsen', label: '「薬師の湯」見出し', defaultValue: '薬師の湯（温泉）', translatable: true },
       { key: 'onsenji_grounds_onsen_text', label: '薬師の湯 説明文', multiline: true, defaultValue: '境内には令和8年4月11日に開湯した「薬師の湯」があります。泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（泉温71.4℃）の完全かけ流し。加水すると乳白色に変わる神秘的な湯は、参拝者に開放されています。薬師如来の御加護とともに心身を清めていただけます。', translatable: true },
@@ -101,6 +126,13 @@ const SECTIONS: Section[] = [
           { title: '本堂参拝', text: 'ご本尊・薬師如来（医王如来）にお参りください。' },
           { title: '薬師の湯', text: '参拝後は境内の温泉（薬師の湯）をご利用いただけます。足湯・手湯があります。' },
           { title: '御朱印所', text: '御朱印やお守りをお受けいただけます。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Reception (Temple Gate)', text: 'Please pay the admission fee at the entrance. Reception closes 30 minutes before the gate closes.' },
+          { title: 'Worship at the Main Hall', text: 'Please worship the principal image, Yakushi Nyorai (King of Medicine Buddha).' },
+          { title: 'Yakushi-no-Yu Hot Spring', text: 'After worship, you may use the hot spring on the grounds. Foot and hand baths are available.' },
+          { title: 'Goshuin Stamp Office', text: 'Goshuin stamps and amulets can be received here.' },
         ]),
       },
     ],
@@ -123,6 +155,13 @@ const SECTIONS: Section[] = [
           { text: '撮影は外観のみ可能です。本堂内は撮影禁止となっております。' },
           { text: 'ペットの同伴は境内に限り可能です。堂内へのお連れ込みはご遠慮ください。' },
           { text: '足元が不安定な箇所があります。歩きやすい靴でお越しください。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'Please remain quiet and respectful on the temple grounds.' },
+          { text: 'Photography is permitted outdoors only. Photography inside the main hall is prohibited.' },
+          { text: 'Pets are permitted on the grounds only; please do not bring them inside the halls.' },
+          { text: 'Some areas underfoot are uneven. Please wear comfortable, sturdy footwear.' },
         ]),
       },
     ],
@@ -158,6 +197,12 @@ const SECTIONS: Section[] = [
           { title: '写経特別御朱印', sub: '写経体験をされた方に授与' },
           { title: '写仏特別御朱印', sub: '写仏体験をされた方に授与' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Yakushi Nyorai', sub: 'Onsenji Main Hall (Regular Goshuin)' },
+          { title: 'Special Sutra Copying Stamp', sub: 'Given to those who complete the sutra copying experience' },
+          { title: 'Special Buddha Tracing Stamp', sub: 'Given to those who complete the Buddhist image tracing experience' },
+        ]),
       },
       { key: 'onsenji_goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：500円　／　写経体験（1,000円）をお申し込みの方には特別御朱印を授与しています。\n受付時間は拝観受付終了時刻までとなります。', translatable: true },
       { key: 'onsenji_goshuin_heading_notes', label: '「御朱印についてのご注意」見出し', defaultValue: '御朱印についてのご注意', translatable: true },
@@ -169,6 +214,13 @@ const SECTIONS: Section[] = [
           { text: '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。' },
           { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
           { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'A goshuin is a proof of faith — please do not request one solely for collecting purposes.' },
+          { text: 'Reception closes 30 minutes before the temple closes. Please allow enough time.' },
+          { text: 'Hand-written stamps may take extra time during busy periods.' },
+          { text: 'Pre-inscribed stamps are also available for those without a goshuin book.' },
         ]),
       },
     ],
@@ -189,6 +241,15 @@ const SECTIONS: Section[] = [
           { q: '写経体験はできますか？', a: 'はい、毎日実施しています。体験料1,000円で特別御朱印もお授けします。所要時間は約15分です。予約不要で、受付時にお申し付けください。' },
           { q: '車でのアクセスはできますか？', a: 'はい、お車でお越しいただけます。日光宇都宮道路 日光ICより約10分です。境内周辺に有料駐車場がございます。' },
           { q: '温泉寺は輪王寺と関係がありますか？', a: 'はい、日光山温泉寺は世界遺産「日光山輪王寺」の別院です。延暦7年（788年）に勝道上人によって開創され、江戸時代には輪王寺宮の直轄寺院として栄えました。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { q: 'Can anyone use the hot spring (Yakushi-no-Yu)?', a: 'Yes, anyone who pays the visiting donation (adults ¥500, children ¥300) may use it. This fully sourced hot spring opened on April 11, 2026. Please bring your own towel.' },
+          { q: 'What is the water quality of Yakushi-no-Yu?', a: 'The spring is sulfur–calcium–sodium–sulfate–bicarbonate with a water temperature of 71.4°C. It is fully sourced and turns a beautiful milky white when mixed with water.' },
+          { q: 'Do I need a reservation for a prayer service?', a: 'Yes, prayer services require a reservation. Please contact us in advance by phone or through the inquiry form.' },
+          { q: 'Can I try the sutra copying experience?', a: 'Yes, it is offered daily. The fee is ¥1,000 and includes a special goshuin stamp. It takes about 15 minutes. No reservation is needed — just ask at reception.' },
+          { q: 'Can I access by car?', a: 'Yes, you can come by car. It is about 10 minutes from the Nikko IC on the Nikko-Utsunomiya Road. There are paid parking lots near the grounds.' },
+          { q: 'Is Onsenji connected to Rinnoji?', a: 'Yes, Nikkozan Onsenji is a branch temple of the World Heritage site Nikkozan Rinnoji. It was founded in Enryaku 7 (788 CE) by the priest Shodo, and flourished in the Edo period as a temple directly administered by Rinnoji.' },
         ]),
       },
       { key: 'onsenji_faq_bottom_heading', label: '末尾の見出し', defaultValue: 'その他のご質問', translatable: true },
@@ -223,6 +284,13 @@ const SECTIONS: Section[] = [
           { title: 'お写しいただきます', text: 'お経の手本に沿って、一文字一文字丁寧にお写しください。係の者がご説明いたします。' },
           { title: '特別御朱印のお授け', text: '完成後、特別御朱印をお授けします。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Reception', text: 'Please apply at the Temple Office experience reception counter and pay the experience fee.' },
+          { title: 'Preparing Materials', text: 'Brush, inkstone, and a sutra template are provided — all on loan, so please come empty-handed.' },
+          { title: 'Copying the Sutra', text: 'Following the template, carefully copy each character one by one. Our staff will guide you.' },
+          { title: 'Receiving the Special Goshuin', text: 'Upon completion, you will receive a special goshuin stamp.' },
+        ]),
       },
       { key: 'onsenji_shakyou_heading_items', label: '「持ち物・服装」見出し', defaultValue: '持ち物・服装', translatable: true },
       {
@@ -232,6 +300,12 @@ const SECTIONS: Section[] = [
           { text: '筆・硯・お経の手本はすべてご用意しています。手ぶらでお越しください。' },
           { text: '汚れてもよい服装でお越しいただくとより安心です。' },
           { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'Brushes, inkstones, and sutra templates are all provided. Please come empty-handed.' },
+          { text: "It's reassuring to wear clothing you don't mind getting ink on." },
+          { text: "Don't worry about making mistakes — our staff will guide you carefully." },
         ]),
       },
       { key: 'onsenji_shakyou_cta_heading', label: 'CTA見出し', defaultValue: '写経体験のご予約・お問い合わせ', translatable: true },
@@ -266,6 +340,14 @@ const SECTIONS: Section[] = [
           { title: '特別御朱印のお授け', text: '完成後、特別御朱印をお授けします。' },
           { title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Reception', text: 'Please apply at the Temple Office experience reception counter and pay the experience fee.' },
+          { title: 'Preparing Materials', text: 'A template, brush, ink, and other materials are provided — all on loan, so you may come empty-handed.' },
+          { title: 'Tracing the Image', text: "Following the template, slowly trace the figure of Yakushi Nyorai. Our staff will guide you." },
+          { title: 'Receiving the Special Goshuin', text: 'Upon completion, you will receive a special goshuin stamp.' },
+          { title: 'Taking It Home', text: 'You may take your completed tracing home. Please display it with care.' },
+        ]),
       },
       { key: 'onsenji_shabutu_cta_heading', label: 'CTA見出し', defaultValue: '写仏体験のご予約・お問い合わせ', translatable: true },
       { key: 'onsenji_shabutu_cta_sub', label: '予約ボタン下の説明文', defaultValue: '事前予約をおすすめします。当日受付も空きがあれば対応します。', translatable: true },
@@ -297,6 +379,13 @@ const SECTIONS: Section[] = [
           { title: '数珠づくり', text: 'スタッフのご説明に沿って、珠を糸に通していきます。結び方もご指導します。' },
           { title: '完成・お持ち帰り', text: '完成した数珠はその場でお持ち帰りいただけます。専用の袋に入れてお渡しします。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Reception & Design Selection', text: 'Please apply at the Temple Office experience reception counter. Choose your preferred bead material and color combination.' },
+          { title: 'Confirming the Beads', text: 'We will confirm your chosen beads and guide you to the workstation.' },
+          { title: 'Making the Bracelet', text: 'Following staff instructions, string the beads onto the cord. We will also guide you through the knotting.' },
+          { title: 'Completion & Take-Home', text: 'Take your finished bracelet home right away, presented in a dedicated pouch.' },
+        ]),
       },
       { key: 'onsenji_jyuzu_heading_materials', label: '「珠の素材について」見出し', defaultValue: '珠の素材について', translatable: true },
       { key: 'onsenji_jyuzu_materials_note', label: '珠の素材 注意書き', defaultValue: '珠の種類は季節・入荷状況により変わります。当日の受付窓口でご確認ください。', translatable: true },
@@ -307,6 +396,12 @@ const SECTIONS: Section[] = [
           { name: '水晶', desc: '透明感があり、邪気を払う浄化の石として知られます。' },
           { name: '翡翠', desc: '緑の美しい石。長寿・健康・魔除けの功徳があるとされます。' },
           { name: '木珠', desc: '軽くて使いやすい伝統的な珠。温かみのある手触りが特徴です。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { name: 'Crystal', desc: 'Known as a clarifying stone that wards off negative energy, with a translucent beauty.' },
+          { name: 'Jade', desc: 'A beautiful green stone believed to bring longevity, health, and protection from misfortune.' },
+          { name: 'Wooden Beads', desc: 'A lightweight, easy-to-wear traditional bead, known for its warm texture.' },
         ]),
       },
       { key: 'onsenji_jyuzu_cta_heading', label: 'CTA見出し', defaultValue: '数珠づくり体験のご予約・お問い合わせ', translatable: true },
@@ -331,6 +426,11 @@ const SECTIONS: Section[] = [
           { month: '8月', date: '8月8日', time: '午前11時〜', name: '薬師講大祭・採灯大護摩供', desc: '湯の湖畔にて、山伏によって採灯大護摩供が焚かれます。写経が御本尊に奉じられ、護摩の炎で焚き上げられる、温泉寺最大の法要です。' },
           { month: '1月', date: '1月下旬', time: '午前11時〜', name: '温泉寺 節分大祭', desc: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { month: 'August', date: 'August 8', time: 'From 11:00 AM', name: 'Yakushiko Grand Festival & Saito Goma Fire Ritual', desc: 'On the shore of Lake Yunoko, mountain ascetics (yamabushi) perform the Saito Goma fire ritual. Copied sutras are offered to the principal image and burned in the goma flames — the largest ceremony of the year at Onsenji.' },
+          { month: 'January', date: 'Late January', time: 'From 11:00 AM', name: 'Onsenji Setsubun Grand Festival', desc: 'A Setsubun ceremony to drive away misfortune and welcome good luck for the new year. Bean-throwing and a goma fire ritual pray for the health and happiness of all visitors in the year ahead.' },
+        ]),
       },
     ],
   },
@@ -354,6 +454,12 @@ const SECTIONS: Section[] = [
           { time: '11:30', title: '護摩供', desc: '護摩の炎に参拝者の願い事を記した護摩木を奉じ、薬師如来の御力で煩悩や邪気をお焚き上げいたします。' },
           { time: '終了後', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。参列の皆様にも豆をお配りいたします。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { time: '11:00', title: 'Setsubun Grand Ceremony', desc: 'A Setsubun ceremony is held at the Yakushi Hall. Under the protection of Yakushi Nyorai, we pray for good health and good fortune in the new year.' },
+          { time: '11:30', title: 'Goma Fire Ritual', desc: 'Wooden goma sticks inscribed with visitors\' wishes are offered to the flames, burning away worldly desires and misfortune through the power of Yakushi Nyorai.' },
+          { time: 'After the Ceremony', title: 'Bean Throwing', desc: 'Beans are thrown with the call "Oni wa soto, fuku wa uchi" ("Demons out, fortune in"). Beans are also distributed to all attendees.' },
+        ]),
       },
       { key: 'setsubun_heading_gallery', label: '「行事の様子」見出し（画像は固定・3件）', defaultValue: '行事の様子', translatable: true },
       { key: 'setsubun_heading_notes', label: '「ご参列にあたって」見出し', defaultValue: 'ご参列にあたって', translatable: true },
@@ -365,6 +471,13 @@ const SECTIONS: Section[] = [
           { text: '1月の湯元は積雪・寒冷が予想されます。防寒対策を十分にしてお越しください。' },
           { text: 'お支払いは当日・現地にてお受けいたします。' },
           { text: '日程は年によって異なります。必ず事前にお電話またはウェブサイトでご確認ください。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'Attendance is open to all — no advance registration required. If you would like an ofuda talisman, please apply via the application form.' },
+          { text: 'Snow and cold weather are expected at Yumoto in January. Please dress warmly.' },
+          { text: 'Payment is accepted on the day, on site.' },
+          { text: 'The schedule varies by year. Please always confirm in advance by phone or on our website.' },
         ]),
       },
       { key: 'setsubun_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み', translatable: true },
@@ -390,6 +503,12 @@ const SECTIONS: Section[] = [
           { time: '11:30', title: '採灯大護摩供', desc: '湯の湖畔にて、山伏装束に身を包んだ僧侶たちによる採灯大護摩供を厳修いたします。' },
           { time: '終了後', title: '写経奉納・御朱印授与', desc: '写経体験でお写しいただいた写経を御本尊に奉納いたします。特別御朱印のお授けも行います。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { time: '11:00', title: 'Yakushiko Grand Ceremony', desc: 'A ceremony to the principal image, Yakushi Ruriko Nyorai, is held at the Yakushi Hall. Together with devotees and visitors, we chant the Yakushi Sutra and pray for improved health and recovery from illness.' },
+          { time: '11:30', title: 'Saito Goma Fire Ritual', desc: 'On the shore of Lake Yunoko, monks dressed as mountain ascetics (yamabushi) solemnly perform the Saito Goma fire ritual. Wooden goma sticks inscribed with wishes and copied sutras are offered to the flames, praying for the protection of Yakushi Nyorai.' },
+          { time: 'After the Ceremony', title: 'Sutra Offering & Goshuin Distribution', desc: 'Sutras copied during the sutra-copying experience are offered to the principal image. A special goshuin stamp is also given.' },
+        ]),
       },
       { key: 'yakushiko_heading_gallery', label: '「行事の様子」見出し', defaultValue: '行事の様子', translatable: true },
       { key: 'yakushiko_heading_notes', label: '「ご参列にあたって」見出し', defaultValue: 'ご参列にあたって', translatable: true },
@@ -401,6 +520,13 @@ const SECTIONS: Section[] = [
           { text: '写経体験（1,000円）は開湯期間中毎日受付しています。当日の写経奉納も可能です。' },
           { text: 'お支払いは当日・現地にてお受けいたします。' },
           { text: '詳細・変更がある場合は当サイトまたはお電話にてご確認ください。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'Attendance is open to all — no advance registration required. If you would like an ofuda talisman or wish offering, please apply via the application form.' },
+          { text: 'The sutra-copying experience (¥1,000) is accepted daily during the open season. Same-day sutra offering is also possible.' },
+          { text: 'Payment is accepted on the day, on site.' },
+          { text: 'Please check our website or call us for any details or changes.' },
         ]),
       },
       { key: 'yakushiko_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み', translatable: true },
@@ -485,7 +611,26 @@ export default function OnsenjPagesEditor() {
                       {saving === field.key ? '保存中...' : saved === field.key ? '✓ 保存しました' : '保存'}
                     </button>
                   </div>
-                  {'translatable' in field && field.translatable && (
+                  {field.type === 'list' && field.translatable && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
+                      <ListEditor
+                        value={values[`${field.key}_en`] ?? field.defaultValueEn ?? '[]'}
+                        fields={field.listFields}
+                        onChange={val => setValues(v => ({ ...v, [`${field.key}_en`]: val }))}
+                      />
+                      <div className="mt-2 flex justify-end">
+                        <button
+                          onClick={() => save(`${field.key}_en`)}
+                          disabled={saving === `${field.key}_en`}
+                          className="text-sm px-5 py-2 rounded-full bg-onsenji text-white hover:bg-onsenji-light transition-colors disabled:opacity-50"
+                        >
+                          {saving === `${field.key}_en` ? '保存中...' : saved === `${field.key}_en` ? '✓ 保存しました' : '保存'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {'translatable' in field && field.type !== 'list' && field.translatable && (
                     <div className="mt-3 pt-3 border-t border-gray-100">
                       <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
                       {field.multiline ? (

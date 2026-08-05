@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
-type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string }
+type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
 type Field = TextField | ListFieldDef
 type Section = { section: string; href: string; fields: Field[] }
 
@@ -29,6 +29,14 @@ const SECTIONS: Section[] = [
           { year: '1627年（寛永4年）', title: '天海大僧正による復興', text: '江戸幕府の庇護のもと、天海大僧正によって伽藍が整備・復興される。' },
           { year: '明治時代', title: '外国公使の避暑地として', text: '明治以降、中禅寺湖畔は各国外交官の夏の避暑地として栄え、中禅寺も国際的に知られるようになる。' },
           { year: '現在', title: '関東屈指の観音霊場', text: '関東有数の観音霊場として多くの参拝者が訪れる。坂東三十三観音霊場の第十八番札所にも数えられる。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { year: '784 CE (Enryaku 3)', title: 'Founded by Priest Shodo', text: 'Priest Shodo carved the Tachiki Kannon on the shore of Lake Chuzenji, founding the temple. It began to flourish as a sacred site of Nikko mountain asceticism.' },
+          { year: '810 CE (Konin 1)', title: 'Visit by Kukai (Kobo Daishi)', text: 'Kobo Daishi is said to have visited Chuzenji, strengthening its character as a sacred site of Shingon esoteric Buddhism.' },
+          { year: '1627 (Kan\'ei 4)', title: 'Restoration by Tenkai', text: 'Under the protection of the Edo shogunate, the temple complex was maintained and restored by the great priest Tenkai.' },
+          { year: 'Meiji Era', title: 'A Summer Retreat for Foreign Envoys', text: 'From the Meiji era onward, the shore of Lake Chuzenji flourished as a summer retreat for diplomats from various countries, and Chuzenji became known internationally.' },
+          { year: 'Today', title: 'A Leading Kannon Pilgrimage Site in Kanto', text: 'Chuzenji draws many visitors as one of the leading Kannon pilgrimage sites in the Kanto region, and is counted as the 18th sacred site of the Bando 33 Kannon Pilgrimage.' },
         ]),
       },
       { key: 'history_heading_honzon', label: '「ご本尊」見出し', defaultValue: 'ご本尊・千手観世音菩薩', translatable: true },
@@ -61,6 +69,21 @@ const SECTIONS: Section[] = [
           { name: '立木観音堂（本堂）', image: '/images/main2.png', desc: '勝道上人が中禅寺湖上に千手観音様をご覧になり、その姿を桂の立木に彫ったと伝えられています。観音様は、現在も地に根をはり、訪れる人々を穏やかな表情で迎えます。また、坂東三十三観音霊場の第十八番札所として多くの巡礼の方たちもご参拝になります。' },
           { name: '五大堂', image: '/images/godaido.jpg', desc: '不動明王、降三世明王、軍荼利明王、大威徳明王、金剛夜叉明王の五大明王が安置された御祈祷の道場です。天井には、堅山南風画伯が描いた大雲龍が堂々たる威容を誇ります。また、ここ五大堂からの中禅寺湖を望む景色は、見るものの心を振るわせるほどの絶景です。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { name: 'Sanmon Gate', image: '/images/sanmon.png', desc: 'The entrance to the grounds, where visiting reception is held.' },
+          { name: 'Bell Tower', image: '/images/toiawase.jpg', desc: 'The temple bell resonates across the grounds, its sound marking the hours amid the quiet spirit of the mountains.' },
+          { name: 'Enmeisui Spring', image: '/images/enmeisui.png', desc: 'A spring of clear water on the grounds, said to bring longevity to those who drink it — cherished by visitors since ancient times.' },
+          { name: 'Stone Goma Altar', image: '/images/ishigomadan.png', desc: 'The goma fire ritual is an esoteric Buddhist rite from India, in which a priest ignites the flame of Buddhist wisdom at the altar and offers various items, praying to ward off misfortune and grant blessings.' },
+          { name: 'Guest Hall & Sutra Copying', image: '/images/kyakuden.png', desc: 'Sutra copying is a practice of carefully copying the characters of a sutra, one by one, said to clear the mind and form a bond with the Buddha. The sutra-copying experience is offered at the Guest Hall.' },
+          { name: 'Goshuin Office', image: '/images/hudasyo.png', desc: 'Goshuin stamps, omamori charms, and other items can be received here.' },
+          { name: 'Aizen-do', image: '/images/aizendou.png', desc: 'Standing against the backdrop of Lake Chuzenji, Aizen-do is known for blessings of good relationships, matchmaking, marital harmony, and charm.' },
+          { name: 'Song Monument', image: '/images/kahi.png', desc: 'A monument for the song "Kimi to Itsumademo" by singer and actor Yuzo Kayama, cherished by many at this spot overlooking Lake Chuzenji.' },
+          { name: 'Omizuya', image: '/images/omizuya.png', desc: 'A water pavilion for purifying hands and mouth before worship.' },
+          { name: 'Daikokuten Hall', image: '/images/daikokutendou.png', desc: 'A prayer hall enshrining the hidden statue of Hashiri Daikokuten, known for blessings of household safety, business prosperity, traffic safety, good fortune, warding off misfortune, and safe childbirth.' },
+          { name: 'Tachiki Kannon Hall (Main Hall)', image: '/images/main2.png', desc: 'It is said that Priest Shodo saw a vision of the thousand-armed Kannon over Lake Chuzenji and carved her likeness into a living katsura tree. The Kannon still stands rooted in the earth today, greeting visitors with a serene expression. It is also the 18th sacred site of the Bando 33 Kannon Pilgrimage.' },
+          { name: 'Godaido Hall', image: '/images/godaido.jpg', desc: 'A prayer hall enshrining the Five Wisdom Kings: Fudo Myo-o, Gozanze Myo-o, Gundari Myo-o, Daiitoku Myo-o, and Kongoyasha Myo-o. The ceiling features a magnificent cloud dragon painted by Nampu Katayama. The view of Lake Chuzenji from Godaido is a breathtaking sight.' },
+        ]),
       },
       { key: 'grounds_heading_godaido', label: '「五大堂からの眺望」見出し', defaultValue: '五大堂からの眺望', translatable: true },
       { key: 'grounds_godaido_text', label: '五大堂からの眺望テキスト', multiline: true, defaultValue: '五大堂の大窓からは、中禅寺湖と男体山を一望することができます。四季折々の景色は訪れる人々を魅了し、特に紅葉の季節には多くの参拝者が訪れます。また、天井に描かれた龍の大墨絵も必見です。', translatable: true },
@@ -74,6 +97,13 @@ const SECTIONS: Section[] = [
           { title: '本堂参拝', text: 'ご本尊・立木観音（千手観世音菩薩）にお参りください。' },
           { title: '五大堂', text: '中禅寺湖を一望できる五大堂へ。天井の龍の墨絵も必見です。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Reception (Sanmon Gate)', text: 'Please pay the admission fee at the entrance. Reception closes 30 minutes before the gate closes.' },
+          { title: 'Goshuin Reception', text: 'Just past the Sanmon Gate, receive goshuin stamps and omamori charms at the Goshuin Office.' },
+          { title: 'Worship at the Main Hall', text: 'Please worship the principal image, Tachiki Kannon (the thousand-armed Kannon Bodhisattva).' },
+          { title: 'Godaido Hall', text: 'Visit Godaido Hall for a panoramic view of Lake Chuzenji — don\'t miss the ink dragon painting on the ceiling.' },
+        ]),
       },
     ],
   },
@@ -81,36 +111,36 @@ const SECTIONS: Section[] = [
     section: '参拝について（拝観料金）',
     href: '/about',
     fields: [
-      { key: 'about_subtitle',   label: '見出し（ヒーロー・本文共通）', defaultValue: '拝観時間・拝観料' },
-      { key: 'about_hours_note', label: '「拝観時間」欄の表示文', defaultValue: '季節により異なります（下記参照）' },
-      { key: 'about_holiday',    label: '定休日', defaultValue: '年中無休' },
-      { key: 'about_fee_adult', label: '大人 拝観料', defaultValue: '500円' },
-      { key: 'about_fee_child', label: '子供 拝観料', defaultValue: '200円' },
-      { key: 'about_fee_group_adult', label: '大人 団体料金（20名様以上）', defaultValue: '450円' },
-      { key: 'about_fee_group_child', label: '子供 団体料金（20名様以上）', defaultValue: '180円' },
-      { key: 'about_hours_peak',     label: '4月〜10月 拝観時間', defaultValue: '午前8時〜午後5時' },
-      { key: 'about_hours_shoulder', label: '11月・3月 拝観時間', defaultValue: '午前8時〜午後4時' },
-      { key: 'about_hours_winter',   label: '12月〜2月 拝観時間', defaultValue: '午前8時30分〜午後3時30分' },
-      { key: 'about_grounds_teaser_title', label: '「境内のご案内」誘導カード見出し', defaultValue: '境内のご案内' },
-      { key: 'about_grounds_teaser_desc',  label: '「境内のご案内」誘導カード説明文', multiline: true, defaultValue: '山門・観音堂・鐘楼・札所・天道・愛染堂・延命水など、境内各所の見どころをご紹介しています。' },
+      { key: 'about_subtitle',   label: '見出し（ヒーロー・本文共通）', defaultValue: '拝観時間・拝観料', translatable: true },
+      { key: 'about_hours_note', label: '「拝観時間」欄の表示文', defaultValue: '季節により異なります（下記参照）', translatable: true },
+      { key: 'about_holiday',    label: '定休日', defaultValue: '年中無休', translatable: true },
+      { key: 'about_fee_adult', label: '大人 拝観料', defaultValue: '500円', translatable: true },
+      { key: 'about_fee_child', label: '子供 拝観料', defaultValue: '200円', translatable: true },
+      { key: 'about_fee_group_adult', label: '大人 団体料金（20名様以上）', defaultValue: '450円', translatable: true },
+      { key: 'about_fee_group_child', label: '子供 団体料金（20名様以上）', defaultValue: '180円', translatable: true },
+      { key: 'about_hours_peak',     label: '4月〜10月 拝観時間', defaultValue: '午前8時〜午後5時', translatable: true },
+      { key: 'about_hours_shoulder', label: '11月・3月 拝観時間', defaultValue: '午前8時〜午後4時', translatable: true },
+      { key: 'about_hours_winter',   label: '12月〜2月 拝観時間', defaultValue: '午前8時30分〜午後3時30分', translatable: true },
+      { key: 'about_grounds_teaser_title', label: '「境内のご案内」誘導カード見出し', defaultValue: '境内のご案内', translatable: true },
+      { key: 'about_grounds_teaser_desc',  label: '「境内のご案内」誘導カード説明文', multiline: true, defaultValue: '山門・観音堂・鐘楼・札所・天道・愛染堂・延命水など、境内各所の見どころをご紹介しています。', translatable: true },
     ],
   },
   {
     section: '御祈願',
     href: '/prayer',
     fields: [
-      { key: 'prayer_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '立木観音護摩祈祷' },
-      { key: 'prayer_heading_about', label: '「御祈願について」見出し', defaultValue: '御祈願について' },
-      { key: 'prayer_about', label: '御祈願についての説明文', multiline: true, defaultValue: 'お護摩はインド伝来の密教の秘法（秘密の教え）で、僧侶が護摩壇に向かい、作法にしたがって仏の智慧の火を焚き、様々な供物を焚き上げ、厄難・災難を払いその加護（成就）を願います。' },
-      { key: 'prayer_heading_hours', label: '「御祈願時間」見出し', defaultValue: '御祈願時間' },
-      { key: 'prayer_hours_row_label', label: '時間テーブルの行ラベル', defaultValue: '通年（平日・土日祝）' },
-      { key: 'prayer_hours', label: '御祈願時間', defaultValue: '9：00〜12：00' },
-      { key: 'prayer_hours_note1', label: '御祈願時間 補足1', defaultValue: '定時での御祈願はございません。' },
-      { key: 'prayer_hours_note2', label: '御祈願時間 補足2', defaultValue: '予約制となりますので、事前にお申し込みをお願い致します。' },
-      { key: 'prayer_exclude_dates', label: '除外日', defaultValue: '6月18日・8月4日・8月8日' },
-      { key: 'prayer_exclude_note', label: '除外日の補足文', multiline: true, defaultValue: '他にも行事によっては祈祷できない日もございますので、一度お問い合わせください。' },
-      { key: 'prayer_heading_fees', label: '「御祈願料」見出し', defaultValue: '御祈願料' },
-      { key: 'prayer_fees_note', label: '御祈願料 説明文', multiline: true, defaultValue: '原則、御札の料金にて受付しております。金額によって御札と木箱の大きさが変わります。' },
+      { key: 'prayer_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '立木観音護摩祈祷', translatable: true },
+      { key: 'prayer_heading_about', label: '「御祈願について」見出し', defaultValue: '御祈願について', translatable: true },
+      { key: 'prayer_about', label: '御祈願についての説明文', multiline: true, defaultValue: 'お護摩はインド伝来の密教の秘法（秘密の教え）で、僧侶が護摩壇に向かい、作法にしたがって仏の智慧の火を焚き、様々な供物を焚き上げ、厄難・災難を払いその加護（成就）を願います。', translatable: true },
+      { key: 'prayer_heading_hours', label: '「御祈願時間」見出し', defaultValue: '御祈願時間', translatable: true },
+      { key: 'prayer_hours_row_label', label: '時間テーブルの行ラベル', defaultValue: '通年（平日・土日祝）', translatable: true },
+      { key: 'prayer_hours', label: '御祈願時間', defaultValue: '9：00〜12：00', translatable: true },
+      { key: 'prayer_hours_note1', label: '御祈願時間 補足1', defaultValue: '定時での御祈願はございません。', translatable: true },
+      { key: 'prayer_hours_note2', label: '御祈願時間 補足2', defaultValue: '予約制となりますので、事前にお申し込みをお願い致します。', translatable: true },
+      { key: 'prayer_exclude_dates', label: '除外日', defaultValue: '6月18日・8月4日・8月8日', translatable: true },
+      { key: 'prayer_exclude_note', label: '除外日の補足文', multiline: true, defaultValue: '他にも行事によっては祈祷できない日もございますので、一度お問い合わせください。', translatable: true },
+      { key: 'prayer_heading_fees', label: '「御祈願料」見出し', defaultValue: '御祈願料', translatable: true },
+      { key: 'prayer_fees_note', label: '御祈願料 説明文', multiline: true, defaultValue: '原則、御札の料金にて受付しております。金額によって御札と木箱の大きさが変わります。', translatable: true },
       {
         key: 'prayer_fees', label: '御祈願料（テーブル）', type: 'list',
         listFields: [{ key: 'price', label: '御祈願料' }, { key: 'size', label: '御札サイズ' }],
@@ -120,42 +150,53 @@ const SECTIONS: Section[] = [
           { price: '20,000円', size: '38㎝' },
           { price: '30,000円', size: '42.5㎝' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { price: '¥5,000', size: '28cm' },
+          { price: '¥10,000', size: '32cm' },
+          { price: '¥20,000', size: '38cm' },
+          { price: '¥30,000', size: '42.5cm' },
+        ]),
       },
-      { key: 'prayer_heading_mail', label: '「護摩札の郵送について」見出し', defaultValue: '護摩札の郵送について' },
-      { key: 'prayer_mail_text', label: '護摩札の郵送について', multiline: true, defaultValue: '万が一、参列できない場合は郵送にてお札をお送りします。着払いにて発送させて頂きますので、申込用紙に必要事項をご記入の上、現金書留にてお送りください。' },
-      { key: 'prayer_mail_note', label: '護摩札の郵送 補足', defaultValue: '※お申込み頂き御祈願後、発送させて頂きますので1〜2週間ほどお待ちください。' },
-      { key: 'prayer_heading_others', label: '「その他の御祈願」見出し', defaultValue: 'その他の御祈願' },
-      { key: 'prayer_car_title', label: '新車祈祷 タイトル', defaultValue: '新車祈願（車両安全祈願）' },
-      { key: 'prayer_car_desc', label: '新車祈祷 説明文', defaultValue: 'お車を新しくされた方、車両安全の御祈願をお申し込みの方' },
-      { key: 'prayer_car_fee', label: '新車祈祷 料金', defaultValue: '5,000円〜' },
-      { key: 'prayer_car_note', label: '新車祈祷 備考', defaultValue: '※交通安全の錫杖守りと木札が付きます。' },
-      { key: 'prayer_birth_title', label: '安産祈願 タイトル', defaultValue: '安産祈願' },
-      { key: 'prayer_birth_fee', label: '安産祈願 料金', defaultValue: '5,000円' },
-      { key: 'prayer_birth_note', label: '安産祈願 備考', defaultValue: '※腹帯の持ち込みも可能です。詳しくはお問い合わせください。' },
-      { key: 'prayer_753_title', label: '七五三祈願 タイトル', defaultValue: '七五三祈願' },
-      { key: 'prayer_753_fee', label: '七五三祈願 料金', defaultValue: '5,000円' },
-      { key: 'prayer_753_note', label: '七五三祈願 備考', defaultValue: '※三歳・五歳・七歳のお子様の健やかな成長をお祝いする御祈願です。' },
-      { key: 'prayer_cta_heading', label: 'CTA見出し', defaultValue: '御祈願のお申し込み' },
-      { key: 'prayer_cta_sub', label: 'CTA補足文', defaultValue: 'ご不明な点はお気軽にお問い合わせください。' },
+      { key: 'prayer_heading_mail', label: '「護摩札の郵送について」見出し', defaultValue: '護摩札の郵送について', translatable: true },
+      { key: 'prayer_mail_text', label: '護摩札の郵送について', multiline: true, defaultValue: '万が一、参列できない場合は郵送にてお札をお送りします。着払いにて発送させて頂きますので、申込用紙に必要事項をご記入の上、現金書留にてお送りください。', translatable: true },
+      { key: 'prayer_mail_note', label: '護摩札の郵送 補足', defaultValue: '※お申込み頂き御祈願後、発送させて頂きますので1〜2週間ほどお待ちください。', translatable: true },
+      { key: 'prayer_heading_others', label: '「その他の御祈願」見出し', defaultValue: 'その他の御祈願', translatable: true },
+      { key: 'prayer_car_title', label: '新車祈祷 タイトル', defaultValue: '新車祈願（車両安全祈願）', translatable: true },
+      { key: 'prayer_car_desc', label: '新車祈祷 説明文', defaultValue: 'お車を新しくされた方、車両安全の御祈願をお申し込みの方', translatable: true },
+      { key: 'prayer_car_fee', label: '新車祈祷 料金', defaultValue: '5,000円〜', translatable: true },
+      { key: 'prayer_car_note', label: '新車祈祷 備考', defaultValue: '※交通安全の錫杖守りと木札が付きます。', translatable: true },
+      { key: 'prayer_birth_title', label: '安産祈願 タイトル', defaultValue: '安産祈願', translatable: true },
+      { key: 'prayer_birth_fee', label: '安産祈願 料金', defaultValue: '5,000円', translatable: true },
+      { key: 'prayer_birth_note', label: '安産祈願 備考', defaultValue: '※腹帯の持ち込みも可能です。詳しくはお問い合わせください。', translatable: true },
+      { key: 'prayer_753_title', label: '七五三祈願 タイトル', defaultValue: '七五三祈願', translatable: true },
+      { key: 'prayer_753_fee', label: '七五三祈願 料金', defaultValue: '5,000円', translatable: true },
+      { key: 'prayer_753_note', label: '七五三祈願 備考', defaultValue: '※三歳・五歳・七歳のお子様の健やかな成長をお祝いする御祈願です。', translatable: true },
+      { key: 'prayer_cta_heading', label: 'CTA見出し', defaultValue: '御祈願のお申し込み', translatable: true },
+      { key: 'prayer_cta_sub', label: 'CTA補足文', defaultValue: 'ご不明な点はお気軽にお問い合わせください。', translatable: true },
     ],
   },
   {
     section: '御朱印',
     href: '/goshuin',
     fields: [
-      { key: 'goshuin_heading_regular', label: '「御朱印」見出し', defaultValue: '御朱印' },
-      { key: 'goshuin_intro', label: '御朱印セクションの説明文', multiline: true, defaultValue: '御朱印は御朱印所・本堂・五大堂の各所にてお受けいただけます。\n場所によって授与しているものが異なります。' },
+      { key: 'goshuin_heading_regular', label: '「御朱印」見出し', defaultValue: '御朱印', translatable: true },
+      { key: 'goshuin_intro', label: '御朱印セクションの説明文', multiline: true, defaultValue: '御朱印は御朱印所・本堂・五大堂の各所にてお受けいただけます。\n場所によって授与しているものが異なります。', translatable: true },
       {
         key: 'goshuin_regular', label: '通常御朱印（画像は固定・4件）', type: 'list',
         listFields: [{ key: 'title', label: 'タイトル' }],
         defaultValue: J([
           { title: '立木大悲殿' }, { title: 'ご詠歌' }, { title: '波之利大黒天' }, { title: '金剛閣' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Tachiki Daihiden' }, { title: 'Goeika' }, { title: 'Hashiri Daikokuten' }, { title: 'Kongokaku' },
+        ]),
       },
-      { key: 'goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：各500円　／　書き入れ・書き置きともに同じ金額です。\n受付時間は拝観時間に準じます（閉門30分前に終了）。' },
-      { key: 'goshuin_heading_special', label: '「特別御朱印」見出し', defaultValue: '写経・写仏体験 特別御朱印' },
-      { key: 'goshuin_special_intro', label: '特別御朱印 説明文', defaultValue: '写経・写仏体験とセットでお受けいただける特別な御朱印です。' },
-      { key: 'goshuin_special_price', label: '特別御朱印 価格表示', defaultValue: '体験料込み 各1,000円' },
+      { key: 'goshuin_fee_note', label: '御朱印代・受付時間の案内', multiline: true, defaultValue: '御朱印代：各500円　／　書き入れ・書き置きともに同じ金額です。\n受付時間は拝観時間に準じます（閉門30分前に終了）。', translatable: true },
+      { key: 'goshuin_heading_special', label: '「特別御朱印」見出し', defaultValue: '写経・写仏体験 特別御朱印', translatable: true },
+      { key: 'goshuin_special_intro', label: '特別御朱印 説明文', defaultValue: '写経・写仏体験とセットでお受けいただける特別な御朱印です。', translatable: true },
+      { key: 'goshuin_special_price', label: '特別御朱印 価格表示', defaultValue: '体験料込み 各1,000円', translatable: true },
       {
         key: 'goshuin_special', label: '特別御朱印一覧（画像は固定・3件）', type: 'list',
         listFields: [{ key: 'label', label: '区分（写経／写仏）' }, { key: 'title', label: 'タイトル' }, { key: 'sub', label: '副題' }, { key: 'desc', label: '説明', multiline: true }],
@@ -164,10 +205,16 @@ const SECTIONS: Section[] = [
           { label: '写経', title: '金紙特別御朱印', sub: '大日如来', desc: '十六文字写経（懺悔文）をお書きいただいた方にお授けします。' },
           { label: '写仏', title: '銀紙特別朱印', sub: '立木観世音', desc: '写仏をお書きいただいた方にお授けします。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { label: 'Sutra Copying', title: 'Gold Paper Special Stamp', sub: 'Tachiki Daihiden', desc: 'Given to those who copy the 16-character Enmei Jikku Kannon Sutra.' },
+          { label: 'Sutra Copying', title: 'Gold Paper Special Stamp', sub: 'Dainichi Nyorai', desc: 'Given to those who copy the 16-character Repentance Sutra.' },
+          { label: 'Buddha Tracing', title: 'Silver Paper Special Stamp', sub: 'Tachiki Kanzeon', desc: 'Given to those who complete a Buddha-image tracing.' },
+        ]),
       },
-      { key: 'goshuin_special_place', label: '特別御朱印 受付場所', defaultValue: '受付場所：寺務所 体験受付窓口' },
-      { key: 'goshuin_special_note',  label: '特別御朱印 補足', defaultValue: '※特別御朱印の種類は今後追加される場合があります。' },
-      { key: 'goshuin_heading_notes', label: '「ご注意」見出し', defaultValue: '御朱印についてのご注意' },
+      { key: 'goshuin_special_place', label: '特別御朱印 受付場所', defaultValue: '受付場所：寺務所 体験受付窓口', translatable: true },
+      { key: 'goshuin_special_note',  label: '特別御朱印 補足', defaultValue: '※特別御朱印の種類は今後追加される場合があります。', translatable: true },
+      { key: 'goshuin_heading_notes', label: '「ご注意」見出し', defaultValue: '御朱印についてのご注意', translatable: true },
       {
         key: 'goshuin_notes', label: '御朱印についてのご注意', type: 'list',
         listFields: [{ key: 'text', label: '注意事項', multiline: true }],
@@ -176,6 +223,13 @@ const SECTIONS: Section[] = [
           { text: '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。' },
           { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
           { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'A goshuin is a proof of faith — please do not request one solely for collecting purposes.' },
+          { text: 'Reception closes 30 minutes before the temple closes. Please allow enough time.' },
+          { text: 'Hand-written stamps may take extra time during busy periods.' },
+          { text: 'Pre-inscribed stamps are also available for those without a goshuin book.' },
         ]),
       },
     ],
@@ -196,6 +250,11 @@ const SECTIONS: Section[] = [
           { icon: '📜', title: '延命十句観音経', desc: '観音様のお力を借り、長寿・安全を祈るお経。十六文字を丁寧にお写しいただきます。' },
           { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { icon: '📜', title: 'Enmei Jikku Kannon Sutra', desc: 'A sutra invoking Kannon\'s power to pray for longevity and safety. You will carefully copy its 16 characters.' },
+          { icon: '✍️', title: 'Repentance Sutra', desc: 'A sutra to repent past wrongdoing and purify the heart, paired with a gold-paper special goshuin (Dainichi Nyorai).' },
+        ]),
       },
       { key: 'shakyou_heading_flow', label: '「体験の流れ」見出し', defaultValue: '体験の流れ', translatable: true },
       {
@@ -206,6 +265,13 @@ const SECTIONS: Section[] = [
           { title: '用具の準備', text: '写経用紙の入ったクリアファイルと筆をご用意しますので、お教室にそのままお持ちください。' },
           { title: '体験', text: '一文字一文字丁寧に、薄墨になっているところをお書入れください。' },
           { title: '特別朱印のお授け', text: '体験終了後、三宝（木の台）に写経を収め、クリアファイルと筆を寺務所にお返しください。引き換えに御朱印をお授けします。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Reception', text: 'Please apply at the Temple Office experience counter and pay the experience fee.' },
+          { title: 'Preparing Materials', text: 'A clear folder with a sutra sheet and a brush will be prepared — please bring them as is to the copying room.' },
+          { title: 'Copying', text: 'Carefully trace over the light-gray printed characters, one by one.' },
+          { title: 'Receiving the Special Goshuin', text: 'After finishing, place your sutra on the wooden offering stand and return the clear folder and brush to the Temple Office. You will receive a goshuin stamp in exchange.' },
         ]),
       },
       { key: 'shakyou_heading_fees', label: '「料金・所要時間」見出し', defaultValue: '料金・所要時間', translatable: true },
@@ -223,6 +289,12 @@ const SECTIONS: Section[] = [
           { text: '筆・硯・お経の手本はすべてご用意しています。手ぶらでお越しください。' },
           { text: '汚れてもよい服装でお越しいただくとより安心です。' },
           { text: '書き損じても大丈夫です。丁寧にご指導いたします。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'Brushes, inkstones, and sutra templates are all provided. Please come empty-handed.' },
+          { text: "It's reassuring to wear clothing you don't mind getting ink on." },
+          { text: "Don't worry about making mistakes — our staff will guide you carefully." },
         ]),
       },
       { key: 'shakyou_cta_heading', label: 'CTA見出し', defaultValue: '写経体験のご予約', translatable: true },
@@ -244,6 +316,10 @@ const SECTIONS: Section[] = [
         defaultValue: J([
           { title: '立木観世音菩薩', desc: '下絵に沿って、立木観音のご本尊・立木観世音菩薩のお姿をお描きいただきます。完成後は銀紙特別朱印（立木観世音）とセットでお授けします。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Tachiki Kanzeon Bodhisattva', desc: 'Following the template, you will trace the figure of the principal image, Tachiki Kanzeon Bodhisattva. A silver-paper special stamp (Tachiki Kanzeon) is given together upon completion.' },
+        ]),
       },
       { key: 'shabutu_heading_fees', label: '「料金・所要時間」見出し', defaultValue: '料金・所要時間', translatable: true },
       { key: 'shabutu_fee',  label: '体験料', defaultValue: '1,000円（特別御朱印込み）', translatable: true },
@@ -262,6 +338,14 @@ const SECTIONS: Section[] = [
           { title: '特別御朱印のお授け', text: '完成後、銀紙特別朱印（立木観世音）をお授けします。' },
           { title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Reception', text: 'Please apply at the Temple Office experience reception counter and pay the experience fee.' },
+          { title: 'Preparing Materials', text: 'A template, brush, ink, and other materials are provided — all on loan, so you may come empty-handed.' },
+          { title: 'Tracing the Image', text: 'Following the template, slowly trace the figure of Tachiki Kanzeon Bodhisattva. Our staff will guide you.' },
+          { title: 'Receiving the Special Goshuin', text: 'Upon completion, you will receive a silver-paper special stamp (Tachiki Kanzeon).' },
+          { title: 'Taking It Home', text: 'You may take your completed tracing home. Please display it with care.' },
+        ]),
       },
       { key: 'shabutu_goshuin_note', label: '特別御朱印 補足（体験内容の下に表示）', defaultValue: '※特別御朱印は体験料に含まれています。別途購入はできません。', translatable: true },
       { key: 'shabutu_heading_items', label: '「持ち物・服装」見出し', defaultValue: '持ち物・服装', translatable: true },
@@ -272,6 +356,12 @@ const SECTIONS: Section[] = [
           { text: '下絵・筆・墨・硯はすべてご用意しています。手ぶらでお越しください。' },
           { text: '墨が衣服につく場合がありますので、汚れてもよい服装でお越しください。' },
           { text: '完成した作品はお持ち帰りいただけます。筒状にお渡しします。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'Templates, brushes, ink, and inkstones are all provided. Please come empty-handed.' },
+          { text: 'Ink may get on your clothing — please wear something you don\'t mind getting dirty.' },
+          { text: 'Your completed work can be taken home, presented rolled in a tube.' },
         ]),
       },
       { key: 'shabutu_cta_heading', label: 'CTA見出し', defaultValue: '写仏体験のご予約', translatable: true },
@@ -309,6 +399,12 @@ const SECTIONS: Section[] = [
           { title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。' },
           { title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Choose Your Beads', text: 'Freely combine natural stone and wood beads to your liking.' },
+          { title: 'Make Your Bracelet', text: 'Our staff will guide you carefully, so anyone can make one easily.' },
+          { title: 'Blessing', text: 'A priest will bless it, and you can take it home the same day as an omamori charm.' },
+        ]),
       },
       {
         key: 'jyuzu_samples', label: 'サンプル（コース）', type: 'list',
@@ -318,6 +414,12 @@ const SECTIONS: Section[] = [
           { course: 'Bコース', price: '4,000円', desc: '天然石と天然木の個性あふれる数珠' },
           { course: 'Cコース', price: '6,000円', desc: '天然石のみで作る特別な数珠' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { course: 'Course A', price: '¥2,000', desc: 'A standard bracelet made of natural wood' },
+          { course: 'Course B', price: '¥4,000', desc: 'A distinctive bracelet mixing natural stone and wood' },
+          { course: 'Course C', price: '¥6,000', desc: 'A special bracelet made entirely of natural stone' },
+        ]),
       },
       {
         key: 'jyuzu_materials', label: '珠の素材', type: 'list',
@@ -325,6 +427,11 @@ const SECTIONS: Section[] = [
         defaultValue: J([
           { name: '天然木', desc: '軽くて使いやすい木の珠。温かみのある手触りが特徴です。' },
           { name: '天然石', desc: '色とりどりの天然石の珠。お好みの色でお選びいただけます。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { name: 'Natural Wood', desc: 'Lightweight, easy-to-wear wooden beads, known for their warm texture.' },
+          { name: 'Natural Stone', desc: 'Colorful natural stone beads, available in your favorite colors.' },
         ]),
       },
       { key: 'jyuzu_heading_materials', label: '「選べる珠」見出し', defaultValue: '選べる珠', translatable: true },
@@ -356,6 +463,30 @@ const SECTIONS: Section[] = [
           { name: 'インド翡翠', desc: '失った気力を回復させ、強いパワーで物事を成し遂げるとされています。' },
           { name: 'プラムジェイド', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { name: 'Crystal', desc: 'An all-purpose stone said to purify, ward off negative energy, and prevent misfortune.' },
+          { name: 'Rose Quartz', desc: 'Said to bring out inner beauty.' },
+          { name: 'Lapis Lazuli', desc: 'Said to enhance intelligence and intuition, drawing good fortune.' },
+          { name: 'Amethyst', desc: 'A purple stone said to turn negative energy into positive.' },
+          { name: 'Agate', desc: 'Said to bring health, longevity, and blessings of children.' },
+          { name: 'Pink Tiger Eye', desc: 'Said to boost career, romance, and financial fortune.' },
+          { name: 'Gold Silver Tiger Eye', desc: 'Said to broaden perspective and lead to success through sound judgment and action.' },
+          { name: 'Torame Stone', desc: 'Said to strengthen decisiveness and initiative.' },
+          { name: 'Red Torame Stone', desc: 'Said to invite good fortune and bestow spiritual power.' },
+          { name: 'Light Blue Tiger Eye', desc: 'A type of tiger eye said to enhance calmness and judgment.' },
+          { name: 'Mixed Tiger Eye', desc: 'Said to bring success, victory, and the ability to seize opportunity.' },
+          { name: 'Purple Cat\'s Eye', desc: 'Said to sharpen intuition and strengthen judgment.' },
+          { name: 'Peach Jade', desc: 'Said to balance mind and body.' },
+          { name: 'Bronzite', desc: 'Said to stabilize the spirit and heal mental fatigue.' },
+          { name: 'Purple Sunstone', desc: 'Said to bring encounters with good people, things, and opportunities.' },
+          { name: 'Howlite', desc: 'Said to ward off misfortune, stabilize and purify the spirit, and strengthen willpower.' },
+          { name: 'Angelite', desc: 'Said to purify negative emotions and bring gentleness and healing.' },
+          { name: 'Carnelian', desc: 'Said to boost vitality, strengthen the body, and cut through hesitation.' },
+          { name: 'Onyx', desc: 'Said to ward off negative energy and misfortune.' },
+          { name: 'Indian Jade', desc: 'Said to restore lost energy and accomplish tasks with strong power.' },
+          { name: 'Plum Jade', desc: 'A deeply colored stone said to bring elegance and composure.' },
+        ]),
       },
       {
         key: 'jyuzu_woods', label: '選べる珠：天然木（写真は変更できません。並び順・追加削除すると写真がずれるため注意）', type: 'list',
@@ -375,6 +506,22 @@ const SECTIONS: Section[] = [
           { name: 'つげ（ツヤ有）', desc: '艶やかに仕上げられたつげの珠。緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
           { name: '椰', desc: '椰子の実を使った、素朴な模様が魅力の木材です。' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { name: 'Zelkova', desc: 'Long cherished as a sacred tree, symbolizing growth and development.' },
+          { name: 'Ebony', desc: 'A prized luxury wood said to ward off evil and misfortune.' },
+          { name: 'Rosewood', desc: 'Known for its elegant purple hue and blessings of health and longevity.' },
+          { name: 'Bodhi Seed (Star & Moon)', desc: 'Named for surface spots resembling stars and the moon, known for blessings of good relationships.' },
+          { name: 'Plum Wood', desc: 'Known as "the first of a hundred flowers," cherished as a tree of good fortune and warding off misfortune.' },
+          { name: 'Boxwood', desc: 'A fine, durable wood also used for seals — an auspicious material.' },
+          { name: 'Green Ebony', desc: 'Known for its refreshing green color, said to bring healing and peace.' },
+          { name: 'Tagayasan', desc: 'A hard, durable wood said to ward off evil and misfortune.' },
+          { name: 'Siamese Ebony', desc: 'A prized wood with beautiful striped grain and a distinctive texture.' },
+          { name: 'Tagayasan (Polished)', desc: 'Polished tagayasan beads — a hard, durable wood said to ward off evil and misfortune.' },
+          { name: 'Plum Wood (Polished)', desc: 'Polished plum wood beads — "the first of a hundred flowers," a tree of good fortune and warding off misfortune.' },
+          { name: 'Boxwood (Polished)', desc: 'Polished boxwood beads — a fine, durable wood also used for seals, an auspicious material.' },
+          { name: 'Coconut Wood', desc: 'Made from coconut shell, prized for its rustic, distinctive grain.' },
+        ]),
       },
       { key: 'jyuzu_heading_notes', label: '「ご注意・持ち物」見出し', defaultValue: 'ご注意・持ち物', translatable: true },
       {
@@ -385,6 +532,13 @@ const SECTIONS: Section[] = [
           { text: '参拝料（拝観料）は別途お求めください。' },
           { text: '僧侶がご祈祷したものを当日お守りとしてお持ち帰りいただけます。僧侶が不在の場合、後日ご祈祷後郵送いたします（郵送料は当寺負担）。' },
           { text: '団体でお越しの際は事前にお電話ください。' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { text: 'All bracelets are wrist-worn style.' },
+          { text: 'Please pay the visiting admission fee separately.' },
+          { text: 'A priest blesses your bracelet, which you take home the same day as an omamori charm. If no priest is available, it will be blessed later and mailed to you (postage covered by the temple).' },
+          { text: 'For group visits, please call in advance.' },
         ]),
       },
       { key: 'jyuzu_cta_heading', label: 'CTA見出し', defaultValue: '数珠づくり体験のご予約', translatable: true },
@@ -466,7 +620,26 @@ export default function PagesEditor() {
                       {saving === field.key ? '保存中...' : saved === field.key ? '✓ 保存しました' : '保存'}
                     </button>
                   </div>
-                  {'translatable' in field && field.translatable && (
+                  {field.type === 'list' && field.translatable && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
+                      <ListEditor
+                        value={values[`${field.key}_en`] ?? field.defaultValueEn ?? '[]'}
+                        fields={field.listFields}
+                        onChange={val => setValues(v => ({ ...v, [`${field.key}_en`]: val }))}
+                      />
+                      <div className="mt-2 flex justify-end">
+                        <button
+                          onClick={() => save(`${field.key}_en`)}
+                          disabled={saving === `${field.key}_en`}
+                          className="btn-primary text-sm px-5 py-2 disabled:opacity-50"
+                        >
+                          {saving === `${field.key}_en` ? '保存中...' : saved === `${field.key}_en` ? '✓ 保存しました' : '保存'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {'translatable' in field && field.type !== 'list' && field.translatable && (
                     <div className="mt-3 pt-3 border-t border-gray-100">
                       <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
                       {field.multiline ? (

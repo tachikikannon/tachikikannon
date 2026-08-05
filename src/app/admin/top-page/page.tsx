@@ -6,7 +6,7 @@ import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
-type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string }
+type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
 type Field = TextField | ListFieldDef
 
 const FIELDS: { section: string; fields: Field[] }[] = [
@@ -37,6 +37,13 @@ const FIELDS: { section: string; fields: Field[] }[] = [
           { label: '境内のご案内', desc: '見どころ・境内マップ' },
           { label: '年間行事', desc: '法要・行事のご案内' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { label: 'History of Tachiki Kannon', desc: 'History & origins' },
+          { label: 'Admission Fees',            desc: 'Admission & other fees' },
+          { label: 'Grounds Guide',             desc: 'Highlights & temple map' },
+          { label: 'Annual Events',             desc: 'Services & event information' },
+        ]),
       },
     ],
   },
@@ -59,6 +66,13 @@ const FIELDS: { section: string; fields: Field[] }[] = [
           { label: '写経体験', sub: '約15分 / 1,000円' },
           { label: '写仏体験', sub: '1,000円' },
         ]),
+        translatable: true,
+        defaultValueEn: J([
+          { label: 'Prayer Service',           sub: 'From ¥5,000' },
+          { label: 'Juzu Bracelet Making',     sub: 'From ¥2,000' },
+          { label: 'Sutra Copying',            sub: 'Approx. 15 min / ¥1,000' },
+          { label: 'Buddhist Image Tracing',   sub: '¥1,000' },
+        ]),
       },
     ],
   },
@@ -72,6 +86,11 @@ const FIELDS: { section: string; fields: Field[] }[] = [
         defaultValue: J([
           { title: '御朱印', text: '中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info: '御朱印代：500円〜' },
           { title: '授与品・通販', text: 'お守り・お札など各種授与品をご用意しております。通販サイトのほか、代金引換でもお求めいただけます。', info: '通販サイト／代金引換からお選びいただけます' },
+        ]),
+        translatable: true,
+        defaultValueEn: J([
+          { title: 'Goshuin Stamps',    text: "Receive Chuzenji's own goshuin stamp, either hand-written or pre-inscribed.", info: 'From ¥500' },
+          { title: 'Amulets & Mail Order', text: 'Omamori charms, ofuda tablets, and other items are available online or by cash-on-delivery order.', info: 'Choose online shop or cash-on-delivery' },
         ]),
       },
     ],
@@ -164,7 +183,26 @@ export default function TopPageEditor() {
                       {saving === field.key ? '保存中...' : saved === field.key ? '✓ 保存しました' : '保存'}
                     </button>
                   </div>
-                  {'translatable' in field && field.translatable && (
+                  {field.type === 'list' && field.translatable && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
+                      <ListEditor
+                        value={values[`${field.key}_en`] ?? field.defaultValueEn ?? '[]'}
+                        fields={field.listFields}
+                        onChange={val => setValues(v => ({ ...v, [`${field.key}_en`]: val }))}
+                      />
+                      <div className="mt-2 flex justify-end">
+                        <button
+                          onClick={() => save(`${field.key}_en`)}
+                          disabled={saving === `${field.key}_en`}
+                          className="btn-primary text-sm px-5 py-2 disabled:opacity-50"
+                        >
+                          {saving === `${field.key}_en` ? '保存中...' : saved === `${field.key}_en` ? '✓ 保存しました' : '保存'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {'translatable' in field && field.type !== 'list' && field.translatable && (
                     <div className="mt-3 pt-3 border-t border-gray-100">
                       <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
                       {field.multiline ? (

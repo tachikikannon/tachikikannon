@@ -21,6 +21,13 @@ const FIELDS = [
       { text: '動きやすく濡れても構わない服装でお越しください。湖上は気温が低い場合がありますので、上に羽織るものをご持参ください。' },
       { text: '天候・状況により内容が変更・中止となる場合がございます。詳細はお電話にてご確認ください。' },
     ]),
+    translatable: true,
+    defaultValueEn: J([
+      { text: 'Advance application is required. Applications close once capacity is reached, so please apply early.' },
+      { text: 'You will receive an ofuda talisman. Payment is accepted on the day, on site.' },
+      { text: 'Please wear clothing you can move in easily and that can get wet. Temperatures on the lake can be cool, so please bring something to layer on top.' },
+      { text: 'Content may change or be cancelled depending on weather and conditions. Please call for details.' },
+    ]),
   },
   { key: 'funazento_cta_heading', label: 'CTA見出し', defaultValue: '船禅頂 お申し込み', translatable: true },
   { key: 'funazento_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '定員になり次第締め切ります。\n御札授与あり・お支払いは当日現地にて。', translatable: true },
