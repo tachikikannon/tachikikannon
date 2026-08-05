@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
-type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text' }
+type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
 type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string }
 type Field = TextField | ListFieldDef
 type Section = { section: string; href: string; fields: Field[] }
@@ -16,10 +16,10 @@ const SECTIONS: Section[] = [
     href: '/onsenji',
     fields: [
       { key: 'onsenji_hero_en',    label: 'ヒーロー 英語サブタイトル', defaultValue: 'Nikkozan Onsenji Temple' },
-      { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場' },
-      { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを' },
-      { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は管理画面の「お知らせ管理」で編集）', defaultValue: 'お知らせ' },
-      { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について' },
+      { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場', translatable: true },
+      { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを', translatable: true },
+      { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は管理画面の「お知らせ管理」で編集）', defaultValue: 'お知らせ', translatable: true },
+      { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について', translatable: true },
       {
         key: 'onsenji_about_cards', label: 'カード（歴史・拝観料金・境内案内・年間行事の順、4件固定）', type: 'list',
         listFields: [{ key: 'label', label: 'タイトル' }, { key: 'desc', label: '説明' }],
@@ -30,9 +30,14 @@ const SECTIONS: Section[] = [
           { label: '年間行事',     desc: '法要・行事のご案内' },
         ]),
       },
-      { key: 'onsenji_access_address', label: 'アクセス 所在地', defaultValue: '栃木県日光市湯元2559' },
-      { key: 'onsenji_access_car',  label: 'アクセス お車での説明', multiline: true, defaultValue: '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり' },
-      { key: 'onsenji_access_bus',  label: 'アクセス バスでの説明', multiline: true, defaultValue: '東武日光駅・JR日光駅よりバスで「西参道」バス停下車、徒歩約10分\nまたは「表参道」バス停より徒歩約15分' },
+      { key: 'onsenji_heading_goryaku', label: '「主なご利益」見出し', defaultValue: '主なご利益', translatable: true },
+      { key: 'onsenji_heading_menu', label: '「温泉・体験メニュー」見出し', defaultValue: '温泉・体験メニュー', translatable: true },
+      { key: 'onsenji_heading_goshuin', label: '「御朱印」見出し', defaultValue: '御朱印', translatable: true },
+      { key: 'onsenji_goshuin_desc',    label: '「御朱印」説明文', multiline: true, defaultValue: '温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。', translatable: true },
+      { key: 'onsenji_heading_access', label: '「アクセス」見出し', defaultValue: 'アクセス', translatable: true },
+      { key: 'onsenji_access_address', label: 'アクセス 所在地', defaultValue: '栃木県日光市湯元2559', translatable: true },
+      { key: 'onsenji_access_car',  label: 'アクセス お車での説明', multiline: true, defaultValue: '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり', translatable: true },
+      { key: 'onsenji_access_bus',  label: 'アクセス バスでの説明', multiline: true, defaultValue: '東武日光駅・JR日光駅よりバスで「西参道」バス停下車、徒歩約10分\nまたは「表参道」バス停より徒歩約15分', translatable: true },
     ],
   },
   {
@@ -480,6 +485,34 @@ export default function OnsenjPagesEditor() {
                       {saving === field.key ? '保存中...' : saved === field.key ? '✓ 保存しました' : '保存'}
                     </button>
                   </div>
+                  {'translatable' in field && field.translatable && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <label className="admin-label text-gray-400">英語訳（未入力の場合は日本語が表示されます）</label>
+                      {field.multiline ? (
+                        <textarea
+                          className="admin-input min-h-[80px]"
+                          value={values[`${field.key}_en`] ?? ''}
+                          onChange={e => setValues(v => ({ ...v, [`${field.key}_en`]: e.target.value }))}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          className="admin-input"
+                          value={values[`${field.key}_en`] ?? ''}
+                          onChange={e => setValues(v => ({ ...v, [`${field.key}_en`]: e.target.value }))}
+                        />
+                      )}
+                      <div className="mt-2 flex justify-end">
+                        <button
+                          onClick={() => save(`${field.key}_en`)}
+                          disabled={saving === `${field.key}_en`}
+                          className="text-sm px-5 py-2 rounded-full bg-onsenji text-white hover:bg-onsenji-light transition-colors disabled:opacity-50"
+                        >
+                          {saving === `${field.key}_en` ? '保存中...' : saved === `${field.key}_en` ? '✓ 保存しました' : '保存'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

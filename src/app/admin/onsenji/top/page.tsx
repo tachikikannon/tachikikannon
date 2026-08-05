@@ -5,10 +5,10 @@ const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
   { key: 'onsenji_hero_en',    label: 'ヒーロー 英語サブタイトル', defaultValue: 'Nikkozan Onsenji Temple' },
-  { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場' },
-  { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを' },
-  { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は「お知らせ管理」で編集）', defaultValue: 'お知らせ' },
-  { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について' },
+  { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場', translatable: true },
+  { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを', translatable: true },
+  { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は「お知らせ管理」で編集）', defaultValue: 'お知らせ', translatable: true },
+  { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について', translatable: true },
   {
     key: 'onsenji_about_cards', label: 'カード（歴史・拝観料金・境内案内・年間行事の順、4件固定）', type: 'list' as const,
     listFields: [{ key: 'label', label: 'タイトル' }, { key: 'desc', label: '説明' }],
@@ -19,7 +19,7 @@ const FIELDS = [
       { label: '年間行事',     desc: '法要・行事のご案内' },
     ]),
   },
-  { key: 'onsenji_heading_goryaku', label: '「主なご利益」見出し', defaultValue: '主なご利益' },
+  { key: 'onsenji_heading_goryaku', label: '「主なご利益」見出し', defaultValue: '主なご利益', translatable: true },
   {
     key: 'onsenji_goryaku_cards', label: 'ご利益カード（4件固定）', type: 'list' as const,
     listFields: [{ key: 'icon', label: 'アイコン（絵文字）' }, { key: 'title', label: 'タイトル' }, { key: 'desc', label: '説明' }],
@@ -30,7 +30,7 @@ const FIELDS = [
       { icon: '✨', title: '開運招福', desc: '千二百余年の祈りが積み重なる霊場のご加護を' },
     ]),
   },
-  { key: 'onsenji_heading_menu', label: '「温泉・体験メニュー」見出し', defaultValue: '温泉・体験メニュー' },
+  { key: 'onsenji_heading_menu', label: '「温泉・体験メニュー」見出し', defaultValue: '温泉・体験メニュー', translatable: true },
   {
     key: 'onsenji_menu_cards', label: 'メニューカード（薬師の湯・写経・写仏の順、3件固定）', type: 'list' as const,
     listFields: [{ key: 'title', label: 'タイトル' }, { key: 'desc', label: '説明' }],
@@ -40,12 +40,12 @@ const FIELDS = [
       { title: '写仏体験', desc: '1,000円・約30〜60分。薬師瑠璃光如来をお描きいただき、特別御朱印をお授けします。' },
     ]),
   },
-  { key: 'onsenji_heading_goshuin', label: '「御朱印」見出し', defaultValue: '御朱印' },
-  { key: 'onsenji_goshuin_desc',    label: '「御朱印」説明文', multiline: true, defaultValue: '温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。' },
-  { key: 'onsenji_heading_access', label: '「アクセス」見出し', defaultValue: 'アクセス' },
-  { key: 'onsenji_access_address', label: 'アクセス 所在地', defaultValue: '栃木県日光市湯元2559' },
-  { key: 'onsenji_access_car',  label: 'アクセス お車での説明', multiline: true, defaultValue: '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり' },
-  { key: 'onsenji_access_bus',  label: 'アクセス バスでの説明', multiline: true, defaultValue: '東武日光駅・JR日光駅よりバスで「西参道」バス停下車、徒歩約10分\nまたは「表参道」バス停より徒歩約15分' },
+  { key: 'onsenji_heading_goshuin', label: '「御朱印」見出し', defaultValue: '御朱印', translatable: true },
+  { key: 'onsenji_goshuin_desc',    label: '「御朱印」説明文', multiline: true, defaultValue: '温泉寺の御朱印は境内にてお受けいただけます。写経体験では特別御朱印をお授けします。', translatable: true },
+  { key: 'onsenji_heading_access', label: '「アクセス」見出し', defaultValue: 'アクセス', translatable: true },
+  { key: 'onsenji_access_address', label: 'アクセス 所在地', defaultValue: '栃木県日光市湯元2559', translatable: true },
+  { key: 'onsenji_access_car',  label: 'アクセス お車での説明', multiline: true, defaultValue: '日光宇都宮道路 日光ICより約10分\n境内周辺に有料駐車場あり', translatable: true },
+  { key: 'onsenji_access_bus',  label: 'アクセス バスでの説明', multiline: true, defaultValue: '東武日光駅・JR日光駅よりバスで「西参道」バス停下車、徒歩約10分\nまたは「表参道」バス停より徒歩約15分', translatable: true },
 ] as const
 
 export default function AdminOnsenjTop() {

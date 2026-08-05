@@ -15,6 +15,27 @@
     "contact": "Contact",
     "onsenjiLink": "→ Nikkozan Onsenji Temple Site"
   },
+  "onsenjiHeader": {
+    "about": "Visiting",
+    "grounds": "Grounds Guide",
+    "access": "Access",
+    "experience": "Experiences",
+    "goshuin": "Goshuin Stamps",
+    "annualEvents": "Annual Events",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "chuzenjiLink": "→ Nikkozan Chuzenji Tachiki Kannon Site"
+  },
+  "onsenjiHome": {
+    "ctaAbout": "Visit Information",
+    "ctaOnsen": "About the Hot Spring",
+    "seeMore": "Learn More",
+    "newsEmpty": "No announcements at this time",
+    "newsMore": "View All Announcements →",
+    "accessAddressLabel": "Address",
+    "accessCarLabel": "By Car",
+    "accessBusLabel": "By Train / Bus"
+  },
   "home": {
     "ctaAbout": "Visit Information",
     "ctaPrayer": "View Prayer Services",

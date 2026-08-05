@@ -15,6 +15,27 @@
     "contact": "お問い合わせ",
     "onsenjiLink": "→ 日光山温泉寺サイトへ"
   },
+  "onsenjiHeader": {
+    "about": "拝観案内",
+    "grounds": "境内のご案内",
+    "access": "アクセス",
+    "experience": "体験",
+    "goshuin": "御朱印",
+    "annualEvents": "年間行事",
+    "faq": "よくある質問",
+    "contact": "お問い合わせ",
+    "chuzenjiLink": "→ 日光山中禅寺 立木観音サイトへ"
+  },
+  "onsenjiHome": {
+    "ctaAbout": "拝観について",
+    "ctaOnsen": "温泉のご案内",
+    "seeMore": "詳しく見る",
+    "newsEmpty": "現在お知らせはありません",
+    "newsMore": "お知らせ一覧を見る →",
+    "accessAddressLabel": "住所",
+    "accessCarLabel": "車でのアクセス",
+    "accessBusLabel": "電車・バスでのアクセス"
+  },
   "home": {
     "ctaAbout": "参拝のご案内",
     "ctaPrayer": "御祈願を見る",
