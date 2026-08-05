@@ -61,6 +61,21 @@
     "aboutHours": "Hours & Admission Fee",
     "history": "History of Tachiki Kannon"
   },
+  "shakyou": {
+    "title": "Sutra Copying Experience",
+    "breadcrumbReserve": "Reserve an Experience",
+    "tableFee": "Fee",
+    "tableTime": "Duration",
+    "tableTarget": "Who Can Join",
+    "tablePlace": "Reception Location",
+    "tableHours": "Reception Hours",
+    "sheetLabel": "Sutra Sheet",
+    "goshuinLabelSuffix": " Special Goshuin",
+    "reserveCta": "Reserve Online",
+    "contactCta": "Contact Us",
+    "quickShabutu": "Buddhist Image Tracing",
+    "quickJyuzu": "Juzu Bracelet Making"
+  },
   "history": {
     "title": "History of Tachiki Kannon",
     "quickAbout": "About Visiting",

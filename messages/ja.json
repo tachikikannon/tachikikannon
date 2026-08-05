@@ -61,6 +61,21 @@
     "aboutHours": "拝観時間・料金",
     "history": "立木観音の歴史"
   },
+  "shakyou": {
+    "title": "写経体験",
+    "breadcrumbReserve": "体験予約",
+    "tableFee": "体験料",
+    "tableTime": "所要時間",
+    "tableTarget": "対象",
+    "tablePlace": "受付場所",
+    "tableHours": "受付時間",
+    "sheetLabel": "写経用紙",
+    "goshuinLabelSuffix": "の特別御朱印",
+    "reserveCta": "オンライン予約はこちら",
+    "contactCta": "お問い合わせ",
+    "quickShabutu": "写仏体験",
+    "quickJyuzu": "数珠づくり体験"
+  },
   "history": {
     "title": "立木観音の歴史",
     "quickAbout": "参拝について",
