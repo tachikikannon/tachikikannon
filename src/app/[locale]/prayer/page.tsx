@@ -188,6 +188,9 @@ export default async function PrayerPage({
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold text-sm text-gray-700 leading-relaxed space-y-2">
               <p>{g('prayer_mail_text')}</p>
               <p className="text-xs text-gray-500">{g('prayer_mail_note')}</p>
+              <Link href="/prayer/mail-apply" className="inline-block mt-2 text-sm text-navy font-medium border-b border-navy/40 hover:border-navy transition-colors">
+                {t('mailCta')} →
+              </Link>
             </div>
           </section>
           <section>
@@ -237,6 +240,7 @@ export default async function PrayerPage({
             <p className="text-white/70 text-sm mb-6">{g('prayer_cta_sub')}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/reserve" className="btn-gold">{t('reserveCta')}</Link>
+              <Link href="/prayer/mail-apply" className="btn-outline">{t('mailCta')}</Link>
               <Link href="/contact" className="btn-outline">{t('contactCta')}</Link>
             </div>
           </div>
