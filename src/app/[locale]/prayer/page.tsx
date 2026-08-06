@@ -238,10 +238,10 @@ export default async function PrayerPage({
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
             <p className="font-serif text-xl mb-2">{g('prayer_cta_heading')}</p>
             <p className="text-white/70 text-sm mb-6">{g('prayer_cta_sub')}</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/reserve" className="btn-gold">{t('reserveCta')}</Link>
-              <Link href="/prayer/mail-apply" className="btn-outline">{t('mailCta')}</Link>
-              <Link href="/contact" className="btn-outline">{t('contactCta')}</Link>
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 justify-center">
+              <Link href="/reserve" className="btn-gold whitespace-nowrap">{t('reserveCta')}</Link>
+              <Link href="/prayer/mail-apply" className="btn-outline whitespace-nowrap">{t('mailCta')}</Link>
+              <Link href="/contact" className="btn-outline whitespace-nowrap">{t('contactCta')}</Link>
             </div>
           </div>
         </div>
