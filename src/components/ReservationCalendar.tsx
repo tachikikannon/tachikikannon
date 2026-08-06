@@ -73,7 +73,13 @@ export default function ReservationCalendar({
   const dateLocale = locale === 'en' ? 'en-US' : 'ja-JP'
   const DAY_LABELS = t.raw('days') as string[]
   const now = new Date()
-  const nowMinutes = now.getHours() * 60 + now.getMinutes()
+  // サーバー描画時とクライアントのhydration時とで現在時刻がズレることがあり、
+  // それによって「本日締切済み判定」の結果が食い違うとReactのhydrationエラーになる。
+  // マウント前（サーバー描画・hydration直後の初回描画）は常に「未締切」として扱い、
+  // マウント後のクライアント再描画で実際の現在時刻を反映する。
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+  const nowMinutes = mounted ? now.getHours() * 60 + now.getMinutes() : -1
   const today = new Date(now)
   today.setHours(0,0,0,0)
 
