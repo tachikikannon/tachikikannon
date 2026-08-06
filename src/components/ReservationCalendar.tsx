@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
-import { getTimeSlots, blockedDateMatchesType } from '@/lib/reservationSlots'
+import { getTimeSlots, blockedDateMatchesType, getSeason } from '@/lib/reservationSlots'
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; type: string; party_size: number; category_id: string | null }
@@ -16,6 +16,19 @@ function parseSlotMinutes(slot: string): number | null {
   const m = slot.match(/^(\d{1,2}):(\d{2})$/)
   if (!m) return null
   return Number(m[1]) * 60 + Number(m[2])
+}
+
+// "午前"/"午後" ラベル枠の当日受付締切（分）。それ以外のラベルはnullを返す。
+// 午前は11:45で締切。午後は拝観時間の閉門1時間前（季節により変動）で締切。
+function getLabelSlotCutoffMinutes(slot: string, month: number): number | null {
+  if (slot === '午前') return 11 * 60 + 45
+  if (slot === '午後') {
+    const season = getSeason(month)
+    if (season === 'peak') return 16 * 60        // 4〜10月: 閉門17:00
+    if (season === 'shoulder') return 15 * 60     // 3・11月: 閉門16:00
+    return 14 * 60 + 30                           // 12〜2月: 閉門15:30
+  }
+  return null
 }
 
 // 同じ担当者・場所を共有していて同時に受けられない体験の組み合わせ。
@@ -34,6 +47,8 @@ interface Props {
   selectedDate: string
   selectedTime: string
   onSelectSlot: (date: string, time: string) => void
+  // 管理画面からの登録では、当日の受付締切を過ぎていても枠を選べるようにする。
+  isAdmin?: boolean
 }
 
 function toDateStr(d: Date) {
@@ -50,7 +65,7 @@ function getMonday(d: Date) {
 }
 
 export default function ReservationCalendar({
-  reservationType, selectedDate, selectedTime, onSelectSlot
+  reservationType, selectedDate, selectedTime, onSelectSlot, isAdmin = false
 }: Props) {
   const supabase = createClient()
   const t = useTranslations('reservationCalendar')
@@ -260,9 +275,13 @@ export default function ReservationCalendar({
                 const isPast = d < today
                 const isToday = dateStr === toDateStr(today)
                 const slotMinutes = parseSlotMinutes(slot)
-                // 今日の枠は、開始時刻を過ぎていたら（例: 現在16時なら9:00〜15:30の枠）予約不可にする。
-                // "午前"/"午後" のようなラベル枠は時刻を特定できないためここでは対象外。
-                const slotTimePassed = isToday && slotMinutes != null && slotMinutes <= nowMinutes
+                const labelCutoffMinutes = getLabelSlotCutoffMinutes(slot, d.getMonth() + 1)
+                // 今日の枠は、開始時刻（または"午前"/"午後"の受付締切）を過ぎていたら予約不可にする。
+                // 管理画面からの登録は締切後も可能とする。
+                const slotTimePassed = !isAdmin && isToday && (
+                  (slotMinutes != null && slotMinutes <= nowMinutes) ||
+                  (labelCutoffMinutes != null && labelCutoffMinutes <= nowMinutes)
+                )
                 const blocked = isDateBlocked(dateStr)
                 const override = getOverride(dateStr, slot)
                 const full = isSlotFull(dateStr, slot)

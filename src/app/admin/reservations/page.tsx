@@ -297,6 +297,7 @@ export default function AdminReservationsPage() {
                 selectedDate={newRes.date}
                 selectedTime={newRes.time_slot}
                 onSelectSlot={(date, time_slot) => setNewRes(f => ({ ...f, date, time_slot }))}
+                isAdmin
               />
             </div>
 
