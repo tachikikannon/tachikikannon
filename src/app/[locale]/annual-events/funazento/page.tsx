@@ -44,6 +44,8 @@ const DEFAULTS: Record<string, string> = {
   funazento_info_time_en: 'From 10:00 AM',
   funazento_info_join: '事前申し込み必要',
   funazento_info_join_en: 'Advance application required',
+  funazento_heading_map: '船禅頂ルール・ルート図',
+  funazento_heading_map_en: 'Funazento Rules & Route Map',
   funazento_heading_gallery: '行事の様子',
   funazento_heading_gallery_en: 'Photos from the Event',
   funazento_heading_notes: 'ご参加にあたって',
@@ -137,6 +139,16 @@ export default async function FunazentoPage({
                   <p className="text-sm font-medium text-navy">{value}</p>
                 </div>
               ))}
+            </div>
+          </section>
+
+          <section>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-1 h-8 bg-gold rounded-full" />
+              <h2 className="font-serif text-2xl text-navy">{g('funazento_heading_map')}</h2>
+            </div>
+            <div className="relative w-full rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white" style={{ aspectRatio: '842 / 595' }}>
+              <ZoomableImage src="/images/hunazenjyo-ruto.png" alt={g('funazento_heading_map')} fill className="object-contain" />
             </div>
           </section>
 
