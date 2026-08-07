@@ -147,8 +147,8 @@ export default async function FunazentoPage({
               <div className="w-1 h-8 bg-gold rounded-full" />
               <h2 className="font-serif text-2xl text-navy">{g('funazento_heading_map')}</h2>
             </div>
-            <div className="relative w-full rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white" style={{ aspectRatio: '842 / 595' }}>
-              <ZoomableImage src="/images/hunazenjyo-ruto.png" alt={g('funazento_heading_map')} fill className="object-contain" />
+            <div className="relative w-full rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white" style={{ aspectRatio: '1448 / 1086' }}>
+              <ZoomableImage src="/images/hunazenjyo-tizu.png" alt={g('funazento_heading_map')} fill className="object-contain" />
             </div>
           </section>
 
