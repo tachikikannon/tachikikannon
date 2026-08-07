@@ -33,6 +33,9 @@ export default function Header() {
 
   const otherLocale = locale === 'ja' ? 'en' : 'ja'
   const switchLocale = () => router.replace(pathname, { locale: otherLocale })
+  // 英語はラベルが長く、日本語と同じmdブレークポイントだと中途半端な幅で折り返して崩れるため、
+  // 英語のときだけ横並びナビに切り替わる幅をlgまで遅らせる。
+  const isEnglish = locale === 'en'
 
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-shadow duration-300 bg-navy ${scrolled ? 'shadow-lg' : ''}`}>
@@ -61,7 +64,7 @@ export default function Header() {
         </div>
 
         {/* PC ナビ */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className={isEnglish ? 'hidden xl:flex items-center gap-4' : 'hidden md:flex items-center gap-6'}>
           {navLinks.map(({ href, label, external }) => (
             external
               ? <a key={href} href={href} target="_blank" rel="noopener"
@@ -77,7 +80,7 @@ export default function Header() {
 
         {/* ハンバーガー */}
         <button onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden flex flex-col gap-1.5 p-2"
+          className={`${isEnglish ? 'xl:hidden' : 'md:hidden'} flex flex-col gap-1.5 p-2`}
           aria-label="メニュー" aria-expanded={menuOpen}>
           <span className={`block w-6 h-0.5 bg-white transition-transform ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
           <span className={`block w-6 h-0.5 bg-white transition-opacity ${menuOpen ? 'opacity-0' : ''}`} />
@@ -87,7 +90,7 @@ export default function Header() {
 
       {/* モバイルメニュー */}
       {menuOpen && (
-        <div className="md:hidden bg-navy border-t border-white/10">
+        <div className={`${isEnglish ? 'xl:hidden' : 'md:hidden'} bg-navy border-t border-white/10`}>
           {navLinks.map(({ href, label, external }) => (
             external
               ? <a key={href} href={href} target="_blank" rel="noopener"
