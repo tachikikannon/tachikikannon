@@ -707,6 +707,10 @@
     "messagePlaceholder": "ご質問・ご要望をご記入ください。",
     "required": "必須",
     "submit": "送信する",
+    "submitting": "送信中...",
+    "submitError": "送信に失敗しました。しばらく経ってから再度お試しください。",
+    "doneTitle": "お問い合わせを受け付けました",
+    "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。",
     "phonePrefix": "お電話でのお問い合わせ：",
     "phoneSuffix": "（受付時間：拝観時間内）"
   },

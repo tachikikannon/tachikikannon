@@ -707,6 +707,10 @@
     "messagePlaceholder": "Please write your question or request.",
     "required": "Required",
     "submit": "Send",
+    "submitting": "Sending...",
+    "submitError": "Submission failed. Please try again later.",
+    "doneTitle": "Your inquiry has been received",
+    "doneText": "We will reply within 3-5 business days. Thank you for your patience.",
     "phonePrefix": "By phone: ",
     "phoneSuffix": " (during visiting hours)"
   },

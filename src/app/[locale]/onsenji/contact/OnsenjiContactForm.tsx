@@ -1,0 +1,63 @@
+'use client'
+import { useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { createClient } from '@/lib/supabase'
+
+export default function OnsenjiContactForm() {
+  const supabase = createClient()
+  const t = useTranslations('onsenjiContact')
+  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setStatus('loading')
+    const id = crypto.randomUUID()
+    // contactsテーブルはsubject必須で温泉寺専用の区分カラムが無いため、
+    // 管理画面の一覧で見分けられるよう件名の先頭に【温泉寺】を付ける。
+    const submission = { ...form, subject: `【温泉寺】${t('title')}` }
+    const { error } = await supabase.from('contacts').insert({ ...submission, id })
+    if (error) { setStatus('error'); return }
+    await fetch('/api/notify/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...submission, id }),
+    }).catch(() => {})
+    setStatus('done')
+  }
+
+  if (status === 'done') return (
+    <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+      <p className="text-5xl mb-4">✉️</p>
+      <h2 className="font-serif text-xl text-onsenji mb-2">{t('doneTitle')}</h2>
+      <p className="text-gray-600 text-sm leading-relaxed">{t('doneText')}</p>
+    </div>
+  )
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-8 space-y-6">
+      <div className="grid gap-4">
+        <div>
+          <label className="block text-sm text-onsenji font-medium mb-1">{t('nameLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
+          <input type="text" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
+            placeholder={t('namePlaceholder')} value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+        </div>
+        <div>
+          <label className="block text-sm text-onsenji font-medium mb-1">{t('emailLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
+          <input type="email" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
+            placeholder={t('emailPlaceholder')} value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+        </div>
+        <div>
+          <label className="block text-sm text-onsenji font-medium mb-1">{t('messageLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
+          <textarea rows={6} required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4] resize-none"
+            placeholder={t('messagePlaceholder')} value={form.message} onChange={e => setForm({...form, message: e.target.value})} />
+        </div>
+      </div>
+      {status === 'error' && <p className="text-red-500 text-sm">{t('submitError')}</p>}
+      <button type="submit" disabled={status === 'loading'}
+        className="w-full py-3 bg-onsenji text-white rounded-full font-medium hover:bg-onsenji-light transition-colors text-sm disabled:opacity-50">
+        {status === 'loading' ? t('submitting') : t('submit')}
+      </button>
+    </form>
+  )
+}

@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
+import OnsenjiContactForm from './OnsenjiContactForm'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -32,25 +33,7 @@ export default async function OnsenjContactPage() {
           <p className="text-center text-gray-600 text-sm mb-10 leading-relaxed">
             {t('intro')}
           </p>
-          <div className="bg-white rounded-2xl shadow-sm p-8 space-y-6">
-            <div className="grid gap-4">
-              <div>
-                <label className="block text-sm text-onsenji font-medium mb-1">{t('nameLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
-                <input type="text" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]" placeholder={t('namePlaceholder')} />
-              </div>
-              <div>
-                <label className="block text-sm text-onsenji font-medium mb-1">{t('emailLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
-                <input type="email" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]" placeholder={t('emailPlaceholder')} />
-              </div>
-              <div>
-                <label className="block text-sm text-onsenji font-medium mb-1">{t('messageLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
-                <textarea rows={6} className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4] resize-none" placeholder={t('messagePlaceholder')} />
-              </div>
-            </div>
-            <button className="w-full py-3 bg-onsenji text-white rounded-full font-medium hover:bg-onsenji-light transition-colors text-sm">
-              {t('submit')}
-            </button>
-          </div>
+          <OnsenjiContactForm />
           <p className="text-xs text-gray-400 text-center mt-6">
             {t('phonePrefix')}<strong className="text-gray-600">0288-55-0013</strong>{t('phoneSuffix')}
           </p>
