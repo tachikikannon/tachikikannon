@@ -106,6 +106,7 @@ export interface Reservation {
   party_size: number
   notes: string | null
   status: ReservationStatus
+  locale: string
   category_id: string | null
   assigned_admin_id: string | null
   updated_by: string | null

@@ -8,17 +8,56 @@ const TYPE_LABELS: Record<string, string> = {
   jyuzu:   '数珠づくり',
 }
 
+const TYPE_LABELS_EN: Record<string, string> = {
+  prayer:  'Prayer Service',
+  shakyou: 'Sutra Copying',
+  shabutu: 'Buddhist Image Tracing',
+  jyuzu:   'Juzu Bracelet Making',
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { name, email, type, date, time_slot, party_size } = body
+    const { name, email, type, date, time_slot, party_size, locale } = body
+    const isEnglish = locale === 'en'
 
     const typeLabel = TYPE_LABELS[type] ?? type
+    const typeLabelEn = TYPE_LABELS_EN[type] ?? type
 
     await sendGmail(
       email,
-      `【立木観音】ご予約が確定しました — ${typeLabel}`,
+      isEnglish
+        ? `Your Reservation is Confirmed — ${typeLabelEn}`
+        : `【立木観音】ご予約が確定しました — ${typeLabel}`,
+      isEnglish
+        ? `
+        <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
+          <div style="background:#1a2a4a;padding:24px;text-align:center;">
+            <h1 style="color:#c8a96e;margin:0;font-size:20px;">Chuzenji Tachikikannon, Nikkosan</h1>
+          </div>
+          <div style="padding:32px 24px;">
+            <p>Dear ${name},</p>
+            <p>We are pleased to confirm your reservation below. We look forward to your visit.</p>
+            <table style="border-collapse:collapse;width:100%;font-size:14px;margin:20px 0;">
+              <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;width:140px;">Type</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${typeLabelEn}</td></tr>
+              <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">Confirmed Date &amp; Time</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${date} ${time_slot}</td></tr>
+              <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">Party Size</th><td style="padding:8px 12px;">${party_size}</td></tr>
+            </table>
+            <p style="background:#fffbf0;border-left:4px solid #c8a96e;padding:12px 16px;font-size:13px;">
+              If your plans change, please contact us by phone as soon as possible.
+            </p>
+            <p style="font-size:13px;color:#555;">
+              Contact:<br>
+              Chuzenji Tachikikannon, Nikkosan<br>
+              TEL: +81-288-55-0013 (during visiting hours)
+            </p>
+          </div>
+          <div style="background:#f5f2ec;padding:16px;text-align:center;font-size:11px;color:#999;">
+            2578 Chugushi, Nikko, Tochigi 321-1661, Japan
+          </div>
+        </div>
       `
+        : `
         <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
           <div style="background:#1a2a4a;padding:24px;text-align:center;">
             <h1 style="color:#c8a96e;margin:0;font-size:20px;">日光山中禅寺 立木観音</h1>

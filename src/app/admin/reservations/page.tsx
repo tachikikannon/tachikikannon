@@ -139,6 +139,7 @@ export default function AdminReservationsPage() {
         body: JSON.stringify({
           name: target.name, email: target.email, type: target.type,
           date: target.date, time_slot: target.time_slot, party_size: target.party_size,
+          locale: target.locale,
         }),
       })
         .then(res => res.json())

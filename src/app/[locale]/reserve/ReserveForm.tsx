@@ -55,7 +55,7 @@ export default function ReserveForm() {
     const { data: defaultCategory } = await supabase
       .from('reservation_categories').select('id').eq('is_default', true).maybeSingle()
     const { error } = await supabase.from('reservations')
-      .insert({ ...submission, id, status: 'unconfirmed', category_id: defaultCategory?.id ?? null })
+      .insert({ ...submission, id, status: 'unconfirmed', category_id: defaultCategory?.id ?? null, locale })
     if (error) { setStatus('error'); return }
     // メール・LINE通知（失敗してもフォーム送信は成功扱い）
     await fetch('/api/notify/reservation', {
