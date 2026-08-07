@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import ListEditor from '@/components/admin/ListEditor'
 import type { MinorEvent, NewsSite } from '@/types'
 
 export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: { site: NewsSite; title: string; accent?: 'chuzenji' | 'onsenji' }) {
@@ -75,7 +76,7 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
           <h1 className={`text-2xl font-serif ${accentText}`}>{title}</h1>
           <p className="text-xs text-gray-400 mt-1">年間行事ページの、専用ページを持たない追加行事です。一覧のカードと簡単な詳細ページのみになります。</p>
         </div>
-        <button onClick={() => openEditor({ title:'', site, month_label:'', date_label:'', time_label:'', desc_text:'', gallery_placement:'below', sort_order: 0, is_published:false })} className={`text-white text-sm px-4 py-2 rounded ${accentBtn}`}>＋ 行事を追加</button>
+        <button onClick={() => openEditor({ title:'', site, month_label:'', date_label:'', time_label:'', desc_text:'', subtitle:'', info_date:'', info_time:'', info_join:'', schedule:'[]', schedule_en:'[]', notes:'[]', notes_en:'[]', gallery_placement:'below', sort_order: 0, is_published:false })} className={`text-white text-sm px-4 py-2 rounded ${accentBtn}`}>＋ 行事を追加</button>
       </div>
 
       {editing && (
@@ -109,6 +110,24 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
               <label className="admin-label">説明文</label>
               <textarea className="admin-input min-h-[120px]" value={editing.desc_text ?? ''} onChange={e => setEditing({...editing, desc_text: e.target.value})} />
             </div>
+            <div>
+              <label className="admin-label">サブタイトル（見出し画像下の一言。例: 毎年6月18日　午前10時より）</label>
+              <input className="admin-input" value={editing.subtitle ?? ''} onChange={e => setEditing({...editing, subtitle: e.target.value})} />
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="admin-label">概要チップ：開催日</label>
+                <input className="admin-input" value={editing.info_date ?? ''} onChange={e => setEditing({...editing, info_date: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-label">概要チップ：開始時間</label>
+                <input className="admin-input" value={editing.info_time ?? ''} onChange={e => setEditing({...editing, info_time: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-label">概要チップ：参列</label>
+                <input className="admin-input" value={editing.info_join ?? ''} onChange={e => setEditing({...editing, info_join: e.target.value})} />
+              </div>
+            </div>
 
             <div className="pt-3 border-t border-gray-100 space-y-4">
               <p className="text-xs text-gray-400">英語訳（未入力の場合は日本語が表示されます）</p>
@@ -134,6 +153,66 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
                 <label className="admin-label">説明文（英語）</label>
                 <textarea className="admin-input min-h-[120px]" value={editing.desc_text_en ?? ''} onChange={e => setEditing({...editing, desc_text_en: e.target.value})} />
               </div>
+              <div>
+                <label className="admin-label">サブタイトル（英語）</label>
+                <input className="admin-input" value={editing.subtitle_en ?? ''} onChange={e => setEditing({...editing, subtitle_en: e.target.value})} />
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="admin-label">概要チップ：開催日（英語）</label>
+                  <input className="admin-input" value={editing.info_date_en ?? ''} onChange={e => setEditing({...editing, info_date_en: e.target.value})} />
+                </div>
+                <div>
+                  <label className="admin-label">概要チップ：開始時間（英語）</label>
+                  <input className="admin-input" value={editing.info_time_en ?? ''} onChange={e => setEditing({...editing, info_time_en: e.target.value})} />
+                </div>
+                <div>
+                  <label className="admin-label">概要チップ：参列（英語）</label>
+                  <input className="admin-input" value={editing.info_join_en ?? ''} onChange={e => setEditing({...editing, info_join_en: e.target.value})} />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-gray-100 space-y-4">
+              <p className="text-xs text-gray-400">タイムスケジュール（観音講ページと同じ構成。未入力なら詳細ページに表示されません）</p>
+              <ListEditor
+                value={editing.schedule ?? '[]'}
+                onChange={json => setEditing({...editing, schedule: json})}
+                addLabel="スケジュールを追加"
+                fields={[
+                  { key: 'time', label: '時刻（例: 10:00）' },
+                  { key: 'title', label: 'タイトル' },
+                  { key: 'desc', label: '説明', multiline: true },
+                ]}
+              />
+              <p className="text-xs text-gray-400 pt-2">タイムスケジュール（英語）</p>
+              <ListEditor
+                value={editing.schedule_en ?? '[]'}
+                onChange={json => setEditing({...editing, schedule_en: json})}
+                addLabel="スケジュールを追加（英語）"
+                fields={[
+                  { key: 'time', label: 'Time (e.g. 10:00)' },
+                  { key: 'title', label: 'Title' },
+                  { key: 'desc', label: 'Description', multiline: true },
+                ]}
+              />
+            </div>
+
+            <div className="pt-3 border-t border-gray-100 space-y-4">
+              <p className="text-xs text-gray-400">ご参列にあたって（注意事項の箇条書き。未入力なら詳細ページに表示されません）</p>
+              <ListEditor
+                value={editing.notes ?? '[]'}
+                onChange={json => setEditing({...editing, notes: json})}
+                addLabel="注意事項を追加"
+                fields={[{ key: 'text', label: '内容', multiline: true }]}
+              />
+              <p className="text-xs text-gray-400 pt-2">ご参列にあたって（英語）</p>
+              <ListEditor
+                value={editing.notes_en ?? '[]'}
+                onChange={json => setEditing({...editing, notes_en: json})}
+                addLabel="注意事項を追加（英語）"
+                fields={[{ key: 'text', label: 'Content', multiline: true }]}
+              />
             </div>
 
             <div>

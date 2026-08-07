@@ -233,6 +233,20 @@
     "contactPrefix": "For questions, please feel free to call (",
     "contactSuffix": ") or use the contact form."
   },
+  "minorEvent": {
+    "fallbackTitle": "Annual Events",
+    "eventsLabel": "Annual Events",
+    "headingAbout": "About the Event",
+    "infoDateLabel": "Date",
+    "infoTimeLabel": "Start Time",
+    "infoJoinLabel": "Attendance",
+    "headingSchedule": "Schedule",
+    "headingGallery": "Photos from the Event",
+    "headingNotes": "Notes for Attendees",
+    "applyCta": "Application Form",
+    "contactCta": "Contact Us",
+    "backToEvents": "← Back to Annual Events"
+  },
   "kannonko": {
     "title": "Kannon-ko, Grand Goma Ritual & Jizo-nagashi",
     "breadcrumb": "Kannon-ko, Grand Goma Ritual & Jizo-nagashi",
@@ -521,7 +535,15 @@
   "onsenjiMinorEvent": {
     "fallbackTitle": "Annual Events",
     "eventsLabel": "Annual Events",
+    "headingAbout": "About the Event",
+    "infoDateLabel": "Date",
+    "infoTimeLabel": "Start Time",
+    "infoJoinLabel": "Attendance",
+    "headingSchedule": "Schedule",
+    "headingGallery": "Photos from the Event",
+    "headingNotes": "Notes for Attendees",
     "applyCta": "Application Form",
+    "contactCta": "Contact Us",
     "backToEvents": "← Back to Annual Events"
   },
   "onsenjiYakushikoApply": {

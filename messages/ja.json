@@ -233,6 +233,20 @@
     "contactPrefix": "ご不明な点はお電話（",
     "contactSuffix": "）またはお問い合わせフォームにてお気軽にお問い合わせください。"
   },
+  "minorEvent": {
+    "fallbackTitle": "年間行事",
+    "eventsLabel": "年間行事",
+    "headingAbout": "行事について",
+    "infoDateLabel": "開催日",
+    "infoTimeLabel": "開始時間",
+    "infoJoinLabel": "参列",
+    "headingSchedule": "タイムスケジュール",
+    "headingGallery": "行事の様子",
+    "headingNotes": "ご参列にあたって",
+    "applyCta": "申し込みフォーム",
+    "contactCta": "お問い合わせ",
+    "backToEvents": "← 年間行事に戻る"
+  },
   "kannonko": {
     "title": "観音講・大護摩供・地蔵流し",
     "breadcrumb": "観音講・大護摩供・地蔵流し",
@@ -521,7 +535,15 @@
   "onsenjiMinorEvent": {
     "fallbackTitle": "年間行事",
     "eventsLabel": "年間行事",
+    "headingAbout": "行事について",
+    "infoDateLabel": "開催日",
+    "infoTimeLabel": "開始時間",
+    "infoJoinLabel": "参列",
+    "headingSchedule": "タイムスケジュール",
+    "headingGallery": "行事の様子",
+    "headingNotes": "ご参列にあたって",
     "applyCta": "申し込みフォーム",
+    "contactCta": "お問い合わせ",
     "backToEvents": "← 年間行事に戻る"
   },
   "onsenjiYakushikoApply": {

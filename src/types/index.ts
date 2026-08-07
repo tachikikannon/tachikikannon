@@ -60,6 +60,18 @@ export interface MinorEvent {
   time_label_en?: string | null
   desc_text: string
   desc_text_en?: string | null
+  subtitle?: string | null
+  subtitle_en?: string | null
+  info_date?: string | null
+  info_date_en?: string | null
+  info_time?: string | null
+  info_time_en?: string | null
+  info_join?: string | null
+  info_join_en?: string | null
+  schedule?: string
+  schedule_en?: string
+  notes?: string
+  notes_en?: string
   cover_url: string | null
   hero_url: string | null
   gallery_urls: string[]
