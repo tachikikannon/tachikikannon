@@ -168,20 +168,16 @@ export default async function OnsenjMinorEventDetailPage({ params }: { params: P
             </section>
           )}
 
-          <div className="bg-onsenji rounded-2xl p-8 text-center text-white">
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              {ev.apply_url && (
+          {ev.apply_url && (
+            <div className="bg-onsenji rounded-2xl p-8 text-center text-white">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href={ev.apply_url}
                   className="inline-block px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm">
                   {t('applyCta')}
                 </Link>
-              )}
-              <Link href="/onsenji/contact"
-                className="inline-block px-8 py-3 border border-white/40 text-white rounded-full hover:bg-white/10 transition-colors text-sm">
-                {t('contactCta')}
-              </Link>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="text-center">
             <Link href="/onsenji/events" className="text-onsenji text-sm hover:underline">{t('backToEvents')}</Link>

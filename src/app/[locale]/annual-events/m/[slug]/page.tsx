@@ -168,20 +168,16 @@ export default async function MinorEventDetailPage({ params }: { params: Promise
             </section>
           )}
 
-          <div className="bg-navy rounded-2xl p-8 text-center text-white">
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              {ev.apply_url && (
+          {ev.apply_url && (
+            <div className="bg-navy rounded-2xl p-8 text-center text-white">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href={ev.apply_url}
                   className="inline-block px-8 py-3 bg-gold text-navy font-medium rounded-full hover:opacity-90 transition-colors text-sm">
                   {t('applyCta')}
                 </Link>
-              )}
-              <Link href="/contact"
-                className="inline-block px-8 py-3 border border-white/40 text-white rounded-full hover:bg-white/10 transition-colors text-sm">
-                {t('contactCta')}
-              </Link>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="text-center">
             <Link href="/annual-events" className="text-navy text-sm hover:underline">{t('backToEvents')}</Link>
