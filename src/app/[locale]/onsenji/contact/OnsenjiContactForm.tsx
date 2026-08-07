@@ -1,11 +1,12 @@
 'use client'
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 
 export default function OnsenjiContactForm() {
   const supabase = createClient()
   const t = useTranslations('onsenjiContact')
+  const locale = useLocale()
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
 
@@ -21,7 +22,7 @@ export default function OnsenjiContactForm() {
     await fetch('/api/notify/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...submission, id }),
+      body: JSON.stringify({ ...submission, id, locale, temple: 'onsenji' }),
     }).catch(() => {})
     setStatus('done')
   }

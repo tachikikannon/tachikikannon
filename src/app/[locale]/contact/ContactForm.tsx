@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
@@ -8,6 +8,7 @@ export default function ContactForm() {
   const supabase = createClient()
   const t = useTranslations('contact')
   const tc = useTranslations('common')
+  const locale = useLocale()
   const [form, setForm] = useState({ name:'', email:'', subject:'', message:'' })
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
 
@@ -20,7 +21,7 @@ export default function ContactForm() {
     await fetch('/api/notify/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, id }),
+      body: JSON.stringify({ ...form, id, locale, temple: 'chuzenji' }),
     }).catch(() => {})
     setStatus('done')
   }
