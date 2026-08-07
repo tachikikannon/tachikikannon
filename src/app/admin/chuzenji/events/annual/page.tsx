@@ -22,7 +22,7 @@ const FIELDS = [
     translatable: true,
     defaultValueEn: J([
       { month: 'June', date: 'June 18', time: 'From 10:00 AM', name: 'Kannonko, Grand Goma Fire Ritual & Jizo Nagashi', desc: 'Every June 18, a grand ceremony is held with devotees in attendance. Following the Kannonko service and the grand goma fire ritual at Hashiri Daikokuten Hall, Jizo statues are floated on Lake Chuzenji in the "Jizo Nagashi" ceremony.' },
-      { month: 'August', date: 'August 4', time: 'From 10:00 AM', name: 'Funazento (Boat Pilgrimage)', desc: 'A traditional event tracing the sacred sites of Priest Shodo, who opened Nikko, by boat. On Lake Chuzenji, participants retrace the ascetic path he carved out, viewed from the water. A special experience reflecting on over 1,200 years of history amid views of Mt. Nantai and Chuzenji.' },
+      { month: 'August', date: 'August 4', time: 'From 10:00 AM', name: 'Funazenjyo (Boat Pilgrimage)', desc: 'A traditional event tracing the sacred sites of Priest Shodo, who opened Nikko, by boat. On Lake Chuzenji, participants retrace the ascetic path he carved out, viewed from the water. A special experience reflecting on over 1,200 years of history amid views of Mt. Nantai and Chuzenji.' },
       { month: 'January', date: 'January 1', time: 'From 12:00 AM', name: 'New Year\'s Day Special Goma Prayer', desc: 'At the start of the new year, a special goma fire prayer for good health, household safety, and good fortune for all. Ofuda talismans range from ¥5,000 to ¥30,000. Advance application required; up to 5 people per application.' },
     ]),
   },

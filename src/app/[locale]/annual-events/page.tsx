@@ -54,7 +54,7 @@ const DEFAULT_EVENTS_EN = [
     month: 'August',
     date: 'August 4',
     time: 'From 10:00 AM',
-    name: 'Funazento (Boat Pilgrimage)',
+    name: 'Funazenjyo (Boat Pilgrimage)',
     desc: 'A traditional event tracing the sacred sites of Priest Shodo, who opened Nikko, by boat. On Lake Chuzenji, participants retrace the ascetic path he carved out, viewed from the water. A special experience reflecting on over 1,200 years of history amid views of Mt. Nantai and Chuzenji.',
   },
   {

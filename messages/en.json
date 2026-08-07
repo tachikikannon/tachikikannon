@@ -257,7 +257,7 @@
     "applyCta": "Go to Application Form",
     "contactCta": "Contact Us",
     "quickEventsList": "← All Annual Events",
-    "quickFunazento": "August 4th Funazento →"
+    "quickFunazento": "August 4th Funazenjyo →"
   },
   "kannonkoApply": {
     "breadcrumb": "Application",
@@ -309,9 +309,9 @@
     "backToEvent": "← Back to Event Details"
   },
   "funazento": {
-    "title": "Funazento",
+    "title": "Funazenjyo",
     "reading": "Boat Zen Pilgrimage",
-    "breadcrumb": "Funazento",
+    "breadcrumb": "Funazenjyo",
     "eraLabel": "August 4th  Annual Event",
     "infoDate": "Date",
     "infoTime": "Start Time",
@@ -323,11 +323,11 @@
   },
   "funazentoApply": {
     "breadcrumb": "Application",
-    "formTitle": "Funazento Application Form",
-    "eventName": "Funazento (August 4th)",
+    "formTitle": "Funazenjyo Application Form",
+    "eventName": "Funazenjyo (August 4th)",
     "cardMonth": "Aug",
     "cardDay": "4",
-    "cardTitle": "Funazento (Boat Zen Pilgrimage)",
+    "cardTitle": "Funazenjyo (Boat Zen Pilgrimage)",
     "cardTime": "From 10:00 AM  Chuzenji Tachiki Kannon",
     "noticeHeading": "📋 Please check before applying",
     "noticeOfuda": "Applicants will receive an <b>ofuda</b> talisman.",
@@ -366,7 +366,7 @@
     "phoneApplyTitle": "Apply by Phone",
     "phoneHours": "Hours: During visiting hours (8:00 AM–5:00 PM)",
     "doneTitle": "Your Application Has Been Received",
-    "doneText1": "We have received your application for the August 4th Funazento.",
+    "doneText1": "We have received your application for the August 4th Funazenjyo.",
     "doneText2": "For questions, please contact us by phone (0288-55-0013).",
     "backToEvent": "← Back to Event Details"
   },
