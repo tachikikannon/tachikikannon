@@ -61,7 +61,7 @@ export default function ReserveForm() {
     await fetch('/api/notify/reservation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...submission, id }),
+      body: JSON.stringify({ ...submission, id, locale }),
     }).catch(() => {})
     setStatus('done')
   }
