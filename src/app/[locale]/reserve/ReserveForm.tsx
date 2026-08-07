@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import ReservationCalendar from '@/components/ReservationCalendar'
 import { createClient } from '@/lib/supabase'
@@ -10,6 +10,9 @@ export default function ReserveForm() {
   const supabase = createClient()
   const t = useTranslations('reserve')
   const tc = useTranslations('common')
+  const locale = useLocale()
+  // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
+  const showNameKana = locale === 'ja'
 
   const TYPES: { value: ReservationType; label: string; price: string }[] = [
     { value: 'prayer',   label: t('typePrayer'),  price: '5,000円〜' },
@@ -47,7 +50,8 @@ export default function ReserveForm() {
     const notes = form.type === 'prayer' && purposeLabel
       ? `【${purposeLabel}】${form.notes ? '\n' + form.notes : ''}`
       : form.notes
-    const submission = { ...form, notes }
+    // フリガナ欄を表示していない場合（日本語以外）はDBのNOT NULL制約を満たすため氏名をそのまま入れる。
+    const submission = { ...form, notes, name_kana: showNameKana ? form.name_kana : form.name }
     const { data: defaultCategory } = await supabase
       .from('reservation_categories').select('id').eq('is_default', true).maybeSingle()
     const { error } = await supabase.from('reservations')
@@ -142,15 +146,17 @@ export default function ReserveForm() {
           </div>
 
           {/* 氏名 */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className={showNameKana ? 'grid grid-cols-2 gap-4' : ''}>
             <div>
               <label className="admin-label">{t('nameLabel')}</label>
               <input required className="admin-input" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
             </div>
-            <div>
-              <label className="admin-label">{t('nameKanaLabel')}</label>
-              <input required className="admin-input" value={form.name_kana} onChange={e => setForm({...form, name_kana: e.target.value})} />
-            </div>
+            {showNameKana && (
+              <div>
+                <label className="admin-label">{t('nameKanaLabel')}</label>
+                <input required className="admin-input" value={form.name_kana} onChange={e => setForm({...form, name_kana: e.target.value})} />
+              </div>
+            )}
           </div>
 
           <div>
