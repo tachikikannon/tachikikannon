@@ -1,10 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { NextIntlClientProvider } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import ReservationCalendar from '@/components/ReservationCalendar'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus, ReservationType } from '@/types'
+import jaMessages from '../../../../messages/ja.json'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり'
@@ -293,13 +295,15 @@ export default function AdminReservationsPage() {
 
             <div className="mb-4">
               <label className="admin-label">日時</label>
-              <ReservationCalendar
-                reservationType={newRes.type}
-                selectedDate={newRes.date}
-                selectedTime={newRes.time_slot}
-                onSelectSlot={(date, time_slot) => setNewRes(f => ({ ...f, date, time_slot }))}
-                isAdmin
-              />
+              <NextIntlClientProvider locale="ja" messages={jaMessages}>
+                <ReservationCalendar
+                  reservationType={newRes.type}
+                  selectedDate={newRes.date}
+                  selectedTime={newRes.time_slot}
+                  onSelectSlot={(date, time_slot) => setNewRes(f => ({ ...f, date, time_slot }))}
+                  isAdmin
+                />
+              </NextIntlClientProvider>
             </div>
 
             <div className="mb-4">
