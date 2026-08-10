@@ -75,20 +75,20 @@ export async function POST(req: Request) {
           </div>
           <div style="padding:32px 24px;">
             <p>Dear ${name},</p>
-            <p>Thank you for your reservation. We have received the following request.</p>
+            <p>Thank you very much for your reservation request for the <strong>${typeLabelEn}</strong> experience at Nikkozan Chuzenji, Tachikikannon.</p>
+            <p>We have received your provisional reservation with the following details.</p>
             <table style="border-collapse:collapse;width:100%;font-size:14px;margin:20px 0;">
               <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;width:140px;">Type</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${typeLabelEn}</td></tr>
               <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">Date &amp; Time</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${date} ${time_slot}</td></tr>
               <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">Party Size</th><td style="padding:8px 12px;">${party_size}</td></tr>
             </table>
             <p style="background:#fffbf0;border-left:4px solid #c8a96e;padding:12px 16px;font-size:13px;">
-              Your reservation is confirmed once the temple contacts you.<br>
-              Confirmation may take a few days.
+              Once your reservation is confirmed, we will send you a separate "Reservation Confirmed" email — please wait a little while for that.<br><br>
+              If you do not hear from us within a few days, we're sorry for the inconvenience, but please contact the Chuzenji Tachikikannon Temple Office.
             </p>
             <p style="font-size:13px;color:#555;">
-              Contact:<br>
-              Chuzenji Tachikikannon, Nikkosan<br>
-              TEL: +81-288-55-0013 (during visiting hours)
+              Chuzenji Tachikikannon Temple Office<br>
+              TEL: +81-288-55-0013
             </p>
           </div>
           <div style="background:#f5f2ec;padding:16px;text-align:center;font-size:11px;color:#999;">
@@ -103,20 +103,20 @@ export async function POST(req: Request) {
           </div>
           <div style="padding:32px 24px;">
             <p>${name} 様</p>
-            <p>この度はご予約いただきありがとうございます。<br>以下の内容でご予約を受け付けました。</p>
+            <p>この度は、日光山中禅寺立木観音【${typeLabel}】にお申し込みいただき、誠にありがとうございます。</p>
+            <p>以下の内容にて、仮予約を受け付けいたしました。</p>
             <table style="border-collapse:collapse;width:100%;font-size:14px;margin:20px 0;">
               <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;width:120px;">種別</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${typeLabel}</td></tr>
               <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">希望日時</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${date} ${time_slot}</td></tr>
               <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">人数</th><td style="padding:8px 12px;">${party_size}名</td></tr>
             </table>
             <p style="background:#fffbf0;border-left:4px solid #c8a96e;padding:12px 16px;font-size:13px;">
-              ご予約はお寺からの確認をもって成立となります。<br>
-              確認のご連絡まで数日お待ちいただく場合がございます。
+              予約が確定いたしましたら、改めて「予約確定メール」をお送りいたしますので、ご連絡まで今しばらくお待ちください。<br><br>
+              なお、数日経っても連絡がない場合は、お手数をおかけいたしますが、中禅寺立木観音寺務所までお問い合わせください。
             </p>
             <p style="font-size:13px;color:#555;">
-              お問い合わせ：<br>
-              日光山中禅寺 立木観音<br>
-              TEL：0288-55-0013（受付時間：拝観時間内）
+              中禅寺立木観音寺務所<br>
+              TEL 0288-55-0013
             </p>
           </div>
           <div style="background:#f5f2ec;padding:16px;text-align:center;font-size:11px;color:#999;">
