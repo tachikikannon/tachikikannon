@@ -290,14 +290,14 @@ export default async function HomePage({
             <Link href="/prayer" className="block bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 group">
               <div className="relative h-56 md:h-72 overflow-hidden">
                 <img src="/images/goma-card.png" alt={prayerCard?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-navy/10 to-transparent" />
                 <div className="absolute bottom-0 left-0 p-6">
-                  <p className="text-gold text-xs tracking-widest mb-1">{prayerCard?.sub}</p>
                   <h3 className="font-serif text-2xl md:text-3xl text-white">{prayerCard?.label}</h3>
                 </div>
               </div>
-              <div className="p-5 flex justify-end">
-                <span className="inline-block text-sm bg-navy text-white rounded-full px-6 py-2.5 group-hover:bg-navy/80 transition-colors">
+              <div className="p-5 flex items-center justify-between gap-4">
+                <p className="text-sm text-gray-600">{prayerCard?.sub}</p>
+                <span className="inline-block text-sm bg-navy text-white rounded-full px-6 py-2.5 group-hover:bg-navy/80 transition-colors flex-shrink-0">
                   {t('seeMore')}
                 </span>
               </div>
