@@ -19,6 +19,7 @@ export default function ReserveForm() {
     { value: 'shakyou',  label: t('typeShakyou'),      price: '1,000円' },
     { value: 'shabutu',  label: t('typeShabutu'),      price: '1,000円' },
     { value: 'jyuzu',    label: t('typeJyuzu'), price: '2,000円〜' },
+    { value: 'zazen',    label: t('typeZazen'), price: '2,000円' },
   ]
 
   const PURPOSES: { value: string; label: string }[] = [

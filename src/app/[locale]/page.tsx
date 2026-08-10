@@ -27,12 +27,14 @@ const DEFAULT_EXPERIENCE_CARDS = [
   { label: '数珠づくり体験', sub: '2,000円〜' },
   { label: '写経体験',      sub: '約15分 / 1,000円' },
   { label: '写仏体験',      sub: '1,000円' },
+  { label: '坐禅体験',      sub: '20分 / 2,000円' },
 ]
 const DEFAULT_EXPERIENCE_CARDS_EN = [
   { label: 'Prayer Service',           sub: 'From ¥5,000' },
   { label: 'Juzu Bracelet Making',     sub: 'From ¥2,000' },
   { label: 'Sutra Copying',            sub: 'Approx. 15 min / ¥1,000' },
   { label: 'Buddhist Image Tracing',   sub: '¥1,000' },
+  { label: 'Zazen Meditation',         sub: '20 min / ¥2,000' },
 ]
 const DEFAULT_SERVICE_CARDS = [
   { title: '御朱印',       text: '中禅寺ならではの御朱印をお受けいただけます。書き入れのほか書き置きもございます。', info: '御朱印代：500円〜' },
@@ -98,7 +100,11 @@ export default async function HomePage({
   const content: Record<string, string> = { ...DEFAULT_CONTENT }
   siteContentRows.forEach(row => { if (row.value) content[row.key] = row.value })
   const aboutCards      = pj<typeof DEFAULT_ABOUT_CARDS>(getLocalizedContent(content, 'top_about_cards', loc), DEFAULT_ABOUT_CARDS)
-  const experienceCards = pj<typeof DEFAULT_EXPERIENCE_CARDS>(getLocalizedContent(content, 'top_experience_cards', loc), DEFAULT_EXPERIENCE_CARDS)
+  const experienceCardsDefault = loc === 'en' ? DEFAULT_EXPERIENCE_CARDS_EN : DEFAULT_EXPERIENCE_CARDS
+  const experienceCardsRaw = pj<typeof DEFAULT_EXPERIENCE_CARDS>(getLocalizedContent(content, 'top_experience_cards', loc), experienceCardsDefault)
+  // 保存済みの内容が古い件数のままの場合（新しい体験カードをコード側に追加した直後など）に備え、
+  // 不足分は最新のデフォルト値で補う。管理画面で保存し直せば正式な内容に置き換わる。
+  const experienceCards = experienceCardsDefault.map((d, i) => experienceCardsRaw[i] ?? d)
   const serviceCards    = pj<typeof DEFAULT_SERVICE_CARDS>(getLocalizedContent(content, 'top_service_cards', loc), DEFAULT_SERVICE_CARDS)
 
   const { data: newsList } = await supabase
@@ -283,6 +289,7 @@ export default async function HomePage({
                 { src:'/images/jyuzu-card.png',   href:'/experience/jyuzu' },
                 { src:'/images/syakyou-card.png', href:'/experience/shakyou' },
                 { src:'/images/syabutu-card.png', href:'/experience/shabutu' },
+                { src:'/images/zazen.png',        href:'/experience/zazen' },
               ].map(({ src, href }, i) => (
                 <Link key={href} href={href} className="card card-selectable overflow-hidden flex flex-col group">
                   <div className="relative h-40 overflow-hidden">

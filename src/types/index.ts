@@ -83,7 +83,7 @@ export interface MinorEvent {
   updated_at: string
 }
 
-export type ReservationType = 'prayer' | 'shakyou' | 'shabutu' | 'jyuzu'
+export type ReservationType = 'prayer' | 'shakyou' | 'shabutu' | 'jyuzu' | 'zazen'
 export type ReservationStatus = 'unconfirmed' | 'in_progress' | 'confirmed' | 'completed' | 'cancelled' | 'pending' | 'provisional'
 
 export interface ReservationCategory {

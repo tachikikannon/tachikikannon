@@ -6,6 +6,7 @@ const TYPE_LABELS: Record<string, string> = {
   shakyou: '写経',
   shabutu: '写仏',
   jyuzu:   '数珠づくり',
+  zazen:   '坐禅',
 }
 
 const TYPE_LABELS_EN: Record<string, string> = {
@@ -13,6 +14,7 @@ const TYPE_LABELS_EN: Record<string, string> = {
   shakyou: 'Sutra Copying',
   shabutu: 'Buddhist Image Tracing',
   jyuzu:   'Juzu Bracelet Making',
+  zazen:   'Zazen Meditation',
 }
 
 export async function POST(req: Request) {

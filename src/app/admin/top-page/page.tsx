@@ -58,13 +58,14 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     fields: [
       { key: 'top_heading_experience', label: 'セクション見出し', defaultValue: '祈る・体験する' },
       {
-        key: 'top_experience_cards', label: 'カード（御祈願・数珠づくり・写経・写仏の順、4件固定）', type: 'list',
+        key: 'top_experience_cards', label: 'カード（御祈願・数珠づくり・写経・写仏・坐禅の順、5件固定）', type: 'list',
         listFields: [{ key: 'label', label: 'タイトル' }, { key: 'sub', label: '価格・補足' }],
         defaultValue: J([
           { label: '御祈願', sub: '御祈願料：5,000円〜' },
           { label: '数珠づくり体験', sub: '2,000円〜' },
           { label: '写経体験', sub: '約15分 / 1,000円' },
           { label: '写仏体験', sub: '1,000円' },
+          { label: '坐禅体験', sub: '20分 / 2,000円' },
         ]),
         translatable: true,
         defaultValueEn: J([
@@ -72,6 +73,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
           { label: 'Juzu Bracelet Making',     sub: 'From ¥2,000' },
           { label: 'Sutra Copying',            sub: 'Approx. 15 min / ¥1,000' },
           { label: 'Buddhist Image Tracing',   sub: '¥1,000' },
+          { label: 'Zazen Meditation',         sub: '20 min / ¥2,000' },
         ]),
       },
     ],

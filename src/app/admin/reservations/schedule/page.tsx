@@ -5,13 +5,14 @@ import { useAdminProfile } from '@/lib/useAdminProfile'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus } from '@/types'
 
 const TYPE_LABELS: Record<string, string> = {
-  prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり'
+  prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅'
 }
 const TYPE_TAG_COLORS: Record<string, string> = {
   prayer: 'bg-red-100 text-red-700',
   shakyou: 'bg-blue-100 text-blue-700',
   shabutu: 'bg-purple-100 text-purple-700',
   jyuzu: 'bg-amber-100 text-amber-700',
+  zazen: 'bg-teal-100 text-teal-700',
 }
 const STATUS_LABELS: Record<ReservationStatus, string> = {
   unconfirmed: '未確認', pending: '未確認', provisional: '仮予約', in_progress: '対応中', confirmed: '予約確定', completed: '完了', cancelled: 'キャンセル'

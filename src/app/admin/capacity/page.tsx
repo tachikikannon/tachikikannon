@@ -8,6 +8,7 @@ const TYPES: { value: ReservationType; label: string }[] = [
   { value: 'shakyou', label: '写経' },
   { value: 'shabutu', label: '写仏' },
   { value: 'jyuzu',   label: '数珠づくり' },
+  { value: 'zazen',   label: '坐禅' },
 ]
 
 type CapacitySetting = {

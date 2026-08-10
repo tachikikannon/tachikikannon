@@ -9,13 +9,14 @@ import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus,
 import jaMessages from '../../../../messages/ja.json'
 
 const TYPE_LABELS: Record<string, string> = {
-  prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり'
+  prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅'
 }
 const TYPES: { value: ReservationType; label: string }[] = [
   { value: 'prayer',  label: '護摩祈願' },
   { value: 'shakyou', label: '写経' },
   { value: 'shabutu', label: '写仏' },
   { value: 'jyuzu',   label: '数珠づくり' },
+  { value: 'zazen',   label: '坐禅' },
 ]
 const NEW_RESERVATION_DEFAULTS = {
   type: 'prayer' as ReservationType,

@@ -8,6 +8,7 @@ export const BLOCKED_DATE_TYPES = [
   'shakyou',
   'shabutu',
   'jyuzu',
+  'zazen',
   'shakyou_shabutu',
   'shakyou_shabutu_prayer',
 ] as const
@@ -19,6 +20,7 @@ export const BLOCKED_DATE_TYPE_LABELS: Record<BlockedDateType, string> = {
   shakyou:                  '写経のみ',
   shabutu:                  '写仏のみ',
   jyuzu:                    '数珠づくりのみ',
+  zazen:                    '坐禅のみ',
   shakyou_shabutu:          '写経・写仏のみ',
   shakyou_shabutu_prayer:   '写経・写仏・護摩のみ',
 }
@@ -59,6 +61,11 @@ export function getTimeSlots(type: ReservationType, month: number): string[] {
     if (season === 'peak')     return halfHourSlots(9, 15)
     if (season === 'shoulder') return halfHourSlots(9, 14)
     return halfHourSlots(9, 13)
+  }
+  if (type === 'zazen') {
+    if (season === 'peak')     return halfHourSlots(13, 15)
+    if (season === 'shoulder') return halfHourSlots(13, 14)
+    return halfHourSlots(13, 13)
   }
   return []
 }
