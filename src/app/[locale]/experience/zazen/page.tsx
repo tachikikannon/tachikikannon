@@ -121,7 +121,7 @@ export default async function ZazenPage({
         </div>
 
         <section className="relative h-64 md:h-80">
-          <Image src="/images/zazen.png" alt={t('title')} fill priority className="object-cover" />
+          <Image src="/images/zazen-2.png" alt={t('title')} fill priority className="object-cover" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Zazen</p>
             <h1 className="font-serif text-4xl text-white tracking-widest">{t('title')}</h1>
@@ -137,7 +137,7 @@ export default async function ZazenPage({
               <p className="mt-3">{g('zazen_about_p2')}</p>
             </div>
             <div className="relative h-56 sm:h-72 rounded-xl overflow-hidden shadow-sm mt-4">
-              <ZoomableImage src="/images/zazen.png" alt={t('title')} fill className="object-cover" />
+              <ZoomableImage src="/images/zazen-2.png" alt={t('title')} fill className="object-cover" />
             </div>
           </section>
 
