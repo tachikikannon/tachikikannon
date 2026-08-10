@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
+import RecordsCarousel from '@/components/RecordsCarousel'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -156,13 +157,13 @@ export default async function HomePage({
           <ZoomableImage src="/images/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-navy/50" />
           <div className="relative text-center text-white px-4">
-            <p className="text-gold text-xs tracking-[0.3em] mb-4">{heroEn}</p>
-            <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-snug mb-6">
+            <p className="text-gold text-xs tracking-[0.3em] mb-4 opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.1s_ease-out_0.15s_forwards] motion-reduce:[animation:none]">{heroEn}</p>
+            <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-snug mb-6 opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.3s_ease-out_0.5s_forwards] motion-reduce:[animation:none]">
               {heroTitle.split('\\n').map((line, i) => (
                 <span key={i}>{line}{i < heroTitle.split('\\n').length - 1 && <br />}</span>
               ))}
             </h1>
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex flex-wrap gap-3 justify-center opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.1s_ease-out_1.05s_forwards] motion-reduce:[animation:none]">
               <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>
               <Link href="/prayer" className="btn-outline">{t('ctaPrayer')}</Link>
               <Link href="/#access" className="btn-outline">{t('ctaAccess')}</Link>
@@ -237,15 +238,12 @@ export default async function HomePage({
                 { img: '/images/gyouji.JPEG', href: '/annual-events' },
               ].map(({ img, href }, i) => (
                 <a key={href} href={href}
-                  className="card overflow-hidden flex flex-col group">
-                  <div className="relative h-40 overflow-hidden">
-                    <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                    <div className="absolute inset-0 bg-navy/30 group-hover:bg-navy/5 transition-colors" />
-                  </div>
-                  <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
-                    <p className="font-serif text-navy font-medium text-sm group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>
-                    <p className="text-xs text-gray-500">{aboutCards[i]?.desc}</p>
-                    <span className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5">{t('seeMore')}</span>
+                  className="relative h-40 rounded-lg overflow-hidden shadow-sm group block">
+                  <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/15 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-3">
+                    <p className="font-serif text-white font-medium text-sm leading-snug min-h-[2.6em] flex items-end group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>
+                    <p className="text-[11px] text-white/70 mt-0.5">{aboutCards[i]?.desc}</p>
                   </div>
                 </a>
               ))}
@@ -309,27 +307,45 @@ export default async function HomePage({
           <div className="max-w-5xl mx-auto px-4">
             <h2 className="section-title">{t('experienceHeading')}</h2>
             <div className="section-divider" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid gap-3 h-[420px] md:h-[380px]" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'repeat(3, 1fr)' }}>
               {[
                 { src:'/images/jyuzu-card.png',   href:'/experience/jyuzu' },
                 { src:'/images/syakyou-card.png', href:'/experience/shakyou' },
                 { src:'/images/syabutu-card.png', href:'/experience/shabutu' },
                 { src:'/images/zazen.png',        href:'/experience/zazen' },
               ].map(({ src, href }, i) => (
-                <Link key={href} href={href} className="card card-selectable overflow-hidden flex flex-col group">
-                  <div className="relative h-40 overflow-hidden">
-                    <img src={src} alt={experienceCards[i]?.label} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-navy/0 group-hover:bg-navy/10 transition-colors" />
-                  </div>
-                  <div className="p-3 text-center flex flex-col items-center gap-1 flex-1">
-                    <p className="font-medium text-navy text-sm">{experienceCards[i]?.label}</p>
-                    <p className="text-xs text-gray-500">{experienceCards[i]?.sub}</p>
-                    <span className="mt-auto inline-block text-xs bg-navy text-white rounded px-3 py-1.5">
-                      {t('seeMore')}
-                    </span>
+                <Link key={href} href={href}
+                  className="relative rounded-lg overflow-hidden shadow-sm group block"
+                  style={i === 0 ? { gridRow: '1 / span 3' } : undefined}>
+                  <img src={src} alt={experienceCards[i]?.label}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/10 to-transparent" />
+                  <div className={`absolute inset-x-0 bottom-0 ${i === 0 ? 'p-5' : 'p-2.5'}`}>
+                    <p className={`font-medium text-white ${i === 0 ? 'text-base mb-1' : 'text-xs'}`}>{experienceCards[i]?.label}</p>
+                    <p className={`text-white/75 ${i === 0 ? 'text-xs' : 'text-[10px]'}`}>{experienceCards[i]?.sub}</p>
                   </div>
                 </Link>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 季節の中禅寺 */}
+        <section className="py-16 bg-cream-alt">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="section-title">{t('seasonalHeading')}</h2>
+            <div className="section-divider" />
+            <div className="grid grid-cols-2 gap-1">
+              <div className="relative h-64 md:h-80 overflow-hidden">
+                <ZoomableImage src="/images/godaido.jpg" alt={t('seasonalCaption1')} fill className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent pointer-events-none" />
+                <p className="absolute bottom-3 left-3 right-3 text-white text-xs tracking-wide">{t('seasonalCaption1')}</p>
+              </div>
+              <div className="relative h-64 md:h-80 overflow-hidden">
+                <ZoomableImage src="/images/dragon.jpg" alt={t('seasonalCaption2')} fill className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent pointer-events-none" />
+                <p className="absolute bottom-3 left-3 right-3 text-white text-xs tracking-wide">{t('seasonalCaption2')}</p>
+              </div>
             </div>
           </div>
         </section>
@@ -379,25 +395,7 @@ export default async function HomePage({
             <div className="section-divider" />
             {pastRecords && pastRecords.length > 0 ? (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {(pastRecords as Post[]).map(post => (
-                    <Link key={post.id} href={`/blog/${post.slug}`}
-                      className="group card overflow-hidden flex flex-col">
-                      <div className="relative h-32 bg-white overflow-hidden">
-                        {post.cover_url
-                          ? <img src={post.cover_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                          : <div className="flex items-center justify-center h-full text-gray-300 text-xs">{t('noImage')}</div>
-                        }
-                      </div>
-                      <div className="p-3 flex-1 flex flex-col">
-                        <time className="text-[10px] text-gray-400">
-                          {new Date(post.published_at ?? '').toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric' })}
-                        </time>
-                        <p className="text-xs text-navy font-medium mt-1 leading-snug line-clamp-2 group-hover:text-gold transition-colors">{post.title}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+                <RecordsCarousel posts={pastRecords as Post[]} noImageLabel={t('noImage')} />
                 <div className="text-center mt-6">
                   <Link href="/blog" className="text-navy text-sm border-b border-navy pb-0.5 hover:text-gold hover:border-gold transition-colors">
                     {t('recordsMore')}
