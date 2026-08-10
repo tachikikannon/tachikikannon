@@ -780,7 +780,8 @@
     "noImage": "画像なし",
     "shopLink": "通販サイトへ",
     "codLink": "代金引換で申し込む",
-    "experienceHeading": "祈る・体験する",
+    "prayerHeading": "祈る",
+    "experienceHeading": "体験する",
     "accessAddressLabel": "住所",
     "accessCarLabel": "車でのアクセス",
     "accessBusLabel": "電車・バスでのアクセス"

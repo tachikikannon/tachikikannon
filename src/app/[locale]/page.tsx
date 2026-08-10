@@ -104,7 +104,11 @@ export default async function HomePage({
   const experienceCardsRaw = pj<typeof DEFAULT_EXPERIENCE_CARDS>(getLocalizedContent(content, 'top_experience_cards', loc), experienceCardsDefault)
   // 保存済みの内容が古い件数のままの場合（新しい体験カードをコード側に追加した直後など）に備え、
   // 不足分は最新のデフォルト値で補う。管理画面で保存し直せば正式な内容に置き換わる。
-  const experienceCards = experienceCardsDefault.map((d, i) => experienceCardsRaw[i] ?? d)
+  // 配列の先頭（御祈願）は「祈る」の大きなカード、残り（数珠づくり・写経・写仏・坐禅）は
+  // 「体験する」の一覧カードとして、それぞれ別セクションに分けて表示する。
+  const experienceCardsAll = experienceCardsDefault.map((d, i) => experienceCardsRaw[i] ?? d)
+  const prayerCard = experienceCardsAll[0]
+  const experienceCards = experienceCardsAll.slice(1)
   const serviceCards    = pj<typeof DEFAULT_SERVICE_CARDS>(getLocalizedContent(content, 'top_service_cards', loc), DEFAULT_SERVICE_CARDS)
 
   const { data: newsList } = await supabase
@@ -278,14 +282,36 @@ export default async function HomePage({
           </section>
         )}
 
-        {/* 祈る・体験する */}
-        <section id="experience" className="py-16 bg-cream-alt">
+        {/* 祈る */}
+        <section id="prayer" className="py-16 bg-cream-alt">
+          <div className="max-w-3xl mx-auto px-4">
+            <h2 className="section-title">{t('prayerHeading')}</h2>
+            <div className="section-divider" />
+            <Link href="/prayer" className="block bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 group">
+              <div className="relative h-56 md:h-72 overflow-hidden">
+                <img src="/images/goma-card.png" alt={prayerCard?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 p-6">
+                  <p className="text-gold text-xs tracking-widest mb-1">{prayerCard?.sub}</p>
+                  <h3 className="font-serif text-2xl md:text-3xl text-white">{prayerCard?.label}</h3>
+                </div>
+              </div>
+              <div className="p-5 flex justify-end">
+                <span className="inline-block text-sm bg-navy text-white rounded-full px-6 py-2.5 group-hover:bg-navy/80 transition-colors">
+                  {t('seeMore')}
+                </span>
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* 体験する */}
+        <section id="experience" className="py-16">
           <div className="max-w-5xl mx-auto px-4">
             <h2 className="section-title">{t('experienceHeading')}</h2>
             <div className="section-divider" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { src:'/images/goma-card.png',   href:'/prayer' },
                 { src:'/images/jyuzu-card.png',   href:'/experience/jyuzu' },
                 { src:'/images/syakyou-card.png', href:'/experience/shakyou' },
                 { src:'/images/syabutu-card.png', href:'/experience/shabutu' },

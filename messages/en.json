@@ -780,7 +780,8 @@
     "noImage": "No Image",
     "shopLink": "Online Shop",
     "codLink": "Order by Cash on Delivery",
-    "experienceHeading": "Prayer & Experiences",
+    "prayerHeading": "Prayer",
+    "experienceHeading": "Experiences",
     "accessAddressLabel": "Address",
     "accessCarLabel": "By Car",
     "accessBusLabel": "By Train / Bus"

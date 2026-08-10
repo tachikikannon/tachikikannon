@@ -56,9 +56,9 @@ const FIELDS: { section: string; fields: Field[] }[] = [
   {
     section: '祈る・体験する',
     fields: [
-      { key: 'top_heading_experience', label: 'セクション見出し', defaultValue: '祈る・体験する' },
+      { key: 'top_heading_experience', label: 'セクション見出し（未使用）', defaultValue: '祈る・体験する' },
       {
-        key: 'top_experience_cards', label: 'カード（御祈願・数珠づくり・写経・写仏・坐禅の順、5件固定）', type: 'list',
+        key: 'top_experience_cards', label: 'カード（1件目＝「祈る」の大きなカード＝御祈願、2〜5件目＝「体験する」の一覧＝数珠づくり・写経・写仏・坐禅の順、5件固定）', type: 'list',
         listFields: [{ key: 'label', label: 'タイトル' }, { key: 'sub', label: '価格・補足' }],
         defaultValue: J([
           { label: '御祈願', sub: '御祈願料：5,000円〜' },
