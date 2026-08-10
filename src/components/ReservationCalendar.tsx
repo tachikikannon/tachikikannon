@@ -42,6 +42,11 @@ const CROSS_BLOCKING_TYPES: Partial<Record<ReservationType, ReservationType[]>> 
 const ISOLATED_POOL_CATEGORY_KEYWORD = 'リッツ'
 const ISOLATED_POOL_CAPACITY_TYPES: ReservationType[] = ['jyuzu']
 
+// 護摩祈願・数珠づくりはお客様側からのWeb予約は前日までとし、当日分は電話でのみ受け付ける。
+// 空き状況自体は当日分も表示したいため、枠を×にはせず、選択時に電話案内を出す。
+const SAME_DAY_PHONE_ONLY_TYPES: ReservationType[] = ['prayer', 'jyuzu']
+const SAME_DAY_PHONE_NUMBER = '0288-55-0013'
+
 interface Props {
   reservationType: ReservationType
   selectedDate: string
@@ -94,6 +99,7 @@ export default function ReservationCalendar({
   const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
   const [overrides, setOverrides] = useState<SlotOverride[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [showSameDayNotice, setShowSameDayNotice] = useState(false)
 
   // 今週の7日間
   const weekDays = Array.from({ length: 7 }, (_, i) => {
@@ -113,6 +119,8 @@ export default function ReservationCalendar({
     supabase.from('reservation_categories').select('id,name')
       .then(({ data }) => setCategories(data ?? []))
   }, [])
+
+  useEffect(() => { setShowSameDayNotice(false) }, [reservationType])
 
   const isolatedPoolCategoryId = categories.find(c => c.name.includes(ISOLATED_POOL_CATEGORY_KEYWORD))?.id ?? null
 
@@ -296,6 +304,7 @@ export default function ReservationCalendar({
                 const isSelected = selectedDate === dateStr && selectedTime === slot
                 const validSlots = getTimeSlots(reservationType, d.getMonth() + 1)
                 const unavailable = isPast || slotTimePassed || !!blocked || !!override?.is_closed || full || !validSlots.includes(slot)
+                const sameDayPhoneOnly = !isAdmin && isToday && SAME_DAY_PHONE_ONLY_TYPES.includes(reservationType)
 
                 return (
                   <td key={dateStr} className="border border-gray-200 p-1 text-center">
@@ -306,7 +315,7 @@ export default function ReservationCalendar({
                     ) : (
                       <button
                         type="button"
-                        onClick={() => onSelectSlot(dateStr, slot)}
+                        onClick={() => sameDayPhoneOnly ? setShowSameDayNotice(true) : onSelectSlot(dateStr, slot)}
                         className={`w-full h-9 rounded-lg flex items-center justify-center transition-all
                           ${isSelected
                             ? 'bg-navy text-white'
@@ -326,6 +335,17 @@ export default function ReservationCalendar({
           ))}
         </tbody>
       </table>
+
+      {/* 当日枠クリック時の電話案内 */}
+      {showSameDayNotice && (
+        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800 flex items-start justify-between gap-3">
+          <p>
+            当日予約は、中禅寺立木観音に直接お問い合わせください。<br />
+            電話番号 {SAME_DAY_PHONE_NUMBER}
+          </p>
+          <button type="button" onClick={() => setShowSameDayNotice(false)} className="text-amber-500 hover:text-amber-700 shrink-0">✕</button>
+        </div>
+      )}
 
       {/* 凡例 */}
       <div className="flex gap-5 mt-3 text-xs text-gray-500">
