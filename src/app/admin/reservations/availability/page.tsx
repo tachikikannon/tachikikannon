@@ -44,7 +44,7 @@ export default function AvailabilityPage() {
   const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
   const [overrides, setOverrides] = useState<SlotOverride[]>([])
   const [selected, setSelected] = useState<{ date: string; slot: string } | null>(null)
-  const [form, setForm] = useState({ is_closed: false, max_groups: '', max_people: '', note: '' })
+  const [form, setForm] = useState({ is_closed: false, max_groups: '', max_people: '', reserved_groups: '', reserved_people: '', note: '' })
   const [saving, setSaving] = useState(false)
 
   const weekDays = useMemo(() => Array.from({ length: 7 }, (_, i) => {
@@ -94,6 +94,8 @@ export default function AvailabilityPage() {
       is_closed: ov?.is_closed ?? false,
       max_groups: ov?.max_groups != null ? String(ov.max_groups) : '',
       max_people: ov?.max_people != null ? String(ov.max_people) : '',
+      reserved_groups: ov?.reserved_groups != null ? String(ov.reserved_groups) : '',
+      reserved_people: ov?.reserved_people != null ? String(ov.reserved_people) : '',
       note: ov?.note ?? '',
     })
   }
@@ -108,6 +110,8 @@ export default function AvailabilityPage() {
       is_closed: form.is_closed,
       max_groups: form.max_groups === '' ? null : Number(form.max_groups),
       max_people: form.max_people === '' ? null : Number(form.max_people),
+      reserved_groups: form.reserved_groups === '' ? null : Number(form.reserved_groups),
+      reserved_people: form.reserved_people === '' ? null : Number(form.reserved_people),
       note: form.note || null,
     }, { onConflict: 'type,date,time_slot' })
     setSaving(false)
@@ -195,7 +199,9 @@ export default function AvailabilityPage() {
                     const blocked = isDateBlocked(dateStr)
                     const override = getOverride(dateStr, slot)
                     const counts = getCounts(dateStr, slot)
-                    const maxGroups = override?.max_groups ?? capacity?.max_groups
+                    const maxGroupsRaw = override?.max_groups ?? capacity?.max_groups
+                    const reservedGroups = override?.reserved_groups ?? 0
+                    const maxGroups = maxGroupsRaw != null ? Math.max(0, maxGroupsRaw - reservedGroups) : null
                     const isSelected = selected?.date === dateStr && selected?.slot === slot
 
                     let cellClass = 'hover:bg-navy/5 text-gray-600'
@@ -207,6 +213,9 @@ export default function AvailabilityPage() {
                     } else if (override?.is_closed) {
                       cellClass = 'bg-red-50 text-red-500 font-medium'
                       content = '受付停止'
+                    } else if (reservedGroups > 0 || (override?.reserved_people ?? 0) > 0) {
+                      cellClass = 'bg-sky-50 text-sky-700 font-medium'
+                      content = `${counts.groups}/${maxGroups}(確保)`
                     } else if (override) {
                       cellClass = 'bg-amber-50 text-amber-700 font-medium'
                     }
@@ -231,6 +240,7 @@ export default function AvailabilityPage() {
             <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-sm bg-gray-100" /> 通常（組数/定員）</span>
             <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-sm bg-amber-50 border border-amber-200" /> 個別設定あり</span>
             <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-sm bg-red-50 border border-red-200" /> この時間帯だけ受付停止</span>
+            <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-sm bg-sky-50 border border-sky-200" /> 指定枠数を確保</span>
             <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-sm bg-gray-100" /> 休止(日) ＝ 予約不可日の設定（別画面）</span>
           </div>
         </div>
@@ -279,6 +289,25 @@ export default function AvailabilityPage() {
                   ⚠️ 上限を「0」にすると、予約の有無に関わらずこの枠は常に予約不可になります。この時間帯だけ受付を止めたい場合は、上の「受付を停止する」にチェックし、上限欄は空欄のままにしてください。
                 </p>
               )}
+
+              <div className="mb-4 pt-3 border-t border-gray-100">
+                <p className="text-sm mb-2">指定枠数を確保する（電話予約・社内利用などのために空けておく）</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="admin-label">確保する組数</label>
+                    <input type="number" min={0} className="admin-input" placeholder="0"
+                      value={form.reserved_groups} disabled={!canEdit || form.is_closed}
+                      onChange={e => setForm(f => ({ ...f, reserved_groups: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label className="admin-label">確保する人数</label>
+                    <input type="number" min={0} className="admin-input" placeholder="0"
+                      value={form.reserved_people} disabled={!canEdit || form.is_closed}
+                      onChange={e => setForm(f => ({ ...f, reserved_people: e.target.value }))} />
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">定員からこの人数・組数を差し引いた分だけ、一般のお客様が予約できます。</p>
+              </div>
 
               <div className="mb-5">
                 <label className="admin-label">メモ（任意・内部用）</label>

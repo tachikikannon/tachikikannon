@@ -8,7 +8,7 @@ import { getTimeSlots, blockedDateMatchesType, getSeason } from '@/lib/reservati
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; type: string; party_size: number; category_id: string | null }
 type CapacitySetting = { max_groups: number; max_people: number; buffer_minutes: number }
-type SlotOverride = { date: string; time_slot: string; is_closed: boolean; max_groups: number | null; max_people: number | null }
+type SlotOverride = { date: string; time_slot: string; is_closed: boolean; max_groups: number | null; max_people: number | null; reserved_groups: number | null; reserved_people: number | null }
 type Category = { id: string; name: string }
 
 // "9:00" "10:30" のような時刻表記のみ分に変換できる。"午前"/"午後" などのラベル枠はnullを返す。
@@ -144,7 +144,7 @@ export default function ReservationCalendar({
       setCrossBuffers({})
     }
 
-    supabase.from('slot_overrides').select('date,time_slot,is_closed,max_groups,max_people')
+    supabase.from('slot_overrides').select('date,time_slot,is_closed,max_groups,max_people,reserved_groups,reserved_people')
       .gte('date', from).lte('date', to)
       .eq('type', reservationType)
       .then(({ data }) => setOverrides(data ?? []))
@@ -160,8 +160,10 @@ export default function ReservationCalendar({
 
   function isSlotFull(dateStr: string, slot: string) {
     const override = getOverride(dateStr, slot)
-    const maxGroups = override?.max_groups ?? capacity?.max_groups
-    const maxPeople = override?.max_people ?? capacity?.max_people
+    const maxGroupsRaw = override?.max_groups ?? capacity?.max_groups
+    const maxPeopleRaw = override?.max_people ?? capacity?.max_people
+    const maxGroups = maxGroupsRaw != null ? Math.max(0, maxGroupsRaw - (override?.reserved_groups ?? 0)) : maxGroupsRaw
+    const maxPeople = maxPeopleRaw != null ? Math.max(0, maxPeopleRaw - (override?.reserved_people ?? 0)) : maxPeopleRaw
     // 「リッツ」区分の予約は別枠のため、この種別の通常の定員・バッファ判定（一般のお客様向け）
     // からは完全に除外する。定員カウントだけでなく、この後の同種別バッファ判定でも使うため
     // ここで除外済みの一覧を作っておく。

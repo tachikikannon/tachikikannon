@@ -102,6 +102,8 @@ export interface SlotOverride {
   is_closed: boolean
   max_groups: number | null
   max_people: number | null
+  reserved_groups: number | null
+  reserved_people: number | null
   note: string | null
   created_at: string
 }
