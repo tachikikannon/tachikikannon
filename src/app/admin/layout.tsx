@@ -31,6 +31,7 @@ const navItems: NavItem[] = [
   { href: '/admin/chuzenji/about',        label: '拝観案内',       icon: '🎫', group: '立木観音' },
   { href: '/admin/chuzenji/prayer',       label: '御祈願',         icon: '🙏', group: '立木観音' },
   { href: '/admin/chuzenji/prayer-wedding', label: '仏前式（結婚式）', icon: '💐', group: '立木観音' },
+  { href: '/admin/chuzenji/gallery',        label: '中禅寺ギャラリー', icon: '🖼️', group: '立木観音' },
   { href: '/admin/chuzenji/goshuin',      label: '御朱印',         icon: '📮', group: '立木観音' },
   { href: '/admin/chuzenji/shakyou',      label: '写経体験',       icon: '✍️', group: '立木観音' },
   { href: '/admin/chuzenji/shabutu',      label: '写仏体験',       icon: '🖌️', group: '立木観音' },

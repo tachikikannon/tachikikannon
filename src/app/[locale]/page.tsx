@@ -46,6 +46,20 @@ const DEFAULT_SERVICE_CARDS_EN = [
   { title: 'Goshuin Stamps',    text: "Receive Chuzenji's own goshuin stamp, either hand-written or pre-inscribed.", info: 'From ¥500' },
   { title: 'Amulets & Mail Order', text: 'Omamori charms, ofuda tablets, and other items are available online or by cash-on-delivery order.', info: 'Choose online shop or cash-on-delivery' },
 ]
+const DEFAULT_GALLERY_SLIDES = [
+  { src: '/images/godaido.jpg', alt: '五大堂',
+    caption_ja: '五大堂 — 中禅寺湖を望む舞台', caption_en: 'Godaido Hall — overlooking Lake Chuzenji' },
+  { src: '/images/dragon.jpg', alt: '立木観音 境内',
+    caption_ja: '本堂を包む新緑', caption_en: 'Fresh greenery around the main hall' },
+  { src: '/images/gallery/yakan-sanpai.jpg', alt: '夜間参拝',
+    caption_ja: '夜間参拝 — 灯りに浮かぶ本堂', caption_en: 'Night visiting — the hall lit after dark' },
+  { src: '/images/gallery/ongakusai.jpg', alt: '音楽祭',
+    caption_ja: '音楽祭 — 天井の龍の下で', caption_en: 'Music Festival beneath the dragon ceiling' },
+  { src: '/images/gallery/yoga.jpg', alt: 'YOGA IN 五大堂',
+    caption_ja: 'YOGA IN 五大堂', caption_en: 'YOGA IN Godaido' },
+  { src: '/images/gallery/classical-music.jpg', alt: 'クラシックコンサート',
+    caption_ja: '湖を望むピアノコンサート', caption_en: 'A piano recital overlooking the lake' },
+]
 
 const DEFAULT_CONTENT: Record<string, string> = {
   hero_en:        'Nikkozan Chuzenji Temple',
@@ -78,6 +92,7 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_experience_cards_en: JSON.stringify(DEFAULT_EXPERIENCE_CARDS_EN),
   top_service_cards:    JSON.stringify(DEFAULT_SERVICE_CARDS),
   top_service_cards_en: JSON.stringify(DEFAULT_SERVICE_CARDS_EN),
+  top_gallery_slides:   JSON.stringify(DEFAULT_GALLERY_SLIDES),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -149,20 +164,14 @@ export default async function HomePage({
   const headingRecords = getLocalizedContent(content, 'top_heading_records', loc)
   const headingAccess = getLocalizedContent(content, 'top_heading_access', loc)
 
-  const gallerySlides = [
-    { src: '/images/godaido.jpg', alt: '五大堂',
-      caption: loc === 'en' ? 'Godaido Hall — overlooking Lake Chuzenji' : '五大堂 — 中禅寺湖を望む舞台' },
-    { src: '/images/dragon.jpg', alt: '立木観音 境内',
-      caption: loc === 'en' ? 'Fresh greenery around the main hall' : '本堂を包む新緑' },
-    { src: '/images/gallery/yakan-sanpai.jpg', alt: '夜間参拝',
-      caption: loc === 'en' ? 'Night visiting — the hall lit after dark' : '夜間参拝 — 灯りに浮かぶ本堂' },
-    { src: '/images/gallery/ongakusai.jpg', alt: '音楽祭',
-      caption: loc === 'en' ? 'Music Festival beneath the dragon ceiling' : '音楽祭 — 天井の龍の下で' },
-    { src: '/images/gallery/yoga.jpg', alt: 'YOGA IN 五大堂',
-      caption: loc === 'en' ? 'YOGA IN Godaido' : 'YOGA IN 五大堂' },
-    { src: '/images/gallery/classical-music.jpg', alt: 'クラシックコンサート',
-      caption: loc === 'en' ? 'A piano recital overlooking the lake' : '湖を望むピアノコンサート' },
-  ]
+  // 管理画面「中禅寺ギャラリー」（/admin/chuzenji/gallery）で編集可能。
+  // 日英でsrcが分かれないよう、1つのJSONにcaption_ja/caption_enを両方持たせている。
+  const gallerySlidesRaw = pj<{ src: string; alt: string; caption_ja: string; caption_en: string }[]>(
+    content['top_gallery_slides'], DEFAULT_GALLERY_SLIDES
+  )
+  const gallerySlides = gallerySlidesRaw.map(s => ({
+    src: s.src, alt: s.alt, caption: loc === 'en' ? (s.caption_en || s.caption_ja) : s.caption_ja,
+  }))
 
   return (
     <>
