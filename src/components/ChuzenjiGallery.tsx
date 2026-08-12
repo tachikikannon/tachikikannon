@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 
-type Slide = { src: string; alt: string; caption: string }
+type Slide = { src: string; alt: string; caption: string; month?: string }
 
 function Lightbox({ slide, onClose }: { slide: Slide; onClose: () => void }) {
   useEffect(() => {
@@ -78,6 +78,11 @@ export default function ChuzenjiGallery({ slides }: { slides: Slide[] }) {
         ))}
         <span className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
       </button>
+      {slides[index]?.month && (
+        <div className="absolute top-3 right-3 bg-black/50 border border-white/40 rounded px-2 py-1 pointer-events-none">
+          <span className="text-white text-[11px] tracking-wide">{slides[index].month}</span>
+        </div>
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-navy/65 via-transparent to-transparent pointer-events-none" />
       <p className="absolute bottom-4 left-4 right-20 text-white text-sm tracking-wide pointer-events-none">{slides[index]?.caption}</p>
       <div className="absolute bottom-4 right-4 flex gap-1.5">

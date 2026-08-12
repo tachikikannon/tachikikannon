@@ -2,17 +2,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 
-type Slide = { src: string; alt: string; caption_ja: string; caption_en: string }
+type Slide = { src: string; alt: string; month?: string; caption_ja: string; caption_en: string }
 
 const CONTENT_KEY = 'top_gallery_slides'
 
 const DEFAULT_SLIDES: Slide[] = [
-  { src: '/images/godaido.jpg', alt: '五大堂', caption_ja: '五大堂 — 中禅寺湖を望む舞台', caption_en: 'Godaido Hall — overlooking Lake Chuzenji' },
-  { src: '/images/dragon.jpg', alt: '立木観音 境内', caption_ja: '本堂を包む新緑', caption_en: 'Fresh greenery around the main hall' },
-  { src: '/images/gallery/yakan-sanpai.jpg', alt: '夜間参拝', caption_ja: '夜間参拝 — 灯りに浮かぶ本堂', caption_en: 'Night visiting — the hall lit after dark' },
-  { src: '/images/gallery/ongakusai.jpg', alt: '音楽祭', caption_ja: '音楽祭 — 天井の龍の下で', caption_en: 'Music Festival beneath the dragon ceiling' },
-  { src: '/images/gallery/yoga.jpg', alt: 'YOGA IN 五大堂', caption_ja: 'YOGA IN 五大堂', caption_en: 'YOGA IN Godaido' },
-  { src: '/images/gallery/classical-music.jpg', alt: 'クラシックコンサート', caption_ja: '湖を望むピアノコンサート', caption_en: 'A piano recital overlooking the lake' },
+  { src: '/images/godaido.jpg', alt: '五大堂', month: '', caption_ja: '五大堂 — 中禅寺湖を望む舞台', caption_en: 'Godaido Hall — overlooking Lake Chuzenji' },
+  { src: '/images/dragon.jpg', alt: '立木観音 境内', month: '', caption_ja: '本堂を包む新緑', caption_en: 'Fresh greenery around the main hall' },
+  { src: '/images/gallery/yakan-sanpai.jpg', alt: '夜間参拝', month: '10月', caption_ja: '夜間参拝 — 灯りに浮かぶ本堂', caption_en: 'Night visiting — the hall lit after dark' },
+  { src: '/images/gallery/ongakusai.jpg', alt: '音楽祭', month: '5月', caption_ja: '音楽祭 — 天井の龍の下で', caption_en: 'Music Festival beneath the dragon ceiling' },
+  { src: '/images/gallery/yoga.jpg', alt: 'YOGA IN 五大堂', month: '6月', caption_ja: 'YOGA IN 五大堂', caption_en: 'YOGA IN Godaido' },
+  { src: '/images/gallery/classical-music.jpg', alt: 'クラシックコンサート', month: '5月', caption_ja: '湖を望むピアノコンサート', caption_en: 'A piano recital overlooking the lake' },
 ]
 
 export default function AdminChuzenjiGallery() {
@@ -69,7 +69,7 @@ export default function AdminChuzenjiGallery() {
     if (!file) return
     setUploadingIndex(-1)
     const url = await uploadFile(file)
-    if (url) setSlides(s => [...s, { src: url, alt: '', caption_ja: '', caption_en: '' }])
+    if (url) setSlides(s => [...s, { src: url, alt: '', month: '', caption_ja: '', caption_en: '' }])
     setUploadingIndex(null)
     if (addFileRef.current) addFileRef.current.value = ''
   }
@@ -113,7 +113,8 @@ export default function AdminChuzenjiGallery() {
         トップページで見る ↗
       </a>
       <p className="text-gray-500 text-sm mb-8">
-        トップページ「中禅寺ギャラリー」に自動再生で表示される写真を管理します。写真の差し替え・追加・削除・並び替え・キャプション編集ができます。変更後は一番下の「保存」を押してください。
+        トップページ「中禅寺ギャラリー」の下段に自動再生で表示される写真を管理します。写真の差し替え・追加・削除・並び替え・キャプション編集・撮影月の表示ができます。変更後は一番下の「保存」を押してください。
+        なお上段の動画（douga01）はこの画面では編集できません。差し替える場合は開発担当にご相談ください。
       </p>
 
       {uploadError && (
@@ -146,9 +147,15 @@ export default function AdminChuzenjiGallery() {
                   <button onClick={() => remove(i)} className="text-red-400 hover:text-red-600 text-xs px-1.5 py-0.5 rounded">削除</button>
                 </div>
               </div>
-              <div>
-                <label className="text-xs text-gray-500 block mb-0.5">代替テキスト（alt）</label>
-                <input type="text" className="admin-input text-sm" value={slide.alt} onChange={e => update(i, 'alt', e.target.value)} />
+              <div className="grid sm:grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-gray-500 block mb-0.5">代替テキスト（alt）</label>
+                  <input type="text" className="admin-input text-sm" value={slide.alt} onChange={e => update(i, 'alt', e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-0.5">撮影月（右上に小さく表示・空欄で非表示）</label>
+                  <input type="text" className="admin-input text-sm" placeholder="例：8月" value={slide.month ?? ''} onChange={e => update(i, 'month', e.target.value)} />
+                </div>
               </div>
               <div className="grid sm:grid-cols-2 gap-2">
                 <div>
