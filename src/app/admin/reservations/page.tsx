@@ -1,12 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { NextIntlClientProvider } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import ReservationCalendar from '@/components/ReservationCalendar'
+import AdminSlotPicker from '@/components/admin/AdminSlotPicker'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus, ReservationType } from '@/types'
-import jaMessages from '../../../../messages/ja.json'
 
 const TYPE_LABELS: Record<string, string> = {
   prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅'
@@ -265,10 +263,11 @@ export default function AdminReservationsPage() {
         {/* 新規予約フォーム */}
         {creating && (
           <div className="bg-white rounded-xl shadow p-5 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-medium text-navy">新規予約を追加</h2>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="font-medium text-navy">新規予約 / 空き状況の変更</h2>
               <button onClick={() => setCreating(false)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
             </div>
+            <p className="text-[11px] text-gray-400 mb-4">枠をクリックすると、予約の追加とその場での受付停止／再開が選べます。定員や確保枠などの詳細な設定は「空き状況の詳細設定」で行ってください。</p>
 
             <div className="mb-4">
               <label className="admin-label">種別</label>
@@ -296,15 +295,17 @@ export default function AdminReservationsPage() {
 
             <div className="mb-4">
               <label className="admin-label">日時</label>
-              <NextIntlClientProvider locale="ja" messages={jaMessages}>
-                <ReservationCalendar
-                  reservationType={newRes.type}
-                  selectedDate={newRes.date}
-                  selectedTime={newRes.time_slot}
-                  onSelectSlot={(date, time_slot) => setNewRes(f => ({ ...f, date, time_slot }))}
-                  isAdmin
-                />
-              </NextIntlClientProvider>
+              <AdminSlotPicker
+                reservationType={newRes.type}
+                selectedDate={newRes.date}
+                selectedTime={newRes.time_slot}
+                onSelectSlot={(date, time_slot) => setNewRes(f => ({ ...f, date, time_slot }))}
+              />
+              {newRes.date && newRes.time_slot && (
+                <p className="text-xs text-navy bg-navy/5 rounded px-2 py-1.5 mt-2">
+                  選択中：{newRes.date} {newRes.time_slot}
+                </p>
+              )}
             </div>
 
             <div className="mb-4">
