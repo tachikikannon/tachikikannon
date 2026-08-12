@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
 import RecordsCarousel from '@/components/RecordsCarousel'
+import ChuzenjiGallery from '@/components/ChuzenjiGallery'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -148,6 +149,21 @@ export default async function HomePage({
   const headingRecords = getLocalizedContent(content, 'top_heading_records', loc)
   const headingAccess = getLocalizedContent(content, 'top_heading_access', loc)
 
+  const gallerySlides = [
+    { src: '/images/godaido.jpg', alt: '五大堂',
+      caption: loc === 'en' ? 'Godaido Hall — overlooking Lake Chuzenji' : '五大堂 — 中禅寺湖を望む舞台' },
+    { src: '/images/dragon.jpg', alt: '立木観音 境内',
+      caption: loc === 'en' ? 'Fresh greenery around the main hall' : '本堂を包む新緑' },
+    { src: '/images/gallery/yakan-sanpai.jpg', alt: '夜間参拝',
+      caption: loc === 'en' ? 'Night visiting — the hall lit after dark' : '夜間参拝 — 灯りに浮かぶ本堂' },
+    { src: '/images/gallery/ongakusai.jpg', alt: '音楽祭',
+      caption: loc === 'en' ? 'Music Festival beneath the dragon ceiling' : '音楽祭 — 天井の龍の下で' },
+    { src: '/images/gallery/yoga.jpg', alt: 'YOGA IN 五大堂',
+      caption: loc === 'en' ? 'YOGA IN Godaido' : 'YOGA IN 五大堂' },
+    { src: '/images/gallery/classical-music.jpg', alt: 'クラシックコンサート',
+      caption: loc === 'en' ? 'A piano recital overlooking the lake' : '湖を望むピアノコンサート' },
+  ]
+
   return (
     <>
       <Header />
@@ -281,24 +297,23 @@ export default async function HomePage({
         )}
 
         {/* 祈る */}
-        <section id="prayer" className="py-16 bg-cream-alt">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="section-title">{t('prayerHeading')}</h2>
-            <div className="section-divider" />
-            <Link href="/prayer" className="block bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 group">
-              <div className="relative h-56 md:h-72 overflow-hidden">
+        <section id="prayer" className="py-16 bg-navy">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-serif text-gold text-center mb-2 tracking-widest">{t('prayerHeading')}</h2>
+            <div className="w-12 h-0.5 bg-gold mx-auto mb-10" />
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <Link href="/prayer" className="relative h-56 md:h-80 rounded-xl overflow-hidden shadow-2xl group block">
                 <img src="/images/goma-card.png" alt={prayerCard?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              </div>
-              <div className="p-5 flex items-center justify-between gap-4">
-                <div>
-                  <h3 className="font-serif text-navy text-lg md:text-xl mb-1">{prayerCard?.label}</h3>
-                  <p className="text-sm text-gray-600">{prayerCard?.sub}</p>
-                </div>
-                <span className="inline-block text-sm bg-navy text-white rounded-full px-6 py-2.5 group-hover:bg-navy/80 transition-colors flex-shrink-0">
+              </Link>
+              <div>
+                <h3 className="font-serif text-2xl md:text-3xl text-white mb-3">{prayerCard?.label}</h3>
+                <p className="text-white/60 text-sm mb-6">{prayerCard?.sub}</p>
+                <Link href="/prayer"
+                  className="inline-block text-sm bg-gold text-navy font-medium rounded-full px-7 py-3 hover:bg-gold-light transition-colors">
                   {t('seeMore')}
-                </span>
+                </Link>
               </div>
-            </Link>
+            </div>
           </div>
         </section>
 
@@ -326,26 +341,6 @@ export default async function HomePage({
                   </div>
                 </Link>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 季節の中禅寺 */}
-        <section className="py-16 bg-cream-alt">
-          <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">{t('seasonalHeading')}</h2>
-            <div className="section-divider" />
-            <div className="grid grid-cols-2 gap-1">
-              <div className="relative h-64 md:h-80 overflow-hidden">
-                <ZoomableImage src="/images/godaido.jpg" alt={t('seasonalCaption1')} fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent pointer-events-none" />
-                <p className="absolute bottom-3 left-3 right-3 text-white text-xs tracking-wide">{t('seasonalCaption1')}</p>
-              </div>
-              <div className="relative h-64 md:h-80 overflow-hidden">
-                <ZoomableImage src="/images/dragon.jpg" alt={t('seasonalCaption2')} fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent pointer-events-none" />
-                <p className="absolute bottom-3 left-3 right-3 text-white text-xs tracking-wide">{t('seasonalCaption2')}</p>
-              </div>
             </div>
           </div>
         </section>
@@ -385,6 +380,15 @@ export default async function HomePage({
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* 中禅寺ギャラリー */}
+        <section className="py-16 bg-cream-alt">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="section-title">{t('galleryHeading')}</h2>
+            <div className="section-divider" />
+            <ChuzenjiGallery slides={gallerySlides} />
           </div>
         </section>
 
