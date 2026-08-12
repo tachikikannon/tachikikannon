@@ -143,14 +143,12 @@ export default async function WeddingPage({
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('wedding_heading_about')}</h2>
-            <div className="grid sm:grid-cols-2 gap-4 mt-4 items-center">
-              <div className="rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/kekkonnsiki02.png" alt={t('title')} width={800} height={600} className="w-full h-auto" />
-              </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm border-l-4 border-gold text-sm text-gray-700 leading-relaxed space-y-3">
-                <p>{g('wedding_about_p1')}</p>
-                <p>{g('wedding_about_p2')}</p>
-              </div>
+            <div className="mt-4 rounded-xl overflow-hidden shadow-sm">
+              <ZoomableImage src="/images/kekkonnsiki02.png" alt={t('title')} width={1756} height={850} className="w-full h-auto" />
+            </div>
+            <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold text-sm text-gray-700 leading-relaxed space-y-3">
+              <p>{g('wedding_about_p1')}</p>
+              <p>{g('wedding_about_p2')}</p>
             </div>
           </section>
 
