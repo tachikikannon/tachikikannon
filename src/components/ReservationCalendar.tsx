@@ -31,12 +31,6 @@ function getLabelSlotCutoffMinutes(slot: string, month: number): number | null {
   return null
 }
 
-// 同じ担当者・場所を共有していて同時に受けられない体験の組み合わせ。
-// 例: 数珠づくり体験の予約が入っている時間は、護摩祈願も受け付けない。
-const CROSS_BLOCKING_TYPES: Partial<Record<ReservationType, ReservationType[]>> = {
-  prayer: ['jyuzu'],
-}
-
 // 「リッツ」区分の予約は別枠扱い。この区分の数珠づくり予約だけが護摩祈願を
 // ふさぐ対象になり、一般の数珠づくりの定員（max_groups/max_people）には数えない。
 const ISOLATED_POOL_CATEGORY_KEYWORD = 'リッツ'
@@ -94,8 +88,6 @@ export default function ReservationCalendar({
   })
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([])
   const [reservations, setReservations] = useState<Reservation[]>([])
-  const [crossReservations, setCrossReservations] = useState<Reservation[]>([])
-  const [crossBuffers, setCrossBuffers] = useState<Partial<Record<ReservationType, number>>>({})
   const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
   const [overrides, setOverrides] = useState<SlotOverride[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -137,21 +129,6 @@ export default function ReservationCalendar({
     supabase.rpc('public_reservation_slots', { from_date: from, to_date: to, res_types: [reservationType] })
       .then(({ data }) => setReservations(data ?? []))
 
-    const crossTypes = CROSS_BLOCKING_TYPES[reservationType] ?? []
-    if (crossTypes.length > 0) {
-      supabase.rpc('public_reservation_slots', { from_date: from, to_date: to, res_types: crossTypes })
-        .then(({ data }) => setCrossReservations(data ?? []))
-      // 相手側の体験（数珠づくり等）自身の「前後バッファ」設定を、こちら側の
-      // 予約不可判定にもそのまま利用する（数珠づくりの所要時間ぶん、前後の
-      // 護摩の枠も塞がる）。
-      Promise.all(crossTypes.map(t =>
-        supabase.rpc('public_capacity_setting', { res_type: t }).then(({ data }) => [t, data?.[0]?.buffer_minutes ?? 0] as const)
-      )).then(entries => setCrossBuffers(Object.fromEntries(entries)))
-    } else {
-      setCrossReservations([])
-      setCrossBuffers({})
-    }
-
     supabase.from('slot_overrides').select('date,time_slot,is_closed,max_groups,max_people,reserved_groups,reserved_people')
       .gte('date', from).lte('date', to)
       .eq('type', reservationType)
@@ -183,22 +160,6 @@ export default function ReservationCalendar({
     const peopleCount = slotReservations.reduce((sum, r) => sum + (r.party_size ?? 1), 0)
     const overCapacity = (maxGroups != null && groupCount >= maxGroups) || (maxPeople != null && peopleCount >= maxPeople)
     if (overCapacity) return true
-
-    // 同じ担当者・場所を共有する体験（例: 護摩祈願と数珠づくり）は、
-    // 一方が予約されている時間帯はもう一方も予約不可にする。ただし対象は「リッツ」区分の
-    // 予約のみ。一般の数珠づくりは護摩祈願をふさがない。相手側に前後バッファが設定されて
-    // いる場合は、その分数未満しか離れていない前後の枠も合わせて塞ぐ。
-    const slotMinutesForCross = parseSlotMinutes(slot)
-    const crossBlocked = isolatedPoolCategoryId != null && crossReservations.some(r => {
-      if (r.date !== dateStr) return false
-      if (r.category_id !== isolatedPoolCategoryId) return false
-      if (r.time_slot === slot) return true
-      const buffer = crossBuffers[r.type as ReservationType] ?? 0
-      if (buffer <= 0 || slotMinutesForCross == null) return false
-      const rMinutes = parseSlotMinutes(r.time_slot)
-      return rMinutes != null && Math.abs(rMinutes - slotMinutesForCross) < buffer
-    })
-    if (crossBlocked) return true
 
     // 前後バッファ（分）: 実際の所要時間が枠の間隔より長い体験（護摩祈祷・数珠づくりなど）向け。
     // 既存予約の開始時刻からバッファ分数未満しか離れていない「別の」枠は、時間が重なるため
