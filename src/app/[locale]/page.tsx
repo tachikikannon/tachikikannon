@@ -297,23 +297,15 @@ export default async function HomePage({
         )}
 
         {/* 祈る */}
-        <section id="prayer" className="py-16 bg-navy">
-          <div className="max-w-4xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-serif text-gold text-center mb-2 tracking-widest">{t('prayerHeading')}</h2>
-            <div className="w-12 h-0.5 bg-gold mx-auto mb-10" />
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <Link href="/prayer" className="relative h-56 md:h-80 rounded-xl overflow-hidden shadow-2xl group block">
-                <img src="/images/goma-card.png" alt={prayerCard?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              </Link>
-              <div>
-                <h3 className="font-serif text-2xl md:text-3xl text-white mb-3">{prayerCard?.label}</h3>
-                <p className="text-white/60 text-sm mb-6">{prayerCard?.sub}</p>
-                <Link href="/prayer"
-                  className="inline-block text-sm bg-gold text-navy font-medium rounded-full px-7 py-3 hover:bg-gold-light transition-colors">
-                  {t('seeMore')}
-                </Link>
-              </div>
-            </div>
+        <section id="prayer" className="relative h-80 md:h-[28rem] overflow-hidden group">
+          <img src="/images/goma-card.png" alt={prayerCard?.label}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-navy/10" />
+          <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
+            <p className="text-gold text-xs tracking-[0.3em] mb-4">PRAYER</p>
+            <h2 className="font-serif text-3xl md:text-5xl text-white tracking-wider mb-4">{prayerCard?.label}</h2>
+            <p className="text-white/70 text-sm mb-8">{prayerCard?.sub}</p>
+            <Link href="/prayer" className="btn-gold">{t('seeMore')}</Link>
           </div>
         </section>
 
