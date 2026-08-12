@@ -194,6 +194,18 @@ export default async function PrayerPage({
             </div>
           </section>
           <section>
+            <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{t('weddingCta')}</h2>
+            <Link href="/prayer/wedding" className="group block mt-4 rounded-xl overflow-hidden shadow-sm border-l-4 border-gold relative h-48">
+              <img src="/images/kekkonnsiki01.jpg" alt={t('weddingCta')} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-3">
+                <p className="text-white text-sm">{t('weddingTeaser')}</p>
+                <span className="inline-block text-xs bg-gold text-navy font-medium rounded-full px-4 py-2 whitespace-nowrap flex-shrink-0">{t('weddingCta')} →</span>
+              </div>
+            </Link>
+          </section>
+
+          <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('prayer_heading_others')}</h2>
             <div className="mt-4 space-y-4">
               <div className="bg-white rounded-xl p-5 shadow-sm">
