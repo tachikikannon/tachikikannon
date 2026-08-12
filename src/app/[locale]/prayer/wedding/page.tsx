@@ -140,18 +140,21 @@ export default async function WeddingPage({
           </div>
         </section>
 
-        <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
+        <div className="max-w-3xl mx-auto px-4 pt-12">
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('wedding_heading_about')}</h2>
-            <div className="mt-4 rounded-xl overflow-hidden shadow-sm">
-              <ZoomableImage src="/images/kekkonnsiki02.png" alt={t('title')} width={1756} height={850} className="w-full h-auto" />
-            </div>
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold text-sm text-gray-700 leading-relaxed space-y-3">
               <p>{g('wedding_about_p1')}</p>
               <p>{g('wedding_about_p2')}</p>
             </div>
           </section>
+        </div>
 
+        <section className="relative h-72 md:h-[28rem] my-14">
+          <ZoomableImage src="/images/kekkonnsiki02.png" alt={t('title')} fill className="object-cover" />
+        </section>
+
+        <div className="max-w-3xl mx-auto px-4">
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('wedding_heading_flow')}</h2>
             <ol className="relative border-l-2 border-gold ml-4 mt-6 space-y-6">
@@ -165,7 +168,13 @@ export default async function WeddingPage({
             </ol>
             <p className="text-xs text-gray-400 mt-4">{g('wedding_flow_note')}</p>
           </section>
+        </div>
 
+        <section className="relative h-72 md:h-[28rem] my-14">
+          <ZoomableImage src="/images/kekkonnsiki03.png" alt={t('title')} fill className="object-cover" />
+        </section>
+
+        <div className="max-w-3xl mx-auto px-4 pb-12 space-y-14">
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('wedding_heading_details')}</h2>
             <div className="mt-4 overflow-x-auto">
