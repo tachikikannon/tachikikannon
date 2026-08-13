@@ -90,67 +90,26 @@ export default async function NewsPage({
           </div>
 
           {news.length > 0 ? (
-            <div className="space-y-6">
-              {/* 最新記事（大カード） */}
-              {news[0] && !category && (() => {
-                const title0 = pickLocalized(loc, news[0].title, news[0].title_en)
-                const excerpt0 = pickLocalized(loc, news[0].excerpt ?? '', news[0].excerpt_en)
-                const body0 = pickLocalized(loc, news[0].body, news[0].body_en)
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
+              {news.map(item => {
+                const title = pickLocalized(loc, item.title, item.title_en)
                 return (
-                  <Link href={`/news/${news[0].id}`} className="group block bg-white rounded-2xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
-                    <div className="md:flex">
-                      <div className="md:w-80 h-52 md:h-auto flex-shrink-0 bg-cream-alt relative">
-                        <Image
-                          src={news[0].cover_url || '/images/jimon-navy.png'}
-                          alt={title0}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                      <div className="p-6 flex flex-col justify-center">
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className={`text-xs rounded px-2 py-0.5 ${CAT_COLORS[news[0].category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[news[0].category] ?? news[0].category}</span>
-                          <time className="text-xs text-gray-400">
-                            {new Date(news[0].published_at ?? news[0].created_at).toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
-                          </time>
-                        </div>
-                        <h2 className="font-serif text-xl text-navy mb-2 group-hover:text-gold transition-colors leading-snug">{title0}</h2>
-                        <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
-                          {excerpt0 || body0.slice(0, 100)}
-                        </p>
-                        <span className="mt-4 text-xs text-gold">{t('readMore')}</span>
-                      </div>
+                  <Link key={item.id} href={`/news/${item.id}`}
+                    className="flex items-center gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
+                    <div className="w-10 h-10 flex-shrink-0 rounded-lg overflow-hidden relative bg-cream-alt">
+                      <Image src={item.cover_url || '/images/jimon-navy.png'} alt={title} fill className="object-cover" />
                     </div>
+                    <time className="text-xs text-gray-400 whitespace-nowrap w-24 flex-shrink-0">
+                      {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
+                    </time>
+                    <span className="w-32 flex-shrink-0">
+                      <span className={`badge text-[13px] whitespace-nowrap ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
+                    </span>
+                    <p className="flex-1 min-w-0 text-base text-navy group-hover:text-gold transition-colors leading-relaxed truncate">{title}</p>
+                    <span className="text-gray-300 group-hover:text-gold transition-colors flex-shrink-0 text-lg">›</span>
                   </Link>
                 )
-              })()}
-
-              {/* 残りの記事（リスト） */}
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
-                {(category ? news : news.slice(1)).map(item => {
-                  const title = pickLocalized(loc, item.title, item.title_en)
-                  const excerpt = pickLocalized(loc, item.excerpt ?? '', item.excerpt_en)
-                  return (
-                    <Link key={item.id} href={`/news/${item.id}`}
-                      className="flex items-start gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
-                      <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden relative bg-cream-alt">
-                        <Image src={item.cover_url || '/images/jimon-navy.png'} alt={title} fill className="object-cover" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-[10px] rounded px-1.5 py-0.5 ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
-                          <time className="text-xs text-gray-400">
-                            {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
-                          </time>
-                        </div>
-                        <p className="text-sm font-medium text-navy group-hover:text-gold transition-colors leading-snug">{title}</p>
-                        {excerpt && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{excerpt}</p>}
-                      </div>
-                      <span className="text-gray-300 group-hover:text-gold transition-colors flex-shrink-0 text-lg">›</span>
-                    </Link>
-                  )
-                })}
-              </div>
+              })}
             </div>
           ) : (
             <div className="text-center py-20 text-gray-400">
