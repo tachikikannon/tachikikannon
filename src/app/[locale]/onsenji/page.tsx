@@ -148,7 +148,7 @@ export default async function OnsenjPage({
       <HeaderOnsenji />
       <main>
         {/* ヒーロー */}
-        <section className="relative h-[85svh] min-h-[500px] flex items-center justify-center overflow-hidden bg-onsenji">
+        <section className="relative h-[calc(var(--vh,1svh)*85)] min-h-[500px] flex items-center justify-center overflow-hidden bg-onsenji">
           <div className="absolute inset-0 opacity-30">
             <ZoomableImage src="/images/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
           </div>
