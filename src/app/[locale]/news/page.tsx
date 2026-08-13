@@ -100,10 +100,12 @@ export default async function NewsPage({
                   <Link href={`/news/${news[0].id}`} className="group block bg-white rounded-2xl shadow-sm overflow-hidden hover:-translate-y-1 transition-all">
                     <div className="md:flex">
                       <div className="md:w-80 h-52 md:h-auto flex-shrink-0 bg-cream-alt relative">
-                        {news[0].cover_url
-                          ? <Image src={news[0].cover_url} alt={title0} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-                          : <div className="flex items-center justify-center h-full text-4xl">🏛️</div>
-                        }
+                        <Image
+                          src={news[0].cover_url || '/images/jimon-navy.png'}
+                          alt={title0}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
                       </div>
                       <div className="p-6 flex flex-col justify-center">
                         <div className="flex items-center gap-2 mb-3">
@@ -131,11 +133,9 @@ export default async function NewsPage({
                   return (
                     <Link key={item.id} href={`/news/${item.id}`}
                       className="flex items-start gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
-                      {item.cover_url && (
-                        <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden relative bg-cream-alt">
-                          <Image src={item.cover_url} alt={title} fill className="object-cover" />
-                        </div>
-                      )}
+                      <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden relative bg-cream-alt">
+                        <Image src={item.cover_url || '/images/jimon-navy.png'} alt={title} fill className="object-cover" />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className={`text-[10px] rounded px-1.5 py-0.5 ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>

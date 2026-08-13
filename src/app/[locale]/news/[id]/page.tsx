@@ -88,12 +88,10 @@ export default async function NewsDetailPage({
         </div>
 
         {/* カバー画像 */}
-        {news.cover_url && (
-          <div className="relative h-56 md:h-72">
-            <ZoomableImage src={news.cover_url} alt={title} fill className="object-cover" />
-            <div className="absolute inset-0 bg-navy/30" />
-          </div>
-        )}
+        <div className="relative h-56 md:h-72">
+          <ZoomableImage src={news.cover_url || '/images/jimon-navy.png'} alt={title} fill className="object-cover" />
+          {news.cover_url && <div className="absolute inset-0 bg-navy/30" />}
+        </div>
 
         <div className="max-w-3xl mx-auto px-4 py-10">
           <div className="bg-white rounded-2xl shadow-sm p-8">
