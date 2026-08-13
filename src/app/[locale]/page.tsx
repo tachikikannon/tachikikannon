@@ -266,10 +266,10 @@ export default async function HomePage({
                 <a key={href} href={href}
                   className={`relative h-56 sm:h-64 rounded-lg overflow-hidden shadow-sm group block ${i === arr.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}>
                   <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/15 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 p-3">
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/55 to-navy/5" />
+                  <div className="absolute inset-x-0 bottom-0 p-3 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
                     <p className="font-serif text-white font-medium text-sm leading-snug min-h-[2.6em] flex items-end group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>
-                    <p className="text-[11px] text-white/70 mt-0.5">{aboutCards[i]?.desc}</p>
+                    <p className="text-[11px] text-white/80 mt-0.5">{aboutCards[i]?.desc}</p>
                   </div>
                 </a>
               ))}
@@ -336,10 +336,10 @@ export default async function HomePage({
                   style={i === 0 ? { gridRow: '1 / span 3' } : undefined}>
                   <img src={src} alt={experienceCards[i]?.label}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/10 to-transparent" />
-                  <div className={`absolute inset-x-0 bottom-0 ${i === 0 ? 'p-5' : 'p-2.5'}`}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/45 to-navy/5" />
+                  <div className={`absolute inset-x-0 bottom-0 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] ${i === 0 ? 'p-5' : 'p-2.5'}`}>
                     <p className={`font-medium text-white ${i === 0 ? 'text-base mb-1' : 'text-xs'}`}>{experienceCards[i]?.label}</p>
-                    <p className={`text-white/75 ${i === 0 ? 'text-xs' : 'text-[10px]'}`}>{experienceCards[i]?.sub}</p>
+                    <p className={`text-white/85 ${i === 0 ? 'text-xs' : 'text-[10px]'}`}>{experienceCards[i]?.sub}</p>
                   </div>
                 </Link>
               ))}
