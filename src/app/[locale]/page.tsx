@@ -262,9 +262,9 @@ export default async function HomePage({
                 { img: '/images/godaido.jpg',  href: '/grounds' },
                 { img: '/images/mizuumi.jpg',  href: '/flower-calendar' },
                 { img: '/images/gyouji.JPEG',  href: '/annual-events' },
-              ].map(({ img, href }, i) => (
+              ].map(({ img, href }, i, arr) => (
                 <a key={href} href={href}
-                  className="relative h-56 sm:h-64 rounded-lg overflow-hidden shadow-sm group block">
+                  className={`relative h-56 sm:h-64 rounded-lg overflow-hidden shadow-sm group block ${i === arr.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}>
                   <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/15 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-3">
