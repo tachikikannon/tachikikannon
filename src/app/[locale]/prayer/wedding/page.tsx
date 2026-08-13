@@ -7,6 +7,7 @@ import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
+import YouTubeAutoplay from '@/components/YouTubeAutoplay'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 
@@ -151,7 +152,7 @@ export default async function WeddingPage({
         </div>
 
         <section className="relative h-72 md:h-[28rem] my-14">
-          <ZoomableImage src="/images/kekkonnsiki02.png" alt={t('title')} fill className="object-cover" />
+          <YouTubeAutoplay videoId="pUFUncoIL08" alt={t('title')} />
         </section>
 
         <div className="max-w-3xl mx-auto px-4">

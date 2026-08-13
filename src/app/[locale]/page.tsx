@@ -7,7 +7,7 @@ import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
 import RecordsCarousel from '@/components/RecordsCarousel'
 import ChuzenjiGallery from '@/components/ChuzenjiGallery'
-import YouTubeThumbPlayer from '@/components/YouTubeThumbPlayer'
+import YouTubeAutoplay from '@/components/YouTubeAutoplay'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -401,7 +401,7 @@ export default async function HomePage({
             <h2 className="section-title">{t('galleryHeading')}</h2>
             <div className="section-divider" />
             <div className="rounded-xl overflow-hidden shadow-sm mb-4 h-72 md:h-[26rem]">
-              <YouTubeThumbPlayer videoId="LkCwCjWsjUM" alt={t('galleryHeading')} className="h-full" />
+              <YouTubeAutoplay videoId="LkCwCjWsjUM" alt={t('galleryHeading')} className="h-full" />
             </div>
             <ChuzenjiGallery slides={gallerySlides} />
           </div>
