@@ -260,7 +260,7 @@ export default async function HomePage({
                 { img: '/images/dragon.jpg',   href: '/history' },
                 { img: '/images/haikan.png',   href: '/about#hours' },
                 { img: '/images/godaido.jpg',  href: '/grounds' },
-                { img: '/images/mizuumi.jpg',  href: '/flower-calendar' },
+                { img: 'https://vsemgmgjggzvpdqztlgt.supabase.co/storage/v1/object/public/temple-images/1786587020117-abdchotygni.JPG', href: '/flower-calendar' },
                 { img: '/images/gyouji.JPEG',  href: '/annual-events' },
               ].map(({ img, href }, i, arr) => (
                 <a key={href} href={href}
