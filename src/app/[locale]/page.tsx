@@ -185,10 +185,8 @@ export default async function HomePage({
           <div className="absolute inset-0 bg-navy/50" />
           <div className="relative text-center text-white px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-4 opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.1s_ease-out_0.15s_forwards] motion-reduce:[animation:none]">{heroEn}</p>
-            <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-snug mb-6 opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.3s_ease-out_0.5s_forwards] motion-reduce:[animation:none]">
-              {heroTitle.split('\\n').map((line, i) => (
-                <span key={i}>{line}{i < heroTitle.split('\\n').length - 1 && <br />}</span>
-              ))}
+            <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-snug mb-6 whitespace-pre-line opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.3s_ease-out_0.5s_forwards] motion-reduce:[animation:none]">
+              {heroTitle.replace(/\\n/g, '\n')}
             </h1>
             <div className="flex flex-wrap gap-3 justify-center opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.1s_ease-out_1.05s_forwards] motion-reduce:[animation:none]">
               <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>

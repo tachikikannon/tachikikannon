@@ -14,7 +14,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     section: 'ヒーローセクション',
     fields: [
       { key: 'hero_en',    label: '英語サブタイトル', hint: '例：Nikkozan Chuzenji Temple', defaultValue: 'Nikkozan Chuzenji Temple' },
-      { key: 'hero_title', label: 'キャッチコピー', hint: '改行は「\\n」で入力してください', multiline: true, defaultValue: '中禅寺湖畔に佇む、\n祈りと巡礼の寺', translatable: true },
+      { key: 'hero_title', label: 'キャッチコピー（改行可・Enterで改行）', multiline: true, defaultValue: '中禅寺湖畔に佇む、\n祈りと巡礼の寺', translatable: true },
     ],
   },
   {
