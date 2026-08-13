@@ -95,18 +95,20 @@ export default async function NewsPage({
                 const title = pickLocalized(loc, item.title, item.title_en)
                 return (
                   <Link key={item.id} href={`/news/${item.id}`}
-                    className="flex items-center gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
-                    <div className="w-10 h-10 flex-shrink-0 rounded-lg overflow-hidden relative bg-cream-alt">
+                    className="flex items-stretch hover:bg-cream-alt transition-colors group">
+                    <div className="w-20 flex-shrink-0 relative bg-navy">
                       <Image src={item.cover_url || '/images/jimon-navy.png'} alt={title} fill className="object-cover" />
                     </div>
-                    <time className="text-xs text-gray-400 whitespace-nowrap w-24 flex-shrink-0">
-                      {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
-                    </time>
-                    <span className="w-32 flex-shrink-0">
-                      <span className={`badge text-[13px] whitespace-nowrap ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
-                    </span>
-                    <p className="flex-1 min-w-0 text-base text-navy group-hover:text-gold transition-colors leading-relaxed truncate">{title}</p>
-                    <span className="text-gray-300 group-hover:text-gold transition-colors flex-shrink-0 text-lg">›</span>
+                    <div className="flex items-center gap-4 px-4 py-4 flex-1 min-w-0">
+                      <time className="text-xs text-gray-400 whitespace-nowrap w-24 flex-shrink-0">
+                        {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
+                      </time>
+                      <span className="w-32 flex-shrink-0">
+                        <span className={`badge text-[13px] whitespace-nowrap ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
+                      </span>
+                      <p className="flex-1 min-w-0 text-base text-navy group-hover:text-gold transition-colors leading-relaxed truncate">{title}</p>
+                      <span className="text-gray-300 group-hover:text-gold transition-colors flex-shrink-0 text-lg">›</span>
+                    </div>
                   </Link>
                 )
               })}
