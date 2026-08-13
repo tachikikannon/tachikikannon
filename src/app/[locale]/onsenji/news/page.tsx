@@ -99,15 +99,15 @@ export default async function OnsenjiNewsPage({
                     <div className="w-20 flex-shrink-0 relative bg-onsenji">
                       <Image src={item.cover_url || '/images/jimon-green.png'} alt={title} fill className="object-cover" />
                     </div>
-                    <div className="flex items-center gap-4 px-4 py-4 flex-1 min-w-0">
-                      <time className="text-xs text-gray-400 whitespace-nowrap w-24 flex-shrink-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-4 py-4 flex-1 min-w-0">
+                      <time className="text-xs text-gray-400 whitespace-nowrap sm:w-24 sm:flex-shrink-0">
                         {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
                       </time>
-                      <span className="w-32 flex-shrink-0">
+                      <span className="sm:w-32 sm:flex-shrink-0">
                         <span className={`badge text-[13px] whitespace-nowrap ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
                       </span>
                       <p className="flex-1 min-w-0 text-base text-onsenji group-hover:text-[#2d6b57] transition-colors leading-relaxed truncate">{title}</p>
-                      <span className="text-gray-300 group-hover:text-[#2d6b57] transition-colors flex-shrink-0 text-lg">›</span>
+                      <span className="hidden sm:inline text-gray-300 group-hover:text-[#2d6b57] transition-colors flex-shrink-0 text-lg">›</span>
                     </div>
                   </Link>
                 )

@@ -190,12 +190,12 @@ export default async function OnsenjPage({
               <ul className="divide-y divide-gray-200 bg-white rounded-lg shadow-sm">
                 {news.map(n => (
                   <li key={n.id}>
-                    <Link href={`/onsenji/news/${n.id}`} className="flex items-start gap-4 px-5 py-4 hover:bg-onsenji/5 transition-colors group">
-                      <span className="text-xs text-gray-400 whitespace-nowrap pt-0.5 w-24 flex-shrink-0">
+                    <Link href={`/onsenji/news/${n.id}`} className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4 px-5 py-4 hover:bg-onsenji/5 transition-colors group">
+                      <span className="text-xs text-gray-400 whitespace-nowrap sm:pt-0.5 sm:w-24 sm:flex-shrink-0">
                         {new Date(n.published_at ?? n.created_at).toLocaleDateString('ja-JP')}
                       </span>
-                      <span className="badge bg-onsenji/10 text-onsenji text-[10px] flex-shrink-0">{n.category}</span>
-                      <span className="text-sm leading-relaxed group-hover:text-[#2d6b57] transition-colors">{n.title}</span>
+                      <span className="badge bg-onsenji/10 text-onsenji text-[10px] flex-shrink-0 w-fit">{n.category}</span>
+                      <span className="text-sm leading-relaxed group-hover:text-[#2d6b57] transition-colors truncate">{n.title}</span>
                     </Link>
                   </li>
                 ))}

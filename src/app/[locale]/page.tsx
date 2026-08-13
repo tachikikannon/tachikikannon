@@ -231,16 +231,16 @@ export default async function HomePage({
                   const excerpt = pickLocalized(loc, n.excerpt ?? '', n.excerpt_en)
                   return (
                   <li key={n.id}>
-                    <Link href={`/news/${n.id}`} className="flex items-center gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
-                      <span className="text-xs text-gray-400 whitespace-nowrap w-24 flex-shrink-0">
+                    <Link href={`/news/${n.id}`} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
+                      <span className="text-xs text-gray-400 whitespace-nowrap sm:w-24 sm:flex-shrink-0">
                         {new Date(n.published_at ?? n.created_at).toLocaleDateString('ja-JP')}
                       </span>
-                      <span className="w-32 flex-shrink-0">
+                      <span className="sm:w-32 sm:flex-shrink-0">
                         <span className="badge bg-navy/10 text-navy text-[13px] whitespace-nowrap">{n.category}</span>
                       </span>
                       <span className="min-w-0">
-                        <span className="block text-base leading-relaxed group-hover:text-gold transition-colors">{title}</span>
-                        {excerpt && <span className="block text-xs text-gray-400 mt-0.5 line-clamp-1">{excerpt}</span>}
+                        <span className="block text-base leading-relaxed group-hover:text-gold transition-colors truncate">{title}</span>
+                        {excerpt && <span className="hidden sm:block text-xs text-gray-400 mt-0.5 line-clamp-1">{excerpt}</span>}
                       </span>
                     </Link>
                   </li>
