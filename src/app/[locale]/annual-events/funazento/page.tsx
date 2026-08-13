@@ -18,6 +18,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
+const DEFAULT_SCHEDULE: { time: string; title: string; desc: string }[] = []
+const DEFAULT_SCHEDULE_EN: { time: string; title: string; desc: string }[] = []
+
 const DEFAULT_NOTES = [
   { text: '事前の申し込みが必要です。定員になり次第締め切りますので、お早めにお申し込みください。' },
   { text: '御札をお授けいたします。お支払いは当日・現地にてお受けいたします。' },
@@ -44,6 +47,8 @@ const DEFAULTS: Record<string, string> = {
   funazento_info_time_en: 'From 10:00 AM',
   funazento_info_join: '事前申し込み必要',
   funazento_info_join_en: 'Advance application required',
+  funazento_heading_schedule: 'タイムスケジュール',
+  funazento_heading_schedule_en: 'Schedule',
   funazento_heading_map: '船禅頂ルール・ルート図',
   funazento_heading_map_en: 'Funazenjyo Rules & Route Map',
   funazento_heading_gallery: '行事の様子',
@@ -56,6 +61,8 @@ const DEFAULTS: Record<string, string> = {
   funazento_cta_text_en: 'Applications close once capacity is reached.\nAn ofuda talisman is included — payment is accepted on the day, on site.',
   funazento_notes: JSON.stringify(DEFAULT_NOTES),
   funazento_notes_en: JSON.stringify(DEFAULT_NOTES_EN),
+  funazento_schedule: JSON.stringify(DEFAULT_SCHEDULE),
+  funazento_schedule_en: JSON.stringify(DEFAULT_SCHEDULE_EN),
 }
 
 const GALLERY_IMAGES = [
@@ -98,6 +105,7 @@ export default async function FunazentoPage({
   const content = await getContent()
   const g = (key: string) => getLocalizedContent(content, key, loc)
   const notes = pj<typeof DEFAULT_NOTES>(g('funazento_notes'), DEFAULT_NOTES)
+  const schedule = pj<typeof DEFAULT_SCHEDULE>(g('funazento_schedule'), DEFAULT_SCHEDULE)
 
   return (
     <>
@@ -141,6 +149,31 @@ export default async function FunazentoPage({
               ))}
             </div>
           </section>
+
+          {schedule.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-1 h-8 bg-gold rounded-full" />
+                <h2 className="font-serif text-2xl text-navy">{g('funazento_heading_schedule')}</h2>
+              </div>
+              <ol className="relative border-l-2 border-gold/40 ml-5 space-y-8">
+                {schedule.map(({ time, title, desc }, i) => (
+                  <li key={i} className="pl-8 relative">
+                    <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-navy flex items-center justify-center shadow-md">
+                      <span className="text-gold text-xs font-bold">{i + 1}</span>
+                    </div>
+                    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                      <div className="flex items-baseline gap-3 mb-2">
+                        <span className="text-gold font-bold text-lg tracking-wide">{time}</span>
+                        <h3 className="font-serif text-navy text-lg">{title}</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
 
           <section>
             <div className="flex items-center gap-3 mb-6">

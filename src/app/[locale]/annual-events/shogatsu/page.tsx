@@ -18,6 +18,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
+const DEFAULT_SCHEDULE: { time: string; title: string; desc: string }[] = []
+const DEFAULT_SCHEDULE_EN: { time: string; title: string; desc: string }[] = []
+
 const DEFAULT_NOTES = [
   { text: '事前の申し込みが必要です。1回のお申し込みで最大5名様までまとめてお申し込みいただけます。' },
   { text: '御札は5,000円（28㎝）・10,000円（32㎝）・20,000円（38㎝）・30,000円（42.5㎝）よりお選びいただけます。' },
@@ -51,6 +54,8 @@ const DEFAULTS: Record<string, string> = {
   shogatsu_info_time_en: 'From 12:00 AM',
   shogatsu_info_join: '事前申し込み必要（最大5名まで）',
   shogatsu_info_join_en: 'Advance application required (up to 5 people)',
+  shogatsu_heading_schedule: 'タイムスケジュール',
+  shogatsu_heading_schedule_en: 'Schedule',
   shogatsu_heading_fees: '御札の種類',
   shogatsu_heading_fees_en: 'Ofuda Sizes',
   shogatsu_heading_notes: 'ご参加にあたって',
@@ -63,6 +68,8 @@ const DEFAULTS: Record<string, string> = {
   shogatsu_notes_en: JSON.stringify(DEFAULT_NOTES_EN),
   shogatsu_fees: JSON.stringify(DEFAULT_FEES),
   shogatsu_fees_en: JSON.stringify(DEFAULT_FEES),
+  shogatsu_schedule: JSON.stringify(DEFAULT_SCHEDULE),
+  shogatsu_schedule_en: JSON.stringify(DEFAULT_SCHEDULE_EN),
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -97,6 +104,7 @@ export default async function ShogatsuPage({
   const g = (key: string) => getLocalizedContent(content, key, loc)
   const notes = pj<typeof DEFAULT_NOTES>(g('shogatsu_notes'), DEFAULT_NOTES)
   const fees  = pj<typeof DEFAULT_FEES>(g('shogatsu_fees'), DEFAULT_FEES)
+  const schedule = pj<typeof DEFAULT_SCHEDULE>(g('shogatsu_schedule'), DEFAULT_SCHEDULE)
 
   return (
     <>
@@ -139,6 +147,31 @@ export default async function ShogatsuPage({
               ))}
             </div>
           </section>
+
+          {schedule.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-1 h-8 bg-gold rounded-full" />
+                <h2 className="font-serif text-2xl text-navy">{g('shogatsu_heading_schedule')}</h2>
+              </div>
+              <ol className="relative border-l-2 border-gold/40 ml-5 space-y-8">
+                {schedule.map(({ time, title, desc }, i) => (
+                  <li key={i} className="pl-8 relative">
+                    <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-navy flex items-center justify-center shadow-md">
+                      <span className="text-gold text-xs font-bold">{i + 1}</span>
+                    </div>
+                    <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                      <div className="flex items-baseline gap-3 mb-2">
+                        <span className="text-gold font-bold text-lg tracking-wide">{time}</span>
+                        <h3 className="font-serif text-navy text-lg">{title}</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
 
           <section>
             <div className="flex items-center gap-3 mb-6">

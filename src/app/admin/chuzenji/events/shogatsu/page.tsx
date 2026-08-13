@@ -10,6 +10,14 @@ const FIELDS = [
   { key: 'shogatsu_info_date', label: '開催日（カード表示）', defaultValue: '1月1日（毎年）', translatable: true },
   { key: 'shogatsu_info_time', label: '開始時間（カード表示）', defaultValue: '午前0時〜', translatable: true },
   { key: 'shogatsu_info_join', label: '参加（カード表示）', defaultValue: '事前申し込み必要（最大5名まで）', translatable: true },
+  { key: 'shogatsu_heading_schedule', label: '「タイムスケジュール」見出し', defaultValue: 'タイムスケジュール', translatable: true },
+  {
+    key: 'shogatsu_schedule', label: 'タイムスケジュール', type: 'list' as const,
+    listFields: [{ key: 'time', label: '時間' }, { key: 'title', label: '行事名' }, { key: 'desc', label: '説明', multiline: true }],
+    defaultValue: J([]),
+    translatable: true,
+    defaultValueEn: J([]),
+  },
   { key: 'shogatsu_heading_fees', label: '「御札の種類」見出し', defaultValue: '御札の種類', translatable: true },
   {
     key: 'shogatsu_fees', label: '御札の種類（テーブル・申し込みフォームの選択肢とは別管理）', type: 'list' as const,
