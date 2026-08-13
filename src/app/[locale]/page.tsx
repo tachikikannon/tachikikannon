@@ -178,7 +178,7 @@ export default async function HomePage({
       <Header />
       <main>
         {/* ヒーロー */}
-        <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[100svh] min-h-[600px] flex items-center justify-center overflow-hidden">
           <ZoomableImage src="/images/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-navy/50" />
           <div className="relative text-center text-white px-4">
