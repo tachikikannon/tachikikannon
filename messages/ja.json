@@ -523,6 +523,14 @@
     "quickAbout": "参拝について",
     "quickGrounds": "境内のご案内"
   },
+  "flowerCalendar": {
+    "title": "花ごよみ",
+    "subtitle": "境内を彩る、四季折々の花",
+    "heading": "花ごよみ",
+    "monthLabel": "見頃",
+    "quickAbout": "参拝について",
+    "quickGrounds": "境内のご案内"
+  },
   "onsenjiPhotos": {
     "title": "貸出用写真一覧",
     "intro": "使用・貸出が可能な写真をご紹介しています。ご希望の写真がございましたら「この写真を申請する」ボタンより申請フォームにお進みください。",

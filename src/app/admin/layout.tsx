@@ -29,6 +29,7 @@ const navItems: NavItem[] = [
   { href: '/admin/top-page',              label: 'トップページ',   icon: '🏠', group: '立木観音' },
   { href: '/admin/chuzenji/history',      label: '歴史',           icon: '📜', group: '立木観音' },
   { href: '/admin/chuzenji/grounds',      label: '境内のご案内',   icon: '🗺️', group: '立木観音' },
+  { href: '/admin/chuzenji/flower-calendar', label: '花ごよみ',    icon: '🌸', group: '立木観音' },
   { href: '/admin/chuzenji/about',        label: '拝観案内',       icon: '🎫', group: '立木観音' },
   { href: '/admin/chuzenji/prayer',       label: '御祈願',         icon: '🙏', group: '立木観音' },
   { href: '/admin/chuzenji/prayer-wedding', label: '仏前式（結婚式）', icon: '💐', group: '立木観音' },

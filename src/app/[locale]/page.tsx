@@ -16,12 +16,14 @@ const DEFAULT_ABOUT_CARDS = [
   { label: '立木観音の歴史', desc: '歴史と縁起' },
   { label: '拝観料金',       desc: '拝観料・各種料金' },
   { label: '境内のご案内',   desc: '見どころ・境内マップ' },
+  { label: '花ごよみ',       desc: '四季折々の花' },
   { label: '年間行事',       desc: '法要・行事のご案内' },
 ]
 const DEFAULT_ABOUT_CARDS_EN = [
   { label: 'History of Tachiki Kannon', desc: 'History & origins' },
   { label: 'Admission Fees',            desc: 'Admission & other fees' },
   { label: 'Grounds Guide',             desc: 'Highlights & temple map' },
+  { label: 'Flower Calendar',           desc: 'Seasonal flowers' },
   { label: 'Annual Events',             desc: 'Services & event information' },
 ]
 const DEFAULT_EXPERIENCE_CARDS = [
@@ -255,15 +257,16 @@ export default async function HomePage({
           <div className="max-w-5xl mx-auto px-4">
             <h2 className="section-title">{headingAbout}</h2>
             <div className="section-divider" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {[
-                { img: '/images/dragon.jpg',  href: '/history' },
-                { img: '/images/haikan.png',  href: '/about#hours' },
-                { img: '/images/godaido.jpg', href: '/grounds' },
-                { img: '/images/gyouji.JPEG', href: '/annual-events' },
+                { img: '/images/dragon.jpg',   href: '/history' },
+                { img: '/images/haikan.png',   href: '/about#hours' },
+                { img: '/images/godaido.jpg',  href: '/grounds' },
+                { img: '/images/mizuumi.jpg',  href: '/flower-calendar' },
+                { img: '/images/gyouji.JPEG',  href: '/annual-events' },
               ].map(({ img, href }, i) => (
                 <a key={href} href={href}
-                  className="relative h-40 rounded-lg overflow-hidden shadow-sm group block">
+                  className="relative h-56 sm:h-64 rounded-lg overflow-hidden shadow-sm group block">
                   <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/15 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-3">

@@ -523,6 +523,14 @@
     "quickAbout": "About Visiting",
     "quickGrounds": "Grounds Guide"
   },
+  "flowerCalendar": {
+    "title": "Flower Calendar",
+    "subtitle": "Seasonal flowers around the temple grounds",
+    "heading": "Flower Calendar",
+    "monthLabel": "In Season",
+    "quickAbout": "About Visiting",
+    "quickGrounds": "Grounds Guide"
+  },
   "onsenjiPhotos": {
     "title": "Photos Available for Loan",
     "intro": "Browse photos available for use and loan. If you find one you'd like, click \"Apply to Use This Photo\" to go to the application form.",
