@@ -9,7 +9,7 @@ import RecordsCarousel from '@/components/RecordsCarousel'
 import ChuzenjiGallery from '@/components/ChuzenjiGallery'
 import YouTubeThumbPlayer from '@/components/YouTubeThumbPlayer'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { getLocalizedContent } from '@/lib/site-content'
+import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 import type { News, Event, Post } from '@/types'
 
@@ -226,17 +226,24 @@ export default async function HomePage({
             <div className="section-divider" />
             {newsList && newsList.length > 0 ? (
               <ul className="divide-y divide-gray-200 bg-white rounded-lg shadow-sm">
-                {(newsList as News[]).map((n) => (
+                {(newsList as News[]).map((n) => {
+                  const title = pickLocalized(loc, n.title, n.title_en)
+                  const excerpt = pickLocalized(loc, n.excerpt ?? '', n.excerpt_en)
+                  return (
                   <li key={n.id}>
                     <Link href={`/news/${n.id}`} className="flex items-start gap-4 px-5 py-4 hover:bg-cream-alt transition-colors group">
                       <span className="text-xs text-gray-400 whitespace-nowrap pt-0.5 w-24 flex-shrink-0">
                         {new Date(n.published_at ?? n.created_at).toLocaleDateString('ja-JP')}
                       </span>
                       <span className="badge bg-navy/10 text-navy text-[10px] flex-shrink-0">{n.category}</span>
-                      <span className="text-sm leading-relaxed group-hover:text-gold transition-colors">{n.title}</span>
+                      <span className="min-w-0">
+                        <span className="block text-base leading-relaxed group-hover:text-gold transition-colors">{title}</span>
+                        {excerpt && <span className="block text-xs text-gray-400 mt-0.5 line-clamp-1">{excerpt}</span>}
+                      </span>
                     </Link>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             ) : (
               <div className="bg-white rounded-lg shadow-sm px-5 py-8 text-center text-gray-400 text-sm">
