@@ -3,6 +3,7 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
+import NoMediaSave from '@/components/NoMediaSave'
 
 export const metadata: Metadata = {
   title: { default: '日光山中禅寺 立木観音 【公式】', template: '%s | 日光山中禅寺 立木観音' },
@@ -34,6 +35,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider>
+      <NoMediaSave />
       {children}
     </NextIntlClientProvider>
   )

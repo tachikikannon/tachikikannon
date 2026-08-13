@@ -13,6 +13,13 @@
   }
 }
 
+/* 画像・動画の無断保存への簡易対策（右クリック保存・ドラッグ保存・iOS長押し保存を抑止） */
+img, video, picture {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
+
 /* ヒーロー文字のふわっとしたフェードイン演出（トップページ） */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(14px); }
