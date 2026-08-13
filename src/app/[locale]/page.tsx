@@ -205,7 +205,7 @@ export default async function HomePage({
               {[
                 { href:'https://www.instagram.com/tachikikannon/', label:'Instagram', id:'@tachikikannon', bg:'bg-gradient-to-br from-pink-500 to-purple-600' },
                 { href:'https://x.com/tachikikannon13', label:'X', id:'@tachikikannon13', bg:'bg-black' },
-                { href:'https://www.youtube.com/@tachikikannon', label:'YouTube', id:'@tachikikannon', bg:'bg-red-600' },
+                { href:'https://www.youtube.com/channel/UCCo7NIO_ZEZyYZOGvK63OBg', label:'YouTube', id:'@中禅寺立木観音', bg:'bg-red-600' },
                 { href:'https://www.tiktok.com/@tachikikannon', label:'TikTok', id:'@tachikikannon', bg:'bg-gray-900' },
                 { href:'https://line.me/R/ti/p/@201diwas', label:'LINE', id:'@201diwas', bg:'bg-[#06C755]' },
               ].map(({ href, label, id, bg }) => (
