@@ -6,7 +6,6 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ZoomableImage from '@/components/ZoomableImage'
 import YouTubeAutoplay from '@/components/YouTubeAutoplay'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -133,7 +132,7 @@ export default async function WeddingPage({
         </div>
 
         <section className="relative h-64 md:h-96">
-          <Image src="/images/kekkonnsiki01.png" alt={t('title')} fill priority className="object-cover" />
+          <Image src="/images/kekkonnsiki03.png" alt={t('title')} fill priority className="object-cover" />
           <div className="absolute inset-0 bg-navy/55 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Butsuzen-shiki</p>
             <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">{t('title')}</h1>
@@ -151,9 +150,10 @@ export default async function WeddingPage({
           </section>
         </div>
 
-        <section className="relative h-72 md:h-[28rem] my-14">
+        <section className="relative h-72 md:h-[28rem] mt-14">
           <YouTubeAutoplay videoId="pUFUncoIL08" alt={t('title')} />
         </section>
+        <p className="max-w-3xl mx-auto px-4 text-right text-[11px] text-gray-400 mb-14">提供 J&apos;S ACUL様</p>
 
         <div className="max-w-3xl mx-auto px-4">
           <section>
@@ -170,10 +170,6 @@ export default async function WeddingPage({
             <p className="text-xs text-gray-400 mt-4">{g('wedding_flow_note')}</p>
           </section>
         </div>
-
-        <section className="relative h-72 md:h-[28rem] my-14">
-          <ZoomableImage src="/images/kekkonnsiki03.png" alt={t('title')} fill className="object-cover" />
-        </section>
 
         <div className="max-w-3xl mx-auto px-4 pb-12 space-y-14">
           <section>
