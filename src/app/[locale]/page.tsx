@@ -264,13 +264,12 @@ export default async function HomePage({
                 { img: '/images/gyouji.JPEG',  href: '/annual-events' },
               ].map(({ img, href }, i, arr) => (
                 <a key={href} href={href}
-                  className={`h-56 sm:h-64 group flex flex-col gap-1.5 ${i === arr.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}>
-                  <div className="relative flex-1 min-h-0 rounded-lg overflow-hidden shadow-sm">
-                    <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  </div>
-                  <div className="bg-cream-alt rounded px-2.5 py-1.5">
-                    <p className="font-serif text-navy font-medium text-sm leading-snug group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>
-                    <p className="text-[11px] text-gray-500 mt-0.5">{aboutCards[i]?.desc}</p>
+                  className={`relative h-56 sm:h-64 rounded-lg overflow-hidden shadow-sm group block ${i === arr.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}>
+                  <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/15 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-3">
+                    <p className="font-serif text-white font-medium text-sm leading-snug min-h-[2.6em] flex items-end group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>
+                    <p className="text-[11px] text-white/70 mt-0.5">{aboutCards[i]?.desc}</p>
                   </div>
                 </a>
               ))}
@@ -333,15 +332,14 @@ export default async function HomePage({
                 { src:'/images/zazen.png',        href:'/experience/zazen' },
               ].map(({ src, href }, i) => (
                 <Link key={href} href={href}
-                  className="group flex flex-col gap-1.5"
+                  className="relative rounded-lg overflow-hidden shadow-sm group block"
                   style={i === 0 ? { gridRow: '1 / span 3' } : undefined}>
-                  <div className="relative flex-1 min-h-0 rounded-lg overflow-hidden shadow-sm">
-                    <img src={src} alt={experienceCards[i]?.label}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  </div>
-                  <div className={`bg-cream-alt rounded ${i === 0 ? 'px-3.5 py-2' : 'px-2 py-1'}`}>
-                    <p className={`font-medium text-navy ${i === 0 ? 'text-base mb-1' : 'text-xs'}`}>{experienceCards[i]?.label}</p>
-                    <p className={`text-gray-500 ${i === 0 ? 'text-xs' : 'text-[10px]'}`}>{experienceCards[i]?.sub}</p>
+                  <img src={src} alt={experienceCards[i]?.label}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/10 to-transparent" />
+                  <div className={`absolute inset-x-0 bottom-0 ${i === 0 ? 'p-5' : 'p-2.5'}`}>
+                    <p className={`font-medium text-white ${i === 0 ? 'text-base mb-1' : 'text-xs'}`}>{experienceCards[i]?.label}</p>
+                    <p className={`text-white/75 ${i === 0 ? 'text-xs' : 'text-[10px]'}`}>{experienceCards[i]?.sub}</p>
                   </div>
                 </Link>
               ))}
