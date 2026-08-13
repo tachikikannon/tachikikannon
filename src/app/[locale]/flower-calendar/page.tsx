@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_ITEMS = [
-  { month: '準備中', name: '花ごよみ、只今準備中です', image: '', desc: '境内で見られる季節の花の情報を、只今準備しております。今しばらくお待ちください。' },
+  { month: '準備中', name: '花ごよみ、只今準備中です', images: '', desc: '境内で見られる季節の花の情報を、只今準備しております。今しばらくお待ちください。' },
 ]
 const DEFAULT_ITEMS_EN = [
-  { month: 'Coming Soon', name: 'Flower Calendar — Coming Soon', image: '', desc: 'We are currently preparing information about the seasonal flowers found on our grounds. Please check back soon.' },
+  { month: 'Coming Soon', name: 'Flower Calendar — Coming Soon', images: '', desc: 'We are currently preparing information about the seasonal flowers found on our grounds. Please check back soon.' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -58,7 +58,8 @@ export default async function FlowerCalendarPage({
   const tc = await getTranslations('common')
   const content = await getContent()
   const g = (key: string) => getLocalizedContent(content, key, loc)
-  const items = pj<typeof DEFAULT_ITEMS>(g('flower_calendar_items'), DEFAULT_ITEMS)
+  type FlowerItem = { month: string; name: string; desc: string; images?: string; image?: string }
+  const items = pj<FlowerItem[]>(g('flower_calendar_items'), DEFAULT_ITEMS)
 
   return (
     <>
@@ -76,11 +77,25 @@ export default async function FlowerCalendarPage({
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-10">
           <section className="grid sm:grid-cols-2 gap-6">
-            {items.map(({ month, name, image, desc }, i) => (
+            {items.map(({ month, name, images, image, desc }, i) => {
+              const photos = (images || image || '')
+                .split('\n')
+                .map(s => s.trim())
+                .filter(Boolean)
+              return (
               <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                {image && (
+                {photos.length === 1 && (
                   <div className="relative h-40">
-                    <ZoomableImage src={image} alt={name} fill className="object-cover" />
+                    <ZoomableImage src={photos[0]} alt={name} fill className="object-cover" />
+                  </div>
+                )}
+                {photos.length > 1 && (
+                  <div className="flex gap-1 overflow-x-auto p-1">
+                    {photos.map((src, pi) => (
+                      <div key={pi} className="relative w-28 h-28 shrink-0 rounded-lg overflow-hidden">
+                        <ZoomableImage src={src} alt={`${name} ${pi + 1}`} fill className="object-cover" />
+                      </div>
+                    ))}
                   </div>
                 )}
                 <div className="p-5">
@@ -89,7 +104,8 @@ export default async function FlowerCalendarPage({
                   <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </section>
           <div className="grid grid-cols-2 gap-4 pt-4">
             <Link href="/about" className="flex items-center justify-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('quickAbout')}</Link>

@@ -1,6 +1,6 @@
 'use client'
 
-export type ListField = { key: string; label: string; multiline?: boolean }
+export type ListField = { key: string; label: string; multiline?: boolean; images?: boolean }
 
 type Props = {
   value: string
@@ -49,10 +49,20 @@ export default function ListEditor({ value, fields, onChange, addLabel = '項目
             </div>
           </div>
           <div className="space-y-2">
-            {fields.map(({ key, label, multiline }) => (
+            {fields.map(({ key, label, multiline, images }) => (
               <div key={key}>
                 <label className="text-xs text-gray-500 block mb-0.5">{label}</label>
-                {multiline ? (
+                {images ? (
+                  <>
+                    <textarea
+                      className="admin-input min-h-[70px] text-sm"
+                      value={item[key] ?? ''}
+                      placeholder={'1行に1枚ずつ画像URLを貼り付け'}
+                      onChange={e => update(i, key, e.target.value)}
+                    />
+                    <p className="text-[11px] text-gray-400 mt-0.5">複数枚可。1行につき画像1枚のURLを貼り付けてください。</p>
+                  </>
+                ) : multiline ? (
                   <textarea
                     className="admin-input min-h-[60px] text-sm"
                     value={item[key] ?? ''}
