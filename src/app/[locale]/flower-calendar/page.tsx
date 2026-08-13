@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
+import FlowerGrid from '@/components/FlowerGrid'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 
@@ -76,37 +77,7 @@ export default async function FlowerCalendarPage({
           </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-10">
-          <section className="grid sm:grid-cols-2 gap-6">
-            {items.map(({ month, name, images, image, desc }, i) => {
-              const photos = (images || image || '')
-                .split('\n')
-                .map(s => s.trim())
-                .filter(Boolean)
-              return (
-              <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                {photos.length === 1 && (
-                  <div className="relative h-40">
-                    <ZoomableImage src={photos[0]} alt={name} fill className="object-cover" />
-                  </div>
-                )}
-                {photos.length > 1 && (
-                  <div className="flex gap-1 overflow-x-auto p-1">
-                    {photos.map((src, pi) => (
-                      <div key={pi} className="relative w-28 h-28 shrink-0 rounded-lg overflow-hidden">
-                        <ZoomableImage src={src} alt={`${name} ${pi + 1}`} fill className="object-cover" />
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div className="p-5">
-                  <p className="text-xs text-gold font-medium mb-1">{t('monthLabel')}：{month}</p>
-                  <h3 className="font-serif text-navy mb-2">{name}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
-                </div>
-              </div>
-              )
-            })}
-          </section>
+          <FlowerGrid items={items} monthLabel={t('monthLabel')} />
           <div className="grid grid-cols-2 gap-4 pt-4">
             <Link href="/about" className="flex items-center justify-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('quickAbout')}</Link>
             <Link href="/grounds" className="flex items-center justify-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('quickGrounds')}</Link>
