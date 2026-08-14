@@ -397,7 +397,7 @@ export default async function JyuzuPage({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Link href="/experience/shakyou" className="flex flex-col items-center gap-2 p-5 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group text-center">
               <span className="text-2xl">📜</span>
               <span className="text-sm font-medium text-navy group-hover:text-white">{t('quickShakyou')}</span>
@@ -405,6 +405,10 @@ export default async function JyuzuPage({
             <Link href="/experience/shabutu" className="flex flex-col items-center gap-2 p-5 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group text-center">
               <span className="text-2xl">🖌️</span>
               <span className="text-sm font-medium text-navy group-hover:text-white">{t('quickShabutu')}</span>
+            </Link>
+            <Link href="/experience/zazen" className="flex flex-col items-center gap-2 p-5 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group text-center">
+              <span className="text-2xl">🧘</span>
+              <span className="text-sm font-medium text-navy group-hover:text-white">{t('quickZazen')}</span>
             </Link>
           </div>
         </div>

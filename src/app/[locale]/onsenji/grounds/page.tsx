@@ -143,8 +143,15 @@ export default async function OnsenjGroundsPage({
             </ol>
           </section>
           <div className="grid grid-cols-2 gap-4 pt-4">
-            <Link href="/onsenji/about" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white transition-all text-sm font-medium text-onsenji">{t('aboutHours')}</Link>
-            <Link href="/onsenji/history" className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white transition-all text-sm font-medium text-onsenji">{t('history')}</Link>
+            {[
+              { icon: '🕐', label: t('aboutHours'), href: '/onsenji/about' },
+              { icon: '📖', label: t('history'), href: '/onsenji/history' },
+            ].map(({ icon, label, href }) => (
+              <Link key={href} href={href} className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white hover:-translate-y-1 transition-all group">
+                <span className="text-2xl">{icon}</span>
+                <span className="text-sm font-medium text-onsenji group-hover:text-white">{label}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </main>

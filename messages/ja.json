@@ -473,7 +473,8 @@
     "reserveCta": "オンライン予約はこちら",
     "contactCta": "お問い合わせ",
     "quickShakyou": "写経体験",
-    "quickShabutu": "写仏体験"
+    "quickShabutu": "写仏体験",
+    "quickZazen": "坐禅体験"
   },
   "shabutu": {
     "title": "写仏体験",
@@ -488,7 +489,8 @@
     "reserveCta": "オンライン予約はこちら",
     "contactCta": "お問い合わせ",
     "quickShakyou": "写経体験",
-    "quickJyuzu": "数珠づくり体験"
+    "quickJyuzu": "数珠づくり体験",
+    "quickZazen": "坐禅体験"
   },
   "zazen": {
     "title": "坐禅体験",
@@ -501,6 +503,7 @@
     "reserveCta": "オンライン予約はこちら",
     "contactCta": "お問い合わせ",
     "quickShakyou": "写経体験",
+    "quickShabutu": "写仏体験",
     "quickJyuzu": "数珠づくり体験"
   },
   "shakyou": {
@@ -516,7 +519,8 @@
     "reserveCta": "オンライン予約はこちら",
     "contactCta": "お問い合わせ",
     "quickShabutu": "写仏体験",
-    "quickJyuzu": "数珠づくり体験"
+    "quickJyuzu": "数珠づくり体験",
+    "quickZazen": "坐禅体験"
   },
   "history": {
     "title": "立木観音の歴史",

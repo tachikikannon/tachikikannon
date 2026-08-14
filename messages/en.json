@@ -473,7 +473,8 @@
     "reserveCta": "Reserve Online",
     "contactCta": "Contact Us",
     "quickShakyou": "Sutra Copying Experience",
-    "quickShabutu": "Buddhist Image Tracing"
+    "quickShabutu": "Buddhist Image Tracing",
+    "quickZazen": "Zazen Meditation"
   },
   "shabutu": {
     "title": "Buddhist Image Tracing",
@@ -488,7 +489,8 @@
     "reserveCta": "Reserve Online",
     "contactCta": "Contact Us",
     "quickShakyou": "Sutra Copying Experience",
-    "quickJyuzu": "Juzu Bracelet Making"
+    "quickJyuzu": "Juzu Bracelet Making",
+    "quickZazen": "Zazen Meditation"
   },
   "zazen": {
     "title": "Zazen Meditation",
@@ -501,6 +503,7 @@
     "reserveCta": "Reserve Online",
     "contactCta": "Contact Us",
     "quickShakyou": "Sutra Copying Experience",
+    "quickShabutu": "Buddhist Image Tracing",
     "quickJyuzu": "Juzu Bracelet Making"
   },
   "shakyou": {
@@ -516,7 +519,8 @@
     "reserveCta": "Reserve Online",
     "contactCta": "Contact Us",
     "quickShabutu": "Buddhist Image Tracing",
-    "quickJyuzu": "Juzu Bracelet Making"
+    "quickJyuzu": "Juzu Bracelet Making",
+    "quickZazen": "Zazen Meditation"
   },
   "history": {
     "title": "History of Tachiki Kannon",

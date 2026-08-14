@@ -159,14 +159,15 @@ export default async function OnsenjOnsenPage({
 
           {/* 関連リンク */}
           <div className="grid grid-cols-2 gap-4">
-            <Link href="/onsenji/about"
-              className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white transition-all text-sm font-medium text-onsenji">
-              {t('quickAbout')}
-            </Link>
-            <Link href="/onsenji/faq"
-              className="flex items-center justify-center p-4 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white transition-all text-sm font-medium text-onsenji">
-              {t('quickFaq')}
-            </Link>
+            {[
+              { icon: '🕐', label: t('quickAbout'), href: '/onsenji/about' },
+              { icon: '❓', label: t('quickFaq'), href: '/onsenji/faq' },
+            ].map(({ icon, label, href }) => (
+              <Link key={href} href={href} className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-onsenji hover:text-white hover:-translate-y-1 transition-all group">
+                <span className="text-2xl">{icon}</span>
+                <span className="text-sm font-medium text-onsenji group-hover:text-white">{label}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </main>

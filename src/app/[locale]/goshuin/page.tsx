@@ -203,7 +203,7 @@ export default async function GoshuinPage({
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { icon:'⛩', label: t('quickAbout'), href:'/about' },
+              { icon:'🕐', label: t('quickAbout'), href:'/about' },
               { icon:'🙏', label: t('quickPrayer'), href:'/prayer' },
               { icon:'📝', label: t('quickExperience'), href:'/reserve' },
               { icon:'🎁', label: t('quickGoods'), href:'https://chuzenji.official.ec/' },

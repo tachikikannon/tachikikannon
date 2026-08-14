@@ -137,7 +137,7 @@ export default async function OnsenjGoshuinPage({
           </section>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {[
-              { icon:'⛩', label: t('quickAbout'), href:'/onsenji/about' },
+              { icon:'🕐', label: t('quickAbout'), href:'/onsenji/about' },
               { icon:'🗺️', label: t('quickGrounds'), href:'/onsenji/grounds' },
               { icon:'❓', label: t('quickFaq'), href:'/onsenji/faq' },
             ].map(({ icon, label, href }) => (

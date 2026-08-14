@@ -134,8 +134,15 @@ export default async function HistoryPage({
             <p className="text-sm text-gray-700 leading-loose">{g('history_bando')}</p>
           </section>
           <div className="grid grid-cols-2 gap-4 pt-4">
-            <Link href="/about" className="flex items-center justify-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('quickAbout')}</Link>
-            <Link href="/grounds" className="flex items-center justify-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('quickGrounds')}</Link>
+            {[
+              { icon: '🕐', label: t('quickAbout'), href: '/about' },
+              { icon: '🗺️', label: t('quickGrounds'), href: '/grounds' },
+            ].map(({ icon, label, href }) => (
+              <Link key={href} href={href} className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group">
+                <span className="text-2xl">{icon}</span>
+                <span className="text-sm font-medium text-navy group-hover:text-white">{label}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </main>

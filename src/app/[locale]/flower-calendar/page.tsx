@@ -79,8 +79,15 @@ export default async function FlowerCalendarPage({
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-10">
           <FlowerGrid items={items} monthLabel={t('monthLabel')} />
           <div className="grid grid-cols-2 gap-4 pt-4">
-            <Link href="/about" className="flex items-center justify-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('quickAbout')}</Link>
-            <Link href="/grounds" className="flex items-center justify-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white transition-all text-sm font-medium text-navy">{t('quickGrounds')}</Link>
+            {[
+              { icon: '🕐', label: t('quickAbout'), href: '/about' },
+              { icon: '🗺️', label: t('quickGrounds'), href: '/grounds' },
+            ].map(({ icon, label, href }) => (
+              <Link key={href} href={href} className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group">
+                <span className="text-2xl">{icon}</span>
+                <span className="text-sm font-medium text-navy group-hover:text-white">{label}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </main>
