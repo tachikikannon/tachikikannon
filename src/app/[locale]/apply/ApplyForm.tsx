@@ -80,9 +80,10 @@ export default function ApplyForm() {
     if (file.size > MAX_ATTACHMENT_BYTES) { setAttachmentError(t('attachmentErrorSize')); return }
     setAttachmentError('')
     setUploading(true)
-    const path = `${crypto.randomUUID()}-${file.name}`
-    const { error } = await supabase.storage.from('application-attachments').upload(path, file)
-    if (error) { setAttachmentError(t('attachmentErrorUpload')); setUploading(false); return }
+    const ext = file.name.split('.').pop() || 'pdf'
+    const path = `${crypto.randomUUID()}.${ext}`
+    const { error } = await supabase.storage.from('application-attachments').upload(path, file, { contentType: file.type })
+    if (error) { setAttachmentError(`${t('attachmentErrorUpload')}${error.message ? ` (${error.message})` : ''}`); setUploading(false); return }
     const { data: { publicUrl } } = supabase.storage.from('application-attachments').getPublicUrl(path)
     setForm(f => ({ ...f, attachment_url: publicUrl, attachment_filename: file.name }))
     setUploading(false)
