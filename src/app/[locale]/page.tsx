@@ -82,7 +82,6 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_heading_about_en:   'About Tachiki Kannon',
   top_heading_events:     '近日の行事',
   top_heading_events_en:  'Upcoming Events',
-  top_heading_experience: '祈る・体験する',
   top_heading_service:    '受ける',
   top_heading_service_en: 'Receive',
   top_heading_records:    '過去の実績',

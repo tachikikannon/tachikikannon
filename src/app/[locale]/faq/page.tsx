@@ -37,8 +37,6 @@ const DEFAULT_FAQS_EN = [
 
 const DEFAULTS: Record<string, string> = {
   faq_subtitle: 'FAQ',
-  faq_heading: 'よくある質問',
-  faq_heading_en: 'Frequently Asked Questions',
   faq_bottom_text: '解決しない場合はお気軽にお問い合わせください。',
   faq_bottom_text_en: "If your question isn't answered here, please feel free to contact us.",
   faq_cta_label: 'お問い合わせはこちら',

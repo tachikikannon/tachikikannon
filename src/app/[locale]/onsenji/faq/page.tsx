@@ -33,8 +33,6 @@ const DEFAULT_FAQS_EN = [
 
 const DEFAULTS: Record<string, string> = {
   onsenji_faq_subtitle: 'FAQ',
-  onsenji_faq_heading: 'よくある質問',
-  onsenji_faq_heading_en: 'Frequently Asked Questions',
   onsenji_faq_bottom_heading: 'その他のご質問',
   onsenji_faq_bottom_heading_en: 'Other Questions',
   onsenji_faq_bottom_text: '解決しない場合はお気軽にお問い合わせください。',

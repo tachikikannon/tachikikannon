@@ -27,7 +27,6 @@ const DEFAULT_FAQS_EN: FaqItem[] = [
 
 const TEXT_FIELDS = [
   { key: 'faq_subtitle', label: '見出し（英字サブタイトル）', defaultValue: 'FAQ' },
-  { key: 'faq_heading', label: 'ページ見出し', defaultValue: 'よくある質問', translatable: true },
   { key: 'faq_bottom_text', label: '末尾の案内文', defaultValue: '解決しない場合はお気軽にお問い合わせください。', translatable: true },
   { key: 'faq_cta_label', label: 'お問い合わせボタンの文言', defaultValue: 'お問い合わせはこちら', translatable: true },
 ] as const

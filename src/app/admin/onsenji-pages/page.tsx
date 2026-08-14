@@ -262,7 +262,6 @@ const SECTIONS: Section[] = [
     href: '/onsenji/faq',
     fields: [
       { key: 'onsenji_faq_subtitle', label: '見出し（英字サブタイトル）', defaultValue: 'FAQ' },
-      { key: 'onsenji_faq_heading', label: 'ページ見出し', defaultValue: 'よくある質問', translatable: true },
       {
         key: 'onsenji_faq_items', label: 'FAQ一覧', type: 'list',
         listFields: [{ key: 'q', label: '質問', multiline: true }, { key: 'a', label: '回答', multiline: true }],
