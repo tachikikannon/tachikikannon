@@ -24,8 +24,8 @@ export default async function Footer() {
   return (
     <footer className="bg-navy text-white/70">
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-          <div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+          <div className="col-span-2 md:col-span-1">
             <p className="text-white font-serif text-lg mb-2">日光山中禅寺 立木観音</p>
             <address className="not-italic text-sm leading-7">
               {address}<br />
@@ -42,25 +42,30 @@ export default async function Footer() {
           </div>
           <div>
             <h4 className="text-gold text-xs tracking-widest mb-3">授与品・通販</h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm mb-5">
               <li><a href="https://chuzenji.official.ec/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">授与品・通販サイト</a></li>
             </ul>
-            <h4 className="text-gold text-xs tracking-widest mt-5 mb-3">各種申請</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-gold text-xs tracking-widest mb-3">各種申請</h4>
+            <ul className="flex flex-wrap text-sm">
               {[
                 ['団体予約', '団体予約申請'],
                 ['減免申請', '減免申請'],
                 ['写真貸出', '写真使用・貸出し許可申請'],
-                ['取材', '撮影・取材申請'],
-              ].map(([l, category]) => (
-                <li key={category}><Link href={`/apply?category=${encodeURIComponent(category)}`} className="hover:text-gold transition-colors">{l}</Link></li>
+                ['撮影取材', '撮影・取材申請'],
+              ].map(([l, category], i, arr) => (
+                <li key={category} className="flex items-center">
+                  <Link href={`/apply?category=${encodeURIComponent(category)}`} className="hover:text-gold transition-colors">{l}</Link>
+                  {i < arr.length - 1 && <span className="text-white/20 mx-1.5">・</span>}
+                </li>
               ))}
             </ul>
-            <h4 className="text-gold text-xs tracking-widest mt-5 mb-3">輪王寺関連</h4>
-            <ul className="space-y-2 text-sm">
+          </div>
+          <div>
+            <h4 className="text-gold text-xs tracking-widest mb-3">輪王寺関連</h4>
+            <ul className="space-y-2 text-sm mb-5">
               <li><a href="https://www.rinnoji.or.jp/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">輪王寺 公式サイト</a></li>
             </ul>
-            <h4 className="text-gold text-xs tracking-widest mt-5 mb-3">お問い合わせ</h4>
+            <h4 className="text-gold text-xs tracking-widest mb-3">お問い合わせ</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/contact" className="hover:text-gold transition-colors">お問い合わせフォーム</Link></li>
             </ul>
