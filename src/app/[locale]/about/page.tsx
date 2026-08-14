@@ -30,6 +30,8 @@ const DEFAULTS: Record<string, string> = {
   about_fee_group_adult_en: '¥450',
   about_fee_group_child: '180円',
   about_fee_group_child_en: '¥180',
+  about_parking: '無料駐車場有（予約不可）\n※満車の時はお近くに有料駐車場をご利用ください。',
+  about_parking_en: 'Free parking available (no reservations)\n※If full, please use a nearby paid parking lot.',
   about_hours_peak: '午前8時〜午後5時',
   about_hours_peak_en: '8:00 AM – 5:00 PM',
   about_hours_shoulder: '午前8時〜午後4時',
@@ -96,9 +98,10 @@ export default async function AboutPage({
                     [t('tableFee'), `${t('adult')}：${g('about_fee_adult')}　${t('child')}：${g('about_fee_child')}`],
                     [t('tableGroupFee'), `${t('adult')}：${g('about_fee_group_adult')}　${t('child')}：${g('about_fee_group_child')}`],
                     [t('tableHoliday'), g('about_holiday')],
+                    [t('tableParking'), g('about_parking')],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
-                      <th className="bg-navy text-white text-left px-4 py-3 w-32 text-sm font-medium">{k}</th>
+                      <th className="bg-navy text-white text-left px-4 py-3 w-32 text-sm font-medium whitespace-pre-line">{k}</th>
                       <td className="px-4 py-3 whitespace-pre-line bg-white">{v}</td>
                     </tr>
                   ))}
