@@ -7,11 +7,6 @@ const FIELDS = [
   { key: 'onsenji_hero_en',    label: 'ヒーロー 英語サブタイトル', defaultValue: 'Nikkozan Onsenji Temple' },
   { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場', translatable: true },
   { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを', translatable: true },
-  { key: 'onsenji_onsen_status_enabled', label: '温泉営業ステータスの表示（ヒーロー下、ボタンの下に表示）', type: 'boolean' as const, defaultValue: 'true', checkboxLabel: '表示する' },
-  { key: 'onsenji_onsen_status_closed', label: '本日は行事のため入浴不可にする（オンにすると「温泉営業中」の代わりに下記の休止メッセージを表示）', type: 'boolean' as const, defaultValue: 'false', checkboxLabel: '入浴不可にする' },
-  { key: 'onsenji_onsen_status_event_name', label: '休止理由の行事名（「本日　◯◯の為、ご入浴できません」の◯◯部分）', defaultValue: '法要', translatable: true },
-  { key: 'onsenji_onsen_status_open_time', label: '入浴開始時刻（24時間表記 例: 09:00。季節により変動するため随時更新してください）', defaultValue: '09:00' },
-  { key: 'onsenji_onsen_status_close_time', label: '入浴終了時刻（24時間表記 例: 16:00。この時刻を過ぎると自動で「本日は入浴時間外です」表示に切り替わります）', defaultValue: '16:00' },
   { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は「お知らせ管理」で編集）', defaultValue: 'お知らせ', translatable: true },
   { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について', translatable: true },
   {

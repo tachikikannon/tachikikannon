@@ -59,11 +59,9 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_hero_sub_en: 'A branch temple of the World Heritage site Nikkozan Rinnoji. The protection of Yakushi Nyorai, and the healing of hot spring water from the earth.',
   onsenji_onsen_status_enabled: 'true',
-  onsenji_onsen_status_closed: 'false',
-  onsenji_onsen_status_event_name: '法要',
-  onsenji_onsen_status_event_name_en: 'a temple service',
   onsenji_onsen_status_open_time: '09:00',
   onsenji_onsen_status_close_time: '16:00',
+  onsenji_onsen_closure_events: '[]',
   onsenji_heading_news: 'お知らせ',
   onsenji_heading_news_en: 'News',
   onsenji_about_title: '温泉寺について',
@@ -93,6 +91,16 @@ const DEFAULT_CONTENT: Record<string, string> = {
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
+
+type ClosureEvent = { date: string; name: string }
+
+function jstDateISO(): string {
+  const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date())
+  const y = parts.find(p => p.type === 'year')?.value
+  const m = parts.find(p => p.type === 'month')?.value
+  const d = parts.find(p => p.type === 'day')?.value
+  return `${y}-${m}-${d}`
+}
 
 function jstMinutesNow(): number {
   const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date())
@@ -147,8 +155,9 @@ export default async function OnsenjPage({
   const heroTitle = getLocalizedContent(c, 'onsenji_hero_title', loc)
   const heroSub = getLocalizedContent(c, 'onsenji_hero_sub', loc)
   const onsenStatusEnabled = c['onsenji_onsen_status_enabled'] !== 'false'
-  const onsenStatusClosed = c['onsenji_onsen_status_closed'] === 'true'
-  const onsenStatusEventName = getLocalizedContent(c, 'onsenji_onsen_status_event_name', loc)
+  const closureEvents = pj<ClosureEvent[]>(getLocalizedContent(c, 'onsenji_onsen_closure_events', loc), [])
+  const todayISO = jstDateISO()
+  const todaysClosure = closureEvents.find(e => e.date === todayISO)
   const onsenOpenTime = c['onsenji_onsen_status_open_time'] || '09:00'
   const onsenCloseTime = c['onsenji_onsen_status_close_time'] || '16:00'
   const onsenWithinHours = jstMinutesNow() >= hmToMinutes(onsenOpenTime) && jstMinutesNow() < hmToMinutes(onsenCloseTime)
@@ -156,8 +165,8 @@ export default async function OnsenjPage({
     ? `Bathing available ${to12h(onsenOpenTime)}–${to12h(onsenCloseTime)}`
     : `${onsenOpenTime}〜${onsenCloseTime}まで入浴可`
   const todayLabel = loc === 'en'
-    ? new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
-    : `${new Date().getMonth() + 1}月${new Date().getDate()}日`
+    ? new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric' }).format(new Date())
+    : `${Number(todayISO.split('-')[1])}月${Number(todayISO.split('-')[2])}日`
   const headingNews = getLocalizedContent(c, 'onsenji_heading_news', loc)
   const aboutTitle = getLocalizedContent(c, 'onsenji_about_title', loc)
   const headingGoryaku = getLocalizedContent(c, 'onsenji_heading_goryaku', loc)
@@ -209,13 +218,13 @@ export default async function OnsenjPage({
             </div>
             {onsenStatusEnabled && (
               <div className="mt-8 flex justify-center">
-                {onsenStatusClosed ? (
+                {todaysClosure ? (
                   <div className="inline-flex items-center gap-3 bg-[#c0524a] text-white px-6 py-4 rounded-2xl shadow-xl">
                     <span className="text-2xl flex-shrink-0">⚠️</span>
                     <p className="text-sm md:text-base font-bold leading-snug text-left">
                       {loc === 'en'
-                        ? `Bathing is unavailable today due to ${onsenStatusEventName}.`
-                        : `本日　${onsenStatusEventName}の為、ご入浴できません`}
+                        ? `The hot spring is closed today due to ${todaysClosure.name}.`
+                        : `本日は${todaysClosure.name}の為、温泉には入れません`}
                     </p>
                   </div>
                 ) : !onsenWithinHours ? (
@@ -223,7 +232,7 @@ export default async function OnsenjPage({
                     <div className="flex items-center gap-2.5">
                       <span className="text-xl flex-shrink-0">⏰</span>
                       <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
-                        {loc === 'en' ? 'Outside Bathing Hours Today' : '本日は入浴時間外です'}
+                        {loc === 'en' ? 'Hot Spring Closed Now' : '温泉は入れません'}
                       </p>
                     </div>
                     <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
@@ -236,7 +245,7 @@ export default async function OnsenjPage({
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-[#3f8c68]" />
                       </span>
                       <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
-                        {todayLabel}　{loc === 'en' ? 'Hot Spring Open Today' : '温泉営業中'}
+                        {todayLabel}　{loc === 'en' ? 'Hot Spring Open Now' : '温泉はいれます'}
                       </p>
                     </div>
                     <p className="text-xs md:text-sm text-onsenji/70">{onsenStatusHours}</p>
