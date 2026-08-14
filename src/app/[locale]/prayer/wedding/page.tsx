@@ -150,7 +150,7 @@ export default async function WeddingPage({
           </section>
         </div>
 
-        <section className="relative h-72 md:h-[28rem] mt-14">
+        <section className="relative aspect-video mt-14">
           <YouTubeAutoplay videoId="pUFUncoIL08" alt={t('title')} />
         </section>
         <p className="max-w-3xl mx-auto px-4 text-right text-[11px] text-gray-400 mb-14">提供 J&apos;S ACUL様</p>

@@ -399,7 +399,7 @@ export default async function HomePage({
           <div className="max-w-5xl mx-auto px-4">
             <h2 className="section-title">{t('galleryHeading')}</h2>
             <div className="section-divider" />
-            <div className="rounded-xl overflow-hidden shadow-sm mb-4 h-72 md:h-[26rem]">
+            <div className="rounded-xl overflow-hidden shadow-sm mb-4 aspect-video">
               <YouTubeAutoplay videoId="LkCwCjWsjUM" alt={t('galleryHeading')} className="h-full" />
             </div>
             <ChuzenjiGallery slides={gallerySlides} />
