@@ -129,6 +129,20 @@ export default function AdminApplicationsPage() {
               <dt className="text-gray-500 text-xs">メール</dt>
               <dd><a href={`mailto:${selected.email}`} className="text-navy underline">{selected.email}</a></dd>
               <dt className="text-gray-500 text-xs">電話番号</dt><dd>{selected.phone || '（未入力）'}</dd>
+              {selected.company_name && (<><dt className="text-gray-500 text-xs">会社名・団体名</dt><dd>{selected.company_name}</dd></>)}
+              {selected.contact_kana && (<><dt className="text-gray-500 text-xs">フリガナ</dt><dd>{selected.contact_kana}</dd></>)}
+              {selected.postal_code && (<><dt className="text-gray-500 text-xs">郵便番号</dt><dd>{selected.postal_code}</dd></>)}
+              {(selected.address || selected.address_detail) && (
+                <><dt className="text-gray-500 text-xs">ご住所</dt><dd>{[selected.address, selected.address_detail].filter(Boolean).join(' ')}</dd></>
+              )}
+              {selected.mobile && (<><dt className="text-gray-500 text-xs">携帯電話</dt><dd>{selected.mobile}</dd></>)}
+              {selected.fax && (<><dt className="text-gray-500 text-xs">FAX番号</dt><dd>{selected.fax}</dd></>)}
+              {selected.attachment_url && (
+                <><dt className="text-gray-500 text-xs">添付ファイル</dt>
+                <dd><a href={selected.attachment_url} target="_blank" rel="noopener" className="text-navy underline">
+                  📎 {selected.attachment_filename || 'ファイルを開く'}
+                </a></dd></>
+              )}
               {selected.photo_ref && (
                 <>
                   <dt className="text-gray-500 text-xs">対象写真</dt>
@@ -154,6 +168,23 @@ export default function AdminApplicationsPage() {
             <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap mb-4">
               {selected.message}
             </div>
+
+            {((selected.media_categories?.length ?? 0) > 0 || (selected.interview_formats?.length ?? 0) > 0) && (
+              <div className="mb-4 bg-blue-50 rounded p-4 text-sm space-y-1.5">
+                <p className="font-medium text-navy text-xs mb-2">メディア・取材情報</p>
+                {(selected.media_categories?.length ?? 0) > 0 && <p><span className="text-gray-500">メディアカテゴリ：</span>{selected.media_categories!.join('、')}</p>}
+                {selected.media_name && <p><span className="text-gray-500">メディア名・番組名：</span>{selected.media_name}</p>}
+                {selected.media_content && <p><span className="text-gray-500">掲載・企画内容：</span>{selected.media_content}</p>}
+                {selected.publish_date && <p><span className="text-gray-500">発行・オンエア予定日：</span>{selected.publish_date}</p>}
+                {(selected.interview_formats?.length ?? 0) > 0 && <p><span className="text-gray-500">取材形式：</span>{selected.interview_formats!.join('、')}</p>}
+                {selected.preferred_date_1 && <p><span className="text-gray-500">希望日時（第一）：</span>{selected.preferred_date_1} {selected.preferred_time_1}</p>}
+                {selected.preferred_date_2 && <p><span className="text-gray-500">希望日時（第二）：</span>{selected.preferred_date_2} {selected.preferred_time_2}</p>}
+                {selected.preferred_date_3 && <p><span className="text-gray-500">希望日時（第三）：</span>{selected.preferred_date_3} {selected.preferred_time_3}</p>}
+                {selected.attendee_count && <p><span className="text-gray-500">当日取材人数：</span>{selected.attendee_count}名様</p>}
+                {selected.duration_minutes && <p><span className="text-gray-500">予定所要時間：</span>{selected.duration_minutes}分</p>}
+                {selected.request_notes && <p><span className="text-gray-500">ご要望・ご質問：</span>{selected.request_notes}</p>}
+              </div>
+            )}
 
             <div className="mb-4">
               <p className="text-xs text-gray-500 mb-2">担当者</p>

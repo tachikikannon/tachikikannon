@@ -245,4 +245,41 @@ export interface Application {
   auto_reply_sent: boolean
   updated_at: string
   created_at: string
+  company_name: string | null
+  contact_kana: string | null
+  postal_code: string | null
+  address: string | null
+  address_detail: string | null
+  mobile: string | null
+  fax: string | null
+  attachment_url: string | null
+  attachment_filename: string | null
+  media_categories: string[] | null
+  media_name: string | null
+  media_content: string | null
+  publish_date: string | null
+  interview_formats: string[] | null
+  preferred_date_1: string | null
+  preferred_time_1: string | null
+  preferred_date_2: string | null
+  preferred_time_2: string | null
+  preferred_date_3: string | null
+  preferred_time_3: string | null
+  attendee_count: string | null
+  duration_minutes: string | null
+  request_notes: string | null
 }
+
+export const MEDIA_CATEGORIES = [
+  '一般書籍・雑誌', 'テレビ', 'ラジオ', 'WEBメディア', '新聞', '映画',
+  'DVD', 'フリーペーパー', 'パンフレット', '広報誌', '教科書・教材', '官公庁', 'その他',
+] as const
+
+export const INTERVIEW_FORMATS = [
+  '撮影', '手持ち写真を使用', '原稿確認', 'インタビュー', '電話取材', '写真貸し出し', '動画貸し出し',
+] as const
+
+export const TIME_SLOTS = [
+  '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
+  '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
+] as const
