@@ -436,7 +436,7 @@ export default function ApplyForm() {
 
             <div>
               <label className="admin-label">{(isGroupReservation || isFeeReduction) ? t('summaryLabel') : t('messageLabel')}</label>
-              <textarea required className="admin-input min-h-[150px]" placeholder={(isGroupReservation || isFeeReduction) ? '' : t('messagePlaceholder')}
+              <textarea className="admin-input min-h-[150px]" placeholder={(isGroupReservation || isFeeReduction) ? '' : t('messagePlaceholder')}
                 value={form.message} onChange={e => update('message', e.target.value)} />
             </div>
             {formError && <p className="text-red-600 text-sm">{formError}</p>}
@@ -451,7 +451,7 @@ export default function ApplyForm() {
             <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
             <p className="text-sm text-gray-500">{t('confirmNote')}</p>
             <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
-              {[...confirmRows, ...mediaRows, ...groupFeeRows, [isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]].map(([label, value]) => (
+              {[...confirmRows, ...mediaRows, ...groupFeeRows, ...(form.message ? [[isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]] : [])].map(([label, value]) => (
                 <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
                   <dt className="text-gray-500">{label}</dt>
                   <dd className="whitespace-pre-wrap">{value}</dd>
