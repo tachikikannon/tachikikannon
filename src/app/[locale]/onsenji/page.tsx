@@ -59,6 +59,10 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_hero_sub_en: 'A branch temple of the World Heritage site Nikkozan Rinnoji. The protection of Yakushi Nyorai, and the healing of hot spring water from the earth.',
   onsenji_onsen_status_enabled: 'true',
+  onsenji_onsen_status_open_label: '温泉入れます',
+  onsenji_onsen_status_open_label_en: 'Hot Spring Open Now',
+  onsenji_onsen_status_closed_time_label: '温泉入れません',
+  onsenji_onsen_status_closed_time_label_en: 'Hot Spring Closed Now',
   onsenji_onsen_status_open_time: '09:00',
   onsenji_onsen_status_close_time: '16:00',
   onsenji_onsen_closure_events: '[]',
@@ -155,6 +159,8 @@ export default async function OnsenjPage({
   const heroTitle = getLocalizedContent(c, 'onsenji_hero_title', loc)
   const heroSub = getLocalizedContent(c, 'onsenji_hero_sub', loc)
   const onsenStatusEnabled = c['onsenji_onsen_status_enabled'] !== 'false'
+  const onsenStatusOpenLabel = getLocalizedContent(c, 'onsenji_onsen_status_open_label', loc)
+  const onsenStatusClosedTimeLabel = getLocalizedContent(c, 'onsenji_onsen_status_closed_time_label', loc)
   const closureEvents = pj<ClosureEvent[]>(getLocalizedContent(c, 'onsenji_onsen_closure_events', loc), [])
   const todayISO = jstDateISO()
   const todaysClosure = closureEvents.find(e => e.date === todayISO)
@@ -232,7 +238,7 @@ export default async function OnsenjPage({
                     <div className="flex items-center gap-2.5">
                       <span className="text-xl flex-shrink-0">⏰</span>
                       <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
-                        {loc === 'en' ? 'Hot Spring Closed Now' : '温泉は入れません'}
+                        {onsenStatusClosedTimeLabel}
                       </p>
                     </div>
                     <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
@@ -245,7 +251,7 @@ export default async function OnsenjPage({
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-[#3f8c68]" />
                       </span>
                       <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
-                        {todayLabel}　{loc === 'en' ? 'Hot Spring Open Now' : '温泉はいれます'}
+                        {todayLabel}　{onsenStatusOpenLabel}
                       </p>
                     </div>
                     <p className="text-xs md:text-sm text-onsenji/70">{onsenStatusHours}</p>
