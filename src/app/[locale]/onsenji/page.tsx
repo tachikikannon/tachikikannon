@@ -185,20 +185,29 @@ export default async function OnsenjPage({
               </Link>
             </div>
             {onsenStatusEnabled && (
-              <div className="mt-6 text-center">
+              <div className="mt-8 flex justify-center">
                 {onsenStatusClosed ? (
-                  <p className="text-white text-sm font-medium">
-                    {loc === 'en'
-                      ? `Bathing is unavailable today due to ${onsenStatusEventName}.`
-                      : `本日　${onsenStatusEventName}の為、ご入浴できません`}
-                  </p>
-                ) : (
-                  <>
-                    <p className="text-white text-sm font-medium">
-                      {todayLabel}　{loc === 'en' ? 'Hot Spring Open Today' : '温泉営業中'}
+                  <div className="inline-flex items-center gap-3 bg-[#c0524a] text-white px-6 py-4 rounded-2xl shadow-xl">
+                    <span className="text-2xl flex-shrink-0">⚠️</span>
+                    <p className="text-sm md:text-base font-bold leading-snug text-left">
+                      {loc === 'en'
+                        ? `Bathing is unavailable today due to ${onsenStatusEventName}.`
+                        : `本日　${onsenStatusEventName}の為、ご入浴できません`}
                     </p>
-                    <p className="text-white/60 text-xs mt-1">{onsenStatusHours}</p>
-                  </>
+                  </div>
+                ) : (
+                  <div className="inline-flex flex-col items-center gap-1.5 bg-white text-onsenji px-8 py-5 rounded-2xl shadow-xl">
+                    <div className="flex items-center gap-2.5">
+                      <span className="relative flex h-3 w-3 flex-shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7ec8a4] opacity-75" />
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#3f8c68]" />
+                      </span>
+                      <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
+                        {todayLabel}　{loc === 'en' ? 'Hot Spring Open Today' : '温泉営業中'}
+                      </p>
+                    </div>
+                    <p className="text-xs md:text-sm text-onsenji/70">{onsenStatusHours}</p>
+                  </div>
                 )}
               </div>
             )}
