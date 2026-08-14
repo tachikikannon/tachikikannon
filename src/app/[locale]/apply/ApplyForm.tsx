@@ -20,6 +20,8 @@ const EMPTY_FORM = {
   preferred_date_2: '', preferred_time_2: '',
   preferred_date_3: '', preferred_time_3: '',
   attendee_count: '', duration_minutes: '', request_notes: '',
+  visit_date: '', group_name: '', course_number: '',
+  adult_count: '', child_count: '', student_count: '', school_or_company: '',
   message: '',
 }
 
@@ -37,8 +39,9 @@ export default function ApplyForm() {
 
   const CATEGORY_LABELS: Record<string, string> = {
     '写真使用・貸出し許可申請': t('categoryPhoto'),
-    '境内撮影許可申請': t('categoryPhotography'),
-    '取材・取材協力依頼': t('categoryPress'),
+    '撮影・取材申請': t('categoryPress'),
+    '団体予約申請': t('categoryGroupReservation'),
+    '減免申請': t('categoryFeeReduction'),
     'その他': t('categoryOther'),
   }
   const MEDIA_CATEGORY_LABELS: Record<string, string> = {
@@ -68,7 +71,9 @@ export default function ApplyForm() {
   const [attachmentError, setAttachmentError] = useState('')
   const [photoMedia, setPhotoMedia] = useState<Media[]>([])
 
-  const isPress = form.category === '取材・取材協力依頼'
+  const isPress = form.category === '撮影・取材申請'
+  const isGroupReservation = form.category === '団体予約申請'
+  const isFeeReduction = form.category === '減免申請'
 
   useEffect(() => {
     const ids = form.photo_ref.split(',').map(s => s.trim()).filter(Boolean)
@@ -174,6 +179,15 @@ export default function ApplyForm() {
     ...(form.duration_minutes ? [[t('durationLabel'), `${form.duration_minutes}${t('durationSuffix')}`] as [string, string]] : []),
     ...(form.request_notes ? [[t('requestNotesLabel'), form.request_notes] as [string, string]] : []),
   ] : []
+  const groupFeeRows: [string, string][] = (isGroupReservation || isFeeReduction) ? [
+    [t('visitDateLabel'), form.visit_date],
+    ...(isFeeReduction && form.school_or_company ? [[t('schoolOrCompanyLabel'), form.school_or_company] as [string, string]] : []),
+    [t('groupNameLabel'), form.group_name],
+    ...(isGroupReservation && form.course_number ? [[t('courseNumberLabel'), form.course_number] as [string, string]] : []),
+    [t('adultCountLabel'), `${form.adult_count}${t('attendeeCountSuffix')}`],
+    ...(isGroupReservation && form.child_count ? [[t('childCountLabel'), `${form.child_count}${t('attendeeCountSuffix')}`] as [string, string]] : []),
+    ...(isFeeReduction && form.student_count ? [[t('studentCountLabel'), `${form.student_count}${t('attendeeCountSuffix')}`] as [string, string]] : []),
+  ] : []
 
   return (
     <main className="pt-24 pb-16 px-4">
@@ -267,6 +281,61 @@ export default function ApplyForm() {
               <input className="admin-input" value={form.fax} onChange={e => update('fax', e.target.value)} />
             </div>
 
+            {(isGroupReservation || isFeeReduction) && (
+              <div className="space-y-5 border-t border-gray-200 pt-6">
+                <h2 className="font-serif text-navy text-lg">
+                  {isGroupReservation ? t('sectionGroupReservationHeading') : t('sectionFeeReductionHeading')}
+                </h2>
+                <div>
+                  <label className="admin-label">{t('visitDateLabel')}</label>
+                  <input type="date" required className="admin-input" value={form.visit_date} onChange={e => update('visit_date', e.target.value)} />
+                  {isGroupReservation && <p className="text-xs text-gray-400 mt-1">{t('visitDateNote')}</p>}
+                </div>
+                {isFeeReduction && (
+                  <div>
+                    <label className="admin-label">{t('schoolOrCompanyLabel')}</label>
+                    <input required className="admin-input" value={form.school_or_company} onChange={e => update('school_or_company', e.target.value)} />
+                  </div>
+                )}
+                <div>
+                  <label className="admin-label">{t('groupNameLabel')}</label>
+                  <input required className="admin-input" value={form.group_name} onChange={e => update('group_name', e.target.value)} />
+                </div>
+                {isGroupReservation && (
+                  <div>
+                    <label className="admin-label">{t('courseNumberLabel')}</label>
+                    <input className="admin-input" value={form.course_number} onChange={e => update('course_number', e.target.value)} />
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="admin-label">{t('adultCountLabel')}</label>
+                    <div className="flex items-center gap-2">
+                      <input required inputMode="numeric" className="admin-input" value={form.adult_count} onChange={e => update('adult_count', e.target.value)} />
+                      <span className="text-sm text-gray-500 whitespace-nowrap">{t('attendeeCountSuffix')}</span>
+                    </div>
+                  </div>
+                  {isGroupReservation ? (
+                    <div>
+                      <label className="admin-label">{t('childCountLabel')}</label>
+                      <div className="flex items-center gap-2">
+                        <input inputMode="numeric" className="admin-input" value={form.child_count} onChange={e => update('child_count', e.target.value)} />
+                        <span className="text-sm text-gray-500 whitespace-nowrap">{t('attendeeCountSuffix')}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="admin-label">{t('studentCountLabel')}</label>
+                      <div className="flex items-center gap-2">
+                        <input inputMode="numeric" className="admin-input" value={form.student_count} onChange={e => update('student_count', e.target.value)} />
+                        <span className="text-sm text-gray-500 whitespace-nowrap">{t('attendeeCountSuffix')}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {isPress && (
               <div className="space-y-5 border-t border-gray-200 pt-6">
                 <h2 className="font-serif text-navy text-lg">{t('sectionMediaHeading')}</h2>
@@ -348,8 +417,8 @@ export default function ApplyForm() {
             )}
 
             <div className="border-t border-gray-200 pt-6">
-              <label className="admin-label">{t('attachmentLabel')}</label>
-              <p className="text-xs text-gray-400 mb-2">{t('attachmentHint')}</p>
+              <label className="admin-label">{isGroupReservation ? t('itineraryLabel') : t('attachmentLabel')}</label>
+              {!isGroupReservation && <p className="text-xs text-gray-400 mb-2">{t('attachmentHint')}</p>}
               {form.attachment_filename ? (
                 <div className="flex items-center gap-3 bg-cream-alt rounded-lg px-4 py-3 text-sm">
                   <span className="text-navy">✓ {form.attachment_filename}</span>
@@ -366,7 +435,7 @@ export default function ApplyForm() {
             </div>
 
             <div>
-              <label className="admin-label">{t('messageLabel')}</label>
+              <label className="admin-label">{(isGroupReservation || isFeeReduction) ? t('summaryLabel') : t('messageLabel')}</label>
               <textarea required className="admin-input min-h-[150px]" placeholder={t('messagePlaceholder')}
                 value={form.message} onChange={e => update('message', e.target.value)} />
             </div>
@@ -382,7 +451,7 @@ export default function ApplyForm() {
             <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
             <p className="text-sm text-gray-500">{t('confirmNote')}</p>
             <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
-              {[...confirmRows, ...mediaRows, [t('messageLabel'), form.message] as [string, string]].map(([label, value]) => (
+              {[...confirmRows, ...mediaRows, ...groupFeeRows, [isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]].map(([label, value]) => (
                 <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
                   <dt className="text-gray-500">{label}</dt>
                   <dd className="whitespace-pre-wrap">{value}</dd>

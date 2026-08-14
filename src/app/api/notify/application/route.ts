@@ -15,6 +15,7 @@ export async function POST(req: Request) {
       media_categories, media_name, media_content, publish_date, interview_formats,
       preferred_date_1, preferred_time_1, preferred_date_2, preferred_time_2,
       preferred_date_3, preferred_time_3, attendee_count, duration_minutes, request_notes,
+      visit_date, group_name, course_number, adult_count, child_count, student_count, school_or_company,
     } = body
     const toEmail = process.env.NOTIFY_EMAIL!
     const adminUrl = `${process.env.SITE_URL ?? ''}/admin/applications`
@@ -39,6 +40,13 @@ export async function POST(req: Request) {
       attendee_count && ['当日取材人数', `${attendee_count}名様`],
       duration_minutes && ['予定所要時間', `${duration_minutes}分`],
       request_notes && ['ご要望・ご質問', request_notes],
+      visit_date && ['参拝日', visit_date],
+      school_or_company && ['学校名・会社名・個人', school_or_company],
+      group_name && ['団体名', group_name],
+      course_number && ['コース番号', course_number],
+      adult_count && ['大人人数', `${adult_count}名`],
+      child_count && ['子供人数', `${child_count}名`],
+      student_count && ['小中学生人数', `${student_count}名`],
     ].filter(Boolean) as [string, string][]
     const extraRowsHtml = extraRows.map(([label, value]) =>
       `<tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">${label}</th><td style="padding:8px 12px;border-bottom:1px solid #eee;white-space:pre-wrap;">${value}</td></tr>`

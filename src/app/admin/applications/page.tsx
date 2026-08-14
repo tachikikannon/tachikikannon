@@ -187,6 +187,19 @@ export default function AdminApplicationsPage() {
               </div>
             )}
 
+            {(selected.visit_date || selected.group_name) && (
+              <div className="mb-4 bg-green-50 rounded p-4 text-sm space-y-1.5">
+                <p className="font-medium text-navy text-xs mb-2">団体予約・減免申請情報</p>
+                {selected.visit_date && <p><span className="text-gray-500">参拝日：</span>{selected.visit_date}</p>}
+                {selected.school_or_company && <p><span className="text-gray-500">学校名・会社名・個人：</span>{selected.school_or_company}</p>}
+                {selected.group_name && <p><span className="text-gray-500">団体名：</span>{selected.group_name}</p>}
+                {selected.course_number && <p><span className="text-gray-500">コース番号：</span>{selected.course_number}</p>}
+                {selected.adult_count && <p><span className="text-gray-500">大人：</span>{selected.adult_count}名</p>}
+                {selected.child_count && <p><span className="text-gray-500">子供：</span>{selected.child_count}名</p>}
+                {selected.student_count && <p><span className="text-gray-500">小中学生：</span>{selected.student_count}名</p>}
+              </div>
+            )}
+
             <div className="mb-4">
               <p className="text-xs text-gray-500 mb-2">担当者</p>
               <div className="flex items-center gap-3 flex-wrap">

@@ -222,8 +222,9 @@ export interface Media {
 
 export const APPLICATION_CATEGORIES = [
   '写真使用・貸出し許可申請',
-  '境内撮影許可申請',
-  '取材・取材協力依頼',
+  '撮影・取材申請',
+  '団体予約申請',
+  '減免申請',
   'その他',
 ] as const
 export type ApplicationCategory = typeof APPLICATION_CATEGORIES[number]
@@ -268,6 +269,13 @@ export interface Application {
   attendee_count: string | null
   duration_minutes: string | null
   request_notes: string | null
+  visit_date: string | null
+  group_name: string | null
+  course_number: string | null
+  adult_count: string | null
+  child_count: string | null
+  student_count: string | null
+  school_or_company: string | null
 }
 
 export const MEDIA_CATEGORIES = [
