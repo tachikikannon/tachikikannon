@@ -49,13 +49,26 @@ export default async function FooterOnsenji() {
               <li><a href="https://www.rinnoji.or.jp/" target="_blank" rel="noopener" className="hover:text-[#7ec8a4] transition-colors">輪王寺 公式サイト</a></li>
               <li><a href="https://www.nikkoyumoto.com/" target="_blank" rel="noopener" className="hover:text-[#7ec8a4] transition-colors">奥日光湯元温泉旅館協同組合</a></li>
             </ul>
+            <h4 className="text-[#7ec8a4] text-xs tracking-widest mt-5 mb-3">各種申請</h4>
+            <ul className="space-y-2 text-sm">
+              {[
+                ['団体予約', '団体予約申請'],
+                ['減免申請', '減免申請'],
+                ['写真貸出', '写真使用・貸出し許可申請'],
+                ['取材', '撮影・取材申請'],
+              ].map(([l, category]) => (
+                <li key={category}><Link href={`/onsenji/apply?category=${encodeURIComponent(category)}`} className="hover:text-[#7ec8a4] transition-colors">{l}</Link></li>
+              ))}
+            </ul>
+            <h4 className="text-[#7ec8a4] text-xs tracking-widest mt-5 mb-3">お問い合わせ</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/onsenji/contact" className="hover:text-[#7ec8a4] transition-colors">お問い合わせフォーム</Link></li>
+            </ul>
           </div>
         </div>
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
           <ul className="flex gap-4">
             <li><Link href="/privacy" className="hover:text-[#7ec8a4] transition-colors">プライバシーポリシー</Link></li>
-            <li><Link href="/onsenji/contact" className="hover:text-[#7ec8a4] transition-colors">お問い合わせ</Link></li>
-            <li><Link href="/onsenji/apply" className="hover:text-[#7ec8a4] transition-colors">各種申請のお問い合わせ</Link></li>
           </ul>
           <p>&copy; {new Date().getFullYear()} 日光山 温泉寺. All Rights Reserved.</p>
         </div>

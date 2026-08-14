@@ -45,17 +45,30 @@ export default async function Footer() {
             <ul className="space-y-2 text-sm">
               <li><a href="https://chuzenji.official.ec/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">授与品・通販サイト</a></li>
             </ul>
+            <h4 className="text-gold text-xs tracking-widest mt-5 mb-3">各種申請</h4>
+            <ul className="space-y-2 text-sm">
+              {[
+                ['団体予約', '団体予約申請'],
+                ['減免申請', '減免申請'],
+                ['写真貸出', '写真使用・貸出し許可申請'],
+                ['取材', '撮影・取材申請'],
+              ].map(([l, category]) => (
+                <li key={category}><Link href={`/apply?category=${encodeURIComponent(category)}`} className="hover:text-gold transition-colors">{l}</Link></li>
+              ))}
+            </ul>
             <h4 className="text-gold text-xs tracking-widest mt-5 mb-3">輪王寺関連</h4>
             <ul className="space-y-2 text-sm">
               <li><a href="https://www.rinnoji.or.jp/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">輪王寺 公式サイト</a></li>
+            </ul>
+            <h4 className="text-gold text-xs tracking-widest mt-5 mb-3">お問い合わせ</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/contact" className="hover:text-gold transition-colors">お問い合わせフォーム</Link></li>
             </ul>
           </div>
         </div>
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
           <ul className="flex gap-4">
             <li><Link href="/privacy" className="hover:text-gold transition-colors">プライバシーポリシー</Link></li>
-            <li><Link href="/contact" className="hover:text-gold transition-colors">お問い合わせ</Link></li>
-            <li><Link href="/apply" className="hover:text-gold transition-colors">各種申請のお問い合わせ</Link></li>
           </ul>
           <p>&copy; {new Date().getFullYear()} 日光山中禅寺 立木観音. All Rights Reserved.</p>
         </div>
