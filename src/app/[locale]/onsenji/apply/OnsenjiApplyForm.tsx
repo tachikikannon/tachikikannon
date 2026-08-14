@@ -436,7 +436,7 @@ export default function OnsenjiApplyForm() {
 
             <div>
               <label className="admin-label">{(isGroupReservation || isFeeReduction) ? t('summaryLabel') : t('messageLabel')}</label>
-              <textarea required className="admin-input min-h-[150px]" placeholder={t('messagePlaceholder')}
+              <textarea required className="admin-input min-h-[150px]" placeholder={(isGroupReservation || isFeeReduction) ? '' : t('messagePlaceholder')}
                 value={form.message} onChange={e => update('message', e.target.value)} />
             </div>
             {formError && <p className="text-red-600 text-sm">{formError}</p>}

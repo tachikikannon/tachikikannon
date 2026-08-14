@@ -283,7 +283,7 @@
     "studentCountLabel": "Number of People (Elementary/Junior High Students, optional)",
     "schoolOrCompanyLabel": "School / Company / Individual (please fill in whichever applies)",
     "itineraryLabel": "Itinerary (PDF)",
-    "summaryLabel": "Summary of Request",
+    "summaryLabel": "Remarks",
     "sectionGroupReservationHeading": "Group Reservation Details",
     "sectionFeeReductionHeading": "Fee Reduction Details"
   },
@@ -894,7 +894,7 @@
     "studentCountLabel": "Number of People (Elementary/Junior High Students, optional)",
     "schoolOrCompanyLabel": "School / Company / Individual (please fill in whichever applies)",
     "itineraryLabel": "Itinerary (PDF)",
-    "summaryLabel": "Summary of Request",
+    "summaryLabel": "Remarks",
     "sectionGroupReservationHeading": "Group Reservation Details",
     "sectionFeeReductionHeading": "Fee Reduction Details"
   },
