@@ -73,12 +73,12 @@ const DEFAULTS: Record<string, string> = {
 }
 
 const GALLERY_IMAGES = [
-  '/images/温泉寺法楽/yakusyo-onsen1 (1).JPEG',
-  '/images/温泉寺法楽/yakusyo-onsen1 (2).JPEG',
-  '/images/温泉寺法楽/yakusyo-onsen1 (3).JPEG',
-  '/images/温泉寺法楽/yakusyo-onsen1 (4).JPEG',
-  '/images/温泉寺法楽/yakusyo-onsen1 (5).JPEG',
-  '/images/温泉寺法楽/yakusyo-onsen1 (6).JPEG',
+  '/images/onsenji/events/yakushiko/yakusyo-onsen1 (1).JPEG',
+  '/images/onsenji/events/yakushiko/yakusyo-onsen1 (2).JPEG',
+  '/images/onsenji/events/yakushiko/yakusyo-onsen1 (3).JPEG',
+  '/images/onsenji/events/yakushiko/yakusyo-onsen1 (4).JPEG',
+  '/images/onsenji/events/yakushiko/yakusyo-onsen1 (5).JPEG',
+  '/images/onsenji/events/yakushiko/yakusyo-onsen1 (6).JPEG',
 ]
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -124,7 +124,7 @@ export default async function YakushikoPage({
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <ZoomableImage src="/images/温泉寺法楽/saitougoma-onsen.JPEG" alt={t('title')} fill className="object-cover" />
+          <ZoomableImage src="/images/onsenji/events/yakushiko/saitougoma-onsen.JPEG" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-onsenji via-onsenji/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">{t('eraLabel')}</p>

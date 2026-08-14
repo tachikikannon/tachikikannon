@@ -150,7 +150,7 @@ export default async function OnsenjPage({
         {/* ヒーロー */}
         <section className="relative h-[calc(var(--vh,1svh)*85)] min-h-[500px] flex items-center justify-center overflow-hidden bg-onsenji">
           <div className="absolute inset-0 opacity-30">
-            <ZoomableImage src="/images/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
+            <ZoomableImage src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-onsenji/60 via-onsenji/30 to-onsenji/80" />
           <div className="relative text-center px-4 text-white">
@@ -223,10 +223,10 @@ export default async function OnsenjPage({
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { img: '/images/yakusido.png', href: '/onsenji/history' },
-                { img: '/images/onsenmado.png', href: '/onsenji/about#hours' },
-                { img: '/images/onsenji-gaikan.png', href: '/onsenji/grounds' },
-                { img: '/images/温泉寺法楽/saitougoma-onsen.JPEG', href: '/onsenji/events' },
+                { img: '/images/onsenji/hero/yakusido.png', href: '/onsenji/history' },
+                { img: '/images/onsenji/hero/onsenmado.png', href: '/onsenji/about#hours' },
+                { img: '/images/onsenji/common/onsenji-gaikan.png', href: '/onsenji/grounds' },
+                { img: '/images/onsenji/events/yakushiko/saitougoma-onsen.JPEG', href: '/onsenji/events' },
               ].map(({ img, href }, i) => (
                 <a key={href} href={href}
                   className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 flex flex-col group">
@@ -274,9 +274,9 @@ export default async function OnsenjPage({
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { src: '/images/onsen.png', sub: 'Onsen', href: '/onsenji/onsen' },
-              { src: '/images/onsenji-shakyou-card-wide.png', sub: 'Shakyou', href: '/onsenji/experience/shakyou' },
-              { src: '/images/onsenji-shabutu-card-wide.png', sub: 'Shabutu', href: '/onsenji/experience/shabutu' },
+              { src: '/images/onsenji/common/onsen.png', sub: 'Onsen', href: '/onsenji/onsen' },
+              { src: '/images/onsenji/hero/onsenji-shakyou-card-wide.png', sub: 'Shakyou', href: '/onsenji/experience/shakyou' },
+              { src: '/images/onsenji/hero/onsenji-shabutu-card-wide.png', sub: 'Shabutu', href: '/onsenji/experience/shabutu' },
             ].map(({ src, sub, href }, i) => (
               <Link key={href} href={href}
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1">

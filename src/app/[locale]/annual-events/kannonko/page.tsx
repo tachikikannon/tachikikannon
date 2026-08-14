@@ -72,12 +72,12 @@ const DEFAULTS: Record<string, string> = {
 }
 
 const GALLERY_IMAGES = [
-  '/images/観音講/1.kannonkou.JPEG',
-  '/images/観音講/2.kannonkou.JPEG',
-  '/images/観音講/3.kannonkou.JPEG',
-  '/images/観音講/4.kannonkou.JPEG',
-  '/images/kannonkou-5.JPEG',
-  '/images/kannonkou-6.JPEG',
+  '/images/chuzenji/events/kannonko/1.kannonkou.JPEG',
+  '/images/chuzenji/events/kannonko/2.kannonkou.JPEG',
+  '/images/chuzenji/events/kannonko/3.kannonkou.JPEG',
+  '/images/chuzenji/events/kannonko/4.kannonkou.JPEG',
+  '/images/chuzenji/events/kannonko/kannonkou-5.JPEG',
+  '/images/chuzenji/events/kannonko/kannonkou-6.JPEG',
 ]
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -124,7 +124,7 @@ export default async function KannonkoPage({
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <ZoomableImage src="/images/gyouji.JPEG" alt={t('title')} fill className="object-cover" />
+          <ZoomableImage src="/images/chuzenji/events/gyouji.JPEG" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-2">{t('eraLabel')}</p>

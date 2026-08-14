@@ -124,7 +124,7 @@ export default async function PrayerPage({
           <div className="max-w-3xl mx-auto"><Link href="/">{tc('breadcrumbHome')}</Link> &gt; {t('title')}</div>
         </div>
         <section className="relative h-64 md:h-80">
-          <Image src="/images/gokigan-hiro.png" alt={t('title')} fill priority className="object-cover" />
+          <Image src="/images/chuzenji/prayer/gokigan-hiro.png" alt={t('title')} fill priority className="object-cover" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Gokigan</p>
             <h1 className="font-serif text-4xl text-white tracking-widest">{t('title')}</h1>
@@ -135,7 +135,7 @@ export default async function PrayerPage({
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('prayer_heading_about')}</h2>
             <div className="mt-4 rounded-xl overflow-hidden shadow-sm">
-              <img src="/images/goma.png" alt="御護摩" className="w-full h-auto" />
+              <img src="/images/chuzenji/prayer/goma.png" alt="御護摩" className="w-full h-auto" />
             </div>
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold leading-relaxed text-gray-700">{g('prayer_about')}</div>
           </section>
@@ -196,7 +196,7 @@ export default async function PrayerPage({
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{t('weddingCta')}</h2>
             <Link href="/prayer/wedding" className="group block mt-4 rounded-xl overflow-hidden shadow-sm border-l-4 border-gold relative h-48">
-              <img src="/images/kekkonnsiki-card.png" alt={t('weddingCta')} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              <img src="/images/chuzenji/wedding/kekkonnsiki-card.png" alt={t('weddingCta')} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-3">
                 <p className="text-white text-sm">{t('weddingTeaser')}</p>

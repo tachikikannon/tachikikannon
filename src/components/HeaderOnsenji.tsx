@@ -43,7 +43,7 @@ export default function HeaderOnsenji() {
         <div className="flex items-center gap-1">
           {/* 温泉寺（現在地） */}
           <Link href="/onsenji" className="flex items-center gap-2.5">
-            <Image src="/images/logo-emblem.png" alt="寺紋" width={34} height={34}
+            <Image src="/images/common/logo-emblem.png" alt="寺紋" width={34} height={34}
               className="opacity-90 brightness-0 invert sepia saturate-[3] hue-rotate-[120deg]" />
             <div className="leading-tight">
               <span className="block text-[#7ec8a4] text-[9px] tracking-widest">日光山</span>

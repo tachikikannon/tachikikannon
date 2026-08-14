@@ -78,7 +78,7 @@ export default async function AboutPage({
           <div className="max-w-3xl mx-auto"><Link href="/">{tc('breadcrumbHome')}</Link> &gt; {t('title')}</div>
         </div>
         <section className="relative h-64 md:h-80">
-          <ZoomableImage src="/images/haikan.png" alt={t('title')} fill className="object-cover" />
+          <ZoomableImage src="/images/chuzenji/common/haikan.png" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">{t('title')}</h1>
             <p className="text-white/70 text-sm mt-2">{g('about_subtitle')}</p>
@@ -134,7 +134,7 @@ export default async function AboutPage({
             {[
               { icon: '🗺', label: t('quickAccess'), href: '/#access' },
               { icon: '🙏', label: t('quickPrayer'), href: '/prayer' },
-              { icon: '/images/gosyuin-main.png', label: t('quickGoshuin'), href: '/goshuin' },
+              { icon: '/images/chuzenji/common/gosyuin-main.png', label: t('quickGoshuin'), href: '/goshuin' },
               { icon: '❓', label: t('quickFaq'), href: '/faq' },
             ].map(({ icon, label, href }) => (
               <Link key={href} href={href} className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border shadow-sm hover:bg-navy hover:text-white hover:-translate-y-1 transition-all group">

@@ -18,14 +18,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_FLOW = [
-  { icon: '📿', title: '好きな珠を選ぶ', text: '天然石・天然木をご自由に組み合わせてお選びいただけます。', image: '/images/erabu.jpg' },
-  { icon: '🤲', title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。', image: '/images/tukuru.jpg' },
-  { icon: '🙏', title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。', image: '/images/kitousuru.jpg' },
+  { icon: '📿', title: '好きな珠を選ぶ', text: '天然石・天然木をご自由に組み合わせてお選びいただけます。', image: '/images/chuzenji/experience/jyuzu/erabu.jpg' },
+  { icon: '🤲', title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。', image: '/images/chuzenji/experience/jyuzu/tukuru.jpg' },
+  { icon: '🙏', title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。', image: '/images/chuzenji/experience/jyuzu/kitousuru.jpg' },
 ]
 const DEFAULT_FLOW_EN = [
-  { icon: '📿', title: 'Choose Your Beads', text: 'Freely combine natural stone and wood beads to your liking.', image: '/images/erabu.jpg' },
-  { icon: '🤲', title: 'Make Your Bracelet', text: 'Our staff will guide you carefully, so anyone can make one easily.', image: '/images/tukuru.jpg' },
-  { icon: '🙏', title: 'Blessing', text: 'A priest will bless it, and you can take it home the same day as an omamori charm.', image: '/images/kitousuru.jpg' },
+  { icon: '📿', title: 'Choose Your Beads', text: 'Freely combine natural stone and wood beads to your liking.', image: '/images/chuzenji/experience/jyuzu/erabu.jpg' },
+  { icon: '🤲', title: 'Make Your Bracelet', text: 'Our staff will guide you carefully, so anyone can make one easily.', image: '/images/chuzenji/experience/jyuzu/tukuru.jpg' },
+  { icon: '🙏', title: 'Blessing', text: 'A priest will bless it, and you can take it home the same day as an omamori charm.', image: '/images/chuzenji/experience/jyuzu/kitousuru.jpg' },
 ]
 const DEFAULT_MATERIALS = [
   { name: '天然木', desc: '軽くて使いやすい木の珠。温かみのある手触りが特徴です。' },
@@ -45,7 +45,7 @@ const DEFAULT_SAMPLES_EN = [
   { course: 'Course B', price: '¥4,000', desc: 'A distinctive bracelet mixing natural stone and wood' },
   { course: 'Course C', price: '¥6,000', desc: 'A special bracelet made entirely of natural stone' },
 ]
-const COURSE_IMAGES = ['/images/a-nennjyu.png', '/images/b-nennjyu.png', '/images/c-nennjyu.png']
+const COURSE_IMAGES = ['/images/chuzenji/experience/jyuzu/a-nennjyu.png', '/images/chuzenji/experience/jyuzu/b-nennjyu.png', '/images/chuzenji/experience/jyuzu/c-nennjyu.png']
 const DEFAULT_NOTES = [
   { text: '数珠はすべてブレスレットタイプです。' },
   { text: '参拝料（拝観料）は別途お求めください。' },
@@ -61,80 +61,80 @@ const DEFAULT_NOTES_EN = [
 type Swatch = { name: string; image: string; desc: string }
 
 const DEFAULT_STONE_SWATCHES: Swatch[] = [
-  { name: '水晶', image: '/images/swatches/stone-suisho.png', desc: '浄化作用があり、邪気を払い、災難を防ぐとされる万能の石です。' },
-  { name: '紅水晶', image: '/images/swatches/stone-benisuisho.png', desc: '内面の美しさを輝かせるご利益があるとされています。' },
-  { name: 'ラピスラズリ', image: '/images/swatches/stone-lapis.png', desc: '知性・直観力を高め、幸運を引き寄せるとされています。' },
-  { name: 'アメジスト', image: '/images/swatches/stone-amethyst.png', desc: 'マイナスエネルギーをプラスに導くご利益があるとされる紫の石です。' },
-  { name: 'メノウ', image: '/images/swatches/stone-menou.png', desc: '健康や長寿、子宝をもたらすとされる石です。' },
-  { name: 'ピンクタイガーアイ', image: '/images/swatches/stone-pinktiger.png', desc: '仕事運・恋愛運・金運アップのご利益があるとされています。' },
-  { name: 'ゴールドシルバータイガーアイ', image: '/images/swatches/stone-goldtiger.png', desc: '視野を広げ、正しい判断と行動で成功へと導くとされています。' },
-  { name: 'トラメ石', image: '/images/swatches/stone-torame.png', desc: '決断力・行動力を高めるとされる石です。' },
-  { name: '赤トラメ石', image: '/images/swatches/stone-akatorame.png', desc: '幸運を招き、霊力を授けるとされる石です。' },
-  { name: 'ライトブルータイガーアイ', image: '/images/swatches/stone-lightbluetiger.png', desc: '冷静さや判断力を高めるとされるタイガーアイの一種です。' },
-  { name: 'ミックスタイガーアイ', image: '/images/swatches/stone-mixtiger.png', desc: '成功や勝利、チャンスをつかむご利益があるとされています。' },
-  { name: 'パープルキャッツアイ', image: '/images/swatches/stone-purplecatseye.png', desc: '直感力を研ぎ澄まし、判断力を強めるとされる石です。' },
-  { name: 'ピーチジェイド', image: '/images/swatches/stone-peachjade.png', desc: '心と体のバランスを整えるとされる石です。' },
-  { name: '茶金石', image: '/images/swatches/stone-chakinseki.png', desc: '精神を安定させ、心の疲れを癒すとされる石です。' },
-  { name: '紫金石', image: '/images/swatches/stone-shikinseki.png', desc: '善い人や物、チャンスとの出会いを導くとされる石です。' },
-  { name: 'ハウライト', image: '/images/swatches/stone-howlite.png', desc: '厄除け効果があり、精神の安定・浄化、意志を強くするとされています。' },
-  { name: 'エンジェライト', image: '/images/swatches/stone-angelite.png', desc: 'ネガティブな感情を浄化し、優しさと癒しをもたらすとされています。' },
-  { name: 'カーネリアン', image: '/images/swatches/stone-carnelian.png', desc: '気力アップ・体を丈夫にし、迷いを断ち切るとされる石です。' },
-  { name: 'オニキス', image: '/images/swatches/stone-onyx.png', desc: '邪気祓い・厄除け・魔除けの効果があるとされる石です。' },
-  { name: 'インド翡翠', image: '/images/swatches/stone-indohisui.png', desc: '失った気力を回復させ、強いパワーで物事を成し遂げるとされています。' },
-  { name: 'プラムジェイド', image: '/images/swatches/stone-plumjade.png', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
+  { name: '水晶', image: '/images/chuzenji/experience/jyuzu/swatches/stone-suisho.png', desc: '浄化作用があり、邪気を払い、災難を防ぐとされる万能の石です。' },
+  { name: '紅水晶', image: '/images/chuzenji/experience/jyuzu/swatches/stone-benisuisho.png', desc: '内面の美しさを輝かせるご利益があるとされています。' },
+  { name: 'ラピスラズリ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-lapis.png', desc: '知性・直観力を高め、幸運を引き寄せるとされています。' },
+  { name: 'アメジスト', image: '/images/chuzenji/experience/jyuzu/swatches/stone-amethyst.png', desc: 'マイナスエネルギーをプラスに導くご利益があるとされる紫の石です。' },
+  { name: 'メノウ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-menou.png', desc: '健康や長寿、子宝をもたらすとされる石です。' },
+  { name: 'ピンクタイガーアイ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-pinktiger.png', desc: '仕事運・恋愛運・金運アップのご利益があるとされています。' },
+  { name: 'ゴールドシルバータイガーアイ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-goldtiger.png', desc: '視野を広げ、正しい判断と行動で成功へと導くとされています。' },
+  { name: 'トラメ石', image: '/images/chuzenji/experience/jyuzu/swatches/stone-torame.png', desc: '決断力・行動力を高めるとされる石です。' },
+  { name: '赤トラメ石', image: '/images/chuzenji/experience/jyuzu/swatches/stone-akatorame.png', desc: '幸運を招き、霊力を授けるとされる石です。' },
+  { name: 'ライトブルータイガーアイ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-lightbluetiger.png', desc: '冷静さや判断力を高めるとされるタイガーアイの一種です。' },
+  { name: 'ミックスタイガーアイ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-mixtiger.png', desc: '成功や勝利、チャンスをつかむご利益があるとされています。' },
+  { name: 'パープルキャッツアイ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-purplecatseye.png', desc: '直感力を研ぎ澄まし、判断力を強めるとされる石です。' },
+  { name: 'ピーチジェイド', image: '/images/chuzenji/experience/jyuzu/swatches/stone-peachjade.png', desc: '心と体のバランスを整えるとされる石です。' },
+  { name: '茶金石', image: '/images/chuzenji/experience/jyuzu/swatches/stone-chakinseki.png', desc: '精神を安定させ、心の疲れを癒すとされる石です。' },
+  { name: '紫金石', image: '/images/chuzenji/experience/jyuzu/swatches/stone-shikinseki.png', desc: '善い人や物、チャンスとの出会いを導くとされる石です。' },
+  { name: 'ハウライト', image: '/images/chuzenji/experience/jyuzu/swatches/stone-howlite.png', desc: '厄除け効果があり、精神の安定・浄化、意志を強くするとされています。' },
+  { name: 'エンジェライト', image: '/images/chuzenji/experience/jyuzu/swatches/stone-angelite.png', desc: 'ネガティブな感情を浄化し、優しさと癒しをもたらすとされています。' },
+  { name: 'カーネリアン', image: '/images/chuzenji/experience/jyuzu/swatches/stone-carnelian.png', desc: '気力アップ・体を丈夫にし、迷いを断ち切るとされる石です。' },
+  { name: 'オニキス', image: '/images/chuzenji/experience/jyuzu/swatches/stone-onyx.png', desc: '邪気祓い・厄除け・魔除けの効果があるとされる石です。' },
+  { name: 'インド翡翠', image: '/images/chuzenji/experience/jyuzu/swatches/stone-indohisui.png', desc: '失った気力を回復させ、強いパワーで物事を成し遂げるとされています。' },
+  { name: 'プラムジェイド', image: '/images/chuzenji/experience/jyuzu/swatches/stone-plumjade.png', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
 ]
 const DEFAULT_STONE_SWATCHES_EN: Swatch[] = [
-  { name: 'Crystal', image: '/images/swatches/stone-suisho.png', desc: 'An all-purpose stone said to purify, ward off negative energy, and prevent misfortune.' },
-  { name: 'Rose Quartz', image: '/images/swatches/stone-benisuisho.png', desc: 'Said to bring out inner beauty.' },
-  { name: 'Lapis Lazuli', image: '/images/swatches/stone-lapis.png', desc: 'Said to enhance intelligence and intuition, drawing good fortune.' },
-  { name: 'Amethyst', image: '/images/swatches/stone-amethyst.png', desc: 'A purple stone said to turn negative energy into positive.' },
-  { name: 'Agate', image: '/images/swatches/stone-menou.png', desc: 'Said to bring health, longevity, and blessings of children.' },
-  { name: 'Pink Tiger Eye', image: '/images/swatches/stone-pinktiger.png', desc: 'Said to boost career, romance, and financial fortune.' },
-  { name: 'Gold Silver Tiger Eye', image: '/images/swatches/stone-goldtiger.png', desc: 'Said to broaden perspective and lead to success through sound judgment and action.' },
-  { name: 'Torame Stone', image: '/images/swatches/stone-torame.png', desc: 'Said to strengthen decisiveness and initiative.' },
-  { name: 'Red Torame Stone', image: '/images/swatches/stone-akatorame.png', desc: 'Said to invite good fortune and bestow spiritual power.' },
-  { name: 'Light Blue Tiger Eye', image: '/images/swatches/stone-lightbluetiger.png', desc: 'A type of tiger eye said to enhance calmness and judgment.' },
-  { name: 'Mixed Tiger Eye', image: '/images/swatches/stone-mixtiger.png', desc: 'Said to bring success, victory, and the ability to seize opportunity.' },
-  { name: 'Purple Cat\'s Eye', image: '/images/swatches/stone-purplecatseye.png', desc: 'Said to sharpen intuition and strengthen judgment.' },
-  { name: 'Peach Jade', image: '/images/swatches/stone-peachjade.png', desc: 'Said to balance mind and body.' },
-  { name: 'Bronzite', image: '/images/swatches/stone-chakinseki.png', desc: 'Said to stabilize the spirit and heal mental fatigue.' },
-  { name: 'Purple Sunstone', image: '/images/swatches/stone-shikinseki.png', desc: 'Said to bring encounters with good people, things, and opportunities.' },
-  { name: 'Howlite', image: '/images/swatches/stone-howlite.png', desc: 'Said to ward off misfortune, stabilize and purify the spirit, and strengthen willpower.' },
-  { name: 'Angelite', image: '/images/swatches/stone-angelite.png', desc: 'Said to purify negative emotions and bring gentleness and healing.' },
-  { name: 'Carnelian', image: '/images/swatches/stone-carnelian.png', desc: 'Said to boost vitality, strengthen the body, and cut through hesitation.' },
-  { name: 'Onyx', image: '/images/swatches/stone-onyx.png', desc: 'Said to ward off negative energy and misfortune.' },
-  { name: 'Indian Jade', image: '/images/swatches/stone-indohisui.png', desc: 'Said to restore lost energy and accomplish tasks with strong power.' },
-  { name: 'Plum Jade', image: '/images/swatches/stone-plumjade.png', desc: 'A deeply colored stone said to bring elegance and composure.' },
+  { name: 'Crystal', image: '/images/chuzenji/experience/jyuzu/swatches/stone-suisho.png', desc: 'An all-purpose stone said to purify, ward off negative energy, and prevent misfortune.' },
+  { name: 'Rose Quartz', image: '/images/chuzenji/experience/jyuzu/swatches/stone-benisuisho.png', desc: 'Said to bring out inner beauty.' },
+  { name: 'Lapis Lazuli', image: '/images/chuzenji/experience/jyuzu/swatches/stone-lapis.png', desc: 'Said to enhance intelligence and intuition, drawing good fortune.' },
+  { name: 'Amethyst', image: '/images/chuzenji/experience/jyuzu/swatches/stone-amethyst.png', desc: 'A purple stone said to turn negative energy into positive.' },
+  { name: 'Agate', image: '/images/chuzenji/experience/jyuzu/swatches/stone-menou.png', desc: 'Said to bring health, longevity, and blessings of children.' },
+  { name: 'Pink Tiger Eye', image: '/images/chuzenji/experience/jyuzu/swatches/stone-pinktiger.png', desc: 'Said to boost career, romance, and financial fortune.' },
+  { name: 'Gold Silver Tiger Eye', image: '/images/chuzenji/experience/jyuzu/swatches/stone-goldtiger.png', desc: 'Said to broaden perspective and lead to success through sound judgment and action.' },
+  { name: 'Torame Stone', image: '/images/chuzenji/experience/jyuzu/swatches/stone-torame.png', desc: 'Said to strengthen decisiveness and initiative.' },
+  { name: 'Red Torame Stone', image: '/images/chuzenji/experience/jyuzu/swatches/stone-akatorame.png', desc: 'Said to invite good fortune and bestow spiritual power.' },
+  { name: 'Light Blue Tiger Eye', image: '/images/chuzenji/experience/jyuzu/swatches/stone-lightbluetiger.png', desc: 'A type of tiger eye said to enhance calmness and judgment.' },
+  { name: 'Mixed Tiger Eye', image: '/images/chuzenji/experience/jyuzu/swatches/stone-mixtiger.png', desc: 'Said to bring success, victory, and the ability to seize opportunity.' },
+  { name: 'Purple Cat\'s Eye', image: '/images/chuzenji/experience/jyuzu/swatches/stone-purplecatseye.png', desc: 'Said to sharpen intuition and strengthen judgment.' },
+  { name: 'Peach Jade', image: '/images/chuzenji/experience/jyuzu/swatches/stone-peachjade.png', desc: 'Said to balance mind and body.' },
+  { name: 'Bronzite', image: '/images/chuzenji/experience/jyuzu/swatches/stone-chakinseki.png', desc: 'Said to stabilize the spirit and heal mental fatigue.' },
+  { name: 'Purple Sunstone', image: '/images/chuzenji/experience/jyuzu/swatches/stone-shikinseki.png', desc: 'Said to bring encounters with good people, things, and opportunities.' },
+  { name: 'Howlite', image: '/images/chuzenji/experience/jyuzu/swatches/stone-howlite.png', desc: 'Said to ward off misfortune, stabilize and purify the spirit, and strengthen willpower.' },
+  { name: 'Angelite', image: '/images/chuzenji/experience/jyuzu/swatches/stone-angelite.png', desc: 'Said to purify negative emotions and bring gentleness and healing.' },
+  { name: 'Carnelian', image: '/images/chuzenji/experience/jyuzu/swatches/stone-carnelian.png', desc: 'Said to boost vitality, strengthen the body, and cut through hesitation.' },
+  { name: 'Onyx', image: '/images/chuzenji/experience/jyuzu/swatches/stone-onyx.png', desc: 'Said to ward off negative energy and misfortune.' },
+  { name: 'Indian Jade', image: '/images/chuzenji/experience/jyuzu/swatches/stone-indohisui.png', desc: 'Said to restore lost energy and accomplish tasks with strong power.' },
+  { name: 'Plum Jade', image: '/images/chuzenji/experience/jyuzu/swatches/stone-plumjade.png', desc: 'A deeply colored stone said to bring elegance and composure.' },
 ]
 const DEFAULT_WOOD_SWATCHES: Swatch[] = [
-  { name: 'けやき', image: '/images/swatches/wood-keyaki.png', desc: '古くから神木として親しまれ、成長・発展の象徴とされる木材です。' },
-  { name: '黒檀', image: '/images/swatches/wood-kokutan.png', desc: '高級木材として知られ、魔除け・厄除けのご利益があるとされます。' },
-  { name: '紫檀', image: '/images/swatches/wood-shitan.png', desc: '気品ある紫色が特徴で、健康長寿のご利益があるとされています。' },
-  { name: '星月菩提樹', image: '/images/swatches/wood-hoshizuki.png', desc: '表面の斑点が星と月に見えることからその名がつき、縁結びのご利益で知られます。' },
-  { name: '梅', image: '/images/swatches/wood-ume.png', desc: '「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
-  { name: 'つげ', image: '/images/swatches/wood-tsuge.png', desc: '緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
-  { name: '緑壇', image: '/images/swatches/wood-ryokutan.png', desc: '爽やかな緑色が特徴で、癒やしと安らぎをもたらすとされています。' },
-  { name: '鉄刀木', image: '/images/swatches/wood-tagayasan.png', desc: '硬く丈夫な木質で知られ、魔除け・厄除けのご利益があるとされます。' },
-  { name: 'シャム柿', image: '/images/swatches/wood-shamugaki.png', desc: '縞模様が美しい銘木で、独特の風合いを楽しめる木材です。' },
-  { name: '鉄刀木（ツヤ有）', image: '/images/swatches/wood-tagayasan-tsuya.png', desc: '艶やかに仕上げられた鉄刀木の珠。硬く丈夫な木質で、魔除け・厄除けのご利益があるとされます。' },
-  { name: '梅（ツヤ有）', image: '/images/swatches/wood-ume-tsuya.png', desc: '艶やかに仕上げられた梅の珠。「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
-  { name: 'つげ（ツヤ有）', image: '/images/swatches/wood-tsuge-tsuya.png', desc: '艶やかに仕上げられたつげの珠。緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
-  { name: '椰', image: '/images/swatches/wood-yashi.png', desc: '椰子の実を使った、素朴な模様が魅力の木材です。' },
+  { name: 'けやき', image: '/images/chuzenji/experience/jyuzu/swatches/wood-keyaki.png', desc: '古くから神木として親しまれ、成長・発展の象徴とされる木材です。' },
+  { name: '黒檀', image: '/images/chuzenji/experience/jyuzu/swatches/wood-kokutan.png', desc: '高級木材として知られ、魔除け・厄除けのご利益があるとされます。' },
+  { name: '紫檀', image: '/images/chuzenji/experience/jyuzu/swatches/wood-shitan.png', desc: '気品ある紫色が特徴で、健康長寿のご利益があるとされています。' },
+  { name: '星月菩提樹', image: '/images/chuzenji/experience/jyuzu/swatches/wood-hoshizuki.png', desc: '表面の斑点が星と月に見えることからその名がつき、縁結びのご利益で知られます。' },
+  { name: '梅', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ume.png', desc: '「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
+  { name: 'つげ', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tsuge.png', desc: '緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
+  { name: '緑壇', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ryokutan.png', desc: '爽やかな緑色が特徴で、癒やしと安らぎをもたらすとされています。' },
+  { name: '鉄刀木', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tagayasan.png', desc: '硬く丈夫な木質で知られ、魔除け・厄除けのご利益があるとされます。' },
+  { name: 'シャム柿', image: '/images/chuzenji/experience/jyuzu/swatches/wood-shamugaki.png', desc: '縞模様が美しい銘木で、独特の風合いを楽しめる木材です。' },
+  { name: '鉄刀木（ツヤ有）', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tagayasan-tsuya.png', desc: '艶やかに仕上げられた鉄刀木の珠。硬く丈夫な木質で、魔除け・厄除けのご利益があるとされます。' },
+  { name: '梅（ツヤ有）', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ume-tsuya.png', desc: '艶やかに仕上げられた梅の珠。「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
+  { name: 'つげ（ツヤ有）', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tsuge-tsuya.png', desc: '艶やかに仕上げられたつげの珠。緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
+  { name: '椰', image: '/images/chuzenji/experience/jyuzu/swatches/wood-yashi.png', desc: '椰子の実を使った、素朴な模様が魅力の木材です。' },
 ]
 const DEFAULT_WOOD_SWATCHES_EN: Swatch[] = [
-  { name: 'Zelkova', image: '/images/swatches/wood-keyaki.png', desc: 'Long cherished as a sacred tree, symbolizing growth and development.' },
-  { name: 'Ebony', image: '/images/swatches/wood-kokutan.png', desc: 'A prized luxury wood said to ward off evil and misfortune.' },
-  { name: 'Rosewood', image: '/images/swatches/wood-shitan.png', desc: 'Known for its elegant purple hue and blessings of health and longevity.' },
-  { name: 'Bodhi Seed (Star & Moon)', image: '/images/swatches/wood-hoshizuki.png', desc: 'Named for surface spots resembling stars and the moon, known for blessings of good relationships.' },
-  { name: 'Plum Wood', image: '/images/swatches/wood-ume.png', desc: 'Known as "the first of a hundred flowers," cherished as a tree of good fortune and warding off misfortune.' },
-  { name: 'Boxwood', image: '/images/swatches/wood-tsuge.png', desc: 'A fine, durable wood also used for seals — an auspicious material.' },
-  { name: 'Green Ebony', image: '/images/swatches/wood-ryokutan.png', desc: 'Known for its refreshing green color, said to bring healing and peace.' },
-  { name: 'Tagayasan', image: '/images/swatches/wood-tagayasan.png', desc: 'A hard, durable wood said to ward off evil and misfortune.' },
-  { name: 'Siamese Ebony', image: '/images/swatches/wood-shamugaki.png', desc: 'A prized wood with beautiful striped grain and a distinctive texture.' },
-  { name: 'Tagayasan (Polished)', image: '/images/swatches/wood-tagayasan-tsuya.png', desc: 'Polished tagayasan beads — a hard, durable wood said to ward off evil and misfortune.' },
-  { name: 'Plum Wood (Polished)', image: '/images/swatches/wood-ume-tsuya.png', desc: 'Polished plum wood beads — "the first of a hundred flowers," a tree of good fortune and warding off misfortune.' },
-  { name: 'Boxwood (Polished)', image: '/images/swatches/wood-tsuge-tsuya.png', desc: 'Polished boxwood beads — a fine, durable wood also used for seals, an auspicious material.' },
-  { name: 'Coconut Wood', image: '/images/swatches/wood-yashi.png', desc: 'Made from coconut shell, prized for its rustic, distinctive grain.' },
+  { name: 'Zelkova', image: '/images/chuzenji/experience/jyuzu/swatches/wood-keyaki.png', desc: 'Long cherished as a sacred tree, symbolizing growth and development.' },
+  { name: 'Ebony', image: '/images/chuzenji/experience/jyuzu/swatches/wood-kokutan.png', desc: 'A prized luxury wood said to ward off evil and misfortune.' },
+  { name: 'Rosewood', image: '/images/chuzenji/experience/jyuzu/swatches/wood-shitan.png', desc: 'Known for its elegant purple hue and blessings of health and longevity.' },
+  { name: 'Bodhi Seed (Star & Moon)', image: '/images/chuzenji/experience/jyuzu/swatches/wood-hoshizuki.png', desc: 'Named for surface spots resembling stars and the moon, known for blessings of good relationships.' },
+  { name: 'Plum Wood', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ume.png', desc: 'Known as "the first of a hundred flowers," cherished as a tree of good fortune and warding off misfortune.' },
+  { name: 'Boxwood', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tsuge.png', desc: 'A fine, durable wood also used for seals — an auspicious material.' },
+  { name: 'Green Ebony', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ryokutan.png', desc: 'Known for its refreshing green color, said to bring healing and peace.' },
+  { name: 'Tagayasan', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tagayasan.png', desc: 'A hard, durable wood said to ward off evil and misfortune.' },
+  { name: 'Siamese Ebony', image: '/images/chuzenji/experience/jyuzu/swatches/wood-shamugaki.png', desc: 'A prized wood with beautiful striped grain and a distinctive texture.' },
+  { name: 'Tagayasan (Polished)', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tagayasan-tsuya.png', desc: 'Polished tagayasan beads — a hard, durable wood said to ward off evil and misfortune.' },
+  { name: 'Plum Wood (Polished)', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ume-tsuya.png', desc: 'Polished plum wood beads — "the first of a hundred flowers," a tree of good fortune and warding off misfortune.' },
+  { name: 'Boxwood (Polished)', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tsuge-tsuya.png', desc: 'Polished boxwood beads — a fine, durable wood also used for seals, an auspicious material.' },
+  { name: 'Coconut Wood', image: '/images/chuzenji/experience/jyuzu/swatches/wood-yashi.png', desc: 'Made from coconut shell, prized for its rustic, distinctive grain.' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -256,7 +256,7 @@ export default async function JyuzuPage({
 
         {/* ヒーロー */}
         <section className="relative h-80 md:h-[28rem]">
-          <ZoomableImage src="/images/jyuzu-hero.jpg" alt={t('title')} fill priority className="object-cover" />
+          <ZoomableImage src="/images/chuzenji/experience/jyuzu/jyuzu-hero.jpg" alt={t('title')} fill priority className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/50 to-navy/20 flex flex-col justify-center px-6 md:px-16">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Juzu Making</p>
             <h1 className="font-serif text-3xl md:text-5xl text-white tracking-widest mb-3">{t('title')}</h1>
@@ -271,7 +271,7 @@ export default async function JyuzuPage({
           {/* 数珠づくりとは */}
           <section className="grid md:grid-cols-2 gap-6 items-center">
             <div className="relative h-56 md:h-72 rounded-2xl overflow-hidden shadow-sm">
-              <Image src="/images/jyuzu-hero.jpg" alt="数珠づくりとは" fill className="object-cover" />
+              <Image src="/images/chuzenji/experience/jyuzu/jyuzu-hero.jpg" alt="数珠づくりとは" fill className="object-cover" />
             </div>
             <div>
               <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{g('jyuzu_heading_about')}</h2>
@@ -288,7 +288,7 @@ export default async function JyuzuPage({
               {samples.map(({ course, price, desc }, i) => (
                 <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm text-center border-t-4 border-gold">
                   <div className="relative aspect-square bg-cream-alt">
-                    <Image src={COURSE_IMAGES[i] ?? '/images/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
+                    <Image src={COURSE_IMAGES[i] ?? '/images/chuzenji/experience/jyuzu/jyuzu.png'} alt={desc} fill className="object-contain p-2" />
                   </div>
                   <div className="p-3">
                     <p className="text-[10px] text-gold font-medium tracking-wide">{course}</p>

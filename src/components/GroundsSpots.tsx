@@ -40,7 +40,7 @@ export default function GroundsSpots({ spots }: { spots: Spot[] }) {
     <>
       {/* インタラクティブ地図 */}
       <div className="relative rounded-xl overflow-hidden shadow-sm mb-10">
-        <Image src="/images/keidainotizu.png" alt="境内案内図" width={1351} height={1164} className="w-full h-auto" />
+        <Image src="/images/chuzenji/grounds/keidainotizu.png" alt="境内案内図" width={1351} height={1164} className="w-full h-auto" />
         {MAP_PINS.map(({ x, y }, i) => {
           const spot = spots[i]
           if (!spot) return null

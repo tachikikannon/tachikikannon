@@ -92,7 +92,7 @@ export default async function HistoryPage({
           <div className="max-w-3xl mx-auto"><Link href="/">{tc('breadcrumbHome')}</Link> &gt; {t('title')}</div>
         </div>
         <section className="relative h-64 md:h-80">
-          <ZoomableImage src="/images/dragon.jpg" alt={t('title')} fill className="object-cover" />
+          <ZoomableImage src="/images/chuzenji/common/dragon.jpg" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">{t('title')}</h1>
             <p className="text-white/70 text-sm mt-2">{g('history_subtitle')}</p>

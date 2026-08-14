@@ -90,7 +90,7 @@ export default async function OnsenjOnsenPage({
         {/* ページヒーロー */}
         <section className="relative h-72 md:h-96 overflow-hidden">
           <ZoomableImage
-            src="/images/onsen.png"
+            src="/images/onsenji/common/onsen.png"
             alt={t('title')}
             fill
             className="object-cover"
@@ -116,10 +116,10 @@ export default async function OnsenjOnsenPage({
           {/* 写真2枚 */}
           <section className="grid md:grid-cols-2 gap-4">
             <div className="relative h-56 rounded-2xl overflow-hidden shadow-md">
-              <ZoomableImage src="/images/onsen.png" alt={t('title')} fill className="object-cover" />
+              <ZoomableImage src="/images/onsenji/common/onsen.png" alt={t('title')} fill className="object-cover" />
             </div>
             <div className="relative h-56 rounded-2xl overflow-hidden shadow-md">
-              <ZoomableImage src="/images/kyuukeisitu.png" alt="休憩室" fill className="object-cover" />
+              <ZoomableImage src="/images/onsenji/onsen/kyuukeisitu.png" alt="休憩室" fill className="object-cover" />
             </div>
           </section>
 

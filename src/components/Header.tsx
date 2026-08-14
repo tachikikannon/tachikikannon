@@ -43,7 +43,7 @@ export default function Header() {
         {/* ロゴ・寺切替 */}
         <div className="flex items-center gap-1">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/images/logo-emblem.png" alt="寺紋" width={34} height={34}
+            <Image src="/images/common/logo-emblem.png" alt="寺紋" width={34} height={34}
               className="opacity-90 brightness-0 invert sepia saturate-200 hue-rotate-10" />
             <div className="leading-tight">
               <span className="block text-gold text-[9px] tracking-widest">日光山</span>

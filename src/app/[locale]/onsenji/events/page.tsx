@@ -51,7 +51,7 @@ const DEFAULT_EVENTS_EN = [
     desc: 'A Setsubun ceremony to drive away misfortune and welcome good luck for the new year. Bean-throwing and a goma fire ritual pray for the health and happiness of all visitors in the year ahead.',
   },
 ]
-const EVENT_IMAGES = ['/images/温泉寺法楽/saitougoma-onsen.JPEG', '/images/温泉寺節分/onsenji-setubun-hiro.JPG']
+const EVENT_IMAGES = ['/images/onsenji/events/yakushiko/saitougoma-onsen.JPEG', '/images/onsenji/events/setsubun/onsenji-setubun-hiro.JPG']
 const EVENT_ALTS = ['薬師講大祭・採灯大護摩供', '節分大祭']
 const EVENT_HREFS = ['/onsenji/events/yakushiko', '/onsenji/events/setsubun']
 const EVENT_APPLIES = ['/onsenji/events/yakushiko/apply', '/onsenji/events/setsubun/apply']
@@ -138,7 +138,7 @@ export default async function OnsenjEventsPage({
       timeLabel: ev.time,
       name: ev.name,
       desc: ev.desc,
-      image: EVENT_IMAGES[i] ?? '/images/gyouji.JPEG',
+      image: EVENT_IMAGES[i] ?? '/images/chuzenji/events/gyouji.JPEG',
       alt: EVENT_ALTS[i] ?? ev.name,
       href: EVENT_HREFS[i] ?? '/onsenji/events',
       applyHref: EVENT_APPLIES[i] ?? '/onsenji/contact',
@@ -151,7 +151,7 @@ export default async function OnsenjEventsPage({
       timeLabel: pickLocalized(loc, ev.time_label ?? '', ev.time_label_en),
       name: pickLocalized(loc, ev.title, ev.title_en),
       desc: pickLocalized(loc, ev.desc_text, ev.desc_text_en),
-      image: ev.cover_url ?? '/images/gyouji.JPEG',
+      image: ev.cover_url ?? '/images/chuzenji/events/gyouji.JPEG',
       alt: ev.title,
       href: `/onsenji/events/m/${ev.slug}`,
       applyHref: ev.apply_url,

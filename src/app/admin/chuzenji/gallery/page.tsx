@@ -7,12 +7,12 @@ type Slide = { src: string; alt: string; month?: string; caption_ja: string; cap
 const CONTENT_KEY = 'top_gallery_slides'
 
 const DEFAULT_SLIDES: Slide[] = [
-  { src: '/images/godaido.jpg', alt: '五大堂', month: '', caption_ja: '五大堂 — 中禅寺湖を望む舞台', caption_en: 'Godaido Hall — overlooking Lake Chuzenji' },
-  { src: '/images/dragon.jpg', alt: '立木観音 境内', month: '', caption_ja: '本堂を包む新緑', caption_en: 'Fresh greenery around the main hall' },
-  { src: '/images/gallery/yakan-sanpai.jpg', alt: '夜間参拝', month: '10月', caption_ja: '夜間参拝 — 灯りに浮かぶ本堂', caption_en: 'Night visiting — the hall lit after dark' },
-  { src: '/images/gallery/ongakusai.jpg', alt: '音楽祭', month: '5月', caption_ja: '音楽祭 — 天井の龍の下で', caption_en: 'Music Festival beneath the dragon ceiling' },
-  { src: '/images/gallery/yoga.jpg', alt: 'YOGA IN 五大堂', month: '6月', caption_ja: 'YOGA IN 五大堂', caption_en: 'YOGA IN Godaido' },
-  { src: '/images/gallery/classical-music.jpg', alt: 'クラシックコンサート', month: '5月', caption_ja: '湖を望むピアノコンサート', caption_en: 'A piano recital overlooking the lake' },
+  { src: '/images/chuzenji/common/godaido.jpg', alt: '五大堂', month: '', caption_ja: '五大堂 — 中禅寺湖を望む舞台', caption_en: 'Godaido Hall — overlooking Lake Chuzenji' },
+  { src: '/images/chuzenji/common/dragon.jpg', alt: '立木観音 境内', month: '', caption_ja: '本堂を包む新緑', caption_en: 'Fresh greenery around the main hall' },
+  { src: '/images/chuzenji/gallery/yakan-sanpai.jpg', alt: '夜間参拝', month: '10月', caption_ja: '夜間参拝 — 灯りに浮かぶ本堂', caption_en: 'Night visiting — the hall lit after dark' },
+  { src: '/images/chuzenji/gallery/ongakusai.jpg', alt: '音楽祭', month: '5月', caption_ja: '音楽祭 — 天井の龍の下で', caption_en: 'Music Festival beneath the dragon ceiling' },
+  { src: '/images/chuzenji/gallery/yoga.jpg', alt: 'YOGA IN 五大堂', month: '6月', caption_ja: 'YOGA IN 五大堂', caption_en: 'YOGA IN Godaido' },
+  { src: '/images/chuzenji/gallery/classical-music.jpg', alt: 'クラシックコンサート', month: '5月', caption_ja: '湖を望むピアノコンサート', caption_en: 'A piano recital overlooking the lake' },
 ]
 
 export default function AdminChuzenjiGallery() {

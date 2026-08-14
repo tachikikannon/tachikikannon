@@ -22,8 +22,8 @@ const DEFAULT_CONTENTS = [
 const DEFAULT_CONTENTS_EN = [
   { title: 'Tachiki Kanzeon Bodhisattva', desc: 'Following the template, you will trace the figure of the principal image, Tachiki Kanzeon Bodhisattva. A silver-paper special stamp (Tachiki Kanzeon) is given together upon completion.' },
 ]
-const CONTENT_IMAGES = ['/images/shabutu-template.jpg']
-const GOSHUIN_IMAGES = ['/images/goshuin-shabutu.jpg']
+const CONTENT_IMAGES = ['/images/chuzenji/experience/shabutu/shabutu-template.jpg']
+const GOSHUIN_IMAGES = ['/images/chuzenji/experience/shabutu/goshuin-shabutu.jpg']
 const DEFAULT_FLOW = [
   { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
   { title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
@@ -134,7 +134,7 @@ export default async function ShabutuPage({
         </div>
 
         <section className="relative h-64 md:h-80">
-          <Image src="/images/syabutu-hiro.png" alt={t('title')} fill priority className="object-cover" />
+          <Image src="/images/common/syabutu-hiro.png" alt={t('title')} fill priority className="object-cover" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Shabutu</p>
             <h1 className="font-serif text-4xl text-white tracking-widest">{t('title')}</h1>
@@ -151,10 +151,10 @@ export default async function ShabutuPage({
             </div>
             <div className="grid sm:grid-cols-2 gap-4 mt-4">
               <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/shakyou-room.jpg" alt="写仏体験の会場" fill className="object-cover" />
+                <ZoomableImage src="/images/chuzenji/experience/shakyou/shakyou-room.jpg" alt="写仏体験の会場" fill className="object-cover" />
               </div>
               <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/shakyou-altar.jpg" alt="写仏体験の御本尊" fill className="object-cover" />
+                <ZoomableImage src="/images/chuzenji/experience/shakyou/shakyou-altar.jpg" alt="写仏体験の御本尊" fill className="object-cover" />
               </div>
             </div>
           </section>

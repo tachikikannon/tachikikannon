@@ -38,9 +38,9 @@ const DEFAULT_ITEMS_EN = [
   { title: 'Special Buddha Tracing Stamp', sub: 'Given to those who complete the Buddhist image tracing experience' },
 ]
 const ITEM_IMAGES = [
-  '/images/onsen-yakusi-tuujyou.png',
-  '/images/onsenji-goshuin-shakyou.png',
-  '/images/onsenji-shabutu-template.png',
+  '/images/onsenji/goshuin/onsen-yakusi-tuujyou.png',
+  '/images/onsenji/experience/shakyou/onsenji-goshuin-shakyou.png',
+  '/images/onsenji/experience/shabutu/onsenji-shabutu-template.png',
 ]
 
 const DEFAULTS: Record<string, string> = {

@@ -132,7 +132,7 @@ export default async function WeddingPage({
         </div>
 
         <section className="relative h-64 md:h-96">
-          <Image src="/images/kekkonnsiki03.png" alt={t('title')} fill priority className="object-cover" />
+          <Image src="/images/chuzenji/wedding/kekkonnsiki03.png" alt={t('title')} fill priority className="object-cover" />
           <div className="absolute inset-0 bg-navy/55 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Butsuzen-shiki</p>
             <h1 className="font-serif text-3xl md:text-4xl text-white tracking-widest">{t('title')}</h1>

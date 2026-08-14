@@ -66,12 +66,12 @@ const DEFAULTS: Record<string, string> = {
 }
 
 const GALLERY_IMAGES = [
-  '/images/船禅頂/hunazenjyou-1.png',
-  '/images/船禅頂/hunazenjyou-2.JPEG',
-  '/images/船禅頂/hunazenjyou-3.JPEG',
-  '/images/船禅頂/hunazenjyou-4.JPEG',
-  '/images/船禅頂/hunazenjyou-5.png',
-  '/images/船禅頂/hunazenjyou-6.JPEG',
+  '/images/chuzenji/events/funazento/hunazenjyou-1.png',
+  '/images/chuzenji/events/funazento/hunazenjyou-2.JPEG',
+  '/images/chuzenji/events/funazento/hunazenjyou-3.JPEG',
+  '/images/chuzenji/events/funazento/hunazenjyou-4.JPEG',
+  '/images/chuzenji/events/funazento/hunazenjyou-5.png',
+  '/images/chuzenji/events/funazento/hunazenjyou-6.JPEG',
 ]
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -118,7 +118,7 @@ export default async function FunazentoPage({
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <ZoomableImage src="/images/mizuumi.jpg" alt={t('title')} fill className="object-cover" />
+          <ZoomableImage src="/images/chuzenji/events/mizuumi.jpg" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-2">{t('eraLabel')}</p>
@@ -181,7 +181,7 @@ export default async function FunazentoPage({
               <h2 className="font-serif text-2xl text-navy">{g('funazento_heading_map')}</h2>
             </div>
             <div className="relative w-full rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white" style={{ aspectRatio: '1448 / 1086' }}>
-              <ZoomableImage src="/images/hunazenjyo-tizu.png" alt={g('funazento_heading_map')} fill className="object-contain" />
+              <ZoomableImage src="/images/chuzenji/events/funazento/hunazenjyo-tizu.png" alt={g('funazento_heading_map')} fill className="object-contain" />
             </div>
           </section>
 

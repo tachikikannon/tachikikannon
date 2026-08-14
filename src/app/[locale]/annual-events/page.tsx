@@ -65,7 +65,7 @@ const DEFAULT_EVENTS_EN = [
     desc: 'At the start of the new year, a special goma fire prayer for good health, household safety, and good fortune for all. Ofuda talismans range from ¥5,000 to ¥30,000. Advance application required; up to 5 people per application.',
   },
 ]
-const EVENT_IMAGES = ['/images/gyouji.JPEG', '/images/mizuumi.jpg', '/images/ganjitsu-goma-1920.jpg']
+const EVENT_IMAGES = ['/images/chuzenji/events/gyouji.JPEG', '/images/chuzenji/events/mizuumi.jpg', '/images/chuzenji/events/ganjitsu-goma-1920.jpg']
 const EVENT_ALTS = ['観音講・大護摩供・地蔵流し', '中禅寺湖・船禅頂', '正月元旦特別護摩祈願']
 const EVENT_HREFS = ['/annual-events/kannonko', '/annual-events/funazento', '/annual-events/shogatsu']
 const EVENT_APPLIES = ['/annual-events/kannonko/apply', '/annual-events/funazento/apply', '/annual-events/shogatsu/apply']
@@ -152,7 +152,7 @@ export default async function AnnualEventsPage({
       timeLabel: ev.time,
       name: ev.name,
       desc: ev.desc,
-      image: EVENT_IMAGES[i] ?? '/images/gyouji.JPEG',
+      image: EVENT_IMAGES[i] ?? '/images/chuzenji/events/gyouji.JPEG',
       alt: EVENT_ALTS[i] ?? ev.name,
       href: EVENT_HREFS[i] ?? '/annual-events',
       applyHref: EVENT_APPLIES[i] ?? '/contact',
@@ -165,7 +165,7 @@ export default async function AnnualEventsPage({
       timeLabel: pickLocalized(loc, ev.time_label ?? '', ev.time_label_en),
       name: pickLocalized(loc, ev.title, ev.title_en),
       desc: pickLocalized(loc, ev.desc_text, ev.desc_text_en),
-      image: ev.cover_url ?? '/images/gyouji.JPEG',
+      image: ev.cover_url ?? '/images/chuzenji/events/gyouji.JPEG',
       alt: ev.title,
       href: `/annual-events/m/${ev.slug}`,
       applyHref: ev.apply_url,

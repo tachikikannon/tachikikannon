@@ -97,7 +97,7 @@ export default async function OnsenjiNewsPage({
                   <Link key={item.id} href={`/onsenji/news/${item.id}`}
                     className="flex items-stretch hover:bg-onsenji/5 transition-colors group">
                     <div className="w-20 flex-shrink-0 relative bg-onsenji">
-                      <Image src={item.cover_url || '/images/jimon-green.png'} alt={title} fill className="object-cover" />
+                      <Image src={item.cover_url || '/images/onsenji/common/jimon-green.png'} alt={title} fill className="object-cover" />
                     </div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-4 py-4 flex-1 min-w-0">
                       <time className="text-xs text-gray-400 whitespace-nowrap sm:w-24 sm:flex-shrink-0">

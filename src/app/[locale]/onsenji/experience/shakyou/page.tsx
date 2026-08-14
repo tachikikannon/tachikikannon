@@ -123,7 +123,7 @@ export default async function OnsenjShakyouPage({
           </div>
         </div>
         <section className="relative h-64 md:h-80">
-          <Image src="/images/syakyou-hiro.png" alt={t('title')} fill priority className="object-cover object-top" />
+          <Image src="/images/common/syakyou-hiro.png" alt={t('title')} fill priority className="object-cover object-top" />
           <div className="absolute inset-0 bg-onsenji/60 flex flex-col items-center justify-center text-center px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-3">Shakyou</p>
             <h1 className="font-serif text-4xl text-white tracking-widest">{t('title')}</h1>
@@ -139,13 +139,13 @@ export default async function OnsenjShakyouPage({
             </div>
             <div className="grid grid-cols-3 gap-3 mt-4">
               <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/onsen-kyousitu.png" alt="写経体験の本堂" fill className="object-cover" />
+                <ZoomableImage src="/images/onsenji/experience/onsen-kyousitu.png" alt="写経体験の本堂" fill className="object-cover" />
               </div>
               <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/onsensyakyou.png" alt="写経体験の会場" fill className="object-cover" />
+                <ZoomableImage src="/images/onsenji/experience/onsensyakyou.png" alt="写経体験の会場" fill className="object-cover" />
               </div>
               <div className="relative h-32 sm:h-44 rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/onsen-syakyou1.png" alt="写経をお書きいただく様子" fill className="object-cover" />
+                <ZoomableImage src="/images/onsenji/experience/onsen-syakyou1.png" alt="写経をお書きいただく様子" fill className="object-cover" />
               </div>
             </div>
           </section>
@@ -155,13 +155,13 @@ export default async function OnsenjShakyouPage({
               <div className="grid grid-cols-2">
                 <div>
                   <div className="relative h-56 bg-cream-alt">
-                    <ZoomableImage src="/images/onsen-syakyou.png" alt="薬師経 写経用紙" fill className="object-contain p-2" />
+                    <ZoomableImage src="/images/onsenji/experience/shakyou/onsen-syakyou.png" alt="薬師経 写経用紙" fill className="object-contain p-2" />
                   </div>
                   <p className="text-center text-[11px] text-gray-400 py-1.5">写経用紙</p>
                 </div>
                 <div className="border-l border-gray-100">
                   <div className="relative h-56 bg-cream-alt">
-                    <ZoomableImage src="/images/onsenji-goshuin-shakyou.png" alt="薬師経の特別御朱印" fill className="object-contain p-2" />
+                    <ZoomableImage src="/images/onsenji/experience/shakyou/onsenji-goshuin-shakyou.png" alt="薬師経の特別御朱印" fill className="object-contain p-2" />
                   </div>
                   <p className="text-center text-[11px] text-gray-400 py-1.5">薬師経の特別御朱印</p>
                 </div>

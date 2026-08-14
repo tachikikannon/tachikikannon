@@ -50,17 +50,17 @@ const DEFAULT_SERVICE_CARDS_EN = [
   { title: 'Amulets & Mail Order', text: 'Omamori charms, ofuda tablets, and other items are available online or by cash-on-delivery order.', info: 'Choose online shop or cash-on-delivery' },
 ]
 const DEFAULT_GALLERY_SLIDES = [
-  { src: '/images/godaido.jpg', alt: '五大堂', month: '',
+  { src: '/images/chuzenji/common/godaido.jpg', alt: '五大堂', month: '',
     caption_ja: '五大堂 — 中禅寺湖を望む舞台', caption_en: 'Godaido Hall — overlooking Lake Chuzenji' },
-  { src: '/images/dragon.jpg', alt: '立木観音 境内', month: '',
+  { src: '/images/chuzenji/common/dragon.jpg', alt: '立木観音 境内', month: '',
     caption_ja: '本堂を包む新緑', caption_en: 'Fresh greenery around the main hall' },
-  { src: '/images/gallery/yakan-sanpai.jpg', alt: '夜間参拝', month: '10月',
+  { src: '/images/chuzenji/gallery/yakan-sanpai.jpg', alt: '夜間参拝', month: '10月',
     caption_ja: '夜間参拝 — 灯りに浮かぶ本堂', caption_en: 'Night visiting — the hall lit after dark' },
-  { src: '/images/gallery/ongakusai.jpg', alt: '音楽祭', month: '5月',
+  { src: '/images/chuzenji/gallery/ongakusai.jpg', alt: '音楽祭', month: '5月',
     caption_ja: '音楽祭 — 天井の龍の下で', caption_en: 'Music Festival beneath the dragon ceiling' },
-  { src: '/images/gallery/yoga.jpg', alt: 'YOGA IN 五大堂', month: '6月',
+  { src: '/images/chuzenji/gallery/yoga.jpg', alt: 'YOGA IN 五大堂', month: '6月',
     caption_ja: 'YOGA IN 五大堂', caption_en: 'YOGA IN Godaido' },
-  { src: '/images/gallery/classical-music.jpg', alt: 'クラシックコンサート', month: '5月',
+  { src: '/images/chuzenji/gallery/classical-music.jpg', alt: 'クラシックコンサート', month: '5月',
     caption_ja: '湖を望むピアノコンサート', caption_en: 'A piano recital overlooking the lake' },
 ]
 
@@ -181,7 +181,7 @@ export default async function HomePage({
       <main>
         {/* ヒーロー */}
         <section className="relative h-[calc(var(--vh,1svh)*100)] min-h-[600px] flex items-center justify-center overflow-hidden">
-          <ZoomableImage src="/images/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
+          <ZoomableImage src="/images/chuzenji/common/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-navy/50" />
           <div className="relative text-center text-white px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-4 opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.1s_ease-out_0.15s_forwards] motion-reduce:[animation:none]">{heroEn}</p>
@@ -266,11 +266,11 @@ export default async function HomePage({
             <div className="section-divider" />
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {[
-                { img: '/images/dragon.jpg',   href: '/history' },
-                { img: '/images/haikan.png',   href: '/about#hours' },
-                { img: '/images/godaido.jpg',  href: '/grounds' },
+                { img: '/images/chuzenji/common/dragon.jpg',   href: '/history' },
+                { img: '/images/chuzenji/common/haikan.png',   href: '/about#hours' },
+                { img: '/images/chuzenji/common/godaido.jpg',  href: '/grounds' },
                 { img: 'https://vsemgmgjggzvpdqztlgt.supabase.co/storage/v1/object/public/temple-images/1786587020117-abdchotygni.JPG', href: '/flower-calendar' },
-                { img: '/images/gyouji.JPEG',  href: '/annual-events' },
+                { img: '/images/chuzenji/events/gyouji.JPEG',  href: '/annual-events' },
               ].map(({ img, href }, i, arr) => (
                 <a key={href} href={href}
                   className={`relative h-56 sm:h-64 rounded-lg overflow-hidden shadow-sm group block ${i === arr.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}>
@@ -317,7 +317,7 @@ export default async function HomePage({
 
         {/* 祈る */}
         <section id="prayer" className="relative h-80 md:h-[28rem] overflow-hidden group">
-          <img src="/images/goma-card.png" alt={prayerCard?.label}
+          <img src="/images/chuzenji/hero/goma-card.png" alt={prayerCard?.label}
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-navy/10" />
           <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
@@ -335,10 +335,10 @@ export default async function HomePage({
             <div className="section-divider" />
             <div className="grid gap-3 h-[420px] md:h-[380px]" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'repeat(3, 1fr)' }}>
               {[
-                { src:'/images/jyuzu-card.png',   href:'/experience/jyuzu' },
-                { src:'/images/syakyou-card.png', href:'/experience/shakyou' },
-                { src:'/images/syabutu-card.png', href:'/experience/shabutu' },
-                { src:'/images/zazen.png',        href:'/experience/zazen' },
+                { src:'/images/chuzenji/hero/jyuzu-card.png',   href:'/experience/jyuzu' },
+                { src:'/images/chuzenji/hero/syakyou-card.png', href:'/experience/shakyou' },
+                { src:'/images/chuzenji/hero/syabutu-card.png', href:'/experience/shabutu' },
+                { src:'/images/chuzenji/experience/zazen/zazen.png',        href:'/experience/zazen' },
               ].map(({ src, href }, i) => (
                 <Link key={href} href={href}
                   className="relative rounded-lg overflow-hidden shadow-sm group block"
@@ -364,7 +364,7 @@ export default async function HomePage({
             <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               <Link href="/goshuin" className="card card-selectable p-6 text-center block">
                 <div className="w-20 h-20 mx-auto mb-4 rounded-lg overflow-hidden">
-                  <img src="/images/gosyuin-main.png" alt={serviceCards[0]?.title} className="w-full h-full object-cover scale-125" />
+                  <img src="/images/chuzenji/common/gosyuin-main.png" alt={serviceCards[0]?.title} className="w-full h-full object-cover scale-125" />
                 </div>
                 <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[0]?.title}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[0]?.text}</p>
@@ -374,7 +374,7 @@ export default async function HomePage({
 
               <div className="card p-6 text-center">
                 <div className="w-20 h-20 mx-auto mb-4 rounded-lg overflow-hidden">
-                  <img src="/images/jyuyohin-main.png" alt={serviceCards[1]?.title} className="w-full h-full object-cover scale-125" />
+                  <img src="/images/chuzenji/hero/jyuyohin-main.png" alt={serviceCards[1]?.title} className="w-full h-full object-cover scale-125" />
                 </div>
                 <h3 className="font-serif text-navy text-lg mb-2">{serviceCards[1]?.title}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed mb-2">{serviceCards[1]?.text}</p>

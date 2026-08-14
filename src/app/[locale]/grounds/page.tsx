@@ -17,32 +17,32 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_SPOTS = [
-  { name: '山門', image: '/images/sanmon.png', desc: '境内への入口。拝観受付はこちらで行います。' },
-  { name: '鐘楼', image: '/images/toiawase.jpg', desc: '境内に響く梵鐘。時を告げる鐘の音が静かな山の霊気とともに境内に広がります。' },
-  { name: '延命水', image: '/images/enmeisui.png', desc: '境内に湧き出る清水。飲むと長寿・延命のご利益があると伝わり、古くから参拝者に親しまれています。' },
-  { name: '石護摩壇', image: '/images/ishigomadan.png', desc: 'お護摩はインド伝来の密教の秘法（秘密の教え）で、僧侶が護摩壇に向かい、作法にしたがって仏の智慧の火を焚き、様々な供物を焚き上げ、厄難・災難を払いその加護（成就）を願います。' },
-  { name: '客殿・写経体験', image: '/images/kyakuden.png', desc: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。客殿にて写経体験をお受けいただけます。' },
-  { name: '御朱印所', image: '/images/hudasyo.png', desc: '御朱印・お守り・各種授与品はこちらでお受けいただけます。' },
-  { name: '愛染堂', image: '/images/aizendou.png', desc: '中禅寺湖を背景に佇む愛染堂。良縁成就・縁結び・夫婦和合、愛敬開運のご利益で知られています。' },
-  { name: '歌碑', image: '/images/kahi.png', desc: '歌手・俳優の加山雄三氏の楽曲「君といつまでも」の歌碑です。中禅寺湖畔を望むこの地で、多くの方に親しまれています。' },
-  { name: 'お水屋', image: '/images/omizuya.png', desc: '参拝前に手や口を清める手水舎です。' },
-  { name: '大黒天堂', image: '/images/daikokutendou.png', desc: '家内安全、商売繁盛、交通安全、開運、厄除け、安産等のご利益で知られる秘仏、波之利大黒天をお祀りしている、護摩祈願道場です。' },
-  { name: '立木観音堂（本堂）', image: '/images/main2.png', desc: '勝道上人が中禅寺湖上に千手観音様をご覧になり、その姿を桂の立木に彫ったと伝えられています。観音様は、現在も地に根をはり、訪れる人々を穏やかな表情で迎えます。また、坂東三十三観音霊場の第十八番札所として多くの巡礼の方たちもご参拝になります。' },
-  { name: '五大堂', image: '/images/godaido.jpg', desc: '不動明王、降三世明王、軍荼利明王、大威徳明王、金剛夜叉明王の五大明王が安置された御祈祷の道場です。天井には、堅山南風画伯が描いた大雲龍が堂々たる威容を誇ります。また、ここ五大堂からの中禅寺湖を望む景色は、見るものの心を振るわせるほどの絶景です。' },
+  { name: '山門', image: '/images/chuzenji/grounds/sanmon.png', desc: '境内への入口。拝観受付はこちらで行います。' },
+  { name: '鐘楼', image: '/images/chuzenji/grounds/toiawase.jpg', desc: '境内に響く梵鐘。時を告げる鐘の音が静かな山の霊気とともに境内に広がります。' },
+  { name: '延命水', image: '/images/chuzenji/grounds/enmeisui.png', desc: '境内に湧き出る清水。飲むと長寿・延命のご利益があると伝わり、古くから参拝者に親しまれています。' },
+  { name: '石護摩壇', image: '/images/chuzenji/grounds/ishigomadan.png', desc: 'お護摩はインド伝来の密教の秘法（秘密の教え）で、僧侶が護摩壇に向かい、作法にしたがって仏の智慧の火を焚き、様々な供物を焚き上げ、厄難・災難を払いその加護（成就）を願います。' },
+  { name: '客殿・写経体験', image: '/images/chuzenji/grounds/kyakuden.png', desc: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。客殿にて写経体験をお受けいただけます。' },
+  { name: '御朱印所', image: '/images/chuzenji/grounds/hudasyo.png', desc: '御朱印・お守り・各種授与品はこちらでお受けいただけます。' },
+  { name: '愛染堂', image: '/images/chuzenji/grounds/aizendou.png', desc: '中禅寺湖を背景に佇む愛染堂。良縁成就・縁結び・夫婦和合、愛敬開運のご利益で知られています。' },
+  { name: '歌碑', image: '/images/chuzenji/grounds/kahi.png', desc: '歌手・俳優の加山雄三氏の楽曲「君といつまでも」の歌碑です。中禅寺湖畔を望むこの地で、多くの方に親しまれています。' },
+  { name: 'お水屋', image: '/images/chuzenji/grounds/omizuya.png', desc: '参拝前に手や口を清める手水舎です。' },
+  { name: '大黒天堂', image: '/images/chuzenji/grounds/daikokutendou.png', desc: '家内安全、商売繁盛、交通安全、開運、厄除け、安産等のご利益で知られる秘仏、波之利大黒天をお祀りしている、護摩祈願道場です。' },
+  { name: '立木観音堂（本堂）', image: '/images/chuzenji/common/main2.png', desc: '勝道上人が中禅寺湖上に千手観音様をご覧になり、その姿を桂の立木に彫ったと伝えられています。観音様は、現在も地に根をはり、訪れる人々を穏やかな表情で迎えます。また、坂東三十三観音霊場の第十八番札所として多くの巡礼の方たちもご参拝になります。' },
+  { name: '五大堂', image: '/images/chuzenji/common/godaido.jpg', desc: '不動明王、降三世明王、軍荼利明王、大威徳明王、金剛夜叉明王の五大明王が安置された御祈祷の道場です。天井には、堅山南風画伯が描いた大雲龍が堂々たる威容を誇ります。また、ここ五大堂からの中禅寺湖を望む景色は、見るものの心を振るわせるほどの絶景です。' },
 ]
 const DEFAULT_SPOTS_EN = [
-  { name: 'Sanmon Gate', image: '/images/sanmon.png', desc: 'The entrance to the grounds, where visiting reception is held.' },
-  { name: 'Bell Tower', image: '/images/toiawase.jpg', desc: 'The temple bell resonates across the grounds, its sound marking the hours amid the quiet spirit of the mountains.' },
-  { name: 'Enmeisui Spring', image: '/images/enmeisui.png', desc: 'A spring of clear water on the grounds, said to bring longevity to those who drink it — cherished by visitors since ancient times.' },
-  { name: 'Stone Goma Altar', image: '/images/ishigomadan.png', desc: 'The goma fire ritual is an esoteric Buddhist rite from India, in which a priest ignites the flame of Buddhist wisdom at the altar and offers various items, praying to ward off misfortune and grant blessings.' },
-  { name: 'Guest Hall & Sutra Copying', image: '/images/kyakuden.png', desc: 'Sutra copying is a practice of carefully copying the characters of a sutra, one by one, said to clear the mind and form a bond with the Buddha. The sutra-copying experience is offered at the Guest Hall.' },
-  { name: 'Goshuin Office', image: '/images/hudasyo.png', desc: 'Goshuin stamps, omamori charms, and other items can be received here.' },
-  { name: 'Aizen-do', image: '/images/aizendou.png', desc: 'Standing against the backdrop of Lake Chuzenji, Aizen-do is known for blessings of good relationships, matchmaking, marital harmony, and charm.' },
-  { name: 'Song Monument', image: '/images/kahi.png', desc: 'A monument for the song "Kimi to Itsumademo" by singer and actor Yuzo Kayama, cherished by many at this spot overlooking Lake Chuzenji.' },
-  { name: 'Omizuya', image: '/images/omizuya.png', desc: 'A water pavilion for purifying hands and mouth before worship.' },
-  { name: 'Daikokuten Hall', image: '/images/daikokutendou.png', desc: 'A prayer hall enshrining the hidden statue of Hashiri Daikokuten, known for blessings of household safety, business prosperity, traffic safety, good fortune, warding off misfortune, and safe childbirth.' },
-  { name: 'Tachiki Kannon Hall (Main Hall)', image: '/images/main2.png', desc: 'It is said that Priest Shodo saw a vision of the thousand-armed Kannon over Lake Chuzenji and carved her likeness into a living katsura tree. The Kannon still stands rooted in the earth today, greeting visitors with a serene expression. It is also the 18th sacred site of the Bando 33 Kannon Pilgrimage.' },
-  { name: 'Godaido Hall', image: '/images/godaido.jpg', desc: 'A prayer hall enshrining the Five Wisdom Kings: Fudo Myo-o, Gozanze Myo-o, Gundari Myo-o, Daiitoku Myo-o, and Kongoyasha Myo-o. The ceiling features a magnificent cloud dragon painted by Nampu Katayama. The view of Lake Chuzenji from Godaido is a breathtaking sight.' },
+  { name: 'Sanmon Gate', image: '/images/chuzenji/grounds/sanmon.png', desc: 'The entrance to the grounds, where visiting reception is held.' },
+  { name: 'Bell Tower', image: '/images/chuzenji/grounds/toiawase.jpg', desc: 'The temple bell resonates across the grounds, its sound marking the hours amid the quiet spirit of the mountains.' },
+  { name: 'Enmeisui Spring', image: '/images/chuzenji/grounds/enmeisui.png', desc: 'A spring of clear water on the grounds, said to bring longevity to those who drink it — cherished by visitors since ancient times.' },
+  { name: 'Stone Goma Altar', image: '/images/chuzenji/grounds/ishigomadan.png', desc: 'The goma fire ritual is an esoteric Buddhist rite from India, in which a priest ignites the flame of Buddhist wisdom at the altar and offers various items, praying to ward off misfortune and grant blessings.' },
+  { name: 'Guest Hall & Sutra Copying', image: '/images/chuzenji/grounds/kyakuden.png', desc: 'Sutra copying is a practice of carefully copying the characters of a sutra, one by one, said to clear the mind and form a bond with the Buddha. The sutra-copying experience is offered at the Guest Hall.' },
+  { name: 'Goshuin Office', image: '/images/chuzenji/grounds/hudasyo.png', desc: 'Goshuin stamps, omamori charms, and other items can be received here.' },
+  { name: 'Aizen-do', image: '/images/chuzenji/grounds/aizendou.png', desc: 'Standing against the backdrop of Lake Chuzenji, Aizen-do is known for blessings of good relationships, matchmaking, marital harmony, and charm.' },
+  { name: 'Song Monument', image: '/images/chuzenji/grounds/kahi.png', desc: 'A monument for the song "Kimi to Itsumademo" by singer and actor Yuzo Kayama, cherished by many at this spot overlooking Lake Chuzenji.' },
+  { name: 'Omizuya', image: '/images/chuzenji/grounds/omizuya.png', desc: 'A water pavilion for purifying hands and mouth before worship.' },
+  { name: 'Daikokuten Hall', image: '/images/chuzenji/grounds/daikokutendou.png', desc: 'A prayer hall enshrining the hidden statue of Hashiri Daikokuten, known for blessings of household safety, business prosperity, traffic safety, good fortune, warding off misfortune, and safe childbirth.' },
+  { name: 'Tachiki Kannon Hall (Main Hall)', image: '/images/chuzenji/common/main2.png', desc: 'It is said that Priest Shodo saw a vision of the thousand-armed Kannon over Lake Chuzenji and carved her likeness into a living katsura tree. The Kannon still stands rooted in the earth today, greeting visitors with a serene expression. It is also the 18th sacred site of the Bando 33 Kannon Pilgrimage.' },
+  { name: 'Godaido Hall', image: '/images/chuzenji/common/godaido.jpg', desc: 'A prayer hall enshrining the Five Wisdom Kings: Fudo Myo-o, Gozanze Myo-o, Gundari Myo-o, Daiitoku Myo-o, and Kongoyasha Myo-o. The ceiling features a magnificent cloud dragon painted by Nampu Katayama. The view of Lake Chuzenji from Godaido is a breathtaking sight.' },
 ]
 const DEFAULT_FLOW = [
   { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。受付は閉門30分前に終了いたします。' },
@@ -118,7 +118,7 @@ export default async function GroundsPage({
           <div className="max-w-3xl mx-auto"><Link href="/">{tc('breadcrumbHome')}</Link> &gt; {t('title')}</div>
         </div>
         <section className="relative h-64 md:h-80">
-          <ZoomableImage src="/images/godaido.jpg" alt={t('title')} fill className="object-cover" />
+          <ZoomableImage src="/images/chuzenji/common/godaido.jpg" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-navy/50 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">{t('title')}</h1>
             <p className="text-white/70 text-sm mt-2">{g('grounds_subtitle')}</p>
@@ -135,7 +135,7 @@ export default async function GroundsPage({
             <h2 className="text-2xl font-serif text-navy mb-1">{g('grounds_heading_godaido')}</h2>
             <div className="w-10 h-0.5 bg-gold mb-6" />
             <div className="relative h-56 rounded-xl overflow-hidden mb-4">
-              <ZoomableImage src="/images/haikan.png" alt="五大堂からの眺め" fill className="object-cover" />
+              <ZoomableImage src="/images/chuzenji/common/haikan.png" alt="五大堂からの眺め" fill className="object-cover" />
             </div>
             <p className="text-sm text-gray-700 leading-loose">{g('grounds_godaido_text')}</p>
           </section>

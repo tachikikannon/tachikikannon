@@ -74,9 +74,9 @@ const DEFAULTS: Record<string, string> = {
 }
 
 const GALLERY_IMAGES = [
-  '/images/温泉寺節分/onsenji-setubun (1).JPG',
-  '/images/温泉寺節分/onsenji-setubun (2).JPG',
-  '/images/温泉寺節分/onsenji-setubun (3).JPG',
+  '/images/onsenji/events/setsubun/onsenji-setubun (1).JPG',
+  '/images/onsenji/events/setsubun/onsenji-setubun (2).JPG',
+  '/images/onsenji/events/setsubun/onsenji-setubun (3).JPG',
 ]
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -121,7 +121,7 @@ export default async function SetsubunPage({
         </div>
 
         <section className="relative h-72 md:h-96 overflow-hidden">
-          <ZoomableImage src="/images/温泉寺節分/onsenji-setubun-hiro.JPG" alt={t('title')} fill className="object-cover" />
+          <ZoomableImage src="/images/onsenji/events/setsubun/onsenji-setubun-hiro.JPG" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-onsenji via-onsenji/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 text-center px-4">
             <p className="text-[#7ec8a4] text-xs tracking-[0.3em] mb-2">{t('eraLabel')}</p>

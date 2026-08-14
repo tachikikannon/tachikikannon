@@ -34,7 +34,7 @@ export default function OnsenjiGroundsSpots({ spots }: { spots: Spot[] }) {
     <>
       {/* インタラクティブ地図 */}
       <div className="relative rounded-xl overflow-hidden shadow-sm mb-10">
-        <Image src="/images/onsenji-map.png" alt="温泉寺参拝図" width={1054} height={1493} className="w-full h-auto" />
+        <Image src="/images/onsenji/grounds/onsenji-map.png" alt="温泉寺参拝図" width={1054} height={1493} className="w-full h-auto" />
         {MAP_PINS.map(({ x, y }, i) => {
           const spot = spots[i]
           if (!spot) return null

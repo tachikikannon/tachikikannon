@@ -47,10 +47,10 @@ const DEFAULT_ITEMS_EN = [
   { text: "Don't worry about making mistakes — our staff will guide you carefully." },
 ]
 const GOSHUIN_IMAGES = [
-  { src: '/images/goshuin-enmei.png', w: 772, h: 1200 },
-  { src: '/images/goshuin-sangemon.png', w: 742, h: 1192 },
+  { src: '/images/chuzenji/goshuin/goshuin-enmei.png', w: 772, h: 1200 },
+  { src: '/images/chuzenji/goshuin/goshuin-sangemon.png', w: 742, h: 1192 },
 ]
-const CONTENT_IMAGES = ['/images/enmeijyuku.jpg', '/images/sanngemon.jpg']
+const CONTENT_IMAGES = ['/images/chuzenji/experience/shakyou/enmeijyuku.jpg', '/images/chuzenji/experience/shakyou/sanngemon.jpg']
 
 const DEFAULTS: Record<string, string> = {
   shakyou_subtitle: '心を静め、お経の文字を丁寧にお写しいただきます',
@@ -139,7 +139,7 @@ export default async function ShakyouPage({
         </div>
 
         <section className="relative h-64 md:h-80">
-          <Image src="/images/syakyou-hiro.png" alt={t('title')} fill priority className="object-cover object-top" />
+          <Image src="/images/common/syakyou-hiro.png" alt={t('title')} fill priority className="object-cover object-top" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Shakyou</p>
             <h1 className="font-serif text-4xl text-white tracking-widest">{t('title')}</h1>
@@ -156,10 +156,10 @@ export default async function ShakyouPage({
             </div>
             <div className="grid sm:grid-cols-2 gap-4 mt-4">
               <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/shakyou-room.jpg" alt="写経体験の会場" fill className="object-cover" />
+                <ZoomableImage src="/images/chuzenji/experience/shakyou/shakyou-room.jpg" alt="写経体験の会場" fill className="object-cover" />
               </div>
               <div className="relative h-56 sm:h-64 rounded-xl overflow-hidden shadow-sm">
-                <ZoomableImage src="/images/shakyou-altar.jpg" alt="写経体験の御本尊" fill className="object-cover" />
+                <ZoomableImage src="/images/chuzenji/experience/shakyou/shakyou-altar.jpg" alt="写経体験の御本尊" fill className="object-cover" />
               </div>
             </div>
           </section>

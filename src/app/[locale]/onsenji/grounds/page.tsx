@@ -17,20 +17,20 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_SPOTS = [
-  { name: '温泉寺表参道', image: '/images/onsenji-sandou.png', desc: '石灯籠が並ぶ緑豊かな参道。入浴者用駐車場から境内へと続きます。' },
-  { name: '鐘楼', image: '/images/onsenji-syourou.png', desc: '境内に響き渡る鐘の音。早朝には特に厳かな雰囲気を味わえます。' },
-  { name: '薬師の湯と本殿の外観', image: '/images/onsenji-gaikan.png', desc: '受付を兼ねた建物と、薬師の湯・本殿の外観。四季折々の景色とともに参拝者を迎えます。' },
-  { name: '客殿・休憩室', image: '/images/onsenji-kyukeishitsu.png', desc: '畳敷きの落ち着いた空間で、参拝の合間にひと休みいただけます。' },
-  { name: '薬師の湯', image: '/images/onsenji-yakushinoyu-yu.png', desc: '中禅寺湖から湧き出る温泉。参拝後にご利用いただけます。' },
-  { name: '本殿（写経・写仏体験会場）', image: '/images/onsenji-kaijou.jpg', desc: 'ご本尊・薬師如来をお祀りする本殿。写経・写仏体験もこちらで行います。' },
+  { name: '温泉寺表参道', image: '/images/onsenji/grounds/onsenji-sandou.png', desc: '石灯籠が並ぶ緑豊かな参道。入浴者用駐車場から境内へと続きます。' },
+  { name: '鐘楼', image: '/images/onsenji/grounds/onsenji-syourou.png', desc: '境内に響き渡る鐘の音。早朝には特に厳かな雰囲気を味わえます。' },
+  { name: '薬師の湯と本殿の外観', image: '/images/onsenji/common/onsenji-gaikan.png', desc: '受付を兼ねた建物と、薬師の湯・本殿の外観。四季折々の景色とともに参拝者を迎えます。' },
+  { name: '客殿・休憩室', image: '/images/onsenji/grounds/onsenji-kyukeishitsu.png', desc: '畳敷きの落ち着いた空間で、参拝の合間にひと休みいただけます。' },
+  { name: '薬師の湯', image: '/images/onsenji/grounds/onsenji-yakushinoyu-yu.png', desc: '中禅寺湖から湧き出る温泉。参拝後にご利用いただけます。' },
+  { name: '本殿（写経・写仏体験会場）', image: '/images/onsenji/grounds/onsenji-kaijou.jpg', desc: 'ご本尊・薬師如来をお祀りする本殿。写経・写仏体験もこちらで行います。' },
 ]
 const DEFAULT_SPOTS_EN = [
-  { name: 'Onsenji Main Approach', image: '/images/onsenji-sandou.png', desc: 'A lush approach lined with stone lanterns, leading from the bathers’ parking lot to the grounds.' },
-  { name: 'Bell Tower', image: '/images/onsenji-syourou.png', desc: 'The temple bell resonates across the grounds — especially solemn in the early morning.' },
-  { name: 'Yakushi-no-Yu & Main Hall Exterior', image: '/images/onsenji-gaikan.png', desc: 'The reception building along with the exterior of Yakushi-no-Yu and the main hall, welcoming visitors amid the changing seasons.' },
-  { name: 'Guest Hall & Lounge', image: '/images/onsenji-kyukeishitsu.png', desc: 'A calm tatami-mat space to rest between periods of worship.' },
-  { name: 'Yakushi-no-Yu Hot Spring', image: '/images/onsenji-yakushinoyu-yu.png', desc: 'Hot spring water rising near Lake Chuzenji, available for use after worship.' },
-  { name: 'Main Hall (Sutra Copying & Image Tracing Venue)', image: '/images/onsenji-kaijou.jpg', desc: 'The main hall enshrining Yakushi Nyorai. Sutra copying and Buddhist image tracing are also held here.' },
+  { name: 'Onsenji Main Approach', image: '/images/onsenji/grounds/onsenji-sandou.png', desc: 'A lush approach lined with stone lanterns, leading from the bathers’ parking lot to the grounds.' },
+  { name: 'Bell Tower', image: '/images/onsenji/grounds/onsenji-syourou.png', desc: 'The temple bell resonates across the grounds — especially solemn in the early morning.' },
+  { name: 'Yakushi-no-Yu & Main Hall Exterior', image: '/images/onsenji/common/onsenji-gaikan.png', desc: 'The reception building along with the exterior of Yakushi-no-Yu and the main hall, welcoming visitors amid the changing seasons.' },
+  { name: 'Guest Hall & Lounge', image: '/images/onsenji/grounds/onsenji-kyukeishitsu.png', desc: 'A calm tatami-mat space to rest between periods of worship.' },
+  { name: 'Yakushi-no-Yu Hot Spring', image: '/images/onsenji/grounds/onsenji-yakushinoyu-yu.png', desc: 'Hot spring water rising near Lake Chuzenji, available for use after worship.' },
+  { name: 'Main Hall (Sutra Copying & Image Tracing Venue)', image: '/images/onsenji/grounds/onsenji-kaijou.jpg', desc: 'The main hall enshrining Yakushi Nyorai. Sutra copying and Buddhist image tracing are also held here.' },
 ]
 const DEFAULT_FLOW = [
   { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。受付は閉門30分前に終了いたします。' },
@@ -109,7 +109,7 @@ export default async function OnsenjGroundsPage({
           </div>
         </div>
         <section className="relative h-64 md:h-80">
-          <ZoomableImage src="/images/onsenji-gaikan.png" alt={t('title')} fill className="object-cover" />
+          <ZoomableImage src="/images/onsenji/common/onsenji-gaikan.png" alt={t('title')} fill className="object-cover" />
           <div className="absolute inset-0 bg-onsenji/60 flex flex-col items-center justify-center text-white">
             <h1 className="font-serif text-3xl md:text-4xl tracking-widest">{t('title')}</h1>
             <p className="text-white/70 text-sm mt-2">{g('onsenji_grounds_subtitle')}</p>

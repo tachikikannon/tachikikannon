@@ -97,7 +97,7 @@ export default async function NewsPage({
                   <Link key={item.id} href={`/news/${item.id}`}
                     className="flex items-stretch hover:bg-cream-alt transition-colors group">
                     <div className="w-20 flex-shrink-0 relative bg-navy">
-                      <Image src={item.cover_url || '/images/jimon-navy.png'} alt={title} fill className="object-cover" />
+                      <Image src={item.cover_url || '/images/chuzenji/common/jimon-navy.png'} alt={title} fill className="object-cover" />
                     </div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-4 py-4 flex-1 min-w-0">
                       <time className="text-xs text-gray-400 whitespace-nowrap sm:w-24 sm:flex-shrink-0">

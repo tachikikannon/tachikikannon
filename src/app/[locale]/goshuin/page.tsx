@@ -89,8 +89,8 @@ async function getContent() {
   } catch { return DEFAULTS }
 }
 
-const REGULAR_IMAGES = ['/images/tachiki.syuin.png', '/images/goeika.jpg', '/images/daikokuten.png', '/images/kongoukaku.png']
-const SPECIAL_IMAGES = ['/images/sakyou.tatiki.png', '/images/goshuin-sangemon.png', '/images/syabutu.tatiki.png']
+const REGULAR_IMAGES = ['/images/chuzenji/goshuin/tachiki.syuin.png', '/images/chuzenji/goshuin/goeika.jpg', '/images/chuzenji/goshuin/daikokuten.png', '/images/chuzenji/goshuin/kongoukaku.png']
+const SPECIAL_IMAGES = ['/images/chuzenji/goshuin/sakyou.tatiki.png', '/images/chuzenji/goshuin/goshuin-sangemon.png', '/images/chuzenji/goshuin/syabutu.tatiki.png']
 
 export default async function GoshuinPage({
   params,
@@ -117,7 +117,7 @@ export default async function GoshuinPage({
         </div>
 
         <section className="relative h-64 md:h-80">
-          <ZoomableImage src="/images/syuin-hiro.jpg" alt={t('title')} fill priority className="object-cover" />
+          <ZoomableImage src="/images/chuzenji/goshuin/syuin-hiro.jpg" alt={t('title')} fill priority className="object-cover" />
           <div className="absolute inset-0 bg-navy/60 flex flex-col items-center justify-center text-center px-4">
             <p className="text-gold text-xs tracking-[0.3em] mb-3">Goshuin</p>
             <h1 className="font-serif text-4xl text-white tracking-widest">{t('title')}</h1>
