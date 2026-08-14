@@ -1,10 +1,11 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
-import { APPLICATION_CATEGORIES, MEDIA_CATEGORIES, INTERVIEW_FORMATS, TIME_SLOTS } from '@/types'
+import { APPLICATION_CATEGORIES, MEDIA_CATEGORIES, INTERVIEW_FORMATS, TIME_SLOTS, type Media } from '@/types'
 
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024
 
@@ -65,8 +66,16 @@ export default function OnsenjiApplyForm() {
   const [submitError, setSubmitError] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [attachmentError, setAttachmentError] = useState('')
+  const [photoMedia, setPhotoMedia] = useState<Media[]>([])
 
   const isPress = form.category === '取材・取材協力依頼'
+
+  useEffect(() => {
+    const ids = form.photo_ref.split(',').map(s => s.trim()).filter(Boolean)
+    if (ids.length === 0) { setPhotoMedia([]); return }
+    supabase.from('media').select('*').in('id', ids).then(({ data }) => setPhotoMedia((data ?? []) as Media[]))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.photo_ref])
 
   function update<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm(f => ({ ...f, [key]: value }))
@@ -140,7 +149,7 @@ export default function OnsenjiApplyForm() {
 
   const confirmRows: [string, string][] = [
     [t('categoryLabel'), CATEGORY_LABELS[form.category] ?? form.category],
-    ...(form.photo_ref ? [[t('photoRefLabel'), form.photo_ref] as [string, string]] : []),
+    ...(form.photo_ref ? [[t('photoRefLabel'), `${photoMedia.length || form.photo_ref.split(',').filter(Boolean).length}${t('photoCountUnit')}`] as [string, string]] : []),
     [t('nameLabel'), form.name],
     ...(form.contact_kana ? [[t('contactKanaLabel'), form.contact_kana] as [string, string]] : []),
     ...(form.company_name ? [[t('companyNameLabel'), form.company_name] as [string, string]] : []),
@@ -196,7 +205,17 @@ export default function OnsenjiApplyForm() {
             {form.photo_ref && (
               <div>
                 <label className="admin-label">{t('photoRefLabel')}</label>
-                <input readOnly className="admin-input bg-gray-50 text-gray-500" value={form.photo_ref} />
+                {photoMedia.length > 0 ? (
+                  <div className="grid grid-cols-4 gap-2">
+                    {photoMedia.map(m => (
+                      <div key={m.id} className="relative h-16 rounded-lg overflow-hidden border border-gray-200">
+                        <Image src={m.public_url} alt="" fill className="object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400">{t('photoRefLoading')}</p>
+                )}
               </div>
             )}
             <div>

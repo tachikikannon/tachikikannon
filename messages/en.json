@@ -94,7 +94,11 @@
     "intro": "Browse photos available for use and loan. If you find one you'd like, click \"Apply to Use This Photo\" to go to the application form.",
     "empty": "No photos are currently available for loan.",
     "photoLabel": "Photo",
-    "applyCta": "Apply to Use This Photo"
+    "selectHint": "Select the photos you'd like, then continue to the request form below (you may choose more than one).",
+    "selectLabel": "Select",
+    "selectedLabel": "Selected ✓",
+    "selectedCountUnit": " selected",
+    "applySelectedCta": "Apply with Selected Photos"
   },
   "news": {
     "title": "News",
@@ -193,6 +197,8 @@
     "categoryLabel": "Request Type",
     "categoryPlaceholder": "Please select",
     "photoRefLabel": "Photo Reference",
+    "photoRefLoading": "Loading...",
+    "photoCountUnit": " photos",
     "nameLabel": "Name",
     "emailLabel": "Email Address",
     "phoneLabel": "Phone Number (optional)",
@@ -598,7 +604,11 @@
     "intro": "Browse photos available for use and loan. If you find one you'd like, click \"Apply to Use This Photo\" to go to the application form.",
     "empty": "No photos are currently available for loan.",
     "photoLabel": "Photo",
-    "applyCta": "Apply to Use This Photo"
+    "selectHint": "Select the photos you'd like, then continue to the request form below (you may choose more than one).",
+    "selectLabel": "Select",
+    "selectedLabel": "Selected ✓",
+    "selectedCountUnit": " selected",
+    "applySelectedCta": "Apply with Selected Photos"
   },
   "onsenjiNews": {
     "title": "News",
@@ -785,6 +795,8 @@
     "categoryLabel": "Request Type",
     "categoryPlaceholder": "Please select",
     "photoRefLabel": "Photo Reference",
+    "photoRefLoading": "Loading...",
+    "photoCountUnit": " photos",
     "nameLabel": "Name",
     "emailLabel": "Email Address",
     "phoneLabel": "Phone Number (optional)",

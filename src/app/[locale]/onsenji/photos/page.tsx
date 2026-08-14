@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
-import ZoomableImage from '@/components/ZoomableImage'
+import OnsenjiPhotoSelector from './OnsenjiPhotoSelector'
 import type { Media } from '@/types'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -48,22 +48,7 @@ export default async function OnsenjiPhotosPage() {
           {photos.length === 0 ? (
             <p className="text-center text-gray-400 text-sm py-16">{t('empty')}</p>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-              {photos.map((item, i) => (
-                <div key={item.id} className="bg-white rounded-xl shadow-sm overflow-hidden border">
-                  <div className="relative h-36">
-                    <ZoomableImage src={item.public_url} alt={`貸出用写真 ${i + 1}`} fill className="object-cover" />
-                  </div>
-                  <div className="p-3">
-                    <p className="text-xs text-gray-600 mb-2">{t('photoLabel')} {i + 1}</p>
-                    <Link href={`/onsenji/apply?category=${encodeURIComponent('写真使用・貸出し許可申請')}&photo=${encodeURIComponent(item.id)}`}
-                      className="block text-center text-xs px-3 py-2 bg-onsenji text-white rounded-full hover:bg-onsenji/80 transition-colors">
-                      {t('applyCta')}
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <OnsenjiPhotoSelector photos={photos} />
           )}
         </div>
       </main>

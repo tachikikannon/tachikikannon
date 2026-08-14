@@ -94,7 +94,11 @@
     "intro": "使用・貸出が可能な写真をご紹介しています。ご希望の写真がございましたら「この写真を申請する」ボタンより申請フォームにお進みください。",
     "empty": "現在、貸出用の写真はありません。",
     "photoLabel": "写真",
-    "applyCta": "この写真を申請する"
+    "selectHint": "写真を選んで、下のボタンから申請へ進んでください（複数選択可）。",
+    "selectLabel": "選択する",
+    "selectedLabel": "選択済み ✓",
+    "selectedCountUnit": "枚選択中",
+    "applySelectedCta": "選択した写真で申請する"
   },
   "news": {
     "title": "お知らせ",
@@ -193,6 +197,8 @@
     "categoryLabel": "申請区分",
     "categoryPlaceholder": "選択してください",
     "photoRefLabel": "対象写真",
+    "photoRefLoading": "読み込み中...",
+    "photoCountUnit": "枚",
     "nameLabel": "お名前",
     "emailLabel": "メールアドレス",
     "phoneLabel": "電話番号（任意）",
@@ -598,7 +604,11 @@
     "intro": "使用・貸出が可能な写真をご紹介しています。ご希望の写真がございましたら「この写真を申請する」ボタンより申請フォームにお進みください。",
     "empty": "現在、貸出用の写真はありません。",
     "photoLabel": "写真",
-    "applyCta": "この写真を申請する"
+    "selectHint": "写真を選んで、下のボタンから申請へ進んでください（複数選択可）。",
+    "selectLabel": "選択する",
+    "selectedLabel": "選択済み ✓",
+    "selectedCountUnit": "枚選択中",
+    "applySelectedCta": "選択した写真で申請する"
   },
   "onsenjiNews": {
     "title": "お知らせ",
@@ -785,6 +795,8 @@
     "categoryLabel": "申請区分",
     "categoryPlaceholder": "選択してください",
     "photoRefLabel": "対象写真",
+    "photoRefLoading": "読み込み中...",
+    "photoCountUnit": "枚",
     "nameLabel": "お名前",
     "emailLabel": "メールアドレス",
     "phoneLabel": "電話番号（任意）",
