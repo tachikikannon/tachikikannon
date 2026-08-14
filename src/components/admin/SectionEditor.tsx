@@ -5,7 +5,8 @@ import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
 type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
-export type Field = TextField | ListFieldDef
+type BooleanField = { key: string; label: string; type: 'boolean'; defaultValue?: string; checkboxLabel?: string }
+export type Field = TextField | ListFieldDef | BooleanField
 
 interface Props {
   title: string
@@ -56,7 +57,17 @@ export default function SectionEditor({ title, href, fields, accent = 'navy' }: 
         {fields.map((field) => (
           <div key={field.key}>
             <label className="admin-label">{field.label}</label>
-            {field.type === 'list' ? (
+            {field.type === 'boolean' ? (
+              <label className="inline-flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4"
+                  checked={(values[field.key] ?? field.defaultValue ?? 'false') === 'true'}
+                  onChange={e => setValues(v => ({ ...v, [field.key]: e.target.checked ? 'true' : 'false' }))}
+                />
+                {field.checkboxLabel ?? '有効にする'}
+              </label>
+            ) : field.type === 'list' ? (
               <ListEditor
                 value={values[field.key] ?? field.defaultValue}
                 fields={field.listFields}

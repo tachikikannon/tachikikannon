@@ -5,7 +5,8 @@ import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
 type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
-type Field = TextField | ListFieldDef
+type BooleanField = { key: string; label: string; type: 'boolean'; defaultValue?: string; checkboxLabel?: string }
+type Field = TextField | ListFieldDef | BooleanField
 type Section = { section: string; href: string; fields: Field[] }
 
 const J = (v: unknown) => JSON.stringify(v)
@@ -18,6 +19,10 @@ const SECTIONS: Section[] = [
       { key: 'onsenji_hero_en',    label: 'ヒーロー 英語サブタイトル', defaultValue: 'Nikkozan Onsenji Temple' },
       { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場', translatable: true },
       { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを', translatable: true },
+      { key: 'onsenji_onsen_status_enabled', label: '温泉営業ステータスの表示（ヒーロー下、ボタンの下に表示）', type: 'boolean', defaultValue: 'true', checkboxLabel: '表示する' },
+      { key: 'onsenji_onsen_status_closed', label: '本日は行事のため入浴不可にする（オンにすると「温泉営業中」の代わりに下記の休止メッセージを表示）', type: 'boolean', defaultValue: 'false', checkboxLabel: '入浴不可にする' },
+      { key: 'onsenji_onsen_status_event_name', label: '休止理由の行事名（「本日　◯◯の為、ご入浴できません」の◯◯部分）', defaultValue: '法要', translatable: true },
+      { key: 'onsenji_onsen_status_hours', label: '入浴可能時間（通常時に日付の下に小さく表示。季節により変動するため随時更新してください）', defaultValue: '9:00〜16:00まで入浴可', translatable: true },
       { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は管理画面の「お知らせ管理」で編集）', defaultValue: 'お知らせ', translatable: true },
       { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について', translatable: true },
       {
@@ -611,7 +616,17 @@ export default function OnsenjPagesEditor() {
               {fields.map((field) => (
                 <div key={field.key}>
                   <label className="admin-label">{field.label}</label>
-                  {field.type === 'list' ? (
+                  {field.type === 'boolean' ? (
+                    <label className="inline-flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4"
+                        checked={(values[field.key] ?? field.defaultValue ?? 'false') === 'true'}
+                        onChange={e => setValues(v => ({ ...v, [field.key]: e.target.checked ? 'true' : 'false' }))}
+                      />
+                      {field.checkboxLabel ?? '有効にする'}
+                    </label>
+                  ) : field.type === 'list' ? (
                     <ListEditor
                       value={values[field.key] ?? field.defaultValue}
                       fields={field.listFields}

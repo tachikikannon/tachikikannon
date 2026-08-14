@@ -58,6 +58,12 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_title_en: 'A sacred site of the Medicine Buddha,\ncarrying over 1,200 years of prayer',
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_hero_sub_en: 'A branch temple of the World Heritage site Nikkozan Rinnoji. The protection of Yakushi Nyorai, and the healing of hot spring water from the earth.',
+  onsenji_onsen_status_enabled: 'true',
+  onsenji_onsen_status_closed: 'false',
+  onsenji_onsen_status_event_name: '法要',
+  onsenji_onsen_status_event_name_en: 'a temple service',
+  onsenji_onsen_status_hours: '9:00〜16:00まで入浴可',
+  onsenji_onsen_status_hours_en: 'Bathing available 9:00 AM–4:00 PM',
   onsenji_heading_news: 'お知らせ',
   onsenji_heading_news_en: 'News',
   onsenji_about_title: '温泉寺について',
@@ -122,6 +128,13 @@ export default async function OnsenjPage({
 
   const heroTitle = getLocalizedContent(c, 'onsenji_hero_title', loc)
   const heroSub = getLocalizedContent(c, 'onsenji_hero_sub', loc)
+  const onsenStatusEnabled = c['onsenji_onsen_status_enabled'] !== 'false'
+  const onsenStatusClosed = c['onsenji_onsen_status_closed'] === 'true'
+  const onsenStatusEventName = getLocalizedContent(c, 'onsenji_onsen_status_event_name', loc)
+  const onsenStatusHours = getLocalizedContent(c, 'onsenji_onsen_status_hours', loc)
+  const todayLabel = loc === 'en'
+    ? new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
+    : `${new Date().getMonth() + 1}月${new Date().getDate()}日`
   const headingNews = getLocalizedContent(c, 'onsenji_heading_news', loc)
   const aboutTitle = getLocalizedContent(c, 'onsenji_about_title', loc)
   const headingGoryaku = getLocalizedContent(c, 'onsenji_heading_goryaku', loc)
@@ -171,6 +184,24 @@ export default async function OnsenjPage({
                 {t('ctaOnsen')}
               </Link>
             </div>
+            {onsenStatusEnabled && (
+              <div className="mt-6 text-center">
+                {onsenStatusClosed ? (
+                  <p className="text-white text-sm font-medium">
+                    {loc === 'en'
+                      ? `Bathing is unavailable today due to ${onsenStatusEventName}.`
+                      : `本日　${onsenStatusEventName}の為、ご入浴できません`}
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-white text-sm font-medium">
+                      {todayLabel}　{loc === 'en' ? 'Hot Spring Open Today' : '温泉営業中'}
+                    </p>
+                    <p className="text-white/60 text-xs mt-1">{onsenStatusHours}</p>
+                  </>
+                )}
+              </div>
+            )}
           </div>
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
             <span className="text-xs tracking-widest">SCROLL</span>
