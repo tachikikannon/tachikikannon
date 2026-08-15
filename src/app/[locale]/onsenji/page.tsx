@@ -65,6 +65,7 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_onsen_status_closed_time_label_en: 'Hot Spring Closed Now',
   onsenji_onsen_status_open_time: '09:00',
   onsenji_onsen_status_close_time: '16:00',
+  onsenji_onsen_status_note: '※浴槽が小さいため、満員の場合はお待たせすることがございます。',
   onsenji_onsen_closure_events: '[]',
   onsenji_heading_news: 'お知らせ',
   onsenji_heading_news_en: 'News',
@@ -170,6 +171,7 @@ export default async function OnsenjPage({
   const onsenStatusHours = loc === 'en'
     ? `Bathing available ${to12h(onsenOpenTime)}–${to12h(onsenCloseTime)}`
     : `${onsenOpenTime}〜${onsenCloseTime}まで入浴可`
+  const onsenStatusNote = getLocalizedContent(c, 'onsenji_onsen_status_note', loc)
   const todayLabel = loc === 'en'
     ? new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric' }).format(new Date())
     : `${Number(todayISO.split('-')[1])}月${Number(todayISO.split('-')[2])}日`
@@ -245,6 +247,9 @@ export default async function OnsenjPage({
                       </p>
                     </div>
                     <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
+                    {onsenStatusNote && (
+                      <p className="text-[11px] md:text-xs text-gray-400 mt-0.5">{onsenStatusNote}</p>
+                    )}
                   </div>
                 ) : (
                   <div className="inline-flex flex-col items-center gap-1.5 bg-white text-onsenji px-8 py-5 rounded-2xl shadow-xl">
@@ -258,6 +263,9 @@ export default async function OnsenjPage({
                       </p>
                     </div>
                     <p className="text-xs md:text-sm text-onsenji/70">{onsenStatusHours}</p>
+                    {onsenStatusNote && (
+                      <p className="text-[11px] md:text-xs text-onsenji/50 mt-0.5">{onsenStatusNote}</p>
+                    )}
                   </div>
                 )}
               </div>

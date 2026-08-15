@@ -226,6 +226,7 @@ const SECTIONS: Section[] = [
       { key: 'onsenji_onsen_status_closed_time_label', label: '時間外の表示文言', defaultValue: '温泉入れません', translatable: true },
       { key: 'onsenji_onsen_status_open_time', label: '入浴開始時刻（24時間表記 例: 09:00。季節により変動するため随時更新してください）', defaultValue: '09:00' },
       { key: 'onsenji_onsen_status_close_time', label: '入浴終了時刻（24時間表記 例: 16:00。この時刻を過ぎると自動で時間外の表示文言に切り替わります）', defaultValue: '16:00' },
+      { key: 'onsenji_onsen_status_note', label: '入浴時間の下に表示する補足文言', defaultValue: '※浴槽が小さいため、満員の場合はお待たせすることがございます。', translatable: true },
       {
         key: 'onsenji_onsen_closure_events',
         label: '入浴不可の行事（事前登録。登録した日付になると自動で「本日は◯◯の為、温泉には入れません」と表示されます）',
