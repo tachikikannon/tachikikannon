@@ -221,12 +221,6 @@ export default async function OnsenjPage({
               {heroSub}
             </p>
           }
-          sectionExtra={
-            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 z-10">
-              <span className="text-xs tracking-widest">SCROLL</span>
-              <span className="block w-px h-8 bg-white/30 animate-pulse" />
-            </div>
-          }
         >
           {onsenStatusEnabled && (
             <div className="flex justify-center">

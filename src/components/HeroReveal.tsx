@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 type Phase = 'idle' | 'text' | 'image'
 
@@ -19,8 +19,6 @@ interface HeroRevealProps {
   background: ReactNode
   /** 写真が現れたあと、見出し類の下に表示される最終コンテンツ（ボタン等） */
   children?: ReactNode
-  /** section直下（中央寄せコンテンツの外）に配置する要素。absolute指定の要素など。 */
-  sectionExtra?: ReactNode
   className?: string
 }
 
@@ -39,10 +37,12 @@ const READ_PAUSE_MS = 3000     // 小見出し（寺名）が出そろってか�
 export default function HeroReveal({
   eyebrow, heading, subheading, midContent, crestSrc, darkColor, lightColor,
   eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
-  background, children, sectionExtra, className,
+  background, children, className,
 }: HeroRevealProps) {
   const [phase, setPhase] = useState<Phase>('idle')
-  const [scrolled, setScrolled] = useState(false)
+  const headingContentRef = useRef<HTMLDivElement>(null)
+  const bottomGroupRef = useRef<HTMLDivElement>(null)
+  const [minHeightPx, setMinHeightPx] = useState<number | null>(null)
   const charCount = Array.from(heading.replace(/\n/g, '')).length
   // 最後の文字が「text開始」から見て、浮かび終わるまでの相対時間
   const lastCharDoneRelMs = (charCount - 1) * STAGGER_MS + CHAR_DURATION_MS
@@ -60,11 +60,26 @@ export default function HeroReveal({
   }, [imageAtMs])
 
   useEffect(() => {
-    // スクロールを始めたらSCROLLヒントを消す（コンテンツが増えてヒーローが
-    // ビューポートより高くなったため、絶対配置だと変な位置に出てしまう）
-    const onScroll = () => setScrolled(window.scrollY > 80)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    // 見出しグループ・下部グループは共にposition:absoluteなので、通常フローと
+    // 違ってどちらもセクション自身の高さに寄与しない。そのままだとmin-h-100vh
+    // が床のまま動かず、見出しを画像中央に固定しつつ下部グループ(温泉寺は
+    // 入浴ステータスカード分だけ立木観音より高い)と組み合わせた合計が画面に
+    // 収まらない端末で見出しの2行目と下部コンテンツが重なってしまう。
+    // 実測した高さから「見出しが画像中央に来たまま重ならない」ために必要な
+    // 最小の高さを計算し、min-h-100vhと比較して大きい方をセクションの高さにする。
+    const headingEl = headingContentRef.current
+    const bottomEl = bottomGroupRef.current
+    if (!headingEl || !bottomEl) return
+    const update = () => {
+      const headingH = headingEl.offsetHeight
+      const bottomH = bottomEl.offsetHeight
+      setMinHeightPx(headingH + bottomH * 2)
+    }
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(headingEl)
+    ro.observe(bottomEl)
+    return () => ro.disconnect()
   }, [])
 
   const textActive = phase !== 'idle'
@@ -73,7 +88,10 @@ export default function HeroReveal({
   let charIndex = 0
 
   return (
-    <section className={`relative flex flex-col overflow-hidden bg-white ${className ?? ''}`}>
+    <section
+      className={`relative flex flex-col overflow-hidden bg-white ${className ?? ''}`}
+      style={minHeightPx ? { minHeight: `max(calc(var(--vh, 1svh) * 100), ${minHeightPx}px)` } : undefined}
+    >
       <div className="absolute inset-0 transition-opacity duration-[1400ms] ease-out" style={{ opacity: imageActive ? 1 : 0 }}>
         {/* 白背景の上に半透明の写真をそのまま重ねると色が薄く見えてしまうため、
             写真の下に地色を敷いてから重ねる */}
@@ -117,70 +135,74 @@ export default function HeroReveal({
             />
           </div>
         )}
-        <p
-          className="text-xs tracking-[0.3em] mb-4"
-          style={{
-            opacity: textActive ? 1 : 0,
-            color: imageActive ? eyebrowLightColor : eyebrowDarkColor,
-            textShadow: imageActive ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
-            transitionProperty: 'opacity, color',
-            transitionDuration: '700ms',
-            transitionTimingFunction: EASE,
-          }}
-        >
-          {eyebrow}
-        </p>
-        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl tracking-wider flex flex-col items-center gap-1 md:gap-2 mb-4" style={{ perspective: '600px' }}>
-          {lines.map((line, li) => (
-            // line-heightやmarginは表示環境によって行間が揺れる問題があったため、
-            // flexのgapで行間を確保する（ブラウザ間・表示倍率で崩れにくい）
-            <span key={li} className="block whitespace-nowrap">
-              {Array.from(line).map((ch, ci) => {
-                // text開始（textActiveがtrueになった瞬間）からの相対遅延
-                const relDelayMs = charIndex++ * STAGGER_MS
-                return (
-                  <span
-                    key={ci}
-                    className="inline-block"
-                    style={{
-                      opacity: textActive ? 1 : 0,
-                      transform: textActive ? 'translateY(0) rotateX(0deg)' : 'translateY(22px) rotateX(-55deg)',
-                      color: imageActive ? lightColor : darkColor,
-                      textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
-                      transitionProperty: 'opacity, transform, color',
-                      transitionDuration: `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`,
-                      transitionTimingFunction: EASE,
-                      transitionDelay: `${relDelayMs}ms, ${relDelayMs}ms, 0ms`,
-                    }}
-                  >
-                    {ch === ' ' ? ' ' : ch}
-                  </span>
-                )
-              })}
-            </span>
-          ))}
-        </h1>
-        {subheading && (
+        {/* headingContentRefで実際に必要な高さを計測し、セクションの最小高さに反映する
+            (このdiv自体はabsoluteではない普通のflex子要素なので、中身の自然な高さが取れる) */}
+        <div ref={headingContentRef}>
           <p
-            className="font-serif text-lg md:text-3xl tracking-[0.2em] mb-2"
+            className="text-xs tracking-[0.3em] mb-4"
             style={{
-              opacity: phase === 'text' ? 1 : 0,
-              color: darkColor,
-              transitionProperty: 'opacity',
-              transitionDuration: `${SUBHEADING_DURATION_MS}ms`,
+              opacity: textActive ? 1 : 0,
+              color: imageActive ? eyebrowLightColor : eyebrowDarkColor,
+              textShadow: imageActive ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
+              transitionProperty: 'opacity, color',
+              transitionDuration: '700ms',
               transitionTimingFunction: EASE,
-              // 出現時: 最後の文字が浮かび終えてから。消える時: image化した瞬間に即フェードアウト。
-              transitionDelay: phase === 'text' ? `${lastCharDoneRelMs + SUBHEADING_GAP_MS}ms` : '0ms',
             }}
           >
-            {subheading}
+            {eyebrow}
           </p>
-        )}
+          <h1 className="font-serif text-[32px] tracking-normal sm:text-4xl sm:tracking-wider md:text-6xl lg:text-7xl flex flex-col items-center gap-1 md:gap-2 mb-6 md:mb-8" style={{ perspective: '600px' }}>
+            {lines.map((line, li) => (
+              // line-heightやmarginは表示環境によって行間が揺れる問題があったため、
+              // flexのgapで行間を確保する（ブラウザ間・表示倍率で崩れにくい）
+              <span key={li} className="block whitespace-nowrap">
+                {Array.from(line).map((ch, ci) => {
+                  // text開始（textActiveがtrueになった瞬間）からの相対遅延
+                  const relDelayMs = charIndex++ * STAGGER_MS
+                  return (
+                    <span
+                      key={ci}
+                      className="inline-block"
+                      style={{
+                        opacity: textActive ? 1 : 0,
+                        transform: textActive ? 'translateY(0) rotateX(0deg)' : 'translateY(22px) rotateX(-55deg)',
+                        color: imageActive ? lightColor : darkColor,
+                        textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
+                        transitionProperty: 'opacity, transform, color',
+                        transitionDuration: `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`,
+                        transitionTimingFunction: EASE,
+                        transitionDelay: `${relDelayMs}ms, ${relDelayMs}ms, 0ms`,
+                      }}
+                    >
+                      {ch === ' ' ? ' ' : ch}
+                    </span>
+                  )
+                })}
+              </span>
+            ))}
+          </h1>
+          {subheading && (
+            <p
+              className="font-serif text-lg md:text-3xl tracking-[0.2em] mb-2"
+              style={{
+                opacity: phase === 'text' ? 1 : 0,
+                color: darkColor,
+                transitionProperty: 'opacity',
+                transitionDuration: `${SUBHEADING_DURATION_MS}ms`,
+                transitionTimingFunction: EASE,
+                // 出現時: 最後の文字が浮かび終えてから。消える時: image化した瞬間に即フェードアウト。
+                transitionDelay: phase === 'text' ? `${lastCharDoneRelMs + SUBHEADING_GAP_MS}ms` : '0ms',
+              }}
+            >
+              {subheading}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* 見出し類とは別に、写真下部ぎりぎりに寄せる補足文・ボタン等。
           absoluteでセクション下端に固定し、上の見出し中央配置に影響しないようにする */}
-      <div className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10">
+      <div ref={bottomGroupRef} className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10">
         {midContent && (
           <div
             style={{
@@ -208,20 +230,6 @@ export default function HeroReveal({
         </div>
       </div>
 
-      {sectionExtra && (
-        // fixed配置の子要素をtransform/filterのないラッパーに通すことで、
-        // 本当にビューポート基準で固定されるようにする（filterがあると
-        // それ自体がposition:fixedの基準になってしまうため）
-        <div
-          className="transition-opacity duration-700 ease-out"
-          style={{
-            opacity: imageActive && !scrolled ? 1 : 0,
-            transitionDelay: imageActive ? '450ms' : '0ms',
-          }}
-        >
-          {sectionExtra}
-        </div>
-      )}
     </section>
   )
 }
