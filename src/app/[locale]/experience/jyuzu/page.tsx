@@ -189,8 +189,8 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_cta_heading_en: 'Reservations for the Juzu Making Experience',
   jyuzu_cta_sub: '毎日開催しております。団体でお越しの際は事前にお電話ください。',
   jyuzu_cta_sub_en: 'Held daily. For group visits, please call in advance.',
-  jyuzu_heading_instagram: 'みなさんの投稿',
-  jyuzu_heading_instagram_en: 'Visitor Posts',
+  jyuzu_heading_instagram: '数珠作り体験ギャラリー',
+  jyuzu_heading_instagram_en: 'Juzu Making Experience Gallery',
   jyuzu_instagram_hint: '「#中禅寺立木観音」「#数珠づくり体験」のハッシュタグをつけて投稿すると、こちらでご紹介させていただくことがあります。',
   jyuzu_instagram_hint_en: 'Posts tagged with both "#中禅寺立木観音" and "#数珠づくり体験" may be featured here.',
   jyuzu_instagram_urls: '[]',
@@ -386,6 +386,15 @@ export default async function JyuzuPage({
                 </div>
               ))}
             </div>
+
+            {/* 数珠作り体験ギャラリー（Instagram投稿） */}
+            {instagramUrls.length > 0 && (
+              <div className="mt-10 pt-8 border-t border-gray-200">
+                <h3 className="text-lg font-serif text-navy text-center mb-1">{g('jyuzu_heading_instagram')}</h3>
+                <p className="text-xs text-gray-400 text-center mb-6">{g('jyuzu_instagram_hint')}</p>
+                <InstagramEmbed urls={instagramUrls} />
+              </div>
+            )}
           </section>
 
           <section>
@@ -396,16 +405,6 @@ export default async function JyuzuPage({
               ))}
             </ul>
           </section>
-
-          {/* みなさんの投稿（Instagram） */}
-          {instagramUrls.length > 0 && (
-            <section>
-              <h2 className="text-xl font-serif text-navy text-center mb-1">{g('jyuzu_heading_instagram')}</h2>
-              <div className="w-10 h-0.5 bg-gold mx-auto mb-2" />
-              <p className="text-xs text-gray-400 text-center mb-8">{g('jyuzu_instagram_hint')}</p>
-              <InstagramEmbed urls={instagramUrls} />
-            </section>
-          )}
 
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
             <p className="font-serif text-xl mb-2">{g('jyuzu_cta_heading')}</p>

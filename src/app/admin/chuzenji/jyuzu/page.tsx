@@ -175,10 +175,10 @@ const FIELDS = [
   },
   { key: 'jyuzu_cta_heading', label: 'CTA見出し', defaultValue: '数珠づくり体験のご予約', translatable: true },
   { key: 'jyuzu_cta_sub', label: '予約ボタン下の説明文', defaultValue: '毎日開催しております。団体でお越しの際は事前にお電話ください。', translatable: true },
-  { key: 'jyuzu_heading_instagram', label: '「みなさんの投稿」見出し', defaultValue: 'みなさんの投稿', translatable: true },
-  { key: 'jyuzu_instagram_hint', label: '「みなさんの投稿」補足文', multiline: true, defaultValue: '「#中禅寺立木観音」「#数珠づくり体験」のハッシュタグをつけて投稿すると、こちらでご紹介させていただくことがあります。', translatable: true },
+  { key: 'jyuzu_heading_instagram', label: '「数珠作り体験ギャラリー」見出し（選べる珠セクション内に表示）', defaultValue: '数珠作り体験ギャラリー', translatable: true },
+  { key: 'jyuzu_instagram_hint', label: '「数珠作り体験ギャラリー」補足文', multiline: true, defaultValue: '「#中禅寺立木観音」「#数珠づくり体験」のハッシュタグをつけて投稿すると、こちらでご紹介させていただくことがあります。', translatable: true },
   {
-    key: 'jyuzu_instagram_urls', label: 'Instagram投稿URL一覧（掲載する投稿のURLを追加・削除できます）', type: 'list' as const,
+    key: 'jyuzu_instagram_urls', label: '数珠作り体験ギャラリー：Instagram投稿URL一覧（掲載する投稿のURLを追加・削除できます）', type: 'list' as const,
     listFields: [{ key: 'url', label: 'Instagram投稿URL（例: https://www.instagram.com/p/xxxxxxxxxxx/）' }],
     defaultValue: '[]',
   },
