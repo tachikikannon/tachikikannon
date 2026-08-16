@@ -168,10 +168,6 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_target_en: 'Elementary school age and up (children must be accompanied by a guardian)',
   jyuzu_place: '大黒天堂窓口',
   jyuzu_place_en: 'Daikokuten Hall Counter',
-  jyuzu_price_note_label: '料金について',
-  jyuzu_price_note_label_en: 'About Pricing',
-  jyuzu_price_note: 'お選びいただく珠の素材・組み合わせによって料金が異なります。詳しくは下記コース説明をご覧ください。',
-  jyuzu_price_note_en: 'The fee varies depending on the bead material and combination you choose. Please see the course details below.',
   jyuzu_group_note_label: '団体のご案内',
   jyuzu_group_note_label_en: 'For Groups',
   jyuzu_group_note: '数珠づくり体験、団体のご予約も承っております。20名様を超える場合は、ご相談ください。',
@@ -356,10 +352,6 @@ export default async function JyuzuPage({
                   ))}
                 </tbody>
               </table>
-            </div>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-gray-700 mb-4">
-              <p className="font-bold text-amber-700 text-xs mb-1">{g('jyuzu_price_note_label')}</p>
-              <p>{g('jyuzu_price_note')}</p>
             </div>
             <div className="bg-cream-alt border border-gray-200 rounded-lg p-4 text-sm text-gray-700">
               <p className="font-bold text-navy text-xs mb-1">{g('jyuzu_group_note_label')}</p>

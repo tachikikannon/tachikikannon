@@ -530,8 +530,6 @@ const SECTIONS: Section[] = [
       { key: 'jyuzu_capacity', label: '体験人数', defaultValue: '1名〜20名まで', translatable: true },
       { key: 'jyuzu_target', label: '対象', defaultValue: '小学生以上（小学生は保護者同伴）', translatable: true },
       { key: 'jyuzu_place', label: '受付場所', defaultValue: '大黒天堂窓口', translatable: true },
-      { key: 'jyuzu_price_note_label', label: '料金補足の見出し', defaultValue: '料金について', translatable: true },
-      { key: 'jyuzu_price_note', label: '料金についての補足', multiline: true, defaultValue: 'お選びいただく珠の素材・組み合わせによって料金が異なります。詳しくは下記コース説明をご覧ください。', translatable: true },
       { key: 'jyuzu_group_note_label', label: '団体案内の見出し', defaultValue: '団体のご案内', translatable: true },
       { key: 'jyuzu_group_note', label: '団体のご案内 補足', multiline: true, defaultValue: '数珠づくり体験、団体のご予約も承っております。20名様を超える場合は、ご相談ください。', translatable: true },
       {
