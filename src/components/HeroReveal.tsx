@@ -170,7 +170,7 @@ export default function HeroReveal({
           </div>
         )}
         <div
-          className="transition-opacity ease-out"
+          className={`transition-opacity ease-out ${midContent ? 'mt-8' : ''}`}
           style={{
             opacity: imageActive ? 1 : 0,
             transitionDuration: '700ms',

@@ -204,7 +204,7 @@ export default async function OnsenjPage({
       <main>
         {/* ヒーロー */}
         <HeroReveal
-          className="h-[calc(var(--vh,1svh)*100)] min-h-[600px]"
+          className="min-h-[calc(var(--vh,1svh)*100)] py-24"
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
           subheading={loc === 'en' ? undefined : '日光山温泉寺'}
@@ -274,7 +274,7 @@ export default async function OnsenjPage({
               )}
             </div>
           )}
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/onsenji/about" className="btn-gold">
               {t('ctaAbout')}
             </Link>
