@@ -159,7 +159,8 @@ export default async function OnsenjPage({
   const menuCards    = pj<typeof DEFAULT_MENU_CARDS>(getLocalizedContent(c, 'onsenji_menu_cards', loc), DEFAULT_MENU_CARDS)
 
   const heroTitle = getLocalizedContent(c, 'onsenji_hero_title', loc)
-  const heroSub = getLocalizedContent(c, 'onsenji_hero_sub', loc)
+  // 管理画面での入力ミス等で空行（連続する改行）が入っていても、余計な行として表示しない
+  const heroSub = getLocalizedContent(c, 'onsenji_hero_sub', loc).split('\n').map(l => l.trim()).filter(Boolean).join('\n')
   const onsenStatusEnabled = c['onsenji_onsen_status_enabled'] !== 'false'
   const onsenStatusOpenLabel = getLocalizedContent(c, 'onsenji_onsen_status_open_label', loc)
   const onsenStatusClosedTimeLabel = getLocalizedContent(c, 'onsenji_onsen_status_closed_time_label', loc)
@@ -221,7 +222,7 @@ export default async function OnsenjPage({
             </div>
           }
         >
-          <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed whitespace-pre-line">
             {heroSub}
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
