@@ -54,7 +54,8 @@ export default function HeroReveal({
 
   const textActive = phase !== 'idle'
   const imageActive = phase === 'image'
-  const lines = heading.split('\n')
+  // 管理画面での入力ミス等で空行（連続する改行）が入っていても、余計な行として表示しない
+  const lines = heading.split('\n').filter(line => line.trim() !== '')
   let charIndex = 0
 
   return (
@@ -78,9 +79,9 @@ export default function HeroReveal({
         >
           {eyebrow}
         </p>
-        <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-[1.8] mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl tracking-wider leading-[1.8] mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
           {lines.map((line, li) => (
-            <span key={li} className="block">
+            <span key={li} className="block whitespace-nowrap">
               {Array.from(line).map((ch, ci) => {
                 // text開始（textActiveがtrueになった瞬間）からの相対遅延
                 const relDelayMs = charIndex++ * STAGGER_MS
