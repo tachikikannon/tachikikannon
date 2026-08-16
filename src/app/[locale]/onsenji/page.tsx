@@ -204,7 +204,7 @@ export default async function OnsenjPage({
       <main>
         {/* ヒーロー */}
         <HeroReveal
-          className="min-h-[calc(var(--vh,1svh)*100)] py-24"
+          className="min-h-[calc(var(--vh,1svh)*100)]"
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
           subheading={loc === 'en' ? undefined : '日光山温泉寺'}

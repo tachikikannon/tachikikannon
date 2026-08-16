@@ -182,7 +182,7 @@ export default async function HomePage({
       <main>
         {/* ヒーロー */}
         <HeroReveal
-          className="min-h-[calc(var(--vh,1svh)*100)] py-24"
+          className="min-h-[calc(var(--vh,1svh)*100)]"
           eyebrow={heroEn}
           heading={heroTitle.replace(/\\n/g, '\n')}
           subheading={loc === 'en' ? undefined : '日光山中禅寺立木観音'}

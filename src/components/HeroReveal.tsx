@@ -73,7 +73,7 @@ export default function HeroReveal({
   let charIndex = 0
 
   return (
-    <section className={`relative flex items-center justify-center overflow-hidden bg-white ${className ?? ''}`}>
+    <section className={`relative flex flex-col overflow-hidden bg-white ${className ?? ''}`}>
       <div className="absolute inset-0 transition-opacity duration-[1400ms] ease-out" style={{ opacity: imageActive ? 1 : 0 }}>
         {/* 白背景の上に半透明の写真をそのまま重ねると色が薄く見えてしまうため、
             写真の下に地色を敷いてから重ねる */}
@@ -83,34 +83,35 @@ export default function HeroReveal({
         <div className="absolute inset-0" style={{ backgroundColor: darkColor, opacity: 0.22 }} />
       </div>
 
-      {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる */}
-      {crestSrc && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
-          <div
-            className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
-            style={{
-              backgroundColor: darkColor,
-              WebkitMaskImage: `url(${crestSrc})`,
-              maskImage: `url(${crestSrc})`,
-              // このPNGは単色地（不透明）に白抜きの紋なので、アルファではなく
-              // 輝度でマスクしないと紋の形が抜けず、四角がうっすら見えるだけになる
-              WebkitMaskMode: 'luminance',
-              maskMode: 'luminance',
-              WebkitMaskSize: 'contain',
-              maskSize: 'contain',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat',
-              WebkitMaskPosition: 'center',
-              maskPosition: 'center',
-              filter: 'blur(1px)',
-              opacity: imageActive ? 0 : 0.07,
-              transitionDuration: '900ms',
-            }}
-          />
-        </div>
-      )}
-
-      <div className="relative text-center px-4">
+      {/* メインコピー・サブコピーはこの残り空間の中で常に上下中央。
+          その下のボタン等は中央配置の対象に含めず、画像下部に寄せる */}
+      <div className="relative flex-1 flex flex-col items-center justify-center text-center px-4 min-h-0">
+        {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる */}
+        {crestSrc && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+            <div
+              className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
+              style={{
+                backgroundColor: darkColor,
+                WebkitMaskImage: `url(${crestSrc})`,
+                maskImage: `url(${crestSrc})`,
+                // このPNGは単色地（不透明）に白抜きの紋なので、アルファではなく
+                // 輝度でマスクしないと紋の形が抜けず、四角がうっすら見えるだけになる
+                WebkitMaskMode: 'luminance',
+                maskMode: 'luminance',
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                WebkitMaskPosition: 'center',
+                maskPosition: 'center',
+                filter: 'blur(1px)',
+                opacity: imageActive ? 0 : 0.07,
+                transitionDuration: '900ms',
+              }}
+            />
+          </div>
+        )}
         <p
           className="text-xs tracking-[0.3em] mb-4"
           style={{
@@ -170,6 +171,10 @@ export default function HeroReveal({
             {subheading}
           </p>
         )}
+      </div>
+
+      {/* 見出し類とは別に、写真下部ぎりぎりに寄せる補足文・ボタン等 */}
+      <div className="relative text-center px-4 pb-12 md:pb-16 shrink-0">
         {midContent && (
           <div
             style={{
