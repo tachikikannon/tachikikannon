@@ -112,7 +112,11 @@ export default function HeroReveal({
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
         {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる */}
         {crestSrc && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            aria-hidden="true"
+            style={liftPx ? { transform: `translateY(-${liftPx}px)` } : undefined}
+          >
             <div
               className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
               style={{
