@@ -60,12 +60,14 @@ export default async function JyuzuGalleryPage({
       <Header />
       <main className="pt-16">
         <div className="bg-cream-alt px-4 py-2 text-xs text-gray-400">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <Link href="/">{tc('breadcrumbHome')}</Link> &gt; <Link href="/experience/jyuzu">{t('title')}</Link> &gt; {g('jyuzu_heading_instagram')}
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 py-14">
+        {/* Instagram埋め込みは1枚あたり実質326px前後が下限のため、3列グリッドが
+            窮屈にならないようこのページだけ他より少し広めのmax-w-6xlにしている */}
+        <div className="max-w-6xl mx-auto px-4 py-14">
           <h1 className="text-xl font-serif text-navy text-center mb-1">{g('jyuzu_heading_instagram')}</h1>
           <div className="w-10 h-0.5 bg-gold mx-auto mb-2" />
           <p className="text-xs text-gray-400 text-center mb-8 max-w-md mx-auto">{g('jyuzu_instagram_hint')}</p>

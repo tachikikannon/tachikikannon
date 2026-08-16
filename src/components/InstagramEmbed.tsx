@@ -23,19 +23,20 @@ export default function InstagramEmbed({ urls }: { urls: string[] }) {
 
   return (
     <>
-      {/* 大きくなりすぎないよう、1枚あたりの幅を固定し横一列でスクロールさせる
-          (Instagram公式ウィジェットは幅326px前後が実質的な下限のため、
-          これ以上狭めると写真が欠けて表示されてしまう) */}
-      <div className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0">
+      {/* Instagram公式ウィジェットは自前で枠線・角丸・影を付けてくるため、
+          さらに外側にborder/rounded/shadowを重ねると二重枠になって
+          がたついて見える。ここでは幅(グリッドの列)だけ決めて、見た目は
+          Instagram側の描画にそのまま任せる。3列グリッドで、はみ出た分は
+          縦スクロールで見られる形にした */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {urls.map((url, i) => (
-          <div key={i} className="flex-shrink-0 w-[320px] rounded-xl overflow-hidden border border-gray-200 shadow-sm">
-            <blockquote
-              className="instagram-media"
-              data-instgrm-permalink={url}
-              data-instgrm-version="14"
-              style={{ margin: 0, width: '100%' }}
-            />
-          </div>
+          <blockquote
+            key={i}
+            className="instagram-media"
+            data-instgrm-permalink={url}
+            data-instgrm-version="14"
+            style={{ margin: '0 auto', width: '100%' }}
+          />
         ))}
       </div>
       <Script
