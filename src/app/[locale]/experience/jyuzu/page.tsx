@@ -386,17 +386,13 @@ export default async function JyuzuPage({
               ))}
             </div>
 
-            {/* 数珠作り体験ギャラリー（Instagram投稿） — 「料金について」等の
-                注意書きボックスと同じ配色の横長ボックスにし、押すと別ページの
-                ギャラリーへ遷移する */}
+            {/* 数珠作り体験ギャラリー（Instagram投稿） — 他のCTAと同じbtn-goldの
+                ボタンで、押すと別ページのギャラリーへ遷移する */}
             {instagramUrls.length > 0 && (
-              <div className="mt-10 pt-8 border-t border-gray-200">
-                <Link
-                  href="/experience/jyuzu/gallery"
-                  className="block bg-amber-50 border border-amber-200 rounded-lg p-4 hover:bg-amber-100 transition-colors"
-                >
-                  <p className="font-bold text-amber-700 text-xs mb-1">{g('jyuzu_heading_instagram')} →</p>
-                  <p className="text-sm text-gray-700">{g('jyuzu_instagram_hint')}</p>
+              <div className="mt-10 pt-8 border-t border-gray-200 text-center">
+                <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto">{g('jyuzu_instagram_hint')}</p>
+                <Link href="/experience/jyuzu/gallery" className="btn-gold">
+                  {g('jyuzu_heading_instagram')} →
                 </Link>
               </div>
             )}
