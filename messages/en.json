@@ -551,7 +551,9 @@
     "contactCta": "Contact Us",
     "quickShakyou": "Sutra Copying Experience",
     "quickShabutu": "Buddhist Image Tracing",
-    "quickZazen": "Zazen Meditation"
+    "quickZazen": "Zazen Meditation",
+    "galleryEmpty": "No posts yet.",
+    "backToJyuzu": "← Back to the Juzu Making Experience page"
   },
   "shabutu": {
     "title": "Buddhist Image Tracing",

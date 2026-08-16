@@ -8,7 +8,6 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import MaterialSwatches from '@/components/MaterialSwatches'
 import ZoomableImage from '@/components/ZoomableImage'
-import InstagramEmbed from '@/components/InstagramEmbed'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 
@@ -387,12 +386,24 @@ export default async function JyuzuPage({
               ))}
             </div>
 
-            {/* 数珠作り体験ギャラリー（Instagram投稿） */}
+            {/* 数珠作り体験ギャラリー（Instagram投稿） — 花ごよみと同じ正方形タイルの
+                見た目で、押すと別ページのギャラリーへ遷移する */}
             {instagramUrls.length > 0 && (
-              <div className="mt-10 pt-8 border-t border-gray-200">
-                <h3 className="text-lg font-serif text-navy text-center mb-1">{g('jyuzu_heading_instagram')}</h3>
-                <p className="text-xs text-gray-400 text-center mb-6">{g('jyuzu_instagram_hint')}</p>
-                <InstagramEmbed urls={instagramUrls} />
+              <div className="mt-10 pt-8 border-t border-gray-200 flex flex-col items-center">
+                <Link
+                  href="/experience/jyuzu/gallery"
+                  className="relative w-40 sm:w-48 aspect-square rounded-xl overflow-hidden shadow-sm group block"
+                >
+                  <Image src="/images/chuzenji/experience/jyuzu/tukuru.jpg" alt={g('jyuzu_heading_instagram')} fill className="object-cover group-hover:opacity-90 transition-opacity" />
+                  <span className="absolute top-1.5 right-1.5 bg-black/55 text-white text-[10px] px-1.5 py-0.5 rounded leading-none whitespace-nowrap">
+                    Instagram
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/10 to-transparent" />
+                  <p className="absolute inset-x-0 bottom-0 p-3 font-serif text-white font-medium text-sm text-center leading-snug">
+                    {g('jyuzu_heading_instagram')}
+                  </p>
+                </Link>
+                <p className="text-xs text-gray-400 text-center mt-3 max-w-xs">{g('jyuzu_instagram_hint')}</p>
               </div>
             )}
           </section>
