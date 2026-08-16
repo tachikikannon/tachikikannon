@@ -51,9 +51,12 @@ export default async function JyuzuGalleryPage({
   const tc = await getTranslations('common')
   const content = await getContent()
   const g = (key: string) => getLocalizedContent(content, key, loc)
+  // 管理画面の「+項目を追加」は配列の末尾に追加されるため、末尾ほど新しい投稿。
+  // 新しいものを一番上に表示するため、表示直前で反転する
   const instagramUrls = pj<{ url: string }[]>(g('jyuzu_instagram_urls'), [])
     .map(({ url }) => url?.trim())
     .filter((url): url is string => !!url)
+    .reverse()
 
   return (
     <>
