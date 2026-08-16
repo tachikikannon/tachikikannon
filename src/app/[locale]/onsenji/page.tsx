@@ -206,6 +206,7 @@ export default async function OnsenjPage({
         <HeroReveal
           className="min-h-[calc(var(--vh,1svh)*100)]"
           liftPx={72}
+          bottomLiftPx={40}
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
           subheading={loc === 'en' ? undefined : '日光山温泉寺'}
@@ -218,7 +219,7 @@ export default async function OnsenjPage({
             <ZoomableImage src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
           }
           midContent={
-            <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed whitespace-pre-line">
+            <p className="text-white text-sm md:text-base max-w-xl mx-auto leading-relaxed whitespace-pre-line">
               {heroSub}
             </p>
           }
