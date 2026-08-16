@@ -93,10 +93,11 @@ export default function HeroReveal({
               className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
               style={{
                 backgroundColor: darkColor,
+                // crestSrcは元の単色地(不透明)PNGを黒地×白紋の二値マスク専用
+                // 画像に変換したもの(*-mask.png)。元PNGのまま輝度マスクすると、
+                // 地の色が完全な黒ではないため紋の輪郭がにじんで判別できなかった
                 WebkitMaskImage: `url(${crestSrc})`,
                 maskImage: `url(${crestSrc})`,
-                // このPNGは単色地（不透明）に白抜きの紋なので、アルファではなく
-                // 輝度でマスクしないと紋の形が抜けず、四角がうっすら見えるだけになる
                 WebkitMaskMode: 'luminance',
                 maskMode: 'luminance',
                 WebkitMaskSize: 'contain',
@@ -106,7 +107,7 @@ export default function HeroReveal({
                 WebkitMaskPosition: 'center',
                 maskPosition: 'center',
                 filter: 'blur(1px)',
-                opacity: imageActive ? 0 : 0.07,
+                opacity: imageActive ? 0 : 0.13,
                 transitionDuration: '900ms',
               }}
             />

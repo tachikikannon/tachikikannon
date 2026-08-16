@@ -186,7 +186,7 @@ export default async function HomePage({
           eyebrow={heroEn}
           heading={heroTitle.replace(/\\n/g, '\n')}
           subheading={loc === 'en' ? undefined : '日光山中禅寺立木観音'}
-          crestSrc="/images/chuzenji/common/jimon-navy.png"
+          crestSrc="/images/chuzenji/common/jimon-navy-mask.png"
           darkColor="#1a2a4a"
           lightColor="#ffffff"
           eyebrowDarkColor="#c8a96e"
