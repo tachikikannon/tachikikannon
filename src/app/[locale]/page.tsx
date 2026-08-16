@@ -196,8 +196,8 @@ export default async function HomePage({
         >
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>
-            <Link href="/prayer" className="inline-block bg-white text-navy px-6 py-3 rounded font-medium tracking-wider hover:bg-cream transition-colors duration-200">{t('ctaPrayer')}</Link>
-            <Link href="/#access" className="inline-block bg-white text-navy px-6 py-3 rounded font-medium tracking-wider hover:bg-cream transition-colors duration-200">{t('ctaAccess')}</Link>
+            <Link href="/prayer" className="btn-outline">{t('ctaPrayer')}</Link>
+            <Link href="/#access" className="btn-outline">{t('ctaAccess')}</Link>
           </div>
         </HeroReveal>
 
