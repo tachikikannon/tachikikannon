@@ -206,6 +206,7 @@ export default async function OnsenjPage({
           className="h-[calc(var(--vh,1svh)*85)] min-h-[500px]"
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
+          subheading={loc === 'en' ? undefined : '日光山温泉寺'}
           darkColor="#1a4a3a"
           lightColor="#ffffff"
           eyebrowDarkColor="#1a4a3a"

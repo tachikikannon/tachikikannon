@@ -185,6 +185,7 @@ export default async function HomePage({
           className="h-[calc(var(--vh,1svh)*100)] min-h-[600px]"
           eyebrow={heroEn}
           heading={heroTitle.replace(/\\n/g, '\n')}
+          subheading={loc === 'en' ? undefined : '日光山中禅寺立木観音'}
           darkColor="#1a2a4a"
           lightColor="#ffffff"
           eyebrowDarkColor="#c8a96e"
