@@ -205,6 +205,7 @@ export default async function OnsenjPage({
         {/* ヒーロー */}
         <HeroReveal
           className="min-h-[calc(var(--vh,1svh)*100)]"
+          liftPx={40}
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
           subheading={loc === 'en' ? undefined : '日光山温泉寺'}
@@ -273,7 +274,7 @@ export default async function OnsenjPage({
               {t('ctaAbout')}
             </Link>
             <Link href="/onsenji/onsen"
-              className="px-8 py-3 border border-white/60 bg-white/15 backdrop-blur-sm text-white rounded-full hover:bg-white/25 transition-colors text-sm tracking-wide">
+              className="px-8 py-3 border border-white/60 bg-white/15 backdrop-blur-sm text-white rounded-full hover:bg-white hover:text-onsenji hover:border-white transition-colors text-sm tracking-wide">
               {t('ctaOnsen')}
             </Link>
           </div>

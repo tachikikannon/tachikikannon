@@ -19,6 +19,8 @@ interface HeroRevealProps {
   background: ReactNode
   /** 写真が現れたあと、見出し類の下に表示される最終コンテンツ（ボタン等） */
   children?: ReactNode
+  /** 見出しグループ・下部グループを上下中央から一律に持ち上げる量(px)。指定サイトのみ調整したい場合に使う */
+  liftPx?: number
   className?: string
 }
 
@@ -37,7 +39,7 @@ const READ_PAUSE_MS = 3000     // 小見出し（寺名）が出そろってか�
 export default function HeroReveal({
   eyebrow, heading, subheading, midContent, crestSrc, darkColor, lightColor,
   eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
-  background, children, className,
+  background, children, liftPx = 0, className,
 }: HeroRevealProps) {
   const [phase, setPhase] = useState<Phase>('idle')
   const headingContentRef = useRef<HTMLDivElement>(null)
@@ -137,7 +139,7 @@ export default function HeroReveal({
         )}
         {/* headingContentRefで実際に必要な高さを計測し、セクションの最小高さに反映する
             (このdiv自体はabsoluteではない普通のflex子要素なので、中身の自然な高さが取れる) */}
-        <div ref={headingContentRef}>
+        <div ref={headingContentRef} style={liftPx ? { transform: `translateY(-${liftPx}px)` } : undefined}>
           <p
             className="text-xs tracking-[0.3em] mb-4"
             style={{
@@ -151,7 +153,7 @@ export default function HeroReveal({
           >
             {eyebrow}
           </p>
-          <h1 className="font-serif text-[32px] tracking-normal sm:text-4xl sm:tracking-wider md:text-6xl lg:text-7xl flex flex-col items-center gap-1 md:gap-2 mb-6 md:mb-8" style={{ perspective: '600px' }}>
+          <h1 className="font-serif text-[32px] tracking-normal sm:text-4xl sm:tracking-wider md:text-6xl lg:text-7xl flex flex-col items-center gap-1 md:gap-2 mb-3 md:mb-4" style={{ perspective: '600px' }}>
             {lines.map((line, li) => (
               // line-heightやmarginは表示環境によって行間が揺れる問題があったため、
               // flexのgapで行間を確保する（ブラウザ間・表示倍率で崩れにくい）
@@ -202,7 +204,11 @@ export default function HeroReveal({
 
       {/* 見出し類とは別に、写真下部ぎりぎりに寄せる補足文・ボタン等。
           absoluteでセクション下端に固定し、上の見出し中央配置に影響しないようにする */}
-      <div ref={bottomGroupRef} className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10">
+      <div
+        ref={bottomGroupRef}
+        className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10"
+        style={liftPx ? { transform: `translateY(-${liftPx}px)` } : undefined}
+      >
         {midContent && (
           <div
             style={{
