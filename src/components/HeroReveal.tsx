@@ -24,6 +24,10 @@ interface HeroRevealProps {
   /** 下部グループ（ボタン等）だけをさらに持ち上げる量(px)。見出しは動かさず、
       ボタンだけ見出しに近づけたい場合にliftPxと併用する */
   bottomLiftPx?: number
+  /** trueの場合、children全体を一括フェードするのをやめ、children側で
+      "hero-pop-buttons"クラスを付けた要素の直下の子を、写真が現れたあとに
+      1つずつ弾むように順番に表示する(globals.cssのCSSアニメーションで実現) */
+  staggerChildren?: boolean
   className?: string
 }
 
@@ -42,7 +46,7 @@ const READ_PAUSE_MS = 3000     // 小見出し（寺名）が出そろってか�
 export default function HeroReveal({
   eyebrow, heading, subheading, midContent, crestSrc, darkColor, lightColor,
   eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
-  background, children, liftPx = 0, bottomLiftPx = 0, className,
+  background, children, liftPx = 0, bottomLiftPx = 0, staggerChildren = false, className,
 }: HeroRevealProps) {
   const [phase, setPhase] = useState<Phase>('idle')
   const headingContentRef = useRef<HTMLDivElement>(null)
@@ -238,10 +242,13 @@ export default function HeroReveal({
           </div>
         )}
         <div
-          className={`transition-opacity ease-out ${midContent ? 'mt-8' : ''}`}
+          className={`${staggerChildren ? '' : 'transition-opacity ease-out'} ${midContent ? 'mt-8' : ''}`}
+          data-active={imageActive}
           style={{
-            opacity: imageActive ? 1 : 0,
+            opacity: staggerChildren ? 1 : (imageActive ? 1 : 0),
+            transitionProperty: staggerChildren ? 'filter' : 'opacity',
             transitionDuration: '700ms',
+            transitionTimingFunction: EASE,
             transitionDelay: imageActive ? '450ms' : '0ms',
             filter: imageActive ? 'drop-shadow(0 2px 10px rgba(0,0,0,0.35))' : 'none',
           }}

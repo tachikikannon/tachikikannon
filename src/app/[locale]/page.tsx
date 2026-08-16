@@ -184,6 +184,7 @@ export default async function HomePage({
         <HeroReveal
           className="min-h-[calc(var(--vh,1svh)*100)]"
           bottomLiftPx={60}
+          staggerChildren
           eyebrow={heroEn}
           heading={heroTitle.replace(/\\n/g, '\n')}
           subheading={loc === 'en' ? undefined : '日光山中禅寺立木観音'}
@@ -196,7 +197,7 @@ export default async function HomePage({
             <Image src="/images/chuzenji/common/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
           }
         >
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="hero-pop-buttons flex flex-wrap gap-3 justify-center">
             <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>
             <Link href="/prayer" className="btn-outline bg-white/15 backdrop-blur-sm">{t('ctaPrayer')}</Link>
             <Link href="/#access" className="btn-outline bg-white/15 backdrop-blur-sm">{t('ctaAccess')}</Link>

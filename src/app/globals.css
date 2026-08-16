@@ -29,6 +29,26 @@ img, video, picture {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* HeroRevealのstaggerChildren用: 写真が現れたあと、ボタン等を1つずつ
+   弾むように順番に表示する演出。HeroRevealのchildrenラッパーに
+   data-active="true"が付いたら、内部の.hero-pop-buttons直下の子要素を
+   nth-childの順で少しずつ遅延させながらポップインさせる */
+@keyframes hero-pop-in {
+  0%   { opacity: 0; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.hero-pop-buttons > * {
+  opacity: 0;
+  transform: scale(0.5);
+}
+[data-active="true"] .hero-pop-buttons > * {
+  animation: hero-pop-in 550ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+[data-active="true"] .hero-pop-buttons > *:nth-child(1) { animation-delay: 450ms; }
+[data-active="true"] .hero-pop-buttons > *:nth-child(2) { animation-delay: 620ms; }
+[data-active="true"] .hero-pop-buttons > *:nth-child(3) { animation-delay: 790ms; }
+[data-active="true"] .hero-pop-buttons > *:nth-child(4) { animation-delay: 960ms; }
+
 @layer components {
   .btn-primary {
     @apply inline-block bg-navy text-white px-6 py-3 rounded font-medium tracking-wider
