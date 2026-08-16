@@ -8,6 +8,7 @@ import ZoomableImage from '@/components/ZoomableImage'
 import RecordsCarousel from '@/components/RecordsCarousel'
 import ChuzenjiGallery from '@/components/ChuzenjiGallery'
 import YouTubeAutoplay from '@/components/YouTubeAutoplay'
+import RevealSection from '@/components/RevealSection'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -95,6 +96,8 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_service_cards:    JSON.stringify(DEFAULT_SERVICE_CARDS),
   top_service_cards_en: JSON.stringify(DEFAULT_SERVICE_CARDS_EN),
   top_gallery_slides:   JSON.stringify(DEFAULT_GALLERY_SLIDES),
+  top_reveal_heading:    '根を張ったまま、\n祈りは、今もここに。',
+  top_reveal_heading_en: 'Still rooted in the earth,\na prayer that lives on today.',
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -155,6 +158,7 @@ export default async function HomePage({
 
   const heroEn = getLocalizedContent(content, 'hero_en', loc)
   const heroTitle = getLocalizedContent(content, 'hero_title', loc)
+  const revealHeading = getLocalizedContent(content, 'top_reveal_heading', loc)
   const accessAddress = getLocalizedContent(content, 'access_address', loc)
   const accessCar = getLocalizedContent(content, 'access_car', loc)
   const accessBus = getLocalizedContent(content, 'access_bus', loc)
@@ -195,6 +199,18 @@ export default async function HomePage({
             </div>
           </div>
         </section>
+
+        {/* スクロールリビール */}
+        <RevealSection
+          eyebrow="SINCE 784"
+          heading={revealHeading}
+          image={{
+            src: '/images/chuzenji/common/godaido.jpg',
+            alt: '五大堂',
+            caption: loc === 'en' ? 'Godaido Hall — overlooking Lake Chuzenji' : '五大堂 — 中禅寺湖を望む舞台',
+          }}
+          accent="navy"
+        />
 
         {/* SNSバナー */}
         <section className="bg-navy py-6">

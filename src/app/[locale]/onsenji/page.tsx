@@ -7,6 +7,7 @@ import { getTranslations } from 'next-intl/server'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
+import RevealSection from '@/components/RevealSection'
 import { createServerClient } from '@/lib/supabase-server'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -67,6 +68,8 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_onsen_status_close_time: '16:00',
   onsenji_onsen_status_note: '※浴槽が小さいため、満員の場合はお待たせすることがございます。',
   onsenji_onsen_closure_events: '[]',
+  onsenji_top_reveal_heading:    '山は崩れても、\n祈りは残った。',
+  onsenji_top_reveal_heading_en: 'Even when the mountain fell,\nthe prayer remained.',
   onsenji_heading_news: 'お知らせ',
   onsenji_heading_news_en: 'News',
   onsenji_about_title: '温泉寺について',
@@ -172,6 +175,7 @@ export default async function OnsenjPage({
     ? `Bathing available ${to12h(onsenOpenTime)}–${to12h(onsenCloseTime)}`
     : `${onsenOpenTime}〜${onsenCloseTime}まで入浴可`
   const onsenStatusNote = getLocalizedContent(c, 'onsenji_onsen_status_note', loc)
+  const revealHeading = getLocalizedContent(c, 'onsenji_top_reveal_heading', loc)
   const todayLabel = loc === 'en'
     ? new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric' }).format(new Date())
     : `${Number(todayISO.split('-')[1])}月${Number(todayISO.split('-')[2])}日`
@@ -276,6 +280,18 @@ export default async function OnsenjPage({
             <span className="block w-px h-8 bg-white/30 animate-pulse" />
           </div>
         </section>
+
+        {/* スクロールリビール */}
+        <RevealSection
+          eyebrow="SINCE 788"
+          heading={revealHeading}
+          image={{
+            src: '/images/onsenji/history/yakushinyorai.png',
+            alt: '薬師瑠璃光如来',
+            caption: loc === 'en' ? 'The principal image, Yakushi Nyorai' : '御本尊・薬師瑠璃光如来',
+          }}
+          accent="onsenji"
+        />
 
         {/* お知らせ */}
         <section className="py-14" style={{backgroundColor: 'rgba(126,200,164,0.08)'}}>
