@@ -83,9 +83,13 @@ export default function HeroReveal({
         <div className="absolute inset-0" style={{ backgroundColor: darkColor, opacity: 0.22 }} />
       </div>
 
-      {/* メインコピー・サブコピーはこの残り空間の中で常に上下中央。
-          その下のボタン等は中央配置の対象に含めず、画像下部に寄せる */}
-      <div className="relative flex-1 flex flex-col items-center justify-center text-center px-4 min-h-0">
+      {/* メインコピー・サブコピーは常にセクション全体（画像）の上下中央に配置する。
+          flex-1で「下のボタン等を除いた残り空間」を中央寄せする方式だと、
+          下のボタン等の高さがお寺ごとに違う（温泉寺は入浴ステータスカードがある分、
+          立木観音より下のブロックが高い）ため、見た目の中心がずれてしまっていた。
+          absoluteでセクション全体を基準に中央配置することで、下のブロックの
+          高さに影響されず常に画像の真ん中に来るようにした */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
         {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる */}
         {crestSrc && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
@@ -93,12 +97,12 @@ export default function HeroReveal({
               className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
               style={{
                 backgroundColor: darkColor,
-                // crestSrcは元の単色地(不透明)PNGを黒地×白紋の二値マスク専用
-                // 画像に変換したもの(*-mask.png)。元PNGのまま輝度マスクすると、
-                // 地の色が完全な黒ではないため紋の輪郭がにじんで判別できなかった
+                // crestSrcは元の単色地(不透明)PNGから、紋の形をそのままアルファ
+                // チャンネルに変換した透過PNG(*-mask.png)。輝度マスク(mask-mode:
+                // luminance)はSafari等で無視されアルファ判定にフォールバックする
+                // ため、透過そのものを持たせて全ブラウザで確実に効くようにした
                 WebkitMaskImage: `url(${crestSrc})`,
                 maskImage: `url(${crestSrc})`,
-                WebkitMaskMode: 'luminance',
                 maskMode: 'luminance',
                 WebkitMaskSize: 'contain',
                 maskSize: 'contain',
@@ -126,11 +130,11 @@ export default function HeroReveal({
         >
           {eyebrow}
         </p>
-        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl tracking-wider whitespace-pre-line mb-4" style={{ perspective: '600px' }}>
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl tracking-wider flex flex-col items-center gap-1 md:gap-2 mb-4" style={{ perspective: '600px' }}>
           {lines.map((line, li) => (
-            // line-heightだけでは行間が広がらなかったため、2行目以降は
-            // marginで明示的に間隔を空ける
-            <span key={li} className={`block whitespace-nowrap ${li > 0 ? 'mt-1 md:mt-2' : ''}`}>
+            // line-heightやmarginは表示環境によって行間が揺れる問題があったため、
+            // flexのgapで行間を確保する（ブラウザ間・表示倍率で崩れにくい）
+            <span key={li} className="block whitespace-nowrap">
               {Array.from(line).map((ch, ci) => {
                 // text開始（textActiveがtrueになった瞬間）からの相対遅延
                 const relDelayMs = charIndex++ * STAGGER_MS
@@ -174,8 +178,9 @@ export default function HeroReveal({
         )}
       </div>
 
-      {/* 見出し類とは別に、写真下部ぎりぎりに寄せる補足文・ボタン等 */}
-      <div className="relative text-center px-4 pb-8 md:pb-10 shrink-0">
+      {/* 見出し類とは別に、写真下部ぎりぎりに寄せる補足文・ボタン等。
+          absoluteでセクション下端に固定し、上の見出し中央配置に影響しないようにする */}
+      <div className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10">
         {midContent && (
           <div
             style={{
