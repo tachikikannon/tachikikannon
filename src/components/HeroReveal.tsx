@@ -130,7 +130,7 @@ export default function HeroReveal({
           {lines.map((line, li) => (
             // line-heightだけでは行間が広がらなかったため、2行目以降は
             // marginで明示的に間隔を空ける
-            <span key={li} className={`block whitespace-nowrap ${li > 0 ? 'mt-3 md:mt-5' : ''}`}>
+            <span key={li} className={`block whitespace-nowrap ${li > 0 ? 'mt-1 md:mt-2' : ''}`}>
               {Array.from(line).map((ch, ci) => {
                 // text開始（textActiveがtrueになった瞬間）からの相対遅延
                 const relDelayMs = charIndex++ * STAGGER_MS
@@ -175,7 +175,7 @@ export default function HeroReveal({
       </div>
 
       {/* 見出し類とは別に、写真下部ぎりぎりに寄せる補足文・ボタン等 */}
-      <div className="relative text-center px-4 pb-12 md:pb-16 shrink-0">
+      <div className="relative text-center px-4 pb-8 md:pb-10 shrink-0">
         {midContent && (
           <div
             style={{
