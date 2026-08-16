@@ -153,7 +153,7 @@ export default function HeroReveal({
           >
             {eyebrow}
           </p>
-          <h1 className="font-serif text-[32px] tracking-normal sm:text-4xl sm:tracking-wider md:text-6xl lg:text-7xl flex flex-col items-center gap-1 md:gap-2 mb-3 md:mb-4" style={{ perspective: '600px' }}>
+          <h1 className="font-serif text-[32px] tracking-normal sm:text-4xl sm:tracking-wider md:text-6xl lg:text-7xl flex flex-col items-center gap-1 md:gap-2 mb-2 md:mb-3" style={{ perspective: '600px' }}>
             {lines.map((line, li) => (
               // line-heightやmarginは表示環境によって行間が揺れる問題があったため、
               // flexのgapで行間を確保する（ブラウザ間・表示倍率で崩れにくい）
