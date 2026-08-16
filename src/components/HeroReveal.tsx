@@ -60,6 +60,9 @@ export default function HeroReveal({
   return (
     <section className={`relative flex items-center justify-center overflow-hidden bg-white ${className ?? ''}`}>
       <div className="absolute inset-0 transition-opacity duration-[1400ms] ease-out" style={{ opacity: imageActive ? 1 : 0 }}>
+        {/* 白背景の上に半透明の写真をそのまま重ねると色が薄く見えてしまうため、
+            写真の下に地色を敷いてから重ねる */}
+        <div className="absolute inset-0" style={{ backgroundColor: darkColor }} />
         {background}
       </div>
       <div className="relative text-center px-4">
@@ -75,7 +78,7 @@ export default function HeroReveal({
         >
           {eyebrow}
         </p>
-        <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-[1.5] mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
+        <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-[1.8] mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
           {lines.map((line, li) => (
             <span key={li} className="block">
               {Array.from(line).map((ch, ci) => {
@@ -104,7 +107,7 @@ export default function HeroReveal({
         </h1>
         {subheading && (
           <p
-            className="text-lg md:text-2xl tracking-[0.2em] mb-6"
+            className="font-serif text-lg md:text-2xl tracking-[0.2em] mb-6"
             style={{
               opacity: phase === 'text' ? 1 : 0,
               color: darkColor,
