@@ -215,6 +215,11 @@ export default async function OnsenjPage({
           background={
             <ZoomableImage src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
           }
+          midContent={
+            <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed whitespace-pre-line">
+              {heroSub}
+            </p>
+          }
           sectionExtra={
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
               <span className="text-xs tracking-widest">SCROLL</span>
@@ -222,21 +227,8 @@ export default async function OnsenjPage({
             </div>
           }
         >
-          <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed whitespace-pre-line">
-            {heroSub}
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/onsenji/about"
-              className="px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm tracking-wide">
-              {t('ctaAbout')}
-            </Link>
-            <Link href="/onsenji/onsen"
-              className="px-8 py-3 border border-white/60 text-white rounded-full hover:bg-white/10 transition-colors text-sm tracking-wide">
-              {t('ctaOnsen')}
-            </Link>
-          </div>
           {onsenStatusEnabled && (
-            <div className="mt-8 flex justify-center">
+            <div className="flex justify-center">
               {todaysClosure ? (
                 <div className="inline-flex items-center gap-3 bg-[#c0524a] text-white px-6 py-4 rounded-2xl shadow-xl">
                   <span className="text-2xl flex-shrink-0">⚠️</span>
@@ -281,6 +273,16 @@ export default async function OnsenjPage({
               )}
             </div>
           )}
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/onsenji/about"
+              className="px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm tracking-wide">
+              {t('ctaAbout')}
+            </Link>
+            <Link href="/onsenji/onsen"
+              className="px-8 py-3 bg-white text-onsenji font-medium rounded-full hover:bg-[#f0f0f0] transition-colors text-sm tracking-wide">
+              {t('ctaOnsen')}
+            </Link>
+          </div>
         </HeroReveal>
 
         {/* お知らせ */}

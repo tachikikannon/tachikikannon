@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
+import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ZoomableImage from '@/components/ZoomableImage'
 import RecordsCarousel from '@/components/RecordsCarousel'
 import ChuzenjiGallery from '@/components/ChuzenjiGallery'
 import YouTubeAutoplay from '@/components/YouTubeAutoplay'
@@ -191,15 +191,13 @@ export default async function HomePage({
           eyebrowDarkColor="#c8a96e"
           eyebrowLightColor="#c8a96e"
           background={
-            <>
-              <ZoomableImage src="/images/chuzenji/common/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
-            </>
+            <Image src="/images/chuzenji/common/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
           }
         >
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>
-            <Link href="/prayer" className="btn-outline">{t('ctaPrayer')}</Link>
-            <Link href="/#access" className="btn-outline">{t('ctaAccess')}</Link>
+            <Link href="/prayer" className="inline-block bg-white text-navy px-6 py-3 rounded font-medium tracking-wider hover:bg-cream transition-colors duration-200">{t('ctaPrayer')}</Link>
+            <Link href="/#access" className="inline-block bg-white text-navy px-6 py-3 rounded font-medium tracking-wider hover:bg-cream transition-colors duration-200">{t('ctaAccess')}</Link>
           </div>
         </HeroReveal>
 
