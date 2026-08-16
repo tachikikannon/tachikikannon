@@ -21,8 +21,8 @@ interface HeroRevealProps {
 
 const EASE = 'cubic-bezier(0,0,0.2,1)'
 const TEXT_START_MS = 250      // idle → text（マウントからの絶対時間）
-const STAGGER_MS = 50          // 1文字ごとの遅延（text開始からの相対時間）
-const CHAR_DURATION_MS = 850   // 1文字のフェード＋回転にかかる時間
+const STAGGER_MS = 90          // 1文字ごとの遅延（text開始からの相対時間）
+const CHAR_DURATION_MS = 900   // 1文字のフェード＋回転にかかる時間
 const SUBHEADING_GAP_MS = 400  // 最後の文字が浮かび終えてから小見出しが出るまでの間
 const SUBHEADING_DURATION_MS = 700
 const READ_PAUSE_MS = 700      // 小見出しが出そろってから写真が現れるまでの間
@@ -75,7 +75,7 @@ export default function HeroReveal({
         >
           {eyebrow}
         </p>
-        <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-snug mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
+        <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-[1.5] mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
           {lines.map((line, li) => (
             <span key={li} className="block">
               {Array.from(line).map((ch, ci) => {
@@ -104,7 +104,7 @@ export default function HeroReveal({
         </h1>
         {subheading && (
           <p
-            className="text-sm md:text-base tracking-[0.2em] mb-6"
+            className="text-lg md:text-2xl tracking-[0.2em] mb-6"
             style={{
               opacity: phase === 'text' ? 1 : 0,
               color: darkColor,
