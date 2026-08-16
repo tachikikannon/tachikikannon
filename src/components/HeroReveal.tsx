@@ -21,6 +21,9 @@ interface HeroRevealProps {
   children?: ReactNode
   /** 見出しグループ・下部グループを上下中央から一律に持ち上げる量(px)。指定サイトのみ調整したい場合に使う */
   liftPx?: number
+  /** 下部グループ（ボタン等）だけをさらに持ち上げる量(px)。見出しは動かさず、
+      ボタンだけ見出しに近づけたい場合にliftPxと併用する */
+  bottomLiftPx?: number
   className?: string
 }
 
@@ -39,7 +42,7 @@ const READ_PAUSE_MS = 3000     // 小見出し（寺名）が出そろってか�
 export default function HeroReveal({
   eyebrow, heading, subheading, midContent, crestSrc, darkColor, lightColor,
   eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
-  background, children, liftPx = 0, className,
+  background, children, liftPx = 0, bottomLiftPx = 0, className,
 }: HeroRevealProps) {
   const [phase, setPhase] = useState<Phase>('idle')
   const headingContentRef = useRef<HTMLDivElement>(null)
@@ -157,7 +160,14 @@ export default function HeroReveal({
           >
             {eyebrow}
           </p>
-          <h1 className="font-serif text-[32px] tracking-normal sm:text-4xl sm:tracking-wider md:text-6xl lg:text-7xl flex flex-col items-center gap-1 md:gap-2 mb-2 md:mb-3" style={{ perspective: '600px' }}>
+          {/* フォントサイズはsm/md/lgのブレイクポイントごとに段階的に切り替えていたが、
+              ウィンドウ幅がブレイクポイントをまたぐ瞬間に見出しが急に小さく／大きく
+              なって不自然だったため、clamp()でビューポート幅に応じて連続的に
+              変化するようにした。32px時点はtracking 0emで安全確認済みの値と同じ */}
+          <h1
+            className="font-serif flex flex-col items-center gap-1 md:gap-2 mb-2 md:mb-3"
+            style={{ perspective: '600px', fontSize: 'clamp(32px, 17px + 3.8vw, 72px)', letterSpacing: '0em' }}
+          >
             {lines.map((line, li) => (
               // line-heightやmarginは表示環境によって行間が揺れる問題があったため、
               // flexのgapで行間を確保する（ブラウザ間・表示倍率で崩れにくい）
@@ -211,7 +221,7 @@ export default function HeroReveal({
       <div
         ref={bottomGroupRef}
         className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10"
-        style={liftPx ? { transform: `translateY(-${liftPx}px)` } : undefined}
+        style={(liftPx || bottomLiftPx) ? { transform: `translateY(-${liftPx + bottomLiftPx}px)` } : undefined}
       >
         {midContent && (
           <div
