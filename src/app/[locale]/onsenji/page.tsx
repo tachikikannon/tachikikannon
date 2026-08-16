@@ -212,12 +212,7 @@ export default async function OnsenjPage({
           eyebrowDarkColor="#1a4a3a"
           eyebrowLightColor="#7ec8a4"
           background={
-            <>
-              <div className="absolute inset-0 opacity-30">
-                <ZoomableImage src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-b from-onsenji/60 via-onsenji/30 to-onsenji/80" />
-            </>
+            <ZoomableImage src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
           }
           sectionExtra={
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">

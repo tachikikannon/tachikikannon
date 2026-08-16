@@ -72,6 +72,7 @@ export default function HeroReveal({
           style={{
             opacity: textActive ? 1 : 0,
             color: imageActive ? eyebrowLightColor : eyebrowDarkColor,
+            textShadow: imageActive ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
             transitionProperty: 'opacity, color',
             transitionDuration: '700ms',
             transitionTimingFunction: EASE,
@@ -79,7 +80,7 @@ export default function HeroReveal({
         >
           {eyebrow}
         </p>
-        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl tracking-wider leading-[1.8] mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl tracking-wider leading-[1.8] md:leading-[2] mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
           {lines.map((line, li) => (
             <span key={li} className="block whitespace-nowrap">
               {Array.from(line).map((ch, ci) => {
@@ -93,6 +94,7 @@ export default function HeroReveal({
                       opacity: textActive ? 1 : 0,
                       transform: textActive ? 'translateY(0) rotateX(0deg)' : 'translateY(22px) rotateX(-55deg)',
                       color: imageActive ? lightColor : darkColor,
+                      textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
                       transitionProperty: 'opacity, transform, color',
                       transitionDuration: `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`,
                       transitionTimingFunction: EASE,
@@ -108,7 +110,7 @@ export default function HeroReveal({
         </h1>
         {subheading && (
           <p
-            className="font-serif text-lg md:text-2xl tracking-[0.2em] mb-6"
+            className="font-serif text-lg md:text-3xl tracking-[0.2em] mb-6"
             style={{
               opacity: phase === 'text' ? 1 : 0,
               color: darkColor,
@@ -122,12 +124,26 @@ export default function HeroReveal({
             {subheading}
           </p>
         )}
-        <div className="transition-opacity duration-700 ease-out" style={{ opacity: imageActive ? 1 : 0, transitionDelay: imageActive ? '450ms' : '0ms' }}>
+        <div
+          className="transition-opacity duration-700 ease-out"
+          style={{
+            opacity: imageActive ? 1 : 0,
+            transitionDelay: imageActive ? '450ms' : '0ms',
+            filter: imageActive ? 'drop-shadow(0 2px 10px rgba(0,0,0,0.35))' : 'none',
+          }}
+        >
           {children}
         </div>
       </div>
       {sectionExtra && (
-        <div className="transition-opacity duration-700 ease-out" style={{ opacity: imageActive ? 1 : 0, transitionDelay: imageActive ? '450ms' : '0ms' }}>
+        <div
+          className="transition-opacity duration-700 ease-out"
+          style={{
+            opacity: imageActive ? 1 : 0,
+            transitionDelay: imageActive ? '450ms' : '0ms',
+            filter: imageActive ? 'drop-shadow(0 1px 6px rgba(0,0,0,0.4))' : 'none',
+          }}
+        >
           {sectionExtra}
         </div>
       )}

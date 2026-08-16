@@ -193,7 +193,6 @@ export default async function HomePage({
           background={
             <>
               <ZoomableImage src="/images/chuzenji/common/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
-              <div className="absolute inset-0 bg-navy/35" />
             </>
           }
         >
