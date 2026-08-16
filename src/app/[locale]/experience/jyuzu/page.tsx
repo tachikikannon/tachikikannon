@@ -390,10 +390,10 @@ export default async function JyuzuPage({
                 ボタンで、押すと別ページのギャラリーへ遷移する */}
             {instagramUrls.length > 0 && (
               <div className="mt-10 pt-8 border-t border-gray-200 text-center">
-                <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto">{g('jyuzu_instagram_hint')}</p>
                 <Link href="/experience/jyuzu/gallery" className="btn-gold">
-                  {g('jyuzu_heading_instagram')} →
+                  {g('jyuzu_heading_instagram')}
                 </Link>
+                <p className="text-sm text-gray-600 mt-4 max-w-md mx-auto">{g('jyuzu_instagram_hint')}</p>
               </div>
             )}
           </section>
