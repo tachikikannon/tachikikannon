@@ -18,12 +18,6 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     ],
   },
   {
-    section: 'スクロールリビール（白背景から文字が浮かび、写真が現れる演出）',
-    fields: [
-      { key: 'top_reveal_heading', label: 'キャッチコピー（改行可・Enterで改行）', multiline: true, defaultValue: '根を張ったまま、\n祈りは、今もここに。', translatable: true },
-    ],
-  },
-  {
     section: 'お知らせ・SNS',
     fields: [
       { key: 'top_sns_heading',  label: 'SNSバナーの見出し', defaultValue: '公式SNSでも最新情報を発信中', translatable: true },

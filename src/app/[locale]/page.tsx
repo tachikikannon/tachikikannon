@@ -8,7 +8,7 @@ import ZoomableImage from '@/components/ZoomableImage'
 import RecordsCarousel from '@/components/RecordsCarousel'
 import ChuzenjiGallery from '@/components/ChuzenjiGallery'
 import YouTubeAutoplay from '@/components/YouTubeAutoplay'
-import RevealSection from '@/components/RevealSection'
+import HeroReveal from '@/components/HeroReveal'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -96,8 +96,6 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_service_cards:    JSON.stringify(DEFAULT_SERVICE_CARDS),
   top_service_cards_en: JSON.stringify(DEFAULT_SERVICE_CARDS_EN),
   top_gallery_slides:   JSON.stringify(DEFAULT_GALLERY_SLIDES),
-  top_reveal_heading:    '根を張ったまま、\n祈りは、今もここに。',
-  top_reveal_heading_en: 'Still rooted in the earth,\na prayer that lives on today.',
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -158,7 +156,6 @@ export default async function HomePage({
 
   const heroEn = getLocalizedContent(content, 'hero_en', loc)
   const heroTitle = getLocalizedContent(content, 'hero_title', loc)
-  const revealHeading = getLocalizedContent(content, 'top_reveal_heading', loc)
   const accessAddress = getLocalizedContent(content, 'access_address', loc)
   const accessCar = getLocalizedContent(content, 'access_car', loc)
   const accessBus = getLocalizedContent(content, 'access_bus', loc)
@@ -184,33 +181,27 @@ export default async function HomePage({
       <Header />
       <main>
         {/* ヒーロー */}
-        <section className="relative h-[calc(var(--vh,1svh)*100)] min-h-[600px] flex items-center justify-center overflow-hidden">
-          <ZoomableImage src="/images/chuzenji/common/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-navy/50" />
-          <div className="relative text-center text-white px-4">
-            <p className="text-gold text-xs tracking-[0.3em] mb-4 opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.1s_ease-out_0.15s_forwards] motion-reduce:[animation:none]">{heroEn}</p>
-            <h1 className="font-serif text-4xl md:text-6xl tracking-wider leading-snug mb-6 whitespace-pre-line opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.3s_ease-out_0.5s_forwards] motion-reduce:[animation:none]">
-              {heroTitle.replace(/\\n/g, '\n')}
-            </h1>
-            <div className="flex flex-wrap gap-3 justify-center opacity-0 motion-reduce:opacity-100 [animation:fade-up_1.1s_ease-out_1.05s_forwards] motion-reduce:[animation:none]">
-              <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>
-              <Link href="/prayer" className="btn-outline">{t('ctaPrayer')}</Link>
-              <Link href="/#access" className="btn-outline">{t('ctaAccess')}</Link>
-            </div>
+        <HeroReveal
+          className="h-[calc(var(--vh,1svh)*100)] min-h-[600px]"
+          eyebrow={heroEn}
+          heading={heroTitle.replace(/\\n/g, '\n')}
+          darkColor="#1a2a4a"
+          lightColor="#ffffff"
+          eyebrowDarkColor="#c8a96e"
+          eyebrowLightColor="#c8a96e"
+          background={
+            <>
+              <ZoomableImage src="/images/chuzenji/common/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
+              <div className="absolute inset-0 bg-navy/50" />
+            </>
+          }
+        >
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>
+            <Link href="/prayer" className="btn-outline">{t('ctaPrayer')}</Link>
+            <Link href="/#access" className="btn-outline">{t('ctaAccess')}</Link>
           </div>
-        </section>
-
-        {/* スクロールリビール */}
-        <RevealSection
-          eyebrow="SINCE 784"
-          heading={revealHeading}
-          image={{
-            src: '/images/chuzenji/common/godaido.jpg',
-            alt: '五大堂',
-            caption: loc === 'en' ? 'Godaido Hall — overlooking Lake Chuzenji' : '五大堂 — 中禅寺湖を望む舞台',
-          }}
-          accent="navy"
-        />
+        </HeroReveal>
 
         {/* SNSバナー */}
         <section className="bg-navy py-6">

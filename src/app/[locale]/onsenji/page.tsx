@@ -7,7 +7,7 @@ import { getTranslations } from 'next-intl/server'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
-import RevealSection from '@/components/RevealSection'
+import HeroReveal from '@/components/HeroReveal'
 import { createServerClient } from '@/lib/supabase-server'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -68,8 +68,6 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_onsen_status_close_time: '16:00',
   onsenji_onsen_status_note: '※浴槽が小さいため、満員の場合はお待たせすることがございます。',
   onsenji_onsen_closure_events: '[]',
-  onsenji_top_reveal_heading:    '山は崩れても、\n祈りは残った。',
-  onsenji_top_reveal_heading_en: 'Even when the mountain fell,\nthe prayer remained.',
   onsenji_heading_news: 'お知らせ',
   onsenji_heading_news_en: 'News',
   onsenji_about_title: '温泉寺について',
@@ -175,7 +173,6 @@ export default async function OnsenjPage({
     ? `Bathing available ${to12h(onsenOpenTime)}–${to12h(onsenCloseTime)}`
     : `${onsenOpenTime}〜${onsenCloseTime}まで入浴可`
   const onsenStatusNote = getLocalizedContent(c, 'onsenji_onsen_status_note', loc)
-  const revealHeading = getLocalizedContent(c, 'onsenji_top_reveal_heading', loc)
   const todayLabel = loc === 'en'
     ? new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric' }).format(new Date())
     : `${Number(todayISO.split('-')[1])}月${Number(todayISO.split('-')[2])}日`
@@ -205,93 +202,89 @@ export default async function OnsenjPage({
       <HeaderOnsenji />
       <main>
         {/* ヒーロー */}
-        <section className="relative h-[calc(var(--vh,1svh)*85)] min-h-[500px] flex items-center justify-center overflow-hidden bg-onsenji">
-          <div className="absolute inset-0 opacity-30">
-            <ZoomableImage src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-onsenji/60 via-onsenji/30 to-onsenji/80" />
-          <div className="relative text-center px-4 text-white">
-            <p className="text-[#7ec8a4] text-xs tracking-[0.4em] mb-4">{c.onsenji_hero_en}</p>
-            <h1 className="font-serif text-3xl md:text-5xl tracking-widest whitespace-pre-line leading-tight mb-6">
-              {heroTitle}
-            </h1>
-            <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-              {heroSub}
-            </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/onsenji/about"
-                className="px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm tracking-wide">
-                {t('ctaAbout')}
-              </Link>
-              <Link href="/onsenji/onsen"
-                className="px-8 py-3 border border-white/60 text-white rounded-full hover:bg-white/10 transition-colors text-sm tracking-wide">
-                {t('ctaOnsen')}
-              </Link>
+        <HeroReveal
+          className="h-[calc(var(--vh,1svh)*85)] min-h-[500px]"
+          eyebrow={c.onsenji_hero_en}
+          heading={heroTitle}
+          darkColor="#1a4a3a"
+          lightColor="#ffffff"
+          eyebrowDarkColor="#1a4a3a"
+          eyebrowLightColor="#7ec8a4"
+          background={
+            <>
+              <div className="absolute inset-0 opacity-30">
+                <ZoomableImage src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-b from-onsenji/60 via-onsenji/30 to-onsenji/80" />
+            </>
+          }
+          sectionExtra={
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
+              <span className="text-xs tracking-widest">SCROLL</span>
+              <span className="block w-px h-8 bg-white/30 animate-pulse" />
             </div>
-            {onsenStatusEnabled && (
-              <div className="mt-8 flex justify-center">
-                {todaysClosure ? (
-                  <div className="inline-flex items-center gap-3 bg-[#c0524a] text-white px-6 py-4 rounded-2xl shadow-xl">
-                    <span className="text-2xl flex-shrink-0">⚠️</span>
-                    <p className="text-sm md:text-base font-bold leading-snug text-left">
-                      {loc === 'en'
-                        ? `The hot spring is closed today due to ${todaysClosure.name}.`
-                        : `本日は${todaysClosure.name}の為、温泉には入れません`}
+          }
+        >
+          <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+            {heroSub}
+          </p>
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/onsenji/about"
+              className="px-8 py-3 bg-[#7ec8a4] text-onsenji font-medium rounded-full hover:bg-[#a0d8bc] transition-colors text-sm tracking-wide">
+              {t('ctaAbout')}
+            </Link>
+            <Link href="/onsenji/onsen"
+              className="px-8 py-3 border border-white/60 text-white rounded-full hover:bg-white/10 transition-colors text-sm tracking-wide">
+              {t('ctaOnsen')}
+            </Link>
+          </div>
+          {onsenStatusEnabled && (
+            <div className="mt-8 flex justify-center">
+              {todaysClosure ? (
+                <div className="inline-flex items-center gap-3 bg-[#c0524a] text-white px-6 py-4 rounded-2xl shadow-xl">
+                  <span className="text-2xl flex-shrink-0">⚠️</span>
+                  <p className="text-sm md:text-base font-bold leading-snug text-left">
+                    {loc === 'en'
+                      ? `The hot spring is closed today due to ${todaysClosure.name}.`
+                      : `本日は${todaysClosure.name}の為、温泉には入れません`}
+                  </p>
+                </div>
+              ) : !onsenWithinHours ? (
+                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-8 py-5 rounded-2xl shadow-xl">
+                  <div className="flex items-center gap-2.5">
+                    <span className="relative flex h-3 w-3 flex-shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#c0524a] opacity-75" />
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-[#c0524a]" />
+                    </span>
+                    <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
+                      {onsenStatusClosedTimeLabel}
                     </p>
                   </div>
-                ) : !onsenWithinHours ? (
-                  <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-8 py-5 rounded-2xl shadow-xl">
-                    <div className="flex items-center gap-2.5">
-                      <span className="relative flex h-3 w-3 flex-shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#c0524a] opacity-75" />
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#c0524a]" />
-                      </span>
-                      <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
-                        {onsenStatusClosedTimeLabel}
-                      </p>
-                    </div>
-                    <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
-                    {onsenStatusNote && (
-                      <p className="text-[11px] md:text-xs text-gray-400 mt-0.5">{onsenStatusNote}</p>
-                    )}
+                  <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
+                  {onsenStatusNote && (
+                    <p className="text-[11px] md:text-xs text-gray-400 mt-0.5">{onsenStatusNote}</p>
+                  )}
+                </div>
+              ) : (
+                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-onsenji px-8 py-5 rounded-2xl shadow-xl">
+                  <div className="flex items-center gap-2.5">
+                    <span className="relative flex h-3 w-3 flex-shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7ec8a4] opacity-75" />
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-[#3f8c68]" />
+                    </span>
+                    <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
+                      {todayLabel}　{onsenStatusOpenLabel}
+                    </p>
                   </div>
-                ) : (
-                  <div className="inline-flex flex-col items-center gap-1.5 bg-white text-onsenji px-8 py-5 rounded-2xl shadow-xl">
-                    <div className="flex items-center gap-2.5">
-                      <span className="relative flex h-3 w-3 flex-shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7ec8a4] opacity-75" />
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#3f8c68]" />
-                      </span>
-                      <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
-                        {todayLabel}　{onsenStatusOpenLabel}
-                      </p>
-                    </div>
-                    <p className="text-xs md:text-sm text-onsenji/70">{onsenStatusHours}</p>
-                    {onsenStatusNote && (
-                      <p className="text-[11px] md:text-xs text-onsenji/50 mt-0.5">{onsenStatusNote}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
-            <span className="text-xs tracking-widest">SCROLL</span>
-            <span className="block w-px h-8 bg-white/30 animate-pulse" />
-          </div>
-        </section>
-
-        {/* スクロールリビール */}
-        <RevealSection
-          eyebrow="SINCE 788"
-          heading={revealHeading}
-          image={{
-            src: '/images/onsenji/history/yakushinyorai.png',
-            alt: '薬師瑠璃光如来',
-            caption: loc === 'en' ? 'The principal image, Yakushi Nyorai' : '御本尊・薬師瑠璃光如来',
-          }}
-          accent="onsenji"
-        />
+                  <p className="text-xs md:text-sm text-onsenji/70">{onsenStatusHours}</p>
+                  {onsenStatusNote && (
+                    <p className="text-[11px] md:text-xs text-onsenji/50 mt-0.5">{onsenStatusNote}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </HeroReveal>
 
         {/* お知らせ */}
         <section className="py-14" style={{backgroundColor: 'rgba(126,200,164,0.08)'}}>
