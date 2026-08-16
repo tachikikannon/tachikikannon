@@ -8,6 +8,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import MaterialSwatches from '@/components/MaterialSwatches'
 import ZoomableImage from '@/components/ZoomableImage'
+import InstagramEmbed from '@/components/InstagramEmbed'
 import { getLocalizedContent } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 
@@ -188,6 +189,11 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_cta_heading_en: 'Reservations for the Juzu Making Experience',
   jyuzu_cta_sub: '毎日開催しております。団体でお越しの際は事前にお電話ください。',
   jyuzu_cta_sub_en: 'Held daily. For group visits, please call in advance.',
+  jyuzu_heading_instagram: 'みなさんの投稿',
+  jyuzu_heading_instagram_en: 'Visitor Posts',
+  jyuzu_instagram_hint: '「#中禅寺立木観音」「#数珠づくり体験」のハッシュタグをつけて投稿すると、こちらでご紹介させていただくことがあります。',
+  jyuzu_instagram_hint_en: 'Posts tagged with both "#中禅寺立木観音" and "#数珠づくり体験" may be featured here.',
+  jyuzu_instagram_urls: '[]',
   jyuzu_flow: JSON.stringify(DEFAULT_FLOW),
   jyuzu_flow_en: JSON.stringify(DEFAULT_FLOW_EN),
   jyuzu_samples: JSON.stringify(DEFAULT_SAMPLES),
@@ -243,6 +249,9 @@ export default async function JyuzuPage({
   const woodsRaw  = pj<{ name: string; desc: string }[]>(g('jyuzu_woods'), woodsDefault)
   const stones = stonesRaw.map((s, i) => ({ image: stonesDefault[i]?.image ?? stonesDefault[0].image, ...s }))
   const woods  = woodsRaw.map((s, i) => ({ image: woodsDefault[i]?.image ?? woodsDefault[0].image, ...s }))
+  const instagramUrls = pj<{ url: string }[]>(g('jyuzu_instagram_urls'), [])
+    .map(({ url }) => url?.trim())
+    .filter((url): url is string => !!url)
 
   return (
     <>
@@ -387,6 +396,16 @@ export default async function JyuzuPage({
               ))}
             </ul>
           </section>
+
+          {/* みなさんの投稿（Instagram） */}
+          {instagramUrls.length > 0 && (
+            <section>
+              <h2 className="text-xl font-serif text-navy text-center mb-1">{g('jyuzu_heading_instagram')}</h2>
+              <div className="w-10 h-0.5 bg-gold mx-auto mb-2" />
+              <p className="text-xs text-gray-400 text-center mb-8">{g('jyuzu_instagram_hint')}</p>
+              <InstagramEmbed urls={instagramUrls} />
+            </section>
+          )}
 
           <div className="bg-navy rounded-2xl p-8 text-center text-white">
             <p className="font-serif text-xl mb-2">{g('jyuzu_cta_heading')}</p>
