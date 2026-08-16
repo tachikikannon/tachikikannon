@@ -208,6 +208,7 @@ export default async function OnsenjPage({
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
           subheading={loc === 'en' ? undefined : '日光山温泉寺'}
+          crestSrc="/images/onsenji/common/jimon-green.png"
           darkColor="#1a4a3a"
           lightColor="#ffffff"
           eyebrowDarkColor="#1a4a3a"

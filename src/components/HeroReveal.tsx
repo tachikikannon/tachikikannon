@@ -10,6 +10,8 @@ interface HeroRevealProps {
   subheading?: string
   /** 写真が現れると、見出しと一緒に表示される補足文（温泉寺のサブコピー等） */
   midContent?: ReactNode
+  /** 白背景フェーズの間、見出しの背後に薄く滲ませる寺紋（単色地に白抜きのPNG。マスクで白い部分だけを抽出する） */
+  crestSrc?: string
   darkColor: string
   lightColor: string
   eyebrowDarkColor?: string
@@ -35,7 +37,7 @@ const READ_PAUSE_MS = 3000     // 小見出し（寺名）が出そろってか�
 // 登場の順番: 白背景 → 見出し文字が浮かぶ → 寺名 →
 //            写真が現れる（見出しは白文字化、寺名は消える、補足文・ボタン等が現れる）
 export default function HeroReveal({
-  eyebrow, heading, subheading, midContent, darkColor, lightColor,
+  eyebrow, heading, subheading, midContent, crestSrc, darkColor, lightColor,
   eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
   background, children, sectionExtra, className,
 }: HeroRevealProps) {
@@ -71,6 +73,29 @@ export default function HeroReveal({
         {/* 文字を読みやすくするための薄いオーバーレイ（濃すぎない程度） */}
         <div className="absolute inset-0" style={{ backgroundColor: darkColor, opacity: 0.22 }} />
       </div>
+
+      {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる */}
+      {crestSrc && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+          <div
+            className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
+            style={{
+              backgroundColor: darkColor,
+              WebkitMaskImage: `url(${crestSrc})`,
+              maskImage: `url(${crestSrc})`,
+              WebkitMaskSize: 'contain',
+              maskSize: 'contain',
+              WebkitMaskRepeat: 'no-repeat',
+              maskRepeat: 'no-repeat',
+              WebkitMaskPosition: 'center',
+              maskPosition: 'center',
+              filter: 'blur(1px)',
+              opacity: imageActive ? 0 : 0.07,
+              transitionDuration: '900ms',
+            }}
+          />
+        </div>
+      )}
 
       <div className="relative text-center px-4">
         <p
