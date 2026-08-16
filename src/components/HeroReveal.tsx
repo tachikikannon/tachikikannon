@@ -42,6 +42,7 @@ export default function HeroReveal({
   background, children, sectionExtra, className,
 }: HeroRevealProps) {
   const [phase, setPhase] = useState<Phase>('idle')
+  const [scrolled, setScrolled] = useState(false)
   const charCount = Array.from(heading.replace(/\n/g, '')).length
   // 最後の文字が「text開始」から見て、浮かび終わるまでの相対時間
   const lastCharDoneRelMs = (charCount - 1) * STAGGER_MS + CHAR_DURATION_MS
@@ -57,6 +58,14 @@ export default function HeroReveal({
     const t2 = setTimeout(() => setPhase('image'), imageAtMs)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [imageAtMs])
+
+  useEffect(() => {
+    // スクロールを始めたらSCROLLヒントを消す（コンテンツが増えてヒーローが
+    // ビューポートより高くなったため、絶対配置だと変な位置に出てしまう）
+    const onScroll = () => setScrolled(window.scrollY > 80)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const textActive = phase !== 'idle'
   const imageActive = phase === 'image'
@@ -83,6 +92,10 @@ export default function HeroReveal({
               backgroundColor: darkColor,
               WebkitMaskImage: `url(${crestSrc})`,
               maskImage: `url(${crestSrc})`,
+              // このPNGは単色地（不透明）に白抜きの紋なので、アルファではなく
+              // 輝度でマスクしないと紋の形が抜けず、四角がうっすら見えるだけになる
+              WebkitMaskMode: 'luminance',
+              maskMode: 'luminance',
               WebkitMaskSize: 'contain',
               maskSize: 'contain',
               WebkitMaskRepeat: 'no-repeat',
@@ -111,9 +124,11 @@ export default function HeroReveal({
         >
           {eyebrow}
         </p>
-        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl tracking-wider leading-[1.8] md:leading-[2.4] mb-4 whitespace-pre-line" style={{ perspective: '600px' }}>
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl tracking-wider whitespace-pre-line mb-4" style={{ perspective: '600px' }}>
           {lines.map((line, li) => (
-            <span key={li} className="block whitespace-nowrap">
+            // line-heightだけでは行間が広がらなかったため、2行目以降は
+            // marginで明示的に間隔を空ける
+            <span key={li} className={`block whitespace-nowrap ${li > 0 ? 'mt-3 md:mt-5' : ''}`}>
               {Array.from(line).map((ch, ci) => {
                 // text開始（textActiveがtrueになった瞬間）からの相対遅延
                 const relDelayMs = charIndex++ * STAGGER_MS
@@ -183,12 +198,14 @@ export default function HeroReveal({
       </div>
 
       {sectionExtra && (
+        // fixed配置の子要素をtransform/filterのないラッパーに通すことで、
+        // 本当にビューポート基準で固定されるようにする（filterがあると
+        // それ自体がposition:fixedの基準になってしまうため）
         <div
           className="transition-opacity duration-700 ease-out"
           style={{
-            opacity: imageActive ? 1 : 0,
+            opacity: imageActive && !scrolled ? 1 : 0,
             transitionDelay: imageActive ? '450ms' : '0ms',
-            filter: imageActive ? 'drop-shadow(0 1px 6px rgba(0,0,0,0.4))' : 'none',
           }}
         >
           {sectionExtra}

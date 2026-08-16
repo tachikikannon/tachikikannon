@@ -222,7 +222,7 @@ export default async function OnsenjPage({
             </p>
           }
           sectionExtra={
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
+            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 z-10">
               <span className="text-xs tracking-widest">SCROLL</span>
               <span className="block w-px h-8 bg-white/30 animate-pulse" />
             </div>
@@ -279,7 +279,7 @@ export default async function OnsenjPage({
               {t('ctaAbout')}
             </Link>
             <Link href="/onsenji/onsen"
-              className="px-8 py-3 border border-white/60 text-white rounded-full hover:bg-white/10 transition-colors text-sm tracking-wide">
+              className="px-8 py-3 border border-white/60 bg-white/15 backdrop-blur-sm text-white rounded-full hover:bg-white/25 transition-colors text-sm tracking-wide">
               {t('ctaOnsen')}
             </Link>
           </div>

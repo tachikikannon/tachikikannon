@@ -197,8 +197,8 @@ export default async function HomePage({
         >
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/about" className="btn-gold">{t('ctaAbout')}</Link>
-            <Link href="/prayer" className="btn-outline">{t('ctaPrayer')}</Link>
-            <Link href="/#access" className="btn-outline">{t('ctaAccess')}</Link>
+            <Link href="/prayer" className="btn-outline bg-white/15 backdrop-blur-sm">{t('ctaPrayer')}</Link>
+            <Link href="/#access" className="btn-outline bg-white/15 backdrop-blur-sm">{t('ctaAccess')}</Link>
           </div>
         </HeroReveal>
 
