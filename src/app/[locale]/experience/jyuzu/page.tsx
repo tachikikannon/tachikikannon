@@ -262,7 +262,7 @@ export default async function JyuzuPage({
             <h1 className="font-serif text-3xl md:text-5xl text-white tracking-widest mb-3">{t('title')}</h1>
             <p className="text-white/80 text-sm md:text-base mb-6">{t('heroSub')}</p>
             <div>
-              <Link href="/reserve" className="btn-gold">{t('heroCta')}</Link>
+              <Link href="/reserve?type=jyuzu" className="btn-gold">{t('heroCta')}</Link>
             </div>
           </div>
         </section>
@@ -392,7 +392,7 @@ export default async function JyuzuPage({
             <p className="font-serif text-xl mb-2">{g('jyuzu_cta_heading')}</p>
             <p className="text-white/60 text-sm mb-6">{g('jyuzu_cta_sub')}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/reserve" className="btn-gold">{t('reserveCta')}</Link>
+              <Link href="/reserve?type=jyuzu" className="btn-gold">{t('reserveCta')}</Link>
               <Link href="/contact" className="btn-outline">{t('contactCta')}</Link>
             </div>
           </div>

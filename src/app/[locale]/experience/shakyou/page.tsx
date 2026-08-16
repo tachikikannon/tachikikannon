@@ -244,7 +244,7 @@ export default async function ShakyouPage({
             <p className="font-serif text-xl mb-2">{g('shakyou_cta_heading')}</p>
             <p className="text-white/60 text-sm mb-6">{g('shakyou_cta_sub')}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/reserve" className="btn-gold">{t('reserveCta')}</Link>
+              <Link href="/reserve?type=shakyou" className="btn-gold">{t('reserveCta')}</Link>
               <Link href="/contact" className="btn-outline">{t('contactCta')}</Link>
             </div>
           </div>

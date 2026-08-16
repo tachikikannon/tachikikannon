@@ -82,6 +82,13 @@ export default function ApplyForm() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.photo_ref])
 
+  useEffect(() => {
+    if (APPLICATION_CATEGORIES.includes(initialCategory as never)) {
+      setForm(f => ({ ...f, category: initialCategory, photo_ref: initialPhoto }))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCategory, initialPhoto])
+
   function update<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm(f => ({ ...f, [key]: value }))
   }

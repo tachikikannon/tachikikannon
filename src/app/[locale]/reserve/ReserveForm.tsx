@@ -1,18 +1,23 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import ReservationCalendar from '@/components/ReservationCalendar'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
 
+const RESERVATION_TYPES: ReservationType[] = ['prayer', 'shakyou', 'shabutu', 'jyuzu', 'zazen']
+
 export default function ReserveForm() {
   const supabase = createClient()
+  const searchParams = useSearchParams()
   const t = useTranslations('reserve')
   const tc = useTranslations('common')
   const locale = useLocale()
   // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
   const showNameKana = locale === 'ja'
+  const initialType = searchParams.get('type') ?? ''
 
   const TYPES: { value: ReservationType; label: string; price: string }[] = [
     { value: 'prayer',   label: t('typePrayer'),  price: '5,000円〜' },
@@ -30,11 +35,18 @@ export default function ReserveForm() {
   ]
 
   const [form, setForm] = useState({
-    type: 'prayer' as ReservationType,
+    type: (RESERVATION_TYPES.includes(initialType as ReservationType) ? initialType : 'prayer') as ReservationType,
     date: '', time_slot: '',
     name: '', name_kana: '', email: '', phone: '',
     party_size: 1, notes: '',
   })
+
+  useEffect(() => {
+    if (RESERVATION_TYPES.includes(initialType as ReservationType)) {
+      setForm(f => ({ ...f, type: initialType as ReservationType, date: '', time_slot: '' }))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialType])
   const [purpose, setPurpose] = useState('gokigan')
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
 
