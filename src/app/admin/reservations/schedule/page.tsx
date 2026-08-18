@@ -190,6 +190,12 @@ export default function AdminReservationSchedulePage() {
     if (detail?.id === id) setDetail(d => d ? { ...d, assigned_admin_id: assigned_admin_id || null } : d)
   }
 
+  async function updateCategory(id: string, category_id: string) {
+    await supabase.from('reservations').update({ category_id: category_id || null }).eq('id', id)
+    load()
+    if (detail?.id === id) setDetail(d => d ? { ...d, category_id: category_id || null } : d)
+  }
+
   async function remove(id: string) {
     if (!confirm('この予約を削除しますか？削除すると元に戻せません。')) return
     const { data, error } = await supabase.from('reservations').delete().eq('id', id).select('id')
@@ -343,10 +349,6 @@ export default function AdminReservationSchedulePage() {
                   <dt className="text-gray-500 text-xs pt-0.5">種別</dt>
                   <dd className="break-all">{TYPE_LABELS[detail.type]}</dd>
                 </div>
-                <div className="grid grid-cols-[6rem_1fr] gap-2">
-                  <dt className="text-gray-500 text-xs pt-0.5">区分</dt>
-                  <dd className="break-all">{categoryName(detail.category_id)}</dd>
-                </div>
 
                 {isEditing && editForm ? (
                   <>
@@ -454,6 +456,19 @@ export default function AdminReservationSchedulePage() {
                   <dd className="break-all">{detail.updated_at ? new Date(detail.updated_at).toLocaleString('ja-JP') : '—'}</dd>
                 </div>
               </dl>
+
+              <div className="mt-5 border-t pt-4">
+                <p className="text-xs text-gray-500 mb-2">区分</p>
+                {canEdit ? (
+                  <select className="admin-input" value={detail.category_id ?? ''}
+                    onChange={e => updateCategory(detail.id, e.target.value)}>
+                    <option value="">区分なし</option>
+                    {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                ) : (
+                  <span className="text-sm">{categoryName(detail.category_id)}</span>
+                )}
+              </div>
 
               <div className="mt-5 border-t pt-4">
                 <p className="text-xs text-gray-500 mb-2">担当者</p>
