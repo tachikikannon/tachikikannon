@@ -164,7 +164,8 @@ export default function AdminReservationsPage() {
   const byStatus = filter === 'all' ? list : list.filter(r => r.status === filter || (filter === 'unconfirmed' && r.status === 'pending'))
   const searchQuery = search.trim().toLowerCase()
   const filtered = searchQuery === '' ? byStatus : byStatus.filter(r =>
-    [r.name, r.name_kana, r.phone, r.email].some(v => v?.toLowerCase().includes(searchQuery))
+    [r.name, r.name_kana, r.phone, r.email, TYPE_LABELS[r.type], categoryName(r.category_id)]
+      .some(v => v?.toLowerCase().includes(searchQuery))
   )
 
   return (
@@ -199,7 +200,7 @@ export default function AdminReservationsPage() {
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="お名前・フリガナ・電話番号・メールで検索"
+          placeholder="お名前・フリガナ・電話番号・メール・種別・区分で検索"
           className="admin-input w-full pr-8 text-sm"
         />
         {search && (
@@ -212,7 +213,7 @@ export default function AdminReservationsPage() {
 
       <div className="grid lg:grid-cols-3 gap-4 items-start">
         {/* 一覧 */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow overflow-y-auto lg:max-h-[calc(100vh-14rem)]">
+        <div className="lg:col-span-2 bg-white rounded-xl shadow overflow-auto lg:max-h-[calc(100vh-14rem)]">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
@@ -220,6 +221,8 @@ export default function AdminReservationsPage() {
                 <th className="text-left px-4 py-3 text-xs text-gray-500">種別</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">区分</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">お名前</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500">電話番号</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500">メール</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">担当者</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">状態</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500">自動返信</th>
@@ -238,6 +241,8 @@ export default function AdminReservationsPage() {
                   <td className="px-4 py-3 text-xs whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
                   <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{categoryName(r.category_id)}</td>
                   <td className="px-4 py-3 font-medium whitespace-nowrap">{r.name}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{r.phone || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500 max-w-[180px] truncate">{r.email || '—'}</td>
                   <td className="px-4 py-3 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
                   <td className="px-4 py-3">
                     <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
@@ -258,7 +263,7 @@ export default function AdminReservationsPage() {
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={9} className="px-4 py-8 text-center text-gray-400 text-sm">
+                <tr><td colSpan={11} className="px-4 py-8 text-center text-gray-400 text-sm">
                   {searchQuery ? '検索条件に一致する予約がありません' : '予約がありません'}
                 </td></tr>
               )}
