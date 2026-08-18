@@ -332,6 +332,8 @@ export default function HeroReveal({
                 style={{
                   gridArea: '1 / 1',
                   opacity: verticalImageActive ? 1 : 0,
+                  // 見出し（薬師の霊場、以下）をまとめて約1cm下げる
+                  transform: 'translateY(38px)',
                   transitionProperty: 'opacity',
                   transitionDuration: '900ms',
                   transitionTimingFunction: EASE,
@@ -357,7 +359,7 @@ export default function HeroReveal({
                     従来どおり下部グループ（画像下端付近）に表示するため、
                     縦書きモードのときだけここに出す */}
                 {midContent && (
-                  <div className="mt-[54px]" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}>
+                  <div className="mt-4" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}>
                     {midContent}
                   </div>
                 )}
