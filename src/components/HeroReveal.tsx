@@ -390,7 +390,17 @@ export default function HeroReveal({
             // 入れ替えで切り替える。grid-area指定ですべて同じマス目に
             // 重ねることで、コンテナの高さ・幅が自動的に一番大きい行に
             // 合わせて確保される（JSでの高さ計測が不要になる）
-            <div ref={gridRef} className="grid justify-items-center items-center">
+            <div
+              ref={gridRef}
+              className="grid items-center"
+              // justify-items-centerで「重なり合う幅の異なるアイテムをそれぞれ
+              // 独立して中央揃え」する方式は、一部のSafari/WebKit環境で正しく
+              // 機能せず、幅の狭いコマ（1行だけのコマ）が幅の広いコマ（2列ペア）
+              // の位置に引きずられて中央からズレる不具合が確認された。
+              // 各コマをgrid-areaの列幅いっぱいに広げ（デフォルトのstretch）、
+              // コマ側でflex justify-centerして個別に中央揃えする、より確実な
+              // 方式に変更した
+            >
               {frames.map((frameLineIdxs, fi) => {
                 const active = step === fi
                 // 1コマ目は待たずに現れ、2コマ目以降は直前のコマが完全に消え
@@ -398,7 +408,7 @@ export default function HeroReveal({
                 // 消えるときは全文字が同時に(遅延なし・短い時間で)フェードアウトする。
                 const enterWaitMs = fi === 0 ? 0 : V_LINE_FADE_MS
                 return (
-                  <div key={fi} style={{ gridArea: '1 / 1' }} aria-hidden={!active}>
+                  <div key={fi} className="flex justify-center" style={{ gridArea: '1 / 1' }} aria-hidden={!active}>
                     {frameLineIdxs.length > 1 ? (
                       // 2行を右列・左列として同時に並べる（DOM順=読み上げ順どおり
                       // li=0が先勝ちで、row-reverseにより先の行が右側に来る）
@@ -415,6 +425,7 @@ export default function HeroReveal({
                 const logoActive = step === frames.length && !verticalImageActive
                 return (
                   <div
+                    className="flex justify-center"
                     style={{
                       gridArea: '1 / 1',
                       opacity: logoActive ? 1 : 0,
@@ -447,6 +458,7 @@ export default function HeroReveal({
                   縦書きの各行・ロゴはここまでで役目を終えているため、
                   写真が現れたタイミングでこれだけがフェードインする */}
               <div
+                className="flex flex-col items-center"
                 style={{
                   gridArea: '1 / 1',
                   opacity: verticalImageActive ? 1 : 0,
