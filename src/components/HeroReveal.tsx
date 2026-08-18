@@ -89,10 +89,6 @@ export default function HeroReveal({
   // ずらすための補正量（gridShiftPxの上に追加でロゴにだけ適用する）
   const [gridShiftPx, setGridShiftPx] = useState(0)
   const [logoExtraPx, setLogoExtraPx] = useState(0)
-  // 一時的な調査用。?debug=1のときだけ、寺紋・見出しの位置合わせに使っている
-  // 実測値を画面に表示する（本番の見た目には影響しない）
-  const [debugInfo, setDebugInfo] = useState<string | null>(null)
-  const debugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1'
   const [minHeightPx, setMinHeightPx] = useState<number | null>(null)
   // 見出しエリア（寺紋・見出し）専用の最小高さ。下部グループの高さ（bottomH）を
   // 含めない＝下部コンテンツがお寺によって違う高さでも、見出しエリアの中央配置は
@@ -214,54 +210,15 @@ export default function HeroReveal({
       const logoTargetY = imgRect.top + crestTargetCharFrac * imgRect.height
       setGridShiftPx(boxCenterY - gridCenterY)
       setLogoExtraPx(gridCenterY - logoTargetY)
-      if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1') {
-        const crestEl = outerEl.querySelector<HTMLElement>('[data-crest-inner]')
-        const crestRect = crestEl ? crestEl.getBoundingClientRect() : null
-        const activeFrameEl = gridEl.querySelector<HTMLElement>('[aria-hidden="false"]')
-        const activeRect = activeFrameEl ? activeFrameEl.getBoundingClientRect() : null
-        setDebugInfo(JSON.stringify({
-          vh: getComputedStyle(document.documentElement).getPropertyValue('--vh'),
-          innerH: window.innerHeight, innerW: window.innerWidth,
-          fontsStatus: document.fonts?.status,
-          outerTop: Math.round(outerRect.top), outerH: Math.round(outerRect.height),
-          gridTop: Math.round(gridRect.top), gridH: Math.round(gridRect.height),
-          boxCenterY: Math.round(boxCenterY), gridCenterY: Math.round(gridCenterY),
-          gridShiftPx: Math.round(boxCenterY - gridCenterY),
-          logoExtraPx: Math.round(gridCenterY - logoTargetY),
-          crestCenterY: crestRect ? Math.round(crestRect.top + crestRect.height / 2) : null,
-          activeText: activeFrameEl ? activeFrameEl.textContent : null,
-          activeCenterY: activeRect ? Math.round(activeRect.top + activeRect.height / 2) : null,
-          ua: navigator.userAgent,
-        }, null, 1))
-      }
     }
     update()
-    // 見出しはWebフォント（Noto Serif JP、display=swap）を使っており、
-    // マウント直後のこの時点ではまだ仮フォントで表示されていることがある。
-    // 本フォントに差し替わるとgridEl（縦書き文字）の高さがわずかに変わり、
-    // 通常はResizeObserverがそれを検知して再計測されるはずだが、モバイル
-    // 回線の遅いWebView環境ではタイミングがズレて拾いきれないことがある
-    // ため、フォント読み込み完了を検知するdocument.fonts.readyでも
-    // 明示的に再計測する（保険として遅延タイマーも併用する）
-    if (typeof document !== 'undefined' && document.fonts) {
-      document.fonts.ready.then(update)
-    }
-    const timers = [100, 500, 1500].map(ms => setTimeout(update, ms))
-    // debugMode時のみ、現在アクティブなコマの実測値を継続的に画面表示するため
-    // 定期的に再計測する（本番の見た目には影響しない調査用）
-    const debugInterval = debugMode ? setInterval(update, 500) : null
     const ro = new ResizeObserver(update)
     ro.observe(outerEl)
     ro.observe(gridEl)
     ro.observe(imgEl)
     window.addEventListener('resize', update)
-    return () => {
-      timers.forEach(clearTimeout)
-      if (debugInterval) clearInterval(debugInterval)
-      ro.disconnect()
-      window.removeEventListener('resize', update)
-    }
-  }, [crestTargetCharFrac, debugMode])
+    return () => { ro.disconnect(); window.removeEventListener('resize', update) }
+  }, [crestTargetCharFrac])
 
   const textActive = verticalHeading ? step > -1 : phase !== 'idle'
   const imageActive = verticalHeading ? verticalImageActive : horizontalImageActive
@@ -367,7 +324,6 @@ export default function HeroReveal({
             style={crestTargetCharFrac == null ? (effectiveLiftPx ? { transform: `translateY(-${effectiveLiftPx}px)` } : undefined) : undefined}
           >
             <div
-              data-crest-inner
               className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
               style={{
                 backgroundColor: darkColor,
@@ -652,21 +608,6 @@ export default function HeroReveal({
           </div>
         )}
       </div>
-
-      {/* 一時的な調査用オーバーレイ。?debug=1のときだけ表示する（本番の見た目には影響しない） */}
-      {debugMode && debugInfo && (
-        <pre
-          style={{
-            position: 'fixed', top: 0, left: 0, zIndex: 9999,
-            background: 'rgba(0,0,0,0.85)', color: '#0f0',
-            fontSize: '10px', lineHeight: 1.4, padding: '8px',
-            maxWidth: '100vw', whiteSpace: 'pre-wrap', wordBreak: 'break-all',
-            pointerEvents: 'none',
-          }}
-        >
-          {debugInfo}
-        </pre>
-      )}
     </section>
   )
 }
