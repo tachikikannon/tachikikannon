@@ -152,8 +152,14 @@ export default function HeroReveal({
   const textActive = verticalHeading ? step > -1 : phase !== 'idle'
   const imageActive = verticalHeading ? verticalImageActive : horizontalImageActive
   // liftPxは横書き版の見出し（＋温泉寺の入浴ステータスカード分の下部の高さ）に
-  // 合わせて調整された値なので、縦書き版では使わず常に上下左右のど真ん中に置く
-  const effectiveLiftPx = verticalHeading ? 0 : liftPx
+  // 合わせて調整された値なので、縦書き版では使わない。代わりに、白背景フェーズの
+  // 寺紋・文字が上下ど真ん中よりわずかに上に来るよう、中禅寺・温泉寺で共通の
+  // 固定値を使う（お寺ごとの値を使わないことで、両サイトの見え方を必ず揃える）。
+  // 下部のボタン等（bottomGroupLiftPx）はこの上寄せの影響を受けず、従来どおり
+  // bottomLiftPxだけで調整される。
+  const V_WHITE_PHASE_LIFT_PX = 40
+  const effectiveLiftPx = verticalHeading ? V_WHITE_PHASE_LIFT_PX : liftPx
+  const bottomGroupLiftPx = verticalHeading ? 0 : liftPx
   let charIndex = 0
 
   return (
@@ -421,7 +427,7 @@ export default function HeroReveal({
       <div
         ref={bottomGroupRef}
         className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10"
-        style={(effectiveLiftPx || bottomLiftPx) ? { transform: `translateY(-${effectiveLiftPx + bottomLiftPx}px)` } : undefined}
+        style={(bottomGroupLiftPx || bottomLiftPx) ? { transform: `translateY(-${bottomGroupLiftPx + bottomLiftPx}px)` } : undefined}
       >
         {/* 縦書きモードではmidContentを見出しのすぐ下（上のgridスタック内）に表示するため、
             ここでは横書きモードのときだけ表示する（二重表示を避ける） */}
