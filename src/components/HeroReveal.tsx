@@ -83,15 +83,21 @@ export default function HeroReveal({
   const [step, setStep] = useState(-1)
   const [verticalImageActive, setVerticalImageActive] = useState(false)
   const hasLogoStep = Boolean(subheadingLogoSrc)
-  const vLineDurations = lines.map(line => {
+  // 各コマ（見出しの行・ロゴ）は、直前のコマが完全に消え終わってから
+  // フェードインを始める。1コマ目だけは待つ相手がいないので待ち時間なし。
+  const vLineDurations = lines.map((line, li) => {
     const cc = Array.from(line).length
-    return (cc - 1) * V_CHAR_STAGGER_MS + CHAR_DURATION_MS + V_LINE_HOLD_MS + V_LINE_FADE_MS
+    const enterWaitMs = li === 0 ? 0 : V_LINE_FADE_MS
+    return enterWaitMs + (cc - 1) * V_CHAR_STAGGER_MS + CHAR_DURATION_MS + V_LINE_HOLD_MS
   })
   const vLineStartTimes: number[] = []
   let vCursor = V_START_MS
   vLineDurations.forEach(dur => { vLineStartTimes.push(vCursor); vCursor += dur })
   const vLogoStartMs = vCursor
-  const verticalImageAtMs = hasLogoStep ? vLogoStartMs + V_LOGO_FADE_MS + V_FINAL_HOLD_MS : vLogoStartMs + V_FINAL_HOLD_MS
+  const vLogoEnterWaitMs = lines.length > 0 ? V_LINE_FADE_MS : 0
+  const verticalImageAtMs = hasLogoStep
+    ? vLogoStartMs + vLogoEnterWaitMs + V_LOGO_FADE_MS + V_FINAL_HOLD_MS
+    : vLogoStartMs + V_FINAL_HOLD_MS
 
   useEffect(() => {
     if (verticalHeading) return
@@ -224,6 +230,10 @@ export default function HeroReveal({
             <div className="grid justify-items-center">
               {lines.map((line, li) => {
                 const active = step === li
+                // 1コマ目は待たずに現れ、2コマ目以降は直前のコマが完全に消え
+                // 終わる(V_LINE_FADE_MS)のを待ってから1文字ずつ浮かび上がる。
+                // 消えるときは全文字が同時に(遅延なし・短い時間で)フェードアウトする。
+                const enterWaitMs = li === 0 ? 0 : V_LINE_FADE_MS
                 return (
                   <div
                     key={li}
@@ -238,7 +248,7 @@ export default function HeroReveal({
                     aria-hidden={!active}
                   >
                     {Array.from(line).map((ch, ci) => {
-                      const relDelayMs = ci * V_CHAR_STAGGER_MS
+                      const relDelayMs = enterWaitMs + ci * V_CHAR_STAGGER_MS
                       return (
                         <span
                           key={ci}
@@ -249,9 +259,11 @@ export default function HeroReveal({
                             color: imageActive ? lightColor : darkColor,
                             textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
                             transitionProperty: 'opacity, transform, color',
-                            transitionDuration: `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`,
+                            transitionDuration: active
+                              ? `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`
+                              : `${V_LINE_FADE_MS}ms, ${V_LINE_FADE_MS}ms, 700ms`,
                             transitionTimingFunction: EASE,
-                            transitionDelay: `${relDelayMs}ms, ${relDelayMs}ms, 0ms`,
+                            transitionDelay: active ? `${relDelayMs}ms, ${relDelayMs}ms, 0ms` : '0ms, 0ms, 0ms',
                           }}
                         >
                           {ch}
@@ -261,26 +273,32 @@ export default function HeroReveal({
                   </div>
                 )
               })}
-              {subheadingLogoSrc && (
-                <div
-                  style={{
-                    gridArea: '1 / 1',
-                    opacity: step === lines.length && !verticalImageActive ? 1 : 0,
-                    transform: step === lines.length ? 'scale(1)' : 'scale(0.94)',
-                    transitionProperty: 'opacity, transform',
-                    transitionDuration: `${V_LOGO_FADE_MS}ms`,
-                    transitionTimingFunction: EASE,
-                  }}
-                  aria-hidden={step !== lines.length}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={subheadingLogoSrc}
-                    alt={subheadingLogoAlt ?? ''}
-                    className="h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
-                  />
-                </div>
-              )}
+              {subheadingLogoSrc && (() => {
+                const logoActive = step === lines.length && !verticalImageActive
+                return (
+                  <div
+                    style={{
+                      gridArea: '1 / 1',
+                      opacity: logoActive ? 1 : 0,
+                      transform: step === lines.length ? 'scale(1)' : 'scale(0.94)',
+                      transitionProperty: 'opacity, transform',
+                      // 直前の行が完全に消え終わってから現れる。写真へ切り替わる
+                      // ときは待たずにすぐフェードアウトする
+                      transitionDuration: logoActive ? `${V_LOGO_FADE_MS}ms` : '700ms',
+                      transitionTimingFunction: EASE,
+                      transitionDelay: logoActive ? `${vLogoEnterWaitMs}ms` : '0ms',
+                    }}
+                    aria-hidden={step !== lines.length}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={subheadingLogoSrc}
+                      alt={subheadingLogoAlt ?? ''}
+                      className="h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
+                    />
+                  </div>
+                )
+              })()}
               {/* 写真（カラーページ）に切り替わったら、見出しを横書きで表示する。
                   縦書きの各行・ロゴはここまでで役目を終えているため、
                   写真が現れたタイミングでこれだけがフェードインする */}
