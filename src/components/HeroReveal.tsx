@@ -352,12 +352,29 @@ export default function HeroReveal({
                     <span key={li} className="block whitespace-nowrap">{line}</span>
                   ))}
                 </h1>
-                {/* サブキャッチコピー（温泉寺の補足文など）は見出しのすぐ下に表示する。
-                    横書きモードでは従来どおり下部グループ（ボタン等の近く）に表示するため、
+                {/* サブキャッチコピー（温泉寺の補足文など）・children（入浴ステータスや
+                    ボタン等）は見出しのすぐ下にまとめて表示する。横書きモードでは
+                    従来どおり下部グループ（画像下端付近）に表示するため、
                     縦書きモードのときだけここに出す */}
                 {midContent && (
                   <div className="mt-4" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}>
                     {midContent}
+                  </div>
+                )}
+                {children && (
+                  <div
+                    className={`mt-6 ${staggerChildren ? '' : 'transition-opacity ease-out'}`}
+                    data-active={imageActive}
+                    style={{
+                      opacity: staggerChildren ? 1 : (imageActive ? 1 : 0),
+                      transitionProperty: staggerChildren ? 'filter' : 'opacity',
+                      transitionDuration: '700ms',
+                      transitionTimingFunction: EASE,
+                      transitionDelay: imageActive ? '450ms' : '0ms',
+                      filter: imageActive ? 'drop-shadow(0 2px 10px rgba(0,0,0,0.35))' : 'none',
+                    }}
+                  >
+                    {children}
                   </div>
                 )}
               </div>
@@ -462,20 +479,24 @@ export default function HeroReveal({
             {midContent}
           </div>
         )}
-        <div
-          className={`${staggerChildren ? '' : 'transition-opacity ease-out'} ${midContent && !verticalHeading ? 'mt-8' : ''}`}
-          data-active={imageActive}
-          style={{
-            opacity: staggerChildren ? 1 : (imageActive ? 1 : 0),
-            transitionProperty: staggerChildren ? 'filter' : 'opacity',
-            transitionDuration: '700ms',
-            transitionTimingFunction: EASE,
-            transitionDelay: imageActive ? '450ms' : '0ms',
-            filter: imageActive ? 'drop-shadow(0 2px 10px rgba(0,0,0,0.35))' : 'none',
-          }}
-        >
-          {children}
-        </div>
+        {/* 縦書きモードではchildren（入浴ステータス・ボタン等）も見出しのすぐ下
+            （上のgridスタック内）に表示するため、ここでは横書きモードのときだけ表示する */}
+        {!verticalHeading && (
+          <div
+            className={`${staggerChildren ? '' : 'transition-opacity ease-out'} ${midContent ? 'mt-8' : ''}`}
+            data-active={imageActive}
+            style={{
+              opacity: staggerChildren ? 1 : (imageActive ? 1 : 0),
+              transitionProperty: staggerChildren ? 'filter' : 'opacity',
+              transitionDuration: '700ms',
+              transitionTimingFunction: EASE,
+              transitionDelay: imageActive ? '450ms' : '0ms',
+              filter: imageActive ? 'drop-shadow(0 2px 10px rgba(0,0,0,0.35))' : 'none',
+            }}
+          >
+            {children}
+          </div>
+        )}
       </div>
 
     </section>
