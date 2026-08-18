@@ -1,10 +1,14 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import NewReservationForm from '@/components/admin/NewReservationForm'
+import { getTimeSlots } from '@/lib/reservationSlots'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus } from '@/types'
+
+type EditForm = {
+  date: string; time_slot: string; name: string; name_kana: string
+  email: string; phone: string; party_size: number; notes: string
+}
 
 const TYPE_LABELS: Record<string, string> = {
   prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅'
@@ -74,6 +78,9 @@ export default function AdminReservationSchedulePage() {
   const [detail, setDetail] = useState<Reservation | null>(null)
   const [mailNotice, setMailNotice] = useState<string | null>(null)
   const [pendingStatus, setPendingStatus] = useState<ReservationStatus | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editForm, setEditForm] = useState<EditForm | null>(null)
+  const [saving, setSaving] = useState(false)
 
   const weeks = useMemo(() => getMonthMatrix(year, month), [year, month])
   const monthLabel = new Date(year, month, 1).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })
@@ -108,6 +115,43 @@ export default function AdminReservationSchedulePage() {
     setDetail(r)
     setPendingStatus(null)
     setMailNotice(null)
+    setIsEditing(false)
+    setEditForm(null)
+  }
+
+  function startEdit() {
+    if (!detail) return
+    setEditForm({
+      date: detail.date, time_slot: detail.time_slot, name: detail.name, name_kana: detail.name_kana,
+      email: detail.email, phone: detail.phone, party_size: detail.party_size, notes: detail.notes ?? '',
+    })
+    setIsEditing(true)
+  }
+
+  function cancelEdit() {
+    setIsEditing(false)
+    setEditForm(null)
+  }
+
+  async function saveEdit() {
+    if (!detail || !editForm) return
+    setSaving(true)
+    const { error } = await supabase.from('reservations').update({
+      date: editForm.date,
+      time_slot: editForm.time_slot,
+      name: editForm.name,
+      name_kana: editForm.name_kana,
+      email: editForm.email,
+      phone: editForm.phone,
+      party_size: editForm.party_size,
+      notes: editForm.notes || null,
+    }).eq('id', detail.id)
+    setSaving(false)
+    if (error) { alert('保存に失敗しました：' + error.message); return }
+    setIsEditing(false)
+    setDetail(d => d ? { ...d, ...editForm, notes: editForm.notes || null } : d)
+    setEditForm(null)
+    load()
   }
 
   async function updateStatus(id: string, status: ReservationStatus) {
@@ -182,14 +226,6 @@ export default function AdminReservationSchedulePage() {
           <span className="text-sm font-medium text-navy w-28 text-center">{monthLabel}</span>
           <button onClick={() => changeMonth(1)} className="px-3 py-1.5 rounded border bg-white text-sm hover:bg-gray-50">›</button>
           <button onClick={goToday} className="btn-primary text-xs px-3 py-1.5">今日</button>
-          {canEdit && (
-            <Link
-              href={selectedDate ? `/admin/reservations/new?date=${selectedDate}` : '/admin/reservations/new'}
-              className="btn-primary text-xs px-3 py-1.5"
-            >
-              ＋ 新規予約登録へ
-            </Link>
-          )}
         </div>
       </div>
 
@@ -296,29 +332,126 @@ export default function AdminReservationSchedulePage() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-medium text-navy">予約詳細</h2>
                 <div className="flex items-center gap-3">
-                  {canEdit && <button onClick={() => remove(detail.id)} className="text-red-500 text-xs hover:underline">削除</button>}
+                  {canEdit && !isEditing && <button onClick={startEdit} className="text-navy text-xs hover:underline">編集</button>}
+                  {canEdit && !isEditing && <button onClick={() => remove(detail.id)} className="text-red-500 text-xs hover:underline">削除</button>}
                   <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
                 </div>
               </div>
               <dl className="space-y-3 text-sm">
-                {[
-                  ['種別', TYPE_LABELS[detail.type]],
-                  ['区分', categoryName(detail.category_id)],
-                  ['日付', new Date(detail.date).toLocaleDateString('ja-JP')],
-                  ['時間', detail.time_slot],
-                  ['お名前', detail.name],
-                  ['フリガナ', detail.name_kana],
-                  ['電話番号', detail.phone],
-                  ['メール', detail.email],
-                  ['人数', `${detail.party_size}名`],
-                  ['備考', detail.notes || '—'],
-                  ['更新日時', detail.updated_at ? new Date(detail.updated_at).toLocaleString('ja-JP') : '—'],
-                ].map(([k, v]) => (
-                  <div key={k} className="grid grid-cols-[6rem_1fr] gap-2">
-                    <dt className="text-gray-500 text-xs pt-0.5">{k}</dt>
-                    <dd className="break-all">{v}</dd>
-                  </div>
-                ))}
+                <div className="grid grid-cols-[6rem_1fr] gap-2">
+                  <dt className="text-gray-500 text-xs pt-0.5">種別</dt>
+                  <dd className="break-all">{TYPE_LABELS[detail.type]}</dd>
+                </div>
+                <div className="grid grid-cols-[6rem_1fr] gap-2">
+                  <dt className="text-gray-500 text-xs pt-0.5">区分</dt>
+                  <dd className="break-all">{categoryName(detail.category_id)}</dd>
+                </div>
+
+                {isEditing && editForm ? (
+                  <>
+                    <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
+                      <dt className="text-gray-500 text-xs">日付</dt>
+                      <dd>
+                        <input type="date" className="admin-input w-full"
+                          value={editForm.date}
+                          onChange={e => setEditForm(f => f && { ...f, date: e.target.value })} />
+                      </dd>
+                    </div>
+                    <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
+                      <dt className="text-gray-500 text-xs">時間</dt>
+                      <dd>
+                        <select className="admin-input w-full"
+                          value={editForm.time_slot}
+                          onChange={e => setEditForm(f => f && { ...f, time_slot: e.target.value })}>
+                          {(() => {
+                            const month = new Date(editForm.date + 'T00:00:00').getMonth() + 1
+                            const opts = getTimeSlots(detail.type, month)
+                            return (opts.includes(editForm.time_slot) ? opts : [editForm.time_slot, ...opts])
+                              .map(s => <option key={s} value={s}>{s}</option>)
+                          })()}
+                        </select>
+                      </dd>
+                    </div>
+                    <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
+                      <dt className="text-gray-500 text-xs">お名前</dt>
+                      <dd>
+                        <input className="admin-input w-full"
+                          value={editForm.name}
+                          onChange={e => setEditForm(f => f && { ...f, name: e.target.value })} />
+                      </dd>
+                    </div>
+                    <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
+                      <dt className="text-gray-500 text-xs">フリガナ</dt>
+                      <dd>
+                        <input className="admin-input w-full"
+                          value={editForm.name_kana}
+                          onChange={e => setEditForm(f => f && { ...f, name_kana: e.target.value })} />
+                      </dd>
+                    </div>
+                    <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
+                      <dt className="text-gray-500 text-xs">電話番号</dt>
+                      <dd>
+                        <input type="tel" className="admin-input w-full"
+                          value={editForm.phone}
+                          onChange={e => setEditForm(f => f && { ...f, phone: e.target.value })} />
+                      </dd>
+                    </div>
+                    <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
+                      <dt className="text-gray-500 text-xs">メール</dt>
+                      <dd>
+                        <input type="email" className="admin-input w-full"
+                          value={editForm.email}
+                          onChange={e => setEditForm(f => f && { ...f, email: e.target.value })} />
+                      </dd>
+                    </div>
+                    <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
+                      <dt className="text-gray-500 text-xs">人数</dt>
+                      <dd>
+                        <input type="number" min={1} className="admin-input w-24"
+                          value={editForm.party_size}
+                          onChange={e => setEditForm(f => f && { ...f, party_size: Number(e.target.value) })} />
+                        <span className="text-xs text-gray-500 ml-1">名</span>
+                      </dd>
+                    </div>
+                    <div className="grid grid-cols-[6rem_1fr] gap-2">
+                      <dt className="text-gray-500 text-xs pt-0.5">備考</dt>
+                      <dd>
+                        <textarea className="admin-input w-full" rows={2}
+                          value={editForm.notes}
+                          onChange={e => setEditForm(f => f && { ...f, notes: e.target.value })} />
+                      </dd>
+                    </div>
+                    <div className="flex items-center gap-3 pt-1">
+                      <button onClick={saveEdit} disabled={saving} className="btn-primary text-xs px-4 py-1.5 disabled:opacity-50">
+                        {saving ? '保存中...' : '保存する'}
+                      </button>
+                      <button onClick={cancelEdit} disabled={saving} className="text-xs text-gray-400 underline disabled:opacity-50">
+                        キャンセル
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  [
+                    ['日付', new Date(detail.date).toLocaleDateString('ja-JP')],
+                    ['時間', detail.time_slot],
+                    ['お名前', detail.name],
+                    ['フリガナ', detail.name_kana],
+                    ['電話番号', detail.phone],
+                    ['メール', detail.email],
+                    ['人数', `${detail.party_size}名`],
+                    ['備考', detail.notes || '—'],
+                  ].map(([k, v]) => (
+                    <div key={k} className="grid grid-cols-[6rem_1fr] gap-2">
+                      <dt className="text-gray-500 text-xs pt-0.5">{k}</dt>
+                      <dd className="break-all">{v}</dd>
+                    </div>
+                  ))
+                )}
+
+                <div className="grid grid-cols-[6rem_1fr] gap-2">
+                  <dt className="text-gray-500 text-xs pt-0.5">更新日時</dt>
+                  <dd className="break-all">{detail.updated_at ? new Date(detail.updated_at).toLocaleString('ja-JP') : '—'}</dd>
+                </div>
               </dl>
 
               <div className="mt-5 border-t pt-4">
@@ -370,14 +503,6 @@ export default function AdminReservationSchedulePage() {
               </div>
             </div>
           )}
-        </div>
-      )}
-
-      {/* 選択した日に予約を追加。予約スケジュールから離れずその場で登録できるようにする */}
-      {selectedDate && (
-        <div className="mt-6 max-w-3xl">
-          <h2 className="font-medium text-navy text-sm mb-2">{selectedDateLabel} に予約を追加</h2>
-          <NewReservationForm initialDate={selectedDate} onCreated={() => load()} />
         </div>
       )}
     </div>
