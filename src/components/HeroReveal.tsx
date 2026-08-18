@@ -56,12 +56,6 @@ const V_CHAR_STAGGER_MS = 110
 const V_LINE_HOLD_MS = 700       // 1行が出そろってから、次に切り替わるまでの間
 const V_LINE_FADE_MS = 500       // 行が入れ替わるときのフェード時間
 const V_LOGO_FADE_MS = 900
-// 見出しの行によって文字数が大きく異なる（例：温泉寺「千二百余年の祈りを宿す」11文字 vs
-// 中禅寺「祈りと巡礼の寺」7文字）。文字数が多い行をそのまま表示すると、寺紋の輪の中に
-// 収まる短い行に比べて縦に長く伸びてしまい、お寺によって見え方が揃わない。
-// 基準文字数より長い行だけ文字サイズを縮めて、行全体の縦の長さをできるだけ揃える
-// （基準以下の行は縮小しない＝一番短い行の見た目は変えない）。
-const V_LINE_TARGET_CHARS = 7
 const V_FINAL_HOLD_MS = 3000     // ロゴが出たあと、写真に切り替わるまでの余韻
 
 // 神社本庁公式サイトの「白背景から文字が一文字ずつ浮かび上がり、
@@ -265,8 +259,6 @@ export default function HeroReveal({
                 // 終わる(V_LINE_FADE_MS)のを待ってから1文字ずつ浮かび上がる。
                 // 消えるときは全文字が同時に(遅延なし・短い時間で)フェードアウトする。
                 const enterWaitMs = li === 0 ? 0 : V_LINE_FADE_MS
-                const lineCharCount = Array.from(line).length
-                const lineScale = Math.min(1, V_LINE_TARGET_CHARS / lineCharCount)
                 return (
                   <div
                     key={li}
@@ -275,7 +267,8 @@ export default function HeroReveal({
                       gridArea: '1 / 1',
                       writingMode: 'vertical-rl',
                       textOrientation: 'upright',
-                      fontSize: `calc(clamp(28px, 12px + 3.2vw, 58px) * ${lineScale})`,
+                      // 写真フェーズの横書き見出し・行1/行2すべてで文字サイズを統一する
+                      fontSize: 'clamp(32px, 17px + 3.8vw, 72px)',
                       letterSpacing: '0.08em',
                     }}
                     aria-hidden={!active}
