@@ -230,7 +230,7 @@ export default function HeroReveal({
             // 入れ替えで切り替える。grid-area指定ですべて同じマス目に
             // 重ねることで、コンテナの高さ・幅が自動的に一番大きい行に
             // 合わせて確保される（JSでの高さ計測が不要になる）
-            <div className="grid justify-items-center">
+            <div className="grid justify-items-center items-center">
               {lines.map((line, li) => {
                 const active = step === li
                 // 1コマ目は待たずに現れ、2コマ目以降は直前のコマが完全に消え
