@@ -236,19 +236,16 @@ export default function HeroReveal({
           : undefined}
       >
         {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる。
-            crestTargetCharFracが指定されている場合は、見出しエリア全体の中央では
-            なく、ロゴ画像内の特定の一文字の中心にcrestExtraOffsetPx分だけずらす */}
+            crestTargetCharFracが指定されている場合、寺紋は常に見出しエリアの
+            正確な上下左右中央に固定し（＝effectiveLiftPxによる上寄せも適用しない）、
+            代わりに見出し側（headingContentRef）をcrestExtraOffsetPx分ずらすことで
+            寺紋とロゴ内の対象文字の重なりを維持する（詳しくはheadingContentRefの
+            style部分を参照） */}
         {crestSrc && (
           <div
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
             aria-hidden="true"
-            style={{
-              // crestTargetCharFrac指定時、crestExtraOffsetPxは実測済みのimg（既に
-              // effectiveLiftPx分シフト済み）を基準に算出しているため、ここで
-              // effectiveLiftPxを重ねて引くと二重にずれる。指定がない場合のみ
-              // 従来どおりeffectiveLiftPx分を適用する。
-              transform: `translateY(${crestExtraOffsetPx - (crestTargetCharFrac == null ? effectiveLiftPx : 0)}px)`,
-            }}
+            style={crestTargetCharFrac == null ? (effectiveLiftPx ? { transform: `translateY(-${effectiveLiftPx}px)` } : undefined) : undefined}
           >
             <div
               className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
@@ -275,8 +272,16 @@ export default function HeroReveal({
           </div>
         )}
         {/* headingContentRefで実際に必要な高さを計測し、セクションの最小高さに反映する
-            (このdiv自体はabsoluteではない普通のflex子要素なので、中身の自然な高さが取れる) */}
-        <div ref={headingContentRef} style={effectiveLiftPx ? { transform: `translateY(-${effectiveLiftPx}px)` } : undefined}>
+            (このdiv自体はabsoluteではない普通のflex子要素なので、中身の自然な高さが取れる)。
+            crestTargetCharFrac指定時は、寺紋を見出しエリアの中央に固定する代わりに
+            見出し側をここで-effectiveLiftPx-crestExtraOffsetPxだけずらし、ロゴ内の
+            対象文字が寺紋の中心（＝見出しエリアの中央）に重なるようにする */}
+        <div
+          ref={headingContentRef}
+          style={{
+            transform: `translateY(-${effectiveLiftPx + (crestTargetCharFrac == null ? 0 : crestExtraOffsetPx)}px)`,
+          }}
+        >
           <p
             className="text-xs tracking-[0.3em] mb-4"
             style={{
