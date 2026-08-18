@@ -357,7 +357,7 @@ export default function HeroReveal({
                     従来どおり下部グループ（画像下端付近）に表示するため、
                     縦書きモードのときだけここに出す */}
                 {midContent && (
-                  <div className="mt-4" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}>
+                  <div className="mt-[54px]" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}>
                     {midContent}
                   </div>
                 )}
