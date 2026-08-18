@@ -209,6 +209,7 @@ export default async function OnsenjPage({
           bottomLiftPx={40}
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
+          verticalHeading={loc !== 'en'}
           subheadingLogoSrc={loc === 'en' ? undefined : '/images/chuzenji/onsenji-rogo.png'}
           subheadingLogoAlt="日光山温泉寺"
           crestSrc="/images/onsenji/common/jimon-green-mask.png"

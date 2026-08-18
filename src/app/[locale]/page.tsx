@@ -187,8 +187,9 @@ export default async function HomePage({
           staggerChildren
           eyebrow={heroEn}
           heading={heroTitle.replace(/\\n/g, '\n')}
+          verticalHeading={loc !== 'en'}
           subheadingLogoSrc={loc === 'en' ? undefined : '/images/chuzenji/chizenji-rogo.png'}
-          subheadingLogoAlt="日光山中禅寺立木観音"
+          subheadingLogoAlt="日光山中禅寺"
           crestSrc="/images/chuzenji/common/jimon-navy-mask.png"
           darkColor="#1a2a4a"
           lightColor="#ffffff"
