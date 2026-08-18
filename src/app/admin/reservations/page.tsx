@@ -47,6 +47,8 @@ export default function AdminReservationsPage() {
   const [filter, setFilter] = useState<string>('all')
   const [typeFilter, setTypeFilter] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
   const [search, setSearch] = useState('')
   const [mailNotice, setMailNotice] = useState<string | null>(null)
   const [pendingStatus, setPendingStatus] = useState<ReservationStatus | null>(null)
@@ -166,8 +168,11 @@ export default function AdminReservationsPage() {
   const byStatus = filter === 'all' ? list : list.filter(r => r.status === filter || (filter === 'unconfirmed' && r.status === 'pending'))
   const byType = typeFilter === '' ? byStatus : byStatus.filter(r => r.type === typeFilter)
   const byCategory = categoryFilter === '' ? byType : byType.filter(r => (r.category_id ?? '') === categoryFilter)
+  const byDate = (dateFrom === '' && dateTo === '') ? byCategory : byCategory.filter(r =>
+    (dateFrom === '' || r.date >= dateFrom) && (dateTo === '' || r.date <= dateTo)
+  )
   const searchQuery = search.trim().toLowerCase()
-  const filtered = searchQuery === '' ? byCategory : byCategory.filter(r =>
+  const filtered = searchQuery === '' ? byDate : byDate.filter(r =>
     [r.name, r.name_kana, r.phone, r.email].some(v => v?.toLowerCase().includes(searchQuery))
   )
 
@@ -216,12 +221,11 @@ export default function AdminReservationsPage() {
           </select>
         </div>
         <div className="relative max-w-xs">
-          <label className="admin-label">検索</label>
+          <label className="admin-label">名前・電話・メルアドで検索</label>
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="お名前・フリガナ・電話番号・メールで検索"
             className="admin-input w-full pr-8 text-sm"
           />
           {search && (
@@ -230,6 +234,22 @@ export default function AdminReservationsPage() {
               ✕
             </button>
           )}
+        </div>
+        <div>
+          <label className="admin-label">期間で絞り込み</label>
+          <div className="flex items-center gap-1.5">
+            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
+              className="admin-input text-sm" />
+            <span className="text-gray-400 text-sm">〜</span>
+            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
+              className="admin-input text-sm" />
+            {(dateFrom || dateTo) && (
+              <button onClick={() => { setDateFrom(''); setDateTo('') }}
+                className="text-gray-400 hover:text-gray-600 text-sm px-1">
+                ✕
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -286,7 +306,7 @@ export default function AdminReservationsPage() {
               ))}
               {filtered.length === 0 && (
                 <tr><td colSpan={11} className="px-4 py-8 text-center text-gray-400 text-sm">
-                  {(searchQuery || typeFilter || categoryFilter) ? '検索条件に一致する予約がありません' : '予約がありません'}
+                  {(searchQuery || typeFilter || categoryFilter || dateFrom || dateTo) ? '検索条件に一致する予約がありません' : '予約がありません'}
                 </td></tr>
               )}
             </tbody>
