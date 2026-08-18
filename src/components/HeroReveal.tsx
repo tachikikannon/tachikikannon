@@ -81,8 +81,14 @@ export default function HeroReveal({
   const headingContentRef = useRef<HTMLDivElement>(null)
   const bottomGroupRef = useRef<HTMLDivElement>(null)
   const outerWrapperRef = useRef<HTMLDivElement>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
   const logoImgRef = useRef<HTMLImageElement>(null)
-  const [crestExtraOffsetPx, setCrestExtraOffsetPx] = useState(0)
+  // gridShiftPx: 縦書きの各コマ（1行だけのコマも含む）を、寺紋（見出しエリアの
+  // 正確な中央に固定）に自然に中央揃えさせるための補正量。
+  // logoExtraPx: ロゴ画像だけをさらにcrestTargetCharFrac（対象の一文字）分だけ
+  // ずらすための補正量（gridShiftPxの上に追加でロゴにだけ適用する）
+  const [gridShiftPx, setGridShiftPx] = useState(0)
+  const [logoExtraPx, setLogoExtraPx] = useState(0)
   const [minHeightPx, setMinHeightPx] = useState<number | null>(null)
   // 見出しエリア（寺紋・見出し）専用の最小高さ。下部グループの高さ（bottomH）を
   // 含めない＝下部コンテンツがお寺によって違う高さでも、見出しエリアの中央配置は
@@ -94,6 +100,12 @@ export default function HeroReveal({
   const frames: number[][] = pairFirstTwoLines && lines.length >= 2
     ? [[0, 1], ...lines.slice(2).map((_, i) => [i + 2])]
     : lines.map((_, i) => [i])
+  // 写真フェーズの見出し（h1）は縦書きコマとは表示形式が異なり、1行ずつの
+  // 横書きになるため、pairFirstTwoLines時は最初の2行を連結して1行にする
+  // （例:「千二百余年の」＋「祈りを宿す」→「千二百余年の祈りを宿す」の1行）
+  const photoPhaseLines = pairFirstTwoLines && lines.length >= 2
+    ? [lines[0] + lines[1], ...lines.slice(2)]
+    : lines
 
   // 横書きモード用の状態・タイミング
   const [phase, setPhase] = useState<'idle' | 'text'>('idle')
@@ -177,26 +189,32 @@ export default function HeroReveal({
   }, [])
 
   useEffect(() => {
-    // crestTargetCharFracが指定されている場合、寺紋の中心を「見出しエリア全体の
-    // 中央」ではなく「subheadingLogoSrc画像の上からcrestTargetCharFrac%の位置」
-    // （特定の一文字の中心など）に合わせる。ロゴ画像はvh単位でサイズが決まり
-    // ブレイクポイントでも変わるため、CSSだけで正確に追従させるのが難しく、
-    // 実測したbounding rectから必要なズレ量(px)を計算する方式にしている。
-    if (crestTargetCharFrac == null) { setCrestExtraOffsetPx(0); return }
+    // crestTargetCharFracが指定されている場合、寺紋は常に見出しエリアの正確な
+    // 中央に固定されている前提で、縦書きの各コマ（1行だけのコマも含む）は
+    // gridShiftPxによってその中央に自然に重なるようにし、ロゴ画像だけは
+    // logoExtraPxでさらに対象の一文字（crestTargetCharFrac）の位置までずらす。
+    // どちらもvh単位のサイズやブレイクポイントに左右されるため、実測した
+    // bounding rectから必要なズレ量(px)を計算する方式にしている。
+    if (crestTargetCharFrac == null) { setGridShiftPx(0); setLogoExtraPx(0); return }
     const outerEl = outerWrapperRef.current
+    const gridEl = gridRef.current
     const imgEl = logoImgRef.current
-    if (!outerEl || !imgEl) return
+    if (!outerEl || !gridEl || !imgEl) return
     const update = () => {
       const outerRect = outerEl.getBoundingClientRect()
+      const gridRect = gridEl.getBoundingClientRect()
       const imgRect = imgEl.getBoundingClientRect()
-      if (imgRect.height === 0) return
-      const desiredY = imgRect.top + crestTargetCharFrac * imgRect.height
-      const outerCenterY = outerRect.top + outerRect.height / 2
-      setCrestExtraOffsetPx(desiredY - outerCenterY)
+      if (imgRect.height === 0 || gridRect.height === 0) return
+      const boxCenterY = outerRect.top + outerRect.height / 2
+      const gridCenterY = gridRect.top + gridRect.height / 2
+      const logoTargetY = imgRect.top + crestTargetCharFrac * imgRect.height
+      setGridShiftPx(boxCenterY - gridCenterY)
+      setLogoExtraPx(gridCenterY - logoTargetY)
     }
     update()
     const ro = new ResizeObserver(update)
     ro.observe(outerEl)
+    ro.observe(gridEl)
     ro.observe(imgEl)
     window.addEventListener('resize', update)
     return () => { ro.disconnect(); window.removeEventListener('resize', update) }
@@ -296,8 +314,8 @@ export default function HeroReveal({
         {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる。
             crestTargetCharFracが指定されている場合、寺紋は常に見出しエリアの
             正確な上下左右中央に固定し（＝effectiveLiftPxによる上寄せも適用しない）、
-            代わりに見出し側（headingContentRef）をcrestExtraOffsetPx分ずらすことで
-            寺紋とロゴ内の対象文字の重なりを維持する（詳しくはheadingContentRefの
+            代わりに見出し側（headingContentRef）をgridShiftPx分ずらすことで、縦書きの
+            各コマが自然に寺紋の中心に重なるようにする（詳しくはheadingContentRefの
             style部分を参照） */}
         {crestSrc && (
           <div
@@ -332,12 +350,15 @@ export default function HeroReveal({
         {/* headingContentRefで実際に必要な高さを計測し、セクションの最小高さに反映する
             (このdiv自体はabsoluteではない普通のflex子要素なので、中身の自然な高さが取れる)。
             crestTargetCharFrac指定時は、寺紋を見出しエリアの中央に固定する代わりに
-            見出し側をここで-effectiveLiftPx-crestExtraOffsetPxだけずらし、ロゴ内の
-            対象文字が寺紋の中心（＝見出しエリアの中央）に重なるようにする */}
+            見出し側をgridShiftPx分だけずらし、縦書きの各コマ（1行だけのコマも含む）が
+            自然に寺紋の中心（＝見出しエリアの中央）に重なるようにする。ロゴ画像だけは
+            さらにlogoExtraPx分ずらして対象の一文字の位置に合わせる（ロゴ側のstyleを参照） */}
         <div
           ref={headingContentRef}
           style={{
-            transform: `translateY(-${effectiveLiftPx + (crestTargetCharFrac == null ? 0 : crestExtraOffsetPx)}px)`,
+            transform: crestTargetCharFrac == null
+              ? (effectiveLiftPx ? `translateY(-${effectiveLiftPx}px)` : undefined)
+              : `translateY(${-effectiveLiftPx + gridShiftPx}px)`,
           }}
         >
           <p
@@ -359,7 +380,7 @@ export default function HeroReveal({
             // 入れ替えで切り替える。grid-area指定ですべて同じマス目に
             // 重ねることで、コンテナの高さ・幅が自動的に一番大きい行に
             // 合わせて確保される（JSでの高さ計測が不要になる）
-            <div className="grid justify-items-center items-center">
+            <div ref={gridRef} className="grid justify-items-center items-center">
               {frames.map((frameLineIdxs, fi) => {
                 const active = step === fi
                 // 1コマ目は待たずに現れ、2コマ目以降は直前のコマが完全に消え
@@ -403,6 +424,11 @@ export default function HeroReveal({
                       src={subheadingLogoSrc}
                       alt={subheadingLogoAlt ?? ''}
                       className="h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
+                      // logoExtraPxで、寺紋の中心に対して対象の一文字（crestTargetCharFrac）
+                      // の位置まで、ロゴ画像だけをさらにずらす（他のコマはgridShiftPxのみ）。
+                      // 親divではなくimg自身にtransformをかける（親divへのtransformが
+                      // 子のgetBoundingClientRectに反映されない挙動が確認されたため）
+                      style={{ transform: `translateY(${logoExtraPx}px)` }}
                     />
                   </div>
                 )
@@ -432,7 +458,7 @@ export default function HeroReveal({
                     textShadow: '0 2px 14px rgba(0,0,0,0.5)',
                   }}
                 >
-                  {lines.map((line, li) => (
+                  {photoPhaseLines.map((line, li) => (
                     <span key={li} className="block whitespace-nowrap">{line}</span>
                   ))}
                 </h1>
