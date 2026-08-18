@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus } from '@/types'
@@ -180,6 +181,14 @@ export default function AdminReservationSchedulePage() {
           <span className="text-sm font-medium text-navy w-28 text-center">{monthLabel}</span>
           <button onClick={() => changeMonth(1)} className="px-3 py-1.5 rounded border bg-white text-sm hover:bg-gray-50">›</button>
           <button onClick={goToday} className="btn-primary text-xs px-3 py-1.5">今日</button>
+          {canEdit && (
+            <Link
+              href={selectedDate ? `/admin/reservations/new?date=${selectedDate}` : '/admin/reservations/new'}
+              className="btn-primary text-xs px-3 py-1.5"
+            >
+              ＋ 新規予約登録へ
+            </Link>
+          )}
         </div>
       </div>
 

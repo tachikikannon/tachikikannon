@@ -27,14 +27,23 @@ interface Props {
   selectedDate: string
   selectedTime: string
   onSelectSlot: (date: string, time: string) => void
+  /** 指定すると、週カレンダーの初期表示をこの日付を含む週にする（例：スケジュール画面で
+      選択していた日をそのまま予約登録に引き継ぐ場合）。未指定なら今週を表示する */
+  initialDate?: string
 }
 
-export default function AdminSlotPicker({ reservationType, selectedDate, selectedTime, onSelectSlot }: Props) {
+export default function AdminSlotPicker({ reservationType, selectedDate, selectedTime, onSelectSlot, initialDate }: Props) {
   const supabase = createClient()
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  const [weekStart, setWeekStart] = useState(() => getMonday(today))
+  const [weekStart, setWeekStart] = useState(() => {
+    if (initialDate) {
+      const d = new Date(initialDate + 'T00:00:00')
+      if (!isNaN(d.getTime())) return getMonday(d)
+    }
+    return getMonday(today)
+  })
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([])
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [capacity, setCapacity] = useState<CapacitySetting | null>(null)
