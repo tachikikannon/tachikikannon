@@ -277,7 +277,7 @@ export default function HeroReveal({
                   <img
                     src={subheadingLogoSrc}
                     alt={subheadingLogoAlt ?? ''}
-                    className="h-40 sm:h-52 md:h-60 max-h-[420px] w-auto object-contain"
+                    className="h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
                   />
                 </div>
               )}
