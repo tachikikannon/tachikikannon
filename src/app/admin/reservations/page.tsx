@@ -45,6 +45,7 @@ export default function AdminReservationsPage() {
   const [categories, setCategories] = useState<ReservationCategory[]>([])
   const [detail, setDetail] = useState<Reservation | null>(null)
   const [filter, setFilter] = useState<string>('all')
+  const [search, setSearch] = useState('')
   const [mailNotice, setMailNotice] = useState<string | null>(null)
   const [pendingStatus, setPendingStatus] = useState<ReservationStatus | null>(null)
   const [isEditing, setIsEditing] = useState(false)
@@ -160,7 +161,11 @@ export default function AdminReservationsPage() {
   const adminName = (id: string | null) => admins.find(a => a.id === id)?.name || '未割当'
   const categoryName = (id: string | null) => categories.find(c => c.id === id)?.name || '区分なし'
 
-  const filtered = filter === 'all' ? list : list.filter(r => r.status === filter || (filter === 'unconfirmed' && r.status === 'pending'))
+  const byStatus = filter === 'all' ? list : list.filter(r => r.status === filter || (filter === 'unconfirmed' && r.status === 'pending'))
+  const searchQuery = search.trim().toLowerCase()
+  const filtered = searchQuery === '' ? byStatus : byStatus.filter(r =>
+    [r.name, r.name_kana, r.phone, r.email].some(v => v?.toLowerCase().includes(searchQuery))
+  )
 
   return (
     <div className="p-8">
@@ -186,6 +191,23 @@ export default function AdminReservationsPage() {
             <span className="ml-1">({list.filter(r => r.status === f || (f === 'unconfirmed' && r.status === 'pending')).length})</span>
           </button>
         ))}
+      </div>
+
+      {/* 検索 */}
+      <div className="mb-4 relative max-w-xs">
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="お名前・フリガナ・電話番号・メールで検索"
+          className="admin-input w-full pr-8 text-sm"
+        />
+        {search && (
+          <button onClick={() => setSearch('')}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm">
+            ✕
+          </button>
+        )}
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4 items-start">
@@ -235,7 +257,11 @@ export default function AdminReservationsPage() {
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && <tr><td colSpan={9} className="px-4 py-8 text-center text-gray-400 text-sm">予約がありません</td></tr>}
+              {filtered.length === 0 && (
+                <tr><td colSpan={9} className="px-4 py-8 text-center text-gray-400 text-sm">
+                  {searchQuery ? '検索条件に一致する予約がありません' : '予約がありません'}
+                </td></tr>
+              )}
             </tbody>
           </table>
         </div>
