@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import { getTimeSlots } from '@/lib/reservationSlots'
+import NewReservationForm from '@/components/admin/NewReservationForm'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus } from '@/types'
 
 type EditForm = {
@@ -503,6 +504,14 @@ export default function AdminReservationSchedulePage() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* 選択した日に予約を追加。予約スケジュールから離れずその場で登録できるようにする */}
+      {selectedDate && (
+        <div className="mt-6 max-w-3xl">
+          <h2 className="font-medium text-navy text-sm mb-2">{selectedDateLabel} に予約を追加</h2>
+          <NewReservationForm initialDate={selectedDate} onCreated={() => load()} />
         </div>
       )}
     </div>
