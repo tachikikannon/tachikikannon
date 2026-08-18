@@ -51,6 +51,11 @@ interface HeroRevealProps {
 }
 
 const EASE = 'cubic-bezier(0,0,0.2,1)'
+// Header.tsxのヘッダーはfixed・高さ64px(h-16)で本文の上に重なる。verticalHeading時、
+// 見出し中央配置の計算がこれを考慮していないと、文字数の多い行（特に横幅が広く
+// フォントが大きくなるデスクトップ）でheader下に文字の先頭が隠れてしまうため、
+// 見出しエリアの上端をヘッダー下端まで下げ、その分だけ高さも差し引く
+const FIXED_HEADER_PX = 64
 
 // 横書き見出し（verticalHeading=false、英語ページ用）のタイミング
 const TEXT_START_MS = 250      // idle → text（マウントからの絶対時間）
@@ -306,9 +311,14 @@ export default function HeroReveal({
           高さに関係なく見出しが常に画面の同じ位置に来るようにした */}
       <div
         ref={outerWrapperRef}
-        className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 ${verticalHeading ? 'top-0' : 'inset-y-0'}`}
-        style={verticalHeading && headingAreaMinHeightPx
-          ? { height: `max(calc(var(--vh, 1svh) * 100), ${headingAreaMinHeightPx}px)` }
+        className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 ${verticalHeading ? '' : 'inset-y-0'}`}
+        style={verticalHeading
+          ? {
+              top: `${FIXED_HEADER_PX}px`,
+              height: headingAreaMinHeightPx
+                ? `max(calc(var(--vh, 1svh) * 100 - ${FIXED_HEADER_PX}px), ${headingAreaMinHeightPx}px)`
+                : undefined,
+            }
           : undefined}
       >
         {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる。
