@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 
-type Phase = 'idle' | 'text' | 'image'
+type Phase = 'idle' | 'introText' | 'introLogo' | 'text' | 'image'
 
 interface HeroRevealProps {
   eyebrow: string
@@ -10,6 +10,13 @@ interface HeroRevealProps {
   subheading?: string
   /** 写真が現れると、見出しと一緒に表示される補足文（温泉寺のサブコピー等） */
   midContent?: ReactNode
+  /** 白背景フェーズの冒頭、見出しより先に画面右側へ縦書きで浮かび上がる導入テキスト
+      （例：「中禅寺湖畔に」）。指定すると introLogoSrc とあわせて見出しの前に
+      「右に縦書き文字 → 中央に筆文字ロゴ」の導入演出が挿入される */
+  introText?: string
+  /** 導入テキストのあとに画面中央へフェードインする筆文字ロゴ画像（寺号ロゴ） */
+  introLogoSrc?: string
+  introLogoAlt?: string
   /** 白背景フェーズの間、見出しの背後に薄く滲ませる寺紋（単色地に白抜きのPNG。マスクで白い部分だけを抽出する） */
   crestSrc?: string
   darkColor: string
@@ -32,19 +39,28 @@ interface HeroRevealProps {
 }
 
 const EASE = 'cubic-bezier(0,0,0.2,1)'
-const TEXT_START_MS = 250      // idle → text（マウントからの絶対時間）
+const TEXT_START_MS = 250      // idle → text（マウントからの絶対時間。導入演出が無い場合）
 const STAGGER_MS = 90          // 1文字ごとの遅延（text開始からの相対時間）
 const CHAR_DURATION_MS = 900   // 1文字のフェード＋回転にかかる時間
 const SUBHEADING_GAP_MS = 400  // 最後の文字が浮かび終えてから小見出しが出るまでの間
 const SUBHEADING_DURATION_MS = 700
 const READ_PAUSE_MS = 3000     // 小見出し（寺名）が出そろってから写真が現れるまでの余韻
 
+// 導入演出（introText/introLogoSrc）のタイミング定数
+const INTRO_START_MS = 250        // idle → introText
+const INTRO_STAGGER_MS = 130      // 縦書き1文字ごとの遅延
+const INTRO_CHAR_DURATION_MS = 900
+const INTRO_HOLD_AFTER_TEXT_MS = 500  // 縦書き文字が出そろってからロゴに切り替わるまでの間
+const INTRO_TEXT_FADE_MS = 500        // 縦書き文字グループのフェードアウト時間
+const INTRO_LOGO_FADE_MS = 900        // ロゴのフェードイン時間
+const INTRO_LOGO_HOLD_MS = 1300       // ロゴを見せたまま静止する時間（この後、通常の見出し演出へ）
+
 // 神社本庁公式サイトの「白背景から文字が一文字ずつ浮かび上がり、
 // 静止画が現れる」演出をトップページのヒーローに適用したもの。
 // 登場の順番: 白背景 → 見出し文字が浮かぶ → 寺名 →
 //            写真が現れる（見出しは白文字化、寺名は消える、補足文・ボタン等が現れる）
 export default function HeroReveal({
-  eyebrow, heading, subheading, midContent, crestSrc, darkColor, lightColor,
+  eyebrow, heading, subheading, midContent, introText, introLogoSrc, introLogoAlt, crestSrc, darkColor, lightColor,
   eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
   background, children, liftPx = 0, bottomLiftPx = 0, staggerChildren = false, className,
 }: HeroRevealProps) {
@@ -52,21 +68,33 @@ export default function HeroReveal({
   const headingContentRef = useRef<HTMLDivElement>(null)
   const bottomGroupRef = useRef<HTMLDivElement>(null)
   const [minHeightPx, setMinHeightPx] = useState<number | null>(null)
+  const hasIntro = Boolean(introText && introLogoSrc)
+  const introCharCount = Array.from(introText ?? '').length
+  // 縦書き文字が「introText開始」から見て、浮かび終わるまでの相対時間
+  const introTextDoneRelMs = introCharCount > 0 ? (introCharCount - 1) * INTRO_STAGGER_MS + INTRO_CHAR_DURATION_MS : 0
+  const introLogoAtMs = INTRO_START_MS + introTextDoneRelMs + INTRO_HOLD_AFTER_TEXT_MS
+  // 導入演出があればロゴの後、無ければ通常どおりTEXT_START_MSに見出し演出を開始する
+  const textStartMs = hasIntro ? introLogoAtMs + INTRO_LOGO_FADE_MS + INTRO_LOGO_HOLD_MS : TEXT_START_MS
   const charCount = Array.from(heading.replace(/\n/g, '')).length
   // 最後の文字が「text開始」から見て、浮かび終わるまでの相対時間
   const lastCharDoneRelMs = (charCount - 1) * STAGGER_MS + CHAR_DURATION_MS
   const subheadingDoneRelMs = subheading ? lastCharDoneRelMs + SUBHEADING_GAP_MS + SUBHEADING_DURATION_MS : lastCharDoneRelMs
-  const imageAtMs = TEXT_START_MS + subheadingDoneRelMs + READ_PAUSE_MS
+  const imageAtMs = textStartMs + subheadingDoneRelMs + READ_PAUSE_MS
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setPhase('image')
       return
     }
-    const t1 = setTimeout(() => setPhase('text'), TEXT_START_MS)
-    const t2 = setTimeout(() => setPhase('image'), imageAtMs)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [imageAtMs])
+    const timers: ReturnType<typeof setTimeout>[] = []
+    if (hasIntro) {
+      timers.push(setTimeout(() => setPhase('introText'), INTRO_START_MS))
+      timers.push(setTimeout(() => setPhase('introLogo'), introLogoAtMs))
+    }
+    timers.push(setTimeout(() => setPhase('text'), textStartMs))
+    timers.push(setTimeout(() => setPhase('image'), imageAtMs))
+    return () => { timers.forEach(clearTimeout) }
+  }, [hasIntro, introLogoAtMs, textStartMs, imageAtMs])
 
   useEffect(() => {
     // 見出しグループ・下部グループは共にposition:absoluteなので、通常フローと
@@ -91,10 +119,15 @@ export default function HeroReveal({
     return () => ro.disconnect()
   }, [])
 
-  const textActive = phase !== 'idle'
+  // 通常の見出し演出は、導入演出（introText/introLogo）が終わったあとに始まる
+  const textActive = phase === 'text' || phase === 'image'
   const imageActive = phase === 'image'
+  const introTextActive = phase === 'introText' || phase === 'introLogo' || textActive
+  const introTextVisible = phase === 'introText'
+  const introLogoActive = phase === 'introLogo'
   const lines = heading.split('\n').filter(line => line.trim() !== '')
   let charIndex = 0
+  let introCharIndex = 0
 
   return (
     <section
@@ -142,12 +175,79 @@ export default function HeroReveal({
                 WebkitMaskPosition: 'center',
                 maskPosition: 'center',
                 filter: 'blur(1px)',
-                opacity: imageActive ? 0 : 0.13,
+                // 導入演出（右の縦書き文字・中央のロゴ）と重なって見えないよう、
+                // 通常の見出し演出（text）が始まってから浮かび上がらせる
+                opacity: textActive && !imageActive ? 0.13 : 0,
                 transitionDuration: '900ms',
               }}
             />
           </div>
         )}
+
+        {/* 導入演出：白背景の最初に、右側へ縦書きで短いコピーが浮かび上がる */}
+        {introText && (
+          <div
+            className="absolute inset-0 flex items-center justify-end pr-[9%] sm:pr-[13%] md:pr-[16%] pointer-events-none"
+            aria-hidden="true"
+          >
+            <div
+              style={{
+                writingMode: 'vertical-rl',
+                textOrientation: 'upright',
+                opacity: introTextVisible ? 1 : 0,
+                transitionProperty: 'opacity',
+                transitionDuration: `${INTRO_TEXT_FADE_MS}ms`,
+                transitionTimingFunction: EASE,
+              }}
+              className="font-serif"
+            >
+              {Array.from(introText).map((ch, ci) => {
+                const relDelayMs = introCharIndex++ * INTRO_STAGGER_MS
+                return (
+                  <span
+                    key={ci}
+                    className="inline-block"
+                    style={{
+                      fontSize: 'clamp(28px, 14px + 3vw, 58px)',
+                      letterSpacing: '0.06em',
+                      opacity: introTextActive ? 1 : 0,
+                      transform: introTextActive ? 'translateY(0) rotateX(0deg)' : 'translateY(22px) rotateX(-55deg)',
+                      color: darkColor,
+                      transitionProperty: 'opacity, transform',
+                      transitionDuration: `${INTRO_CHAR_DURATION_MS}ms`,
+                      transitionTimingFunction: EASE,
+                      transitionDelay: `${relDelayMs}ms`,
+                    }}
+                  >
+                    {ch}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* 導入演出：縦書き文字のあと、中央に寺号の筆文字ロゴが浮かび上がる */}
+        {introLogoSrc && (
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none px-8"
+            style={{
+              opacity: introLogoActive ? 1 : 0,
+              transform: introLogoActive ? 'scale(1)' : 'scale(0.94)',
+              transitionProperty: 'opacity, transform',
+              transitionDuration: `${INTRO_LOGO_FADE_MS}ms`,
+              transitionTimingFunction: EASE,
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={introLogoSrc}
+              alt={introLogoAlt ?? ''}
+              className="h-[42vh] sm:h-[50vh] max-h-[520px] w-auto object-contain"
+            />
+          </div>
+        )}
+
         {/* headingContentRefで実際に必要な高さを計測し、セクションの最小高さに反映する
             (このdiv自体はabsoluteではない普通のflex子要素なので、中身の自然な高さが取れる) */}
         <div ref={headingContentRef} style={liftPx ? { transform: `translateY(-${liftPx}px)` } : undefined}>

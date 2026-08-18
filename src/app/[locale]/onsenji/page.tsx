@@ -210,6 +210,9 @@ export default async function OnsenjPage({
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
           subheading={loc === 'en' ? undefined : '日光山温泉寺'}
+          introText={loc === 'en' ? undefined : '千二百'}
+          introLogoSrc="/images/chuzenji/onsenji-rogo.png"
+          introLogoAlt="日光山温泉寺"
           crestSrc="/images/onsenji/common/jimon-green-mask.png"
           darkColor="#1a4a3a"
           lightColor="#ffffff"

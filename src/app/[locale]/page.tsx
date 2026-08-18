@@ -188,6 +188,9 @@ export default async function HomePage({
           eyebrow={heroEn}
           heading={heroTitle.replace(/\\n/g, '\n')}
           subheading={loc === 'en' ? undefined : '日光山中禅寺立木観音'}
+          introText={loc === 'en' ? undefined : '中禅寺湖畔に'}
+          introLogoSrc="/images/chuzenji/chizenji-rogo.png"
+          introLogoAlt="日光山中禅寺"
           crestSrc="/images/chuzenji/common/jimon-navy-mask.png"
           darkColor="#1a2a4a"
           lightColor="#ffffff"
