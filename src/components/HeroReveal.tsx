@@ -329,6 +329,14 @@ export default function HeroReveal({
                     <span key={li} className="block whitespace-nowrap">{line}</span>
                   ))}
                 </h1>
+                {/* サブキャッチコピー（温泉寺の補足文など）は見出しのすぐ下に表示する。
+                    横書きモードでは従来どおり下部グループ（ボタン等の近く）に表示するため、
+                    縦書きモードのときだけここに出す */}
+                {midContent && (
+                  <div className="mt-4" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}>
+                    {midContent}
+                  </div>
+                )}
               </div>
             </div>
           ) : (
@@ -415,7 +423,9 @@ export default function HeroReveal({
         className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10"
         style={(effectiveLiftPx || bottomLiftPx) ? { transform: `translateY(-${effectiveLiftPx + bottomLiftPx}px)` } : undefined}
       >
-        {midContent && (
+        {/* 縦書きモードではmidContentを見出しのすぐ下（上のgridスタック内）に表示するため、
+            ここでは横書きモードのときだけ表示する（二重表示を避ける） */}
+        {midContent && !verticalHeading && (
           <div
             style={{
               opacity: imageActive ? 1 : 0,
@@ -430,7 +440,7 @@ export default function HeroReveal({
           </div>
         )}
         <div
-          className={`${staggerChildren ? '' : 'transition-opacity ease-out'} ${midContent ? 'mt-8' : ''}`}
+          className={`${staggerChildren ? '' : 'transition-opacity ease-out'} ${midContent && !verticalHeading ? 'mt-8' : ''}`}
           data-active={imageActive}
           style={{
             opacity: staggerChildren ? 1 : (imageActive ? 1 : 0),
