@@ -28,6 +28,10 @@ interface HeroRevealProps {
       1行目の文言が他の行と同じ位置（上下中央）に来ると座りが悪く見える場合に使う。
       指定しない場合は全行とも同じ位置に中央配置する */
   firstLineOffsetEm?: number
+  /** verticalHeading時、見出しの最初の2行を1コマ目として横に並べて同時に表示する
+      （例:「千二百余年の」「祈りを宿す」を右列・左列として並べ、3行目以降は
+      従来どおり1行ずつ表示する）。指定しない場合は全行とも1行ずつ順番に表示する */
+  pairFirstTwoLines?: boolean
   darkColor: string
   lightColor: string
   eyebrowDarkColor?: string
@@ -71,7 +75,7 @@ const V_FINAL_HOLD_MS = 3000     // ロゴが出たあと、写真に切り替�
 // 静止画が現れる」演出をトップページのヒーローに適用したもの。
 export default function HeroReveal({
   eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, verticalHeading = false, midContent, crestSrc,
-  crestTargetCharFrac, firstLineOffsetEm,
+  crestTargetCharFrac, firstLineOffsetEm, pairFirstTwoLines,
   darkColor, lightColor, eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
   background, children, liftPx = 0, bottomLiftPx = 0, staggerChildren = false, className,
 }: HeroRevealProps) {
@@ -86,6 +90,11 @@ export default function HeroReveal({
   // 影響を受けない（詳しくはheadingAreaWrapperの説明を参照）
   const [headingAreaMinHeightPx, setHeadingAreaMinHeightPx] = useState<number | null>(null)
   const lines = heading.split('\n').filter(line => line.trim() !== '')
+  // pairFirstTwoLines時、1コマ目に見出しの最初の2行（元のlinesのindex 0・1）を
+  // まとめる。framesの各要素は「そのコマで同時に表示する行のindex（lines基準）の配列」。
+  const frames: number[][] = pairFirstTwoLines && lines.length >= 2
+    ? [[0, 1], ...lines.slice(2).map((_, i) => [i + 2])]
+    : lines.map((_, i) => [i])
 
   // 横書きモード用の状態・タイミング
   const [phase, setPhase] = useState<'idle' | 'text'>('idle')
@@ -96,22 +105,23 @@ export default function HeroReveal({
   const subheadingDoneRelMs = hasSubheadingContent ? lastCharDoneRelMs + SUBHEADING_GAP_MS + SUBHEADING_DURATION_MS : lastCharDoneRelMs
   const horizontalImageAtMs = TEXT_START_MS + subheadingDoneRelMs + READ_PAUSE_MS
 
-  // 縦書きモード用の状態・タイミング（-1:何も出ていない、0..lines.length-1:見出しの行、lines.length:ロゴ）
+  // 縦書きモード用の状態・タイミング（-1:何も出ていない、0..frames.length-1:見出しのコマ、frames.length:ロゴ）
   const [step, setStep] = useState(-1)
   const [verticalImageActive, setVerticalImageActive] = useState(false)
   const hasLogoStep = Boolean(subheadingLogoSrc)
   // 各コマ（見出しの行・ロゴ）は、直前のコマが完全に消え終わってから
   // フェードインを始める。1コマ目だけは待つ相手がいないので待ち時間なし。
-  const vLineDurations = lines.map((line, li) => {
-    const cc = Array.from(line).length
-    const enterWaitMs = li === 0 ? 0 : V_LINE_FADE_MS
+  // 1コマに複数行（pairFirstTwoLines）が入る場合は、そのコマの中で一番長い行を基準にする
+  const vLineDurations = frames.map((frameLineIdxs, fi) => {
+    const cc = Math.max(...frameLineIdxs.map(li => Array.from(lines[li]).length))
+    const enterWaitMs = fi === 0 ? 0 : V_LINE_FADE_MS
     return enterWaitMs + (cc - 1) * V_CHAR_STAGGER_MS + CHAR_DURATION_MS + V_LINE_HOLD_MS
   })
   const vLineStartTimes: number[] = []
   let vCursor = V_START_MS
   vLineDurations.forEach(dur => { vLineStartTimes.push(vCursor); vCursor += dur })
   const vLogoStartMs = vCursor
-  const vLogoEnterWaitMs = lines.length > 0 ? V_LINE_FADE_MS : 0
+  const vLogoEnterWaitMs = frames.length > 0 ? V_LINE_FADE_MS : 0
   const verticalImageAtMs = hasLogoStep
     ? vLogoStartMs + vLogoEnterWaitMs + V_LOGO_FADE_MS + V_FINAL_HOLD_MS
     : vLogoStartMs + V_FINAL_HOLD_MS
@@ -131,17 +141,17 @@ export default function HeroReveal({
   useEffect(() => {
     if (!verticalHeading) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setStep(lines.length)
+      setStep(frames.length)
       setVerticalImageActive(true)
       return
     }
     const timers: ReturnType<typeof setTimeout>[] = []
     vLineStartTimes.forEach((t, i) => timers.push(setTimeout(() => setStep(i), t)))
-    if (hasLogoStep) timers.push(setTimeout(() => setStep(lines.length), vLogoStartMs))
+    if (hasLogoStep) timers.push(setTimeout(() => setStep(frames.length), vLogoStartMs))
     timers.push(setTimeout(() => setVerticalImageActive(true), verticalImageAtMs))
     return () => { timers.forEach(clearTimeout) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [verticalHeading, hasLogoStep, vLogoStartMs, verticalImageAtMs, lines.length])
+  }, [verticalHeading, hasLogoStep, vLogoStartMs, verticalImageAtMs, frames.length])
 
   useEffect(() => {
     // 見出しグループ・下部グループは共にposition:absoluteなので、通常フローと
@@ -205,6 +215,51 @@ export default function HeroReveal({
   const effectiveLiftPx = verticalHeading ? V_WHITE_PHASE_LIFT_PX : liftPx
   const bottomGroupLiftPx = verticalHeading ? 0 : liftPx
   let charIndex = 0
+
+  // 縦書きコマの1行分を描画する。pairFirstTwoLines時、1コマに2行（列）を並べる
+  // 場合も同じ関数を列ごとに呼び出して使う。liはlines基準のindexで、
+  // firstLineOffsetEmはli===0（＝「千二百余年の」等、一番最初の行）にだけ効く
+  const renderColumn = (li: number, active: boolean, enterWaitMs: number) => (
+    <div
+      key={li}
+      className="font-serif"
+      style={{
+        writingMode: 'vertical-rl',
+        textOrientation: 'upright',
+        // 写真フェーズの横書き見出し・行1/行2すべてで文字サイズを統一する
+        fontSize: 'clamp(32px, 17px + 3.8vw, 72px)',
+        letterSpacing: '0.08em',
+        // firstLineOffsetEm指定時、1行目だけ他の行より下にずらす
+        // （em指定なのでこの要素自身のfontSizeを基準に解決される）
+        transform: li === 0 && firstLineOffsetEm ? `translateY(${firstLineOffsetEm}em)` : undefined,
+      }}
+      aria-hidden={!active}
+    >
+      {Array.from(lines[li]).map((ch, ci) => {
+        const relDelayMs = enterWaitMs + ci * V_CHAR_STAGGER_MS
+        return (
+          <span
+            key={ci}
+            className="inline-block"
+            style={{
+              opacity: active ? 1 : 0,
+              transform: active ? 'translateY(0) rotateX(0deg)' : 'translateY(22px) rotateX(-55deg)',
+              color: imageActive ? lightColor : darkColor,
+              textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
+              transitionProperty: 'opacity, transform, color',
+              transitionDuration: active
+                ? `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`
+                : `${V_LINE_FADE_MS}ms, ${V_LINE_FADE_MS}ms, 700ms`,
+              transitionTimingFunction: EASE,
+              transitionDelay: active ? `${relDelayMs}ms, ${relDelayMs}ms, 0ms` : '0ms, 0ms, 0ms',
+            }}
+          >
+            {ch}
+          </span>
+        )
+      })}
+    </div>
+  )
 
   return (
     <section
@@ -306,63 +361,34 @@ export default function HeroReveal({
             // 重ねることで、コンテナの高さ・幅が自動的に一番大きい行に
             // 合わせて確保される（JSでの高さ計測が不要になる）
             <div className="grid justify-items-center items-center">
-              {lines.map((line, li) => {
-                const active = step === li
+              {frames.map((frameLineIdxs, fi) => {
+                const active = step === fi
                 // 1コマ目は待たずに現れ、2コマ目以降は直前のコマが完全に消え
                 // 終わる(V_LINE_FADE_MS)のを待ってから1文字ずつ浮かび上がる。
                 // 消えるときは全文字が同時に(遅延なし・短い時間で)フェードアウトする。
-                const enterWaitMs = li === 0 ? 0 : V_LINE_FADE_MS
+                const enterWaitMs = fi === 0 ? 0 : V_LINE_FADE_MS
                 return (
-                  <div
-                    key={li}
-                    className="font-serif"
-                    style={{
-                      gridArea: '1 / 1',
-                      writingMode: 'vertical-rl',
-                      textOrientation: 'upright',
-                      // 写真フェーズの横書き見出し・行1/行2すべてで文字サイズを統一する
-                      fontSize: 'clamp(32px, 17px + 3.8vw, 72px)',
-                      letterSpacing: '0.08em',
-                      // firstLineOffsetEm指定時、1行目だけ他の行より下にずらす
-                      // （em指定なのでこの要素自身のfontSizeを基準に解決される）
-                      transform: li === 0 && firstLineOffsetEm ? `translateY(${firstLineOffsetEm}em)` : undefined,
-                    }}
-                    aria-hidden={!active}
-                  >
-                    {Array.from(line).map((ch, ci) => {
-                      const relDelayMs = enterWaitMs + ci * V_CHAR_STAGGER_MS
-                      return (
-                        <span
-                          key={ci}
-                          className="inline-block"
-                          style={{
-                            opacity: active ? 1 : 0,
-                            transform: active ? 'translateY(0) rotateX(0deg)' : 'translateY(22px) rotateX(-55deg)',
-                            color: imageActive ? lightColor : darkColor,
-                            textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
-                            transitionProperty: 'opacity, transform, color',
-                            transitionDuration: active
-                              ? `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`
-                              : `${V_LINE_FADE_MS}ms, ${V_LINE_FADE_MS}ms, 700ms`,
-                            transitionTimingFunction: EASE,
-                            transitionDelay: active ? `${relDelayMs}ms, ${relDelayMs}ms, 0ms` : '0ms, 0ms, 0ms',
-                          }}
-                        >
-                          {ch}
-                        </span>
-                      )
-                    })}
+                  <div key={fi} style={{ gridArea: '1 / 1' }} aria-hidden={!active}>
+                    {frameLineIdxs.length > 1 ? (
+                      // 2行を右列・左列として同時に並べる（DOM順=読み上げ順どおり
+                      // li=0が先勝ちで、row-reverseにより先の行が右側に来る）
+                      <div className="flex flex-row-reverse items-start gap-[0.3em]">
+                        {frameLineIdxs.map(li => renderColumn(li, active, enterWaitMs))}
+                      </div>
+                    ) : (
+                      renderColumn(frameLineIdxs[0], active, enterWaitMs)
+                    )}
                   </div>
                 )
               })}
               {subheadingLogoSrc && (() => {
-                const logoActive = step === lines.length && !verticalImageActive
+                const logoActive = step === frames.length && !verticalImageActive
                 return (
                   <div
                     style={{
                       gridArea: '1 / 1',
                       opacity: logoActive ? 1 : 0,
-                      transform: step === lines.length ? 'scale(1)' : 'scale(0.94)',
+                      transform: step === frames.length ? 'scale(1)' : 'scale(0.94)',
                       transitionProperty: 'opacity, transform',
                       // 直前の行が完全に消え終わってから現れる。写真へ切り替わる
                       // ときは待たずにすぐフェードアウトする
@@ -370,7 +396,7 @@ export default function HeroReveal({
                       transitionTimingFunction: EASE,
                       transitionDelay: logoActive ? `${vLogoEnterWaitMs}ms` : '0ms',
                     }}
-                    aria-hidden={step !== lines.length}
+                    aria-hidden={step !== frames.length}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
