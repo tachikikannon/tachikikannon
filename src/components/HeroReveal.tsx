@@ -74,6 +74,10 @@ export default function HeroReveal({
   const headingContentRef = useRef<HTMLDivElement>(null)
   const bottomGroupRef = useRef<HTMLDivElement>(null)
   const [minHeightPx, setMinHeightPx] = useState<number | null>(null)
+  // 見出しエリア（寺紋・見出し）専用の最小高さ。下部グループの高さ（bottomH）を
+  // 含めない＝下部コンテンツがお寺によって違う高さでも、見出しエリアの中央配置は
+  // 影響を受けない（詳しくはheadingAreaWrapperの説明を参照）
+  const [headingAreaMinHeightPx, setHeadingAreaMinHeightPx] = useState<number | null>(null)
   const lines = heading.split('\n').filter(line => line.trim() !== '')
 
   // 横書きモード用の状態・タイミング
@@ -147,6 +151,7 @@ export default function HeroReveal({
       const headingH = headingEl.offsetHeight
       const bottomH = bottomEl.offsetHeight
       setMinHeightPx(headingH + bottomH * 2)
+      setHeadingAreaMinHeightPx(headingH)
     }
     update()
     const ro = new ResizeObserver(update)
@@ -186,9 +191,20 @@ export default function HeroReveal({
           flex-1で「下のボタン等を除いた残り空間」を中央寄せする方式だと、
           下のボタン等の高さがお寺ごとに違う（温泉寺は入浴ステータスカードがある分、
           立木観音より下のブロックが高い）ため、見た目の中心がずれてしまっていた。
-          absoluteでセクション全体を基準に中央配置することで、下のブロックの
-          高さに影響されず常に画像の真ん中に来るようにした */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          absoluteでセクション全体を基準に中央配置することで…という意図だったが、
+          縦書きモードではセクション自体の高さ（minHeightPx）に下部ブロックの高さが
+          含まれるため、下部ブロックが高いお寺ほどセクションが伸びて、結果的に
+          見出しの中央位置が下寄りになってしまっていた（画像で指摘を確認）。
+          縦書きモードでは、この見出しエリアの高さをセクション全体ではなく
+          見出し自身に必要な高さ（headingAreaMinHeightPx）とmin-h-100vhの
+          大きい方に固定し、上端をセクション上端に揃えることで、下部ブロックの
+          高さに関係なく見出しが常に画面の同じ位置に来るようにした */}
+      <div
+        className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 ${verticalHeading ? 'top-0' : 'inset-y-0'}`}
+        style={verticalHeading && headingAreaMinHeightPx
+          ? { height: `max(calc(var(--vh, 1svh) * 100), ${headingAreaMinHeightPx}px)` }
+          : undefined}
+      >
         {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる */}
         {crestSrc && (
           <div
