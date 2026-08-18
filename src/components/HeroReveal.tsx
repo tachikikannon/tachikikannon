@@ -151,6 +151,9 @@ export default function HeroReveal({
 
   const textActive = verticalHeading ? step > -1 : phase !== 'idle'
   const imageActive = verticalHeading ? verticalImageActive : horizontalImageActive
+  // liftPxは横書き版の見出し（＋温泉寺の入浴ステータスカード分の下部の高さ）に
+  // 合わせて調整された値なので、縦書き版では使わず常に上下左右のど真ん中に置く
+  const effectiveLiftPx = verticalHeading ? 0 : liftPx
   let charIndex = 0
 
   return (
@@ -179,7 +182,7 @@ export default function HeroReveal({
           <div
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
             aria-hidden="true"
-            style={liftPx ? { transform: `translateY(-${liftPx}px)` } : undefined}
+            style={effectiveLiftPx ? { transform: `translateY(-${effectiveLiftPx}px)` } : undefined}
           >
             <div
               className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
@@ -207,7 +210,7 @@ export default function HeroReveal({
         )}
         {/* headingContentRefで実際に必要な高さを計測し、セクションの最小高さに反映する
             (このdiv自体はabsoluteではない普通のflex子要素なので、中身の自然な高さが取れる) */}
-        <div ref={headingContentRef} style={liftPx ? { transform: `translateY(-${liftPx}px)` } : undefined}>
+        <div ref={headingContentRef} style={effectiveLiftPx ? { transform: `translateY(-${effectiveLiftPx}px)` } : undefined}>
           <p
             className="text-xs tracking-[0.3em] mb-4"
             style={{
@@ -410,7 +413,7 @@ export default function HeroReveal({
       <div
         ref={bottomGroupRef}
         className="absolute inset-x-0 bottom-0 text-center px-4 pb-8 md:pb-10"
-        style={(liftPx || bottomLiftPx) ? { transform: `translateY(-${liftPx + bottomLiftPx}px)` } : undefined}
+        style={(effectiveLiftPx || bottomLiftPx) ? { transform: `translateY(-${effectiveLiftPx + bottomLiftPx}px)` } : undefined}
       >
         {midContent && (
           <div
