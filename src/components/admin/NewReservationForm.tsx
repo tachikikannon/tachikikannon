@@ -127,7 +127,17 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
       <div className="mb-4">
         <label className="admin-label">区分</label>
         <select className="admin-input" value={newRes.category_id}
-          onChange={e => setNewRes(f => ({ ...f, category_id: e.target.value }))}>
+          onChange={e => {
+            const category_id = e.target.value
+            const categoryName = categories.find(c => c.id === category_id)?.name ?? ''
+            setNewRes(f => ({
+              ...f,
+              category_id,
+              // リッツ予約は個々のお客様名がわからないことが多いため、お名前が
+              // 未入力ならリッツと自動入力する（既に入力済みの名前は上書きしない）
+              name: categoryName.includes('リッツ') && !f.name ? 'リッツ' : f.name,
+            }))
+          }}>
           <option value="">区分なし</option>
           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
