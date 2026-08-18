@@ -212,12 +212,27 @@ export default function HeroReveal({
       setLogoExtraPx(gridCenterY - logoTargetY)
     }
     update()
+    // 見出しはWebフォント（Noto Serif JP、display=swap）を使っており、
+    // マウント直後のこの時点ではまだ仮フォントで表示されていることがある。
+    // 本フォントに差し替わるとgridEl（縦書き文字）の高さがわずかに変わり、
+    // 通常はResizeObserverがそれを検知して再計測されるはずだが、モバイル
+    // 回線の遅いWebView環境ではタイミングがズレて拾いきれないことがある
+    // ため、フォント読み込み完了を検知するdocument.fonts.readyでも
+    // 明示的に再計測する（保険として遅延タイマーも併用する）
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.ready.then(update)
+    }
+    const timers = [100, 500, 1500].map(ms => setTimeout(update, ms))
     const ro = new ResizeObserver(update)
     ro.observe(outerEl)
     ro.observe(gridEl)
     ro.observe(imgEl)
     window.addEventListener('resize', update)
-    return () => { ro.disconnect(); window.removeEventListener('resize', update) }
+    return () => {
+      timers.forEach(clearTimeout)
+      ro.disconnect()
+      window.removeEventListener('resize', update)
+    }
   }, [crestTargetCharFrac])
 
   const textActive = verticalHeading ? step > -1 : phase !== 'idle'
