@@ -174,7 +174,7 @@ export default function AdminReservationsPage() {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <h1 className="text-2xl font-serif text-navy">予約管理</h1>
+        <h1 className="text-2xl font-serif text-navy">予約検索</h1>
         {canEdit && (
           <Link href="/admin/reservations/new" className="btn-primary text-sm px-4 py-2">＋ 新規予約登録へ</Link>
         )}

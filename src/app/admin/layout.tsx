@@ -11,7 +11,7 @@ const navItems: NavItem[] = [
   { href: '/admin/news',          label: 'お知らせ（立木観音）', icon: '📢' },
   { href: '/admin/blog',          label: 'ブログ',           icon: '✏️' },
   // ── 予約・体験 ──
-  { href: '/admin/reservations',  label: '予約管理',         icon: '📋', group: '予約・体験' },
+  { href: '/admin/reservations',  label: '予約検索',         icon: '📋', group: '予約・体験' },
   { href: '/admin/reservations/schedule', label: '予約スケジュール', icon: '🗓️', group: '予約・体験' },
   { href: '/admin/reservations/availability', label: '空き状況の詳細設定', icon: '🕒', group: '予約・体験' },
   { href: '/admin/reservations/categories', label: '予約区分の管理', icon: '🏷️', group: '予約・体験' },
@@ -123,7 +123,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 }
                 lastGroup = group
               }
-              const isActive = href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
+              // このhrefより下の階層に、専用のナビ項目を持つ子ページがある場合
+              // （例：/admin/reservations に対する /admin/reservations/schedule）は、
+              // 完全一致のときだけ選択中として扱う。そうしないと子ページを開いた
+              // ときに親のリンクまで選択中に見えてしまう（例：予約スケジュールを
+              // 開いても予約管理が同時にハイライトされる不具合）。
+              const hasChildRoute = navItems.some(item => item.href !== href && item.href.startsWith(`${href}/`))
+              const isActive = hasChildRoute ? pathname === href : pathname.startsWith(href)
               rendered.push(
                 <Link key={href} href={href} onClick={() => setMenuOpen(false)}
                   className={`flex items-center gap-3 px-5 py-2.5 text-sm transition-colors

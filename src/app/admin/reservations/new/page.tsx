@@ -15,7 +15,7 @@ function NewReservationPageContent() {
         <h1 className="text-2xl font-serif text-navy">新規予約登録</h1>
         <div className="flex items-center gap-4">
           <Link href="/admin/reservations/schedule" className="text-sm text-navy underline">予約スケジュールを見る →</Link>
-          <Link href="/admin/reservations" className="text-sm text-navy underline">予約一覧を見る →</Link>
+          <Link href="/admin/reservations" className="text-sm text-navy underline">予約検索を見る →</Link>
         </div>
       </div>
       <p className="text-sm text-gray-500 mb-6">
