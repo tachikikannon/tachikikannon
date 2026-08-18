@@ -24,6 +24,10 @@ interface HeroRevealProps {
       例: 縦書きロゴ画像の特定の一文字（「禅」「泉」等）の高さ方向の中心が
       画像全体の何%にあるかを計測して指定する */
   crestTargetCharFrac?: number
+  /** verticalHeading時、見出しの1行目だけを他の行より下にずらす量（1文字分=1em単位）。
+      1行目の文言が他の行と同じ位置（上下中央）に来ると座りが悪く見える場合に使う。
+      指定しない場合は全行とも同じ位置に中央配置する */
+  firstLineOffsetEm?: number
   darkColor: string
   lightColor: string
   eyebrowDarkColor?: string
@@ -67,7 +71,7 @@ const V_FINAL_HOLD_MS = 3000     // ロゴが出たあと、写真に切り替�
 // 静止画が現れる」演出をトップページのヒーローに適用したもの。
 export default function HeroReveal({
   eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, verticalHeading = false, midContent, crestSrc,
-  crestTargetCharFrac,
+  crestTargetCharFrac, firstLineOffsetEm,
   darkColor, lightColor, eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
   background, children, liftPx = 0, bottomLiftPx = 0, staggerChildren = false, className,
 }: HeroRevealProps) {
@@ -319,6 +323,9 @@ export default function HeroReveal({
                       // 写真フェーズの横書き見出し・行1/行2すべてで文字サイズを統一する
                       fontSize: 'clamp(32px, 17px + 3.8vw, 72px)',
                       letterSpacing: '0.08em',
+                      // firstLineOffsetEm指定時、1行目だけ他の行より下にずらす
+                      // （em指定なのでこの要素自身のfontSizeを基準に解決される）
+                      transform: li === 0 && firstLineOffsetEm ? `translateY(${firstLineOffsetEm}em)` : undefined,
                     }}
                     aria-hidden={!active}
                   >
