@@ -194,8 +194,8 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
                   let content: React.ReactNode = maxGroups != null ? `${counts.groups}/${maxGroups}` : `${counts.groups}`
                   if (blocked) { cls = 'bg-gray-100 text-gray-400'; content = '休止(日)' }
                   else if (override?.is_closed) { cls = 'bg-red-50 text-red-500 font-medium'; content = '受付停止' }
-                  else if (full) { cls = 'bg-gray-100 text-gray-400'; content = '満枠' }
-                  else if (bufferBlocked) { cls = 'bg-violet-50 text-violet-600 font-medium'; content = '重複' }
+                  else if (full) { cls = 'bg-gray-100 text-gray-400'; content = reservationType === 'prayer' ? '予約' : '満枠' }
+                  else if (bufferBlocked) { cls = 'bg-violet-50 text-violet-600 font-medium'; content = '×' }
                   else if (override) { cls = 'bg-amber-50 text-amber-700 font-medium' }
                   if (isSelected) cls += ' ring-2 ring-navy'
                   if (isCell) cls += ' ring-2 ring-gold'
@@ -231,7 +231,12 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
             </div>
           ) : cellFull ? (
             <div>
-              <p className="text-xs text-gray-500 mb-1">満枠です（{cellCounts?.groups}/{cellMaxGroups}組）。定員を変更したい場合は「空き状況の詳細設定」をご利用ください。</p>
+              <p className="text-xs text-gray-500 mb-1">
+                {reservationType === 'prayer'
+                  ? `予約済みです（${cellCounts?.groups}/${cellMaxGroups}組）。`
+                  : `満枠です（${cellCounts?.groups}/${cellMaxGroups}組）。`}
+                定員を変更したい場合は「空き状況の詳細設定」をご利用ください。
+              </p>
               <a href="/admin/reservations/availability" target="_blank" rel="noopener" className="text-xs text-navy underline">空き状況の詳細設定を開く ↗</a>
             </div>
           ) : cellBufferBlocked ? (
@@ -261,8 +266,8 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
       <div className="flex flex-wrap gap-3 mt-2 px-0.5 text-[11px] text-gray-500">
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-white border border-gray-300" /> 予約可</span>
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-50 border border-red-200" /> 受付停止</span>
-        <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-gray-100" /> 満枠／休止(日)</span>
-        <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-violet-50 border border-violet-200" /> 前後の予約と重複（バッファ）</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-gray-100" /> 満枠（護摩は「予約」）／休止(日)</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-violet-50 border border-violet-200" /> ×＝前後の予約と重複（バッファ）</span>
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-50 border border-amber-200" /> 個別設定あり</span>
       </div>
     </div>
