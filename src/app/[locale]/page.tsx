@@ -191,6 +191,7 @@ export default async function HomePage({
           subheadingLogoSrc={loc === 'en' ? undefined : '/images/chuzenji/chizenji-rogo.png'}
           subheadingLogoAlt="日光山中禅寺"
           crestSrc="/images/chuzenji/common/jimon-navy-mask.png"
+          crestTargetCharFrac={0.587}
           darkColor="#1a2a4a"
           lightColor="#ffffff"
           eyebrowDarkColor="#c8a96e"

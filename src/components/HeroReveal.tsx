@@ -19,6 +19,11 @@ interface HeroRevealProps {
   midContent?: ReactNode
   /** 白背景フェーズの間、見出しの背後に薄く滲ませる寺紋（単色地に白抜きのPNG。マスクで白い部分だけを抽出する） */
   crestSrc?: string
+  /** verticalHeading時、寺紋の中心をsubheadingLogoSrc画像の上から何%の位置に
+      合わせるか（0〜1）。指定しない場合は従来どおり見出しエリア全体の中央に表示する。
+      例: 縦書きロゴ画像の特定の一文字（「禅」「泉」等）の高さ方向の中心が
+      画像全体の何%にあるかを計測して指定する */
+  crestTargetCharFrac?: number
   darkColor: string
   lightColor: string
   eyebrowDarkColor?: string
@@ -62,11 +67,15 @@ const V_FINAL_HOLD_MS = 3000     // ロゴが出たあと、写真に切り替�
 // 静止画が現れる」演出をトップページのヒーローに適用したもの。
 export default function HeroReveal({
   eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, verticalHeading = false, midContent, crestSrc,
+  crestTargetCharFrac,
   darkColor, lightColor, eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
   background, children, liftPx = 0, bottomLiftPx = 0, staggerChildren = false, className,
 }: HeroRevealProps) {
   const headingContentRef = useRef<HTMLDivElement>(null)
   const bottomGroupRef = useRef<HTMLDivElement>(null)
+  const outerWrapperRef = useRef<HTMLDivElement>(null)
+  const logoImgRef = useRef<HTMLImageElement>(null)
+  const [crestExtraOffsetPx, setCrestExtraOffsetPx] = useState(0)
   const [minHeightPx, setMinHeightPx] = useState<number | null>(null)
   // 見出しエリア（寺紋・見出し）専用の最小高さ。下部グループの高さ（bottomH）を
   // 含めない＝下部コンテンツがお寺によって違う高さでも、見出しエリアの中央配置は
@@ -154,6 +163,32 @@ export default function HeroReveal({
     return () => ro.disconnect()
   }, [])
 
+  useEffect(() => {
+    // crestTargetCharFracが指定されている場合、寺紋の中心を「見出しエリア全体の
+    // 中央」ではなく「subheadingLogoSrc画像の上からcrestTargetCharFrac%の位置」
+    // （特定の一文字の中心など）に合わせる。ロゴ画像はvh単位でサイズが決まり
+    // ブレイクポイントでも変わるため、CSSだけで正確に追従させるのが難しく、
+    // 実測したbounding rectから必要なズレ量(px)を計算する方式にしている。
+    if (crestTargetCharFrac == null) { setCrestExtraOffsetPx(0); return }
+    const outerEl = outerWrapperRef.current
+    const imgEl = logoImgRef.current
+    if (!outerEl || !imgEl) return
+    const update = () => {
+      const outerRect = outerEl.getBoundingClientRect()
+      const imgRect = imgEl.getBoundingClientRect()
+      if (imgRect.height === 0) return
+      const desiredY = imgRect.top + crestTargetCharFrac * imgRect.height
+      const outerCenterY = outerRect.top + outerRect.height / 2
+      setCrestExtraOffsetPx(desiredY - outerCenterY)
+    }
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(outerEl)
+    ro.observe(imgEl)
+    window.addEventListener('resize', update)
+    return () => { ro.disconnect(); window.removeEventListener('resize', update) }
+  }, [crestTargetCharFrac])
+
   const textActive = verticalHeading ? step > -1 : phase !== 'idle'
   const imageActive = verticalHeading ? verticalImageActive : horizontalImageActive
   // liftPxは横書き版の見出し（＋温泉寺の入浴ステータスカード分の下部の高さ）に
@@ -194,17 +229,26 @@ export default function HeroReveal({
           大きい方に固定し、上端をセクション上端に揃えることで、下部ブロックの
           高さに関係なく見出しが常に画面の同じ位置に来るようにした */}
       <div
+        ref={outerWrapperRef}
         className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 ${verticalHeading ? 'top-0' : 'inset-y-0'}`}
         style={verticalHeading && headingAreaMinHeightPx
           ? { height: `max(calc(var(--vh, 1svh) * 100), ${headingAreaMinHeightPx}px)` }
           : undefined}
       >
-        {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる */}
+        {/* 白背景フェーズの間だけ、見出しの背後に寺紋を薄く滲ませる。
+            crestTargetCharFracが指定されている場合は、見出しエリア全体の中央では
+            なく、ロゴ画像内の特定の一文字の中心にcrestExtraOffsetPx分だけずらす */}
         {crestSrc && (
           <div
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
             aria-hidden="true"
-            style={effectiveLiftPx ? { transform: `translateY(-${effectiveLiftPx}px)` } : undefined}
+            style={{
+              // crestTargetCharFrac指定時、crestExtraOffsetPxは実測済みのimg（既に
+              // effectiveLiftPx分シフト済み）を基準に算出しているため、ここで
+              // effectiveLiftPxを重ねて引くと二重にずれる。指定がない場合のみ
+              // 従来どおりeffectiveLiftPx分を適用する。
+              transform: `translateY(${crestExtraOffsetPx - (crestTargetCharFrac == null ? effectiveLiftPx : 0)}px)`,
+            }}
           >
             <div
               className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] transition-opacity ease-out"
@@ -318,6 +362,7 @@ export default function HeroReveal({
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
+                      ref={logoImgRef}
                       src={subheadingLogoSrc}
                       alt={subheadingLogoAlt ?? ''}
                       className="h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
