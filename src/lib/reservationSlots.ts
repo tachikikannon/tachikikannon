@@ -33,6 +33,13 @@ export function blockedDateMatchesType(blockedType: string, reservationType: Res
   return blockedType === reservationType
 }
 
+// "9:00" "10:30" のような時刻表記のみ分に変換できる。"午前"/"午後" などのラベル枠はnullを返す。
+export function parseSlotMinutes(slot: string): number | null {
+  const m = slot.match(/^(\d{1,2}):(\d{2})$/)
+  if (!m) return null
+  return Number(m[1]) * 60 + Number(m[2])
+}
+
 export function getSeason(month: number): 'peak' | 'shoulder' | 'winter' {
   if (month >= 4 && month <= 10) return 'peak'
   if (month === 3 || month === 11) return 'shoulder'

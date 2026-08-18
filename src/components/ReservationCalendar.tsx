@@ -3,20 +3,13 @@ import { useState, useEffect } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
-import { getTimeSlots, blockedDateMatchesType, getSeason } from '@/lib/reservationSlots'
+import { getTimeSlots, blockedDateMatchesType, getSeason, parseSlotMinutes } from '@/lib/reservationSlots'
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; type: string; party_size: number; category_id: string | null }
 type CapacitySetting = { max_groups: number; max_people: number; buffer_minutes: number }
 type SlotOverride = { date: string; time_slot: string; is_closed: boolean; max_groups: number | null; max_people: number | null; reserved_groups: number | null; reserved_people: number | null }
 type Category = { id: string; name: string }
-
-// "9:00" "10:30" のような時刻表記のみ分に変換できる。"午前"/"午後" などのラベル枠はnullを返す。
-function parseSlotMinutes(slot: string): number | null {
-  const m = slot.match(/^(\d{1,2}):(\d{2})$/)
-  if (!m) return null
-  return Number(m[1]) * 60 + Number(m[2])
-}
 
 // "午前"/"午後" ラベル枠の当日受付締切（分）。それ以外のラベルはnullを返す。
 // 午前は11:45で締切。午後は拝観時間の閉門1時間前（季節により変動）で締切。

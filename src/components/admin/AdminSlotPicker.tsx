@@ -1,12 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
-import { getTimeSlots, blockedDateMatchesType } from '@/lib/reservationSlots'
+import { getTimeSlots, blockedDateMatchesType, parseSlotMinutes } from '@/lib/reservationSlots'
 import type { ReservationType, SlotOverride } from '@/types'
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; party_size: number }
-type CapacitySetting = { max_groups: number; max_people: number }
+type CapacitySetting = { max_groups: number; max_people: number; buffer_minutes: number }
 
 function toDateStr(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -55,12 +55,12 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
     const [{ data: bd }, { data: rs }, { data: cap }, { data: ov }] = await Promise.all([
       supabase.from('blocked_dates').select('date,type,reason').gte('date', from).lte('date', to),
       supabase.from('reservations').select('date,time_slot,party_size').eq('type', reservationType).gte('date', from).lte('date', to),
-      supabase.from('capacity_settings').select('max_groups,max_people').eq('type', reservationType).single(),
+      supabase.from('capacity_settings').select('max_groups,max_people,buffer_minutes').eq('type', reservationType).single(),
       supabase.from('slot_overrides').select('*').eq('type', reservationType).gte('date', from).lte('date', to),
     ])
     setBlockedDates(bd ?? [])
     setReservations(rs ?? [])
-    setCapacity(cap ?? { max_groups: 5, max_people: 20 })
+    setCapacity(cap ?? { max_groups: 5, max_people: 20, buffer_minutes: 0 })
     setOverrides((ov ?? []) as SlotOverride[])
   }
   useEffect(() => { load(); setCell(null); setNotice(null) }, [weekStart, reservationType]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -74,6 +74,25 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
   function getCounts(dateStr: string, slot: string) {
     const list = reservations.filter(r => r.date === dateStr && r.time_slot === slot)
     return { groups: list.length, people: list.reduce((sum, r) => sum + (r.party_size ?? 1), 0) }
+  }
+
+  // 前後バッファ（分）: 護摩祈祷など、実際の所要時間が枠の間隔より長い体験向け。
+  // 既存予約の開始時刻からバッファ分数未満しか離れていない「別の」枠は、
+  // 時間が重なるため予約不可にする（公開カレンダーのisSlotFullと同じロジック）。
+  function isBufferBlocked(dateStr: string, slot: string) {
+    return getBufferConflictSlots(dateStr, slot).length > 0
+  }
+
+  function getBufferConflictSlots(dateStr: string, slot: string): string[] {
+    const bufferMinutes = capacity?.buffer_minutes ?? 0
+    const slotMinutes = parseSlotMinutes(slot)
+    if (bufferMinutes <= 0 || slotMinutes == null) return []
+    const conflicting = reservations.filter(r => {
+      if (r.date !== dateStr || r.time_slot === slot) return false
+      const rMinutes = parseSlotMinutes(r.time_slot)
+      return rMinutes != null && Math.abs(rMinutes - slotMinutes) < bufferMinutes
+    })
+    return Array.from(new Set(conflicting.map(r => r.time_slot)))
   }
 
   function prevWeek() { const d = new Date(weekStart); d.setDate(d.getDate() - 7); setWeekStart(d) }
@@ -123,6 +142,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
   const cellCounts = cell ? getCounts(cell.date, cell.slot) : null
   const cellMaxGroups = cell ? (cellOverride?.max_groups ?? capacity?.max_groups) : null
   const cellFull = cell && cellCounts && cellMaxGroups != null && cellCounts.groups >= cellMaxGroups
+  const cellBufferBlocked = cell && !cellFull && isBufferBlocked(cell.date, cell.slot)
 
   return (
     <div>
@@ -166,6 +186,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
                   const counts = getCounts(dateStr, slot)
                   const maxGroups = override?.max_groups ?? capacity?.max_groups
                   const full = !blocked && !override?.is_closed && maxGroups != null && counts.groups >= maxGroups
+                  const bufferBlocked = !blocked && !override?.is_closed && !full && isBufferBlocked(dateStr, slot)
                   const isSelected = selectedDate === dateStr && selectedTime === slot
                   const isCell = cell?.date === dateStr && cell?.slot === slot
 
@@ -174,6 +195,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
                   if (blocked) { cls = 'bg-gray-100 text-gray-400'; content = '休止(日)' }
                   else if (override?.is_closed) { cls = 'bg-red-50 text-red-500 font-medium'; content = '受付停止' }
                   else if (full) { cls = 'bg-gray-100 text-gray-400'; content = '満枠' }
+                  else if (bufferBlocked) { cls = 'bg-violet-50 text-violet-600 font-medium'; content = '重複' }
                   else if (override) { cls = 'bg-amber-50 text-amber-700 font-medium' }
                   if (isSelected) cls += ' ring-2 ring-navy'
                   if (isCell) cls += ' ring-2 ring-gold'
@@ -212,6 +234,14 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
               <p className="text-xs text-gray-500 mb-1">満枠です（{cellCounts?.groups}/{cellMaxGroups}組）。定員を変更したい場合は「空き状況の詳細設定」をご利用ください。</p>
               <a href="/admin/reservations/availability" target="_blank" rel="noopener" className="text-xs text-navy underline">空き状況の詳細設定を開く ↗</a>
             </div>
+          ) : cellBufferBlocked ? (
+            <div>
+              <p className="text-xs text-gray-500 mb-1">
+                前後バッファ設定により、{cell && getBufferConflictSlots(cell.date, cell.slot).join('・')}の予約と時間が重なるため予約できません。
+                バッファ時間を変更したい場合は「定員設定」ページをご利用ください。
+              </p>
+              <a href="/admin/capacity" target="_blank" rel="noopener" className="text-xs text-navy underline">定員設定を開く ↗</a>
+            </div>
           ) : (
             <div className="flex items-center gap-2 flex-wrap">
               <button type="button" onClick={() => onSelectSlot(cell.date, cell.slot)}
@@ -232,6 +262,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-white border border-gray-300" /> 予約可</span>
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-50 border border-red-200" /> 受付停止</span>
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-gray-100" /> 満枠／休止(日)</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-violet-50 border border-violet-200" /> 前後の予約と重複（バッファ）</span>
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-50 border border-amber-200" /> 個別設定あり</span>
       </div>
     </div>
