@@ -214,7 +214,7 @@ export default async function OnsenjPage({
           subheadingLogoAlt="日光山温泉寺"
           crestSrc="/images/onsenji/common/jimon-green-mask.png"
           crestTargetCharFrac={0.591}
-          firstLineOffsetEm={2}
+          secondLineOffsetEm={2}
           pairFirstTwoLines
           darkColor="#1a4a3a"
           lightColor="#ffffff"
