@@ -281,6 +281,34 @@ export default function HeroReveal({
                   />
                 </div>
               )}
+              {/* 写真（カラーページ）に切り替わったら、見出しを横書きで表示する。
+                  縦書きの各行・ロゴはここまでで役目を終えているため、
+                  写真が現れたタイミングでこれだけがフェードインする */}
+              <div
+                style={{
+                  gridArea: '1 / 1',
+                  opacity: verticalImageActive ? 1 : 0,
+                  transitionProperty: 'opacity',
+                  transitionDuration: '900ms',
+                  transitionTimingFunction: EASE,
+                  transitionDelay: verticalImageActive ? '250ms' : '0ms',
+                }}
+                aria-hidden={!verticalImageActive}
+              >
+                <h1
+                  className="font-serif flex flex-col items-center gap-1 md:gap-2"
+                  style={{
+                    fontSize: 'clamp(32px, 17px + 3.8vw, 72px)',
+                    letterSpacing: '0em',
+                    color: lightColor,
+                    textShadow: '0 2px 14px rgba(0,0,0,0.5)',
+                  }}
+                >
+                  {lines.map((line, li) => (
+                    <span key={li} className="block whitespace-nowrap">{line}</span>
+                  ))}
+                </h1>
+              </div>
             </div>
           ) : (
             <>
