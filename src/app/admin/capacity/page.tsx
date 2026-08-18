@@ -97,7 +97,7 @@ export default function CapacityPage() {
                 </button>
               </div>
               <div className="mt-4">
-                <label className="admin-label">前後バッファ（分）</label>
+                <label className="admin-label">前後の空き時間（分）</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="number" min={0} max={240}

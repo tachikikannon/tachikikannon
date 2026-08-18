@@ -251,8 +251,8 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
           ) : cellBufferBlocked ? (
             <div>
               <p className="text-xs text-gray-500 mb-1">
-                前後バッファ設定により、{cell && getBufferConflictSlots(cell.date, cell.slot).join('・')}の予約と時間が重なるため予約できません。
-                バッファ時間を変更したい場合は「定員設定」ページをご利用ください。
+                予約前後の調整時間の設定により、{cell && getBufferConflictSlots(cell.date, cell.slot).join('・')}の予約と時間が重なるため予約できません。
+                調整時間を変更したい場合は「定員設定」ページをご利用ください。
               </p>
               <a href="/admin/capacity" target="_blank" rel="noopener" className="text-xs text-navy underline">定員設定を開く ↗</a>
             </div>
@@ -276,7 +276,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-white border border-gray-300" /> 予約可</span>
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-50 border border-red-200" /> 受付停止</span>
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-gray-100" /> 満枠（護摩は「予約」）／休止(日)</span>
-        <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-violet-50 border border-violet-200" /> ×＝前後の予約と重複（バッファ）</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-violet-50 border border-violet-200" /> ×＝予約前後の調整時間</span>
         <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-50 border border-amber-200" /> 個別設定あり</span>
       </div>
     </div>
