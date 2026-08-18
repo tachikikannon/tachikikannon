@@ -5,7 +5,7 @@ const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
   { key: 'onsenji_hero_en',    label: 'ヒーロー 英語サブタイトル', defaultValue: 'Nikkozan Onsenji Temple' },
-  { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の祈りを宿す\n薬師の霊場', translatable: true },
+  { key: 'onsenji_hero_title', label: 'ヒーロー メインキャッチコピー（改行可）', multiline: true, defaultValue: '千二百余年の\n祈りを宿す\n薬師の霊場', translatable: true },
   { key: 'onsenji_hero_sub',   label: 'ヒーロー サブコピー', multiline: true, defaultValue: '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを', translatable: true },
   { key: 'onsenji_heading_news', label: '「お知らせ」見出し（記事自体は「お知らせ管理」で編集）', defaultValue: 'お知らせ', translatable: true },
   { key: 'onsenji_about_title', label: '「温泉寺について」見出し', defaultValue: '温泉寺について', translatable: true },

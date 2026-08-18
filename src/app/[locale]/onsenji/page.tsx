@@ -55,7 +55,7 @@ const DEFAULT_MENU_CARDS_EN = [
 
 const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_hero_en:    'Nikkozan Onsenji Temple',
-  onsenji_hero_title: '千二百余年の祈りを宿す\n薬師の霊場',
+  onsenji_hero_title: '千二百余年の\n祈りを宿す\n薬師の霊場',
   onsenji_hero_title_en: 'A sacred site of the Medicine Buddha,\ncarrying over 1,200 years of prayer',
   onsenji_hero_sub:   '世界遺産・日光山輪王寺の別院。薬師瑠璃光如来のご加護と、大地から湧く温泉の癒しを',
   onsenji_hero_sub_en: 'A branch temple of the World Heritage site Nikkozan Rinnoji. The protection of Yakushi Nyorai, and the healing of hot spring water from the earth.',
