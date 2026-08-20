@@ -371,6 +371,12 @@ export default function HeroReveal({
                 // サイズに重なって表示される）では、寺紋自体は消しておく
                 opacity: (imageActive || (stampSrc && step === frames.length)) ? 0 : 0.13,
                 transitionDuration: '900ms',
+                // iOS Safariはmask-imageを使う要素の近くで、隣接要素のopacity再描画が
+                // 更新されず古い見た目のまま残ることがある（実機でスマホの立木観音のみ
+                // 朱印が写真フェーズに残る不具合が報告された）。この要素自身にも
+                // GPUレイヤーを強制することで再描画漏れを避ける
+                transform: 'translateZ(0)',
+                WebkitBackfaceVisibility: 'hidden',
               }}
             />
           </div>
@@ -397,6 +403,9 @@ export default function HeroReveal({
                   transitionDuration: stampActive ? `${V_STAMP_FADE_MS}ms` : '700ms',
                   transitionTimingFunction: EASE,
                   transitionDelay: stampActive ? `${vLogoEnterWaitMs}ms` : '0ms',
+                  // 隣の寺紋（mask-image使用）起因のiOS Safari再描画漏れ対策。上のcrestSrc側と同様
+                  transform: 'translateZ(0)',
+                  WebkitBackfaceVisibility: 'hidden',
                 }}
               />
             </div>
