@@ -188,7 +188,7 @@ export default async function HomePage({
           eyebrow={heroEn}
           heading={heroTitle.replace(/\\n/g, '\n')}
           verticalHeading={loc !== 'en'}
-          subheadingLogoSrc={loc === 'en' ? undefined : '/images/chuzenji/chizenji-rogo.png'}
+          subheadingLogoSrc={loc === 'en' ? undefined : '/images/chuzenji/chuzenji-rogo.png'}
           subheadingLogoAlt="日光山中禅寺"
           crestSrc="/images/chuzenji/common/jimon-navy-mask.png"
           crestTargetCharFrac={0.587}
