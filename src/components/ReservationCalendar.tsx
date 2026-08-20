@@ -194,7 +194,7 @@ export default function ReservationCalendar({
   const canGoPrev = weekStart > today
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto" style={{ overflowY: 'visible' }}>
       {/* 週ナビゲーション */}
       <div className="flex items-center justify-between mb-3">
         <button type="button" onClick={prevWeek} disabled={!canGoPrev}
