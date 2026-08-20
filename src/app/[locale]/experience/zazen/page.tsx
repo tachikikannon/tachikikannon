@@ -216,9 +216,8 @@ export default async function ZazenPage({
 
           <section>
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{g('zazen_heading_gallery')}</h2>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {[
-                '/images/chuzenji/experience/zazen/zazen-2.jpg',
                 '/images/chuzenji/experience/zazen/zazen (3).jpg',
                 '/images/chuzenji/experience/zazen/zazen (4).jpg',
               ].map((src) => (
