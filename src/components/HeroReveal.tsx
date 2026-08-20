@@ -376,7 +376,7 @@ export default function HeroReveal({
           }}
         >
           <p
-            className="text-xs tracking-[0.3em] mb-4"
+            className="text-xs tracking-[0.3em] mb-16"
             style={{
               opacity: textActive ? 1 : 0,
               color: imageActive ? eyebrowLightColor : eyebrowDarkColor,
