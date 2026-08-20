@@ -26,7 +26,15 @@ export default function HeroMediaCycle({ imageSrc, imageAlt, videoSrc, imageDura
   useEffect(() => {
     if (!showVideo) return
     const v = videoRef.current
-    if (v) { v.currentTime = 0; v.play().catch(() => {}) }
+    if (v) {
+      v.currentTime = 0
+      v.play().catch(() => {})
+      // スマホ用の左→右パン演出（hero-video-pan、globals.css）を毎回の再生開始時に
+      // リスタートさせる。animationをnoneにしてreflowを挟んでから元に戻す定番の方法
+      v.style.animation = 'none'
+      void v.offsetHeight
+      v.style.animation = ''
+    }
   }, [showVideo])
 
   return (
@@ -47,7 +55,7 @@ export default function HeroMediaCycle({ imageSrc, imageAlt, videoSrc, imageDura
           playsInline
           preload="auto"
           onEnded={() => setShowVideo(false)}
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
+          className="hero-video-pan absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
           style={{ opacity: showVideo ? 1 : 0 }}
         />
       )}

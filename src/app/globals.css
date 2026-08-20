@@ -23,6 +23,20 @@ img, video, picture {
   -webkit-touch-callout: none;
 }
 
+/* ヒーロー背景動画（HeroMediaCycle）: スマートフォン画面でだけ、動画の見える範囲を
+   左端→右端へゆっくりパンさせる。横長の動画をobject-coverで縦長画面に収めると
+   左右が大きく削れてしまうため、再生中に視点を動かして画面の見え方に変化を出す。
+   PC画面（sm以上）は対象外で、常にobject-cover中央固定のまま */
+@keyframes hero-video-pan-lr {
+  0%   { object-position: 0% 50%; }
+  100% { object-position: 100% 50%; }
+}
+@media (max-width: 639px) {
+  .hero-video-pan {
+    animation: hero-video-pan-lr 5s linear forwards;
+  }
+}
+
 /* ヒーロー文字のふわっとしたフェードイン演出（トップページ） */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(14px); }
