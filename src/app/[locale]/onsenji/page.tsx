@@ -204,7 +204,7 @@ export default async function OnsenjPage({
       <main>
         {/* ヒーロー */}
         <HeroReveal
-          className="min-h-[calc(var(--vh,1svh)*100)]"
+          className="min-h-[100svh]"
           liftPx={72}
           bottomLiftPx={40}
           eyebrow={c.onsenji_hero_en}

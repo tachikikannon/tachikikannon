@@ -182,7 +182,7 @@ export default async function HomePage({
       <main>
         {/* ヒーロー */}
         <HeroReveal
-          className="min-h-[calc(var(--vh,1svh)*100)]"
+          className="min-h-[100svh]"
           bottomLiftPx={60}
           staggerChildren
           eyebrow={heroEn}

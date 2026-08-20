@@ -302,7 +302,7 @@ export default function HeroReveal({
   return (
     <section
       className={`relative flex flex-col overflow-hidden bg-white ${className ?? ''}`}
-      style={minHeightPx ? { minHeight: `max(calc(var(--vh, 1svh) * 100), ${minHeightPx}px)` } : undefined}
+      style={minHeightPx ? { minHeight: `max(100svh, ${minHeightPx}px)` } : undefined}
     >
       <div className="absolute inset-0 transition-opacity duration-[1400ms] ease-out" style={{ opacity: imageActive ? 1 : 0 }}>
         {/* 白背景の上に半透明の写真をそのまま重ねると色が薄く見えてしまうため、
@@ -332,7 +332,7 @@ export default function HeroReveal({
           ? {
               top: `${FIXED_HEADER_PX}px`,
               height: headingAreaMinHeightPx
-                ? `max(calc(var(--vh, 1svh) * 100 - ${FIXED_HEADER_PX}px), ${headingAreaMinHeightPx}px)`
+                ? `max(calc(100svh - ${FIXED_HEADER_PX}px), ${headingAreaMinHeightPx}px)`
                 : undefined,
             }
           : undefined}
