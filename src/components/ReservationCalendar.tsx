@@ -34,6 +34,11 @@ const ISOLATED_POOL_CAPACITY_TYPES: ReservationType[] = ['jyuzu']
 const SAME_DAY_PHONE_ONLY_TYPES: ReservationType[] = ['prayer', 'jyuzu']
 const SAME_DAY_PHONE_NUMBER = '0288-55-0013'
 
+// 坐禅は僧侶の都合で希望日時に対応できないことがあるため、Web予約自体を受け付けず、
+// どの日を選んでも常に電話でのご予約案内を表示する（管理画面からの登録は対象外）。
+const ALWAYS_PHONE_ONLY_TYPES: ReservationType[] = ['zazen']
+const ALWAYS_PHONE_ONLY_MESSAGE = '僧侶の都合により、ご希望の日時に対応できない場合がございますので、お電話にてご予約をお願いいたします。'
+
 interface Props {
   reservationType: ReservationType
   selectedDate: string
@@ -85,6 +90,7 @@ export default function ReservationCalendar({
   const [overrides, setOverrides] = useState<SlotOverride[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [showSameDayNotice, setShowSameDayNotice] = useState(false)
+  const [showAlwaysPhoneNotice, setShowAlwaysPhoneNotice] = useState(false)
 
   // 今週の7日間
   const weekDays = Array.from({ length: 7 }, (_, i) => {
@@ -105,7 +111,7 @@ export default function ReservationCalendar({
       .then(({ data }) => setCategories(data ?? []))
   }, [])
 
-  useEffect(() => { setShowSameDayNotice(false) }, [reservationType])
+  useEffect(() => { setShowSameDayNotice(false); setShowAlwaysPhoneNotice(false) }, [reservationType])
 
   const isolatedPoolCategoryId = categories.find(c => c.name.includes(ISOLATED_POOL_CATEGORY_KEYWORD))?.id ?? null
 
@@ -259,6 +265,7 @@ export default function ReservationCalendar({
                 const validSlots = getTimeSlots(reservationType, d.getMonth() + 1)
                 const unavailable = isPast || slotTimePassed || !!blocked || !!override?.is_closed || full || !validSlots.includes(slot)
                 const sameDayPhoneOnly = !isAdmin && isToday && SAME_DAY_PHONE_ONLY_TYPES.includes(reservationType)
+                const alwaysPhoneOnly = !isAdmin && ALWAYS_PHONE_ONLY_TYPES.includes(reservationType)
 
                 return (
                   <td key={dateStr} className="border border-gray-200 p-1 text-center">
@@ -269,7 +276,7 @@ export default function ReservationCalendar({
                     ) : (
                       <button
                         type="button"
-                        onClick={() => sameDayPhoneOnly ? setShowSameDayNotice(true) : onSelectSlot(dateStr, slot)}
+                        onClick={() => alwaysPhoneOnly ? setShowAlwaysPhoneNotice(true) : sameDayPhoneOnly ? setShowSameDayNotice(true) : onSelectSlot(dateStr, slot)}
                         className={`w-full h-9 rounded-lg flex items-center justify-center transition-all
                           ${isSelected
                             ? 'bg-navy text-white'
@@ -289,6 +296,17 @@ export default function ReservationCalendar({
           ))}
         </tbody>
       </table>
+
+      {/* 坐禅：どの枠を選んでも常に表示する電話案内 */}
+      {showAlwaysPhoneNotice && (
+        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800 flex items-start justify-between gap-3">
+          <p>
+            {ALWAYS_PHONE_ONLY_MESSAGE}<br />
+            電話番号 {SAME_DAY_PHONE_NUMBER}
+          </p>
+          <button type="button" onClick={() => setShowAlwaysPhoneNotice(false)} className="text-amber-500 hover:text-amber-700 shrink-0">✕</button>
+        </div>
+      )}
 
       {/* 当日枠クリック時の電話案内 */}
       {showSameDayNotice && (

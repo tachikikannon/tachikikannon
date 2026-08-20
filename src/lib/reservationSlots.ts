@@ -70,9 +70,7 @@ export function getTimeSlots(type: ReservationType, month: number): string[] {
     return halfHourSlots(9, 13)
   }
   if (type === 'zazen') {
-    if (season === 'peak')     return halfHourSlots(13, 15)
-    if (season === 'shoulder') return halfHourSlots(13, 14)
-    return halfHourSlots(13, 13)
+    return ['13:00', '14:00']
   }
   return []
 }
