@@ -56,6 +56,8 @@ const DEFAULTS: Record<string, string> = {
   zazen_time_en: '20 minutes',
   zazen_target: '小学生以上（小学生は保護者同伴）',
   zazen_target_en: 'Elementary school age and up (children must be accompanied by a guardian)',
+  zazen_capacity: '2〜10名',
+  zazen_capacity_en: '2–10 people',
   zazen_place: '寺務所 体験受付窓口',
   zazen_place_en: 'Temple Office Experience Counter',
   zazen_hours_peak: '4月〜10月：13:00〜15:00（30分刻み）',
@@ -68,6 +70,8 @@ const DEFAULTS: Record<string, string> = {
   zazen_heading_flow_en: 'Experience Flow',
   zazen_heading_items: 'ご注意・持ち物',
   zazen_heading_items_en: 'Notes & What to Bring',
+  zazen_heading_gallery: '坐禅体験の様子',
+  zazen_heading_gallery_en: 'Scenes from the Zazen Experience',
   zazen_cta_heading: '坐禅体験のご予約',
   zazen_cta_heading_en: 'Reservations for the Zazen Experience',
   zazen_cta_sub: '事前予約をおすすめします。当日受付も空きがあれば対応します。',
@@ -137,7 +141,7 @@ export default async function ZazenPage({
               <p className="mt-3">{g('zazen_about_p2')}</p>
             </div>
             <div className="relative h-56 sm:h-72 rounded-xl overflow-hidden shadow-sm mt-4">
-              <ZoomableImage src="/images/chuzenji/experience/zazen/zazen-2.png" alt={t('title')} fill className="object-cover" />
+              <ZoomableImage src="/images/chuzenji/experience/zazen/zazen-2.jpg" alt={t('title')} fill className="object-cover" />
             </div>
           </section>
 
@@ -150,6 +154,7 @@ export default async function ZazenPage({
                     [t('tableFee'), g('zazen_fee')],
                     [t('tableTime'), g('zazen_time')],
                     [t('tableTarget'), g('zazen_target')],
+                    [t('tableCapacity'), g('zazen_capacity')],
                     [t('tablePlace'), g('zazen_place')],
                     [t('tableHours'), `${g('zazen_hours_peak')}\n${g('zazen_hours_shoulder')}\n${g('zazen_hours_winter')}`],
                   ].map(([k, v]) => (
@@ -208,6 +213,21 @@ export default async function ZazenPage({
               <span className="text-sm font-medium text-navy group-hover:text-white">{t('quickJyuzu')}</span>
             </Link>
           </div>
+
+          <section>
+            <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{g('zazen_heading_gallery')}</h2>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                '/images/zazen (1).jpg',
+                '/images/chuzenji/experience/zazen/zazen (3).jpg',
+                '/images/chuzenji/experience/zazen/zazen (4).jpg',
+              ].map((src) => (
+                <div key={src} className="relative aspect-square rounded-xl overflow-hidden shadow-sm">
+                  <ZoomableImage src={src} alt={t('title')} fill className="object-cover" />
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </main>
       <Footer />

@@ -354,7 +354,7 @@ export default async function HomePage({
                 { src:'/images/chuzenji/hero/jyuzu-card.png',   href:'/experience/jyuzu' },
                 { src:'/images/chuzenji/hero/syakyou-card.png', href:'/experience/shakyou' },
                 { src:'/images/chuzenji/hero/syabutu-card.png', href:'/experience/shabutu' },
-                { src:'/images/chuzenji/experience/zazen/zazen-card-monk.png', href:'/experience/zazen' },
+                { src:'/images/zazen11.png', href:'/experience/zazen' },
               ].map(({ src, href }, i) => (
                 <Link key={href} href={href}
                   className="relative rounded-lg overflow-hidden shadow-sm group block"

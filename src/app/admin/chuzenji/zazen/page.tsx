@@ -12,6 +12,7 @@ const FIELDS = [
   { key: 'zazen_fee',  label: '体験料', defaultValue: '2,000円', translatable: true },
   { key: 'zazen_time', label: '所要時間', defaultValue: '20分', translatable: true },
   { key: 'zazen_target', label: '対象', defaultValue: '小学生以上（小学生は保護者同伴）', translatable: true },
+  { key: 'zazen_capacity', label: '人数', defaultValue: '2〜10名', translatable: true },
   { key: 'zazen_place',  label: '受付場所', defaultValue: '寺務所 体験受付窓口', translatable: true },
   { key: 'zazen_hours_peak', label: '受付時間（4月〜10月）', defaultValue: '4月〜10月：13:00〜15:00（30分刻み）', translatable: true },
   { key: 'zazen_hours_shoulder', label: '受付時間（3月・11月）', defaultValue: '3月・11月：13:00〜14:00（30分刻み）', translatable: true },
@@ -50,6 +51,7 @@ const FIELDS = [
       { text: 'If sitting on the floor is difficult, chair-based zazen is also available — please ask at reception.' },
     ]),
   },
+  { key: 'zazen_heading_gallery', label: '「体験の様子」写真ギャラリーの見出し', defaultValue: '坐禅体験の様子', translatable: true },
   { key: 'zazen_cta_heading', label: 'CTA見出し', defaultValue: '坐禅体験のご予約', translatable: true },
   { key: 'zazen_cta_sub', label: '予約ボタン下の説明文', defaultValue: '事前予約をおすすめします。当日受付も空きがあれば対応します。', translatable: true },
 ] as const

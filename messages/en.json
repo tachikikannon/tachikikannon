@@ -577,6 +577,7 @@
     "tableFee": "Fee",
     "tableTime": "Duration",
     "tableTarget": "Who Can Join",
+    "tableCapacity": "Group Size",
     "tablePlace": "Reception Location",
     "tableHours": "Reception Hours",
     "reserveCta": "Reserve Online",
