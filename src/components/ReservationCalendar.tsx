@@ -299,12 +299,11 @@ export default function ReservationCalendar({
 
       {/* 坐禅：どの枠を選んでも常に表示する電話案内 */}
       {showAlwaysPhoneNotice && (
-        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800 flex items-start justify-between gap-3">
+        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800">
           <p>
             {ALWAYS_PHONE_ONLY_MESSAGE}<br />
             電話番号 {SAME_DAY_PHONE_NUMBER}
           </p>
-          <button type="button" onClick={() => setShowAlwaysPhoneNotice(false)} className="text-amber-500 hover:text-amber-700 shrink-0">✕</button>
         </div>
       )}
 
