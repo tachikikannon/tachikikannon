@@ -276,7 +276,11 @@ export default function ReservationCalendar({
                     ) : (
                       <button
                         type="button"
-                        onClick={() => alwaysPhoneOnly ? setShowAlwaysPhoneNotice(true) : sameDayPhoneOnly ? setShowSameDayNotice(true) : onSelectSlot(dateStr, slot)}
+                        onClick={() => {
+                          if (alwaysPhoneOnly) { setShowAlwaysPhoneNotice(true); onSelectSlot(dateStr, slot) }
+                          else if (sameDayPhoneOnly) setShowSameDayNotice(true)
+                          else onSelectSlot(dateStr, slot)
+                        }}
                         className={`w-full h-9 rounded-lg flex items-center justify-center transition-all
                           ${isSelected
                             ? 'bg-navy text-white'
