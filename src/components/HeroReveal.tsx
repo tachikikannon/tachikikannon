@@ -12,16 +12,11 @@ interface HeroRevealProps {
   subheadingLogoSrc?: string
   subheadingLogoAlt?: string
   /** verticalHeading時、subheadingLogoSrc（筆文字ロゴ）が現れるコマで、
-      ロゴより先に背後にフェードインする朱印画像（例: tachiki-stamp.png）。
-      指定しない場合は従来どおり筆文字ロゴのみが表示される */
+      寺紋（crestSrc）とまったく同じ位置・サイズに表示する朱印画像
+      （例: tachiki-stamp.png）。このコマの間だけ寺紋は非表示になり、
+      朱印が寺紋と入れ替わるように見える。指定しない場合は従来どおり
+      寺紋がそのまま表示され続け、筆文字ロゴのみが手前に現れる */
   stampSrc?: string
-  /** 朱印画像の上端を、筆文字ロゴ画像の高さの何%の位置に合わせるか（0〜1）。
-      例えば「日光山」の3文字の下・寺号2〜3文字の上に朱印の上端を揃えたい場合、
-      ロゴ画像を実測してその境界の位置（上からの割合）を指定する */
-  stampTopFrac?: number
-  /** 朱印画像の高さを、筆文字ロゴ画像の高さの何%にするか（0〜1）。
-      stampTopFracと合わせて、朱印が寺号部分に重なるサイズ・位置に調整する */
-  stampHeightFrac?: number
   /** trueの場合、見出しを「中央・縦書きで1行ずつ入れ替わり、最後にsubheadingLogoSrcが浮かぶ」
       演出で表示する（中禅寺・温泉寺の日本語ページ用）。falseの場合は従来どおり
       見出し全行を横書きで同時に浮かび上がらせる（英語ページ用。縦書きの英文は読みにくいため） */
@@ -89,13 +84,13 @@ const V_LINE_HOLD_MS = 700       // 1行が出そろってから、次に切り�
 const V_LINE_FADE_MS = 500       // 行が入れ替わるときのフェード時間
 const V_LOGO_FADE_MS = 900
 const V_STAMP_FADE_MS = 900      // 朱印がフェードインする時間（筆文字ロゴより先に始まる）
-const V_STAMP_TEXT_GAP_MS = 450  // 朱印が現れ始めてから、筆文字ロゴが重なり始めるまでの間
+const V_STAMP_TEXT_GAP_MS = 2000 // 朱印が現れ始めてから、筆文字ロゴが重なり始めるまでの間
 const V_FINAL_HOLD_MS = 3000     // ロゴが出たあと、写真に切り替わるまでの余韻
 
 // 神社本庁公式サイトの「白背景から文字が一文字ずつ浮かび上がり、
 // 静止画が現れる」演出をトップページのヒーローに適用したもの。
 export default function HeroReveal({
-  eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, stampSrc, stampTopFrac = 0.4, stampHeightFrac = 0.62,
+  eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, stampSrc,
   verticalHeading = false, midContent, crestSrc,
   crestTargetCharFrac, secondLineOffsetEm, pairFirstTwoLines,
   darkColor, lightColor, eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
@@ -372,12 +367,41 @@ export default function HeroReveal({
                 WebkitMaskPosition: 'center',
                 maskPosition: 'center',
                 filter: 'blur(1px)',
-                opacity: imageActive ? 0 : 0.13,
+                // 最後の筆文字ロゴのコマ（stampSrc指定時、朱印が寺紋と同じ位置・
+                // サイズに重なって表示される）では、寺紋自体は消しておく
+                opacity: (imageActive || (stampSrc && step === frames.length)) ? 0 : 0.13,
                 transitionDuration: '900ms',
               }}
             />
           </div>
         )}
+        {/* 見出しの最後のコマ（筆文字ロゴが現れるコマ）でだけ、寺紋とまったく同じ
+            位置・サイズの枠に朱印を表示する。寺紋の透かしと入れ替わるように見せるため、
+            サイズ・配置は上の寺紋div（crestSrc）と完全に同一にしている */}
+        {stampSrc && (() => {
+          const stampActive = step === frames.length && !verticalImageActive
+          return (
+            <div
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              aria-hidden={step !== frames.length}
+              style={crestTargetCharFrac == null ? (effectiveLiftPx ? { transform: `translateY(-${effectiveLiftPx}px)` } : undefined) : undefined}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={stampSrc}
+                alt=""
+                className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] object-contain"
+                style={{
+                  opacity: stampActive ? 1 : 0,
+                  transitionProperty: 'opacity',
+                  transitionDuration: stampActive ? `${V_STAMP_FADE_MS}ms` : '700ms',
+                  transitionTimingFunction: EASE,
+                  transitionDelay: stampActive ? `${vLogoEnterWaitMs}ms` : '0ms',
+                }}
+              />
+            </div>
+          )
+        })()}
         {/* headingContentRefで実際に必要な高さを計測し、セクションの最小高さに反映する
             (このdiv自体はabsoluteではない普通のflex子要素なので、中身の自然な高さが取れる)。
             crestTargetCharFrac指定時は、寺紋を見出しエリアの中央に固定する代わりに
@@ -457,55 +481,26 @@ export default function HeroReveal({
                     }}
                     aria-hidden={step !== frames.length}
                   >
-                    {/* stampSrc・筆文字ロゴともにこのdivの高さ（＝筆文字ロゴ画像の
-                        描画高さ）を基準に位置決めするため、position: relativeで
-                        囲み、幅は中身（筆文字ロゴ）にフィットさせる */}
-                    <div className="relative inline-block">
-                      {stampSrc && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={stampSrc}
-                          alt=""
-                          aria-hidden="true"
-                          className="absolute left-1/2 w-auto max-w-none object-contain pointer-events-none"
-                          style={{
-                            top: `${stampTopFrac * 100}%`,
-                            height: `${stampHeightFrac * 100}%`,
-                            // logoExtraPxは筆文字ロゴだけに適用される寺紋合わせ用の縦補正
-                            // （画像のtransformなので親の高さに影響しない）。朱印がロゴに
-                            // 追従してズレないよう、同じ補正をここにも適用する
-                            transform: `translateX(-50%) translateY(${logoExtraPx}px)`,
-                            // 朱印は筆文字ロゴより先にフェードインを始める（少し
-                            // 単独で見えたあと、筆文字ロゴが重なってくる）。写真へ
-                            // 切り替わるときは筆文字ロゴと同時に、待たずにフェードアウトする
-                            opacity: logoActive ? 1 : 0,
-                            transitionProperty: 'opacity',
-                            transitionDuration: logoActive ? `${V_STAMP_FADE_MS}ms` : '700ms',
-                            transitionTimingFunction: EASE,
-                            transitionDelay: logoActive ? `${vLogoEnterWaitMs}ms` : '0ms',
-                          }}
-                        />
-                      )}
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        ref={logoImgRef}
-                        src={subheadingLogoSrc}
-                        alt={subheadingLogoAlt ?? ''}
-                        className="relative h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
-                        style={{
-                          // logoExtraPxで、寺紋の中心に対して対象の一文字（crestTargetCharFrac）
-                          // の位置まで、ロゴ画像だけをさらにずらす（他のコマはgridShiftPxのみ）。
-                          // 親divではなくimg自身にtransformをかける（親divへのtransformが
-                          // 子のgetBoundingClientRectに反映されない挙動が確認されたため）
-                          transform: `translateY(${logoExtraPx}px)`,
-                          opacity: logoActive ? 1 : 0,
-                          transitionProperty: 'opacity',
-                          transitionDuration: logoActive ? `${V_LOGO_FADE_MS}ms` : '700ms',
-                          transitionTimingFunction: EASE,
-                          transitionDelay: logoActive ? `${vTextStartWaitMs}ms` : '0ms',
-                        }}
-                      />
-                    </div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      ref={logoImgRef}
+                      src={subheadingLogoSrc}
+                      alt={subheadingLogoAlt ?? ''}
+                      className="h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
+                      style={{
+                        // logoExtraPxで、寺紋の中心に対して対象の一文字（crestTargetCharFrac）
+                        // の位置まで、ロゴ画像だけをさらにずらす（他のコマはgridShiftPxのみ）。
+                        // 親divではなくimg自身にtransformをかける（親divへのtransformが
+                        // 子のgetBoundingClientRectに反映されない挙動が確認されたため）
+                        transform: `translateY(${logoExtraPx}px)`,
+                        opacity: logoActive ? 1 : 0,
+                        transitionProperty: 'opacity',
+                        transitionDuration: logoActive ? `${V_LOGO_FADE_MS}ms` : '700ms',
+                        transitionTimingFunction: EASE,
+                        // stampSrc指定時、朱印が現れてからV_STAMP_TEXT_GAP_MS（2秒）待って現れる
+                        transitionDelay: logoActive ? `${vTextStartWaitMs}ms` : '0ms',
+                      }}
+                    />
                   </div>
                 )
               })()}
