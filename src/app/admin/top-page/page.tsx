@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
@@ -7,7 +7,8 @@ const J = (v: unknown) => JSON.stringify(v)
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
 type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
-type Field = TextField | ListFieldDef
+type MediaField = { key: string; label: string; type: 'image' | 'video'; hint?: string; defaultValue?: string }
+type Field = TextField | ListFieldDef | MediaField
 
 const FIELDS: { section: string; fields: Field[] }[] = [
   {
@@ -15,6 +16,12 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     fields: [
       { key: 'hero_en',    label: '英語サブタイトル', hint: '例：Nikkozan Chuzenji Temple', defaultValue: 'Nikkozan Chuzenji Temple' },
       { key: 'hero_title', label: 'キャッチコピー（改行可・Enterで改行）', multiline: true, defaultValue: '中禅寺湖畔に佇む、\n祈りと巡礼の寺', translatable: true },
+      { key: 'hero_bg_image', label: '背景の写真', type: 'image', defaultValue: '/images/chuzenji/common/main2.png' },
+      {
+        key: 'hero_bg_video', label: '背景の動画（任意）', type: 'video',
+        hint: '設定すると、写真の表示後にこの動画が自動再生され、終わるとまた写真に戻る…を繰り返します。空にすると写真のみになります。',
+        defaultValue: '/videos/chuzenji/hero-goma.mp4',
+      },
     ],
   },
   {
@@ -118,6 +125,85 @@ export default function TopPageEditor() {
   const [values, setValues] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState<string | null>(null)
   const [saved, setSaved] = useState<string | null>(null)
+  const [uploadingKey, setUploadingKey] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const uploadTargetKey = useRef<string | null>(null)
+
+  async function uploadFile(file: File): Promise<string | null> {
+    setUploadError(null)
+    const ext = file.name.split('.').pop()
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const { error } = await supabase.storage.from('temple-images').upload(path, file)
+    if (error) { setUploadError(error.message); return null }
+    const { data: { publicUrl } } = supabase.storage.from('temple-images').getPublicUrl(path)
+    await supabase.from('media').insert({
+      filename: file.name, storage_path: path, public_url: publicUrl,
+      size_bytes: file.size, mime_type: file.type, site: 'chuzenji',
+    })
+    return publicUrl
+  }
+
+  async function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    const key = uploadTargetKey.current
+    if (!file || !key) return
+    setUploadingKey(key)
+    const url = await uploadFile(file)
+    if (url) setValues(v => ({ ...v, [key]: url }))
+    setUploadingKey(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  function triggerUpload(key: string, accept: string) {
+    uploadTargetKey.current = key
+    if (fileInputRef.current) {
+      fileInputRef.current.accept = accept
+      fileInputRef.current.click()
+    }
+  }
+
+  function renderMediaField(field: MediaField) {
+    const current = values[field.key] || field.defaultValue
+    return (
+      <div className="space-y-2">
+        {current && (
+          field.type === 'image' ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={current} alt="" className="w-48 h-28 object-cover rounded-lg bg-gray-100" />
+          ) : (
+            <video src={current} className="w-48 h-28 object-cover rounded-lg bg-gray-100" muted controls />
+          )
+        )}
+        <div className="flex gap-3 items-center flex-wrap">
+          <button
+            type="button"
+            onClick={() => triggerUpload(field.key, field.type === 'image' ? 'image/*' : 'video/*')}
+            disabled={uploadingKey === field.key}
+            className="text-xs text-navy border border-navy rounded px-3 py-1.5 hover:bg-navy hover:text-white transition-colors disabled:opacity-50"
+          >
+            {uploadingKey === field.key ? 'アップロード中...' : field.type === 'image' ? '画像をアップロード' : '動画をアップロード'}
+          </button>
+          {field.type === 'video' && values[field.key] && (
+            <button
+              type="button"
+              onClick={() => setValues(v => ({ ...v, [field.key]: '' }))}
+              className="text-xs text-red-400 hover:text-red-600"
+            >
+              動画を削除（写真のみにする）
+            </button>
+          )}
+        </div>
+        <input
+          type="text"
+          className="admin-input text-xs"
+          value={values[field.key] ?? ''}
+          placeholder={field.defaultValue}
+          onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))}
+        />
+      </div>
+    )
+  }
 
   useEffect(() => {
     const defaults: Record<string, string> = {}
@@ -144,6 +230,11 @@ export default function TopPageEditor() {
       <h1 className="text-2xl font-serif text-navy mb-1">トップページ編集</h1>
       <p className="text-gray-500 text-sm mb-8">変更後は「保存」を押してください。すぐにサイトに反映されます。</p>
 
+      {uploadError && (
+        <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded p-3 mb-4">{uploadError}</p>
+      )}
+      <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileSelected} />
+
       <div className="space-y-8">
         {FIELDS.map(({ section, fields }) => (
           <div key={section}>
@@ -159,7 +250,11 @@ export default function TopPageEditor() {
                       fields={field.listFields}
                       onChange={val => setValues(v => ({ ...v, [field.key]: val }))}
                     />
-                  ) : field.multiline ? (
+                  ) : field.type === 'image' ? (
+                    renderMediaField(field)
+                  ) : field.type === 'video' ? (
+                    renderMediaField(field)
+                  ) : 'multiline' in field && field.multiline ? (
                     <textarea
                       className="admin-input min-h-[80px]"
                       value={values[field.key] ?? ''}

@@ -1,6 +1,5 @@
 export const dynamic = 'force-dynamic'
 
-import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
@@ -9,6 +8,7 @@ import RecordsCarousel from '@/components/RecordsCarousel'
 import ChuzenjiGallery from '@/components/ChuzenjiGallery'
 import YouTubeAutoplay from '@/components/YouTubeAutoplay'
 import HeroReveal from '@/components/HeroReveal'
+import HeroMediaCycle from '@/components/HeroMediaCycle'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
@@ -96,6 +96,8 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_service_cards:    JSON.stringify(DEFAULT_SERVICE_CARDS),
   top_service_cards_en: JSON.stringify(DEFAULT_SERVICE_CARDS_EN),
   top_gallery_slides:   JSON.stringify(DEFAULT_GALLERY_SLIDES),
+  hero_bg_image: '/images/chuzenji/common/main2.png',
+  hero_bg_video: '/videos/chuzenji/hero-goma.mp4',
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -156,6 +158,8 @@ export default async function HomePage({
 
   const heroEn = getLocalizedContent(content, 'hero_en', loc)
   const heroTitle = getLocalizedContent(content, 'hero_title', loc)
+  const heroBgImage = content['hero_bg_image'] || DEFAULT_CONTENT.hero_bg_image
+  const heroBgVideo = content['hero_bg_video']
   const accessAddress = getLocalizedContent(content, 'access_address', loc)
   const accessCar = getLocalizedContent(content, 'access_car', loc)
   const accessBus = getLocalizedContent(content, 'access_bus', loc)
@@ -198,7 +202,7 @@ export default async function HomePage({
           eyebrowDarkColor="#c8a96e"
           eyebrowLightColor="#c8a96e"
           background={
-            <Image src="/images/chuzenji/common/main2.png" alt="中禅寺 立木観音" fill className="object-cover" priority />
+            <HeroMediaCycle imageSrc={heroBgImage} imageAlt="中禅寺 立木観音" videoSrc={heroBgVideo} />
           }
         >
           <div className="hero-pop-buttons flex flex-wrap gap-3 justify-center">
