@@ -141,7 +141,7 @@ export default async function ZazenPage({
               <p className="mt-3">{g('zazen_about_p2')}</p>
             </div>
             <div className="relative h-56 sm:h-72 rounded-xl overflow-hidden shadow-sm mt-4">
-              <ZoomableImage src="/images/chuzenji/experience/zazen/zazen-2.jpg" alt={t('title')} fill className="object-cover" />
+              <ZoomableImage src="/images/zazen(2).png" alt={t('title')} fill className="object-cover" />
             </div>
           </section>
 
@@ -218,7 +218,7 @@ export default async function ZazenPage({
             <h2 className="text-xl font-serif text-navy pl-3 border-l-4 border-gold mb-4">{g('zazen_heading_gallery')}</h2>
             <div className="grid grid-cols-3 gap-3">
               {[
-                '/images/zazen (1).jpg',
+                '/images/chuzenji/experience/zazen/zazen-2.jpg',
                 '/images/chuzenji/experience/zazen/zazen (3).jpg',
                 '/images/chuzenji/experience/zazen/zazen (4).jpg',
               ].map((src) => (
