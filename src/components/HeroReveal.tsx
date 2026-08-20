@@ -11,6 +11,17 @@ interface HeroRevealProps {
       verticalHeadingがfalseなら見出しの下に小見出し代わりに、trueなら見出し各行のあとの最後の1コマとして表示する */
   subheadingLogoSrc?: string
   subheadingLogoAlt?: string
+  /** verticalHeading時、subheadingLogoSrc（筆文字ロゴ）が現れるコマで、
+      ロゴより先に背後にフェードインする朱印画像（例: tachiki-stamp.png）。
+      指定しない場合は従来どおり筆文字ロゴのみが表示される */
+  stampSrc?: string
+  /** 朱印画像の上端を、筆文字ロゴ画像の高さの何%の位置に合わせるか（0〜1）。
+      例えば「日光山」の3文字の下・寺号2〜3文字の上に朱印の上端を揃えたい場合、
+      ロゴ画像を実測してその境界の位置（上からの割合）を指定する */
+  stampTopFrac?: number
+  /** 朱印画像の高さを、筆文字ロゴ画像の高さの何%にするか（0〜1）。
+      stampTopFracと合わせて、朱印が寺号部分に重なるサイズ・位置に調整する */
+  stampHeightFrac?: number
   /** trueの場合、見出しを「中央・縦書きで1行ずつ入れ替わり、最後にsubheadingLogoSrcが浮かぶ」
       演出で表示する（中禅寺・温泉寺の日本語ページ用）。falseの場合は従来どおり
       見出し全行を横書きで同時に浮かび上がらせる（英語ページ用。縦書きの英文は読みにくいため） */
@@ -77,12 +88,15 @@ const V_CHAR_STAGGER_MS = 110
 const V_LINE_HOLD_MS = 700       // 1行が出そろってから、次に切り替わるまでの間
 const V_LINE_FADE_MS = 500       // 行が入れ替わるときのフェード時間
 const V_LOGO_FADE_MS = 900
+const V_STAMP_FADE_MS = 900      // 朱印がフェードインする時間（筆文字ロゴより先に始まる）
+const V_STAMP_TEXT_GAP_MS = 450  // 朱印が現れ始めてから、筆文字ロゴが重なり始めるまでの間
 const V_FINAL_HOLD_MS = 3000     // ロゴが出たあと、写真に切り替わるまでの余韻
 
 // 神社本庁公式サイトの「白背景から文字が一文字ずつ浮かび上がり、
 // 静止画が現れる」演出をトップページのヒーローに適用したもの。
 export default function HeroReveal({
-  eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, verticalHeading = false, midContent, crestSrc,
+  eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, stampSrc, stampTopFrac = 0.4, stampHeightFrac = 0.62,
+  verticalHeading = false, midContent, crestSrc,
   crestTargetCharFrac, secondLineOffsetEm, pairFirstTwoLines,
   darkColor, lightColor, eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
   background, children, liftPx = 0, bottomLiftPx = 0, staggerChildren = false, className,
@@ -142,8 +156,11 @@ export default function HeroReveal({
   vLineDurations.forEach(dur => { vLineStartTimes.push(vCursor); vCursor += dur })
   const vLogoStartMs = vCursor
   const vLogoEnterWaitMs = frames.length > 0 ? V_LINE_FADE_MS : 0
+  // stampSrc指定時は「朱印がフェードイン→少し遅れて筆文字ロゴが重なる」の
+  // 2段階になるため、ロゴが完全に出そろうまでの時間がその分だけ後ろにずれる
+  const vTextStartWaitMs = stampSrc ? vLogoEnterWaitMs + V_STAMP_TEXT_GAP_MS : vLogoEnterWaitMs
   const verticalImageAtMs = hasLogoStep
-    ? vLogoStartMs + vLogoEnterWaitMs + V_LOGO_FADE_MS + V_FINAL_HOLD_MS
+    ? vLogoStartMs + vTextStartWaitMs + V_LOGO_FADE_MS + V_FINAL_HOLD_MS
     : vLogoStartMs + V_FINAL_HOLD_MS
 
   useEffect(() => {
@@ -432,29 +449,63 @@ export default function HeroReveal({
                     className="flex justify-center"
                     style={{
                       gridArea: '1 / 1',
-                      opacity: logoActive ? 1 : 0,
                       transform: step === frames.length ? 'scale(1)' : 'scale(0.94)',
-                      transitionProperty: 'opacity, transform',
-                      // 直前の行が完全に消え終わってから現れる。写真へ切り替わる
-                      // ときは待たずにすぐフェードアウトする
+                      transitionProperty: 'transform',
                       transitionDuration: logoActive ? `${V_LOGO_FADE_MS}ms` : '700ms',
                       transitionTimingFunction: EASE,
                       transitionDelay: logoActive ? `${vLogoEnterWaitMs}ms` : '0ms',
                     }}
                     aria-hidden={step !== frames.length}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      ref={logoImgRef}
-                      src={subheadingLogoSrc}
-                      alt={subheadingLogoAlt ?? ''}
-                      className="h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
-                      // logoExtraPxで、寺紋の中心に対して対象の一文字（crestTargetCharFrac）
-                      // の位置まで、ロゴ画像だけをさらにずらす（他のコマはgridShiftPxのみ）。
-                      // 親divではなくimg自身にtransformをかける（親divへのtransformが
-                      // 子のgetBoundingClientRectに反映されない挙動が確認されたため）
-                      style={{ transform: `translateY(${logoExtraPx}px)` }}
-                    />
+                    {/* stampSrc・筆文字ロゴともにこのdivの高さ（＝筆文字ロゴ画像の
+                        描画高さ）を基準に位置決めするため、position: relativeで
+                        囲み、幅は中身（筆文字ロゴ）にフィットさせる */}
+                    <div className="relative inline-block">
+                      {stampSrc && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={stampSrc}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute left-1/2 w-auto max-w-none object-contain pointer-events-none"
+                          style={{
+                            top: `${stampTopFrac * 100}%`,
+                            height: `${stampHeightFrac * 100}%`,
+                            // logoExtraPxは筆文字ロゴだけに適用される寺紋合わせ用の縦補正
+                            // （画像のtransformなので親の高さに影響しない）。朱印がロゴに
+                            // 追従してズレないよう、同じ補正をここにも適用する
+                            transform: `translateX(-50%) translateY(${logoExtraPx}px)`,
+                            // 朱印は筆文字ロゴより先にフェードインを始める（少し
+                            // 単独で見えたあと、筆文字ロゴが重なってくる）。写真へ
+                            // 切り替わるときは筆文字ロゴと同時に、待たずにフェードアウトする
+                            opacity: logoActive ? 1 : 0,
+                            transitionProperty: 'opacity',
+                            transitionDuration: logoActive ? `${V_STAMP_FADE_MS}ms` : '700ms',
+                            transitionTimingFunction: EASE,
+                            transitionDelay: logoActive ? `${vLogoEnterWaitMs}ms` : '0ms',
+                          }}
+                        />
+                      )}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        ref={logoImgRef}
+                        src={subheadingLogoSrc}
+                        alt={subheadingLogoAlt ?? ''}
+                        className="relative h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
+                        style={{
+                          // logoExtraPxで、寺紋の中心に対して対象の一文字（crestTargetCharFrac）
+                          // の位置まで、ロゴ画像だけをさらにずらす（他のコマはgridShiftPxのみ）。
+                          // 親divではなくimg自身にtransformをかける（親divへのtransformが
+                          // 子のgetBoundingClientRectに反映されない挙動が確認されたため）
+                          transform: `translateY(${logoExtraPx}px)`,
+                          opacity: logoActive ? 1 : 0,
+                          transitionProperty: 'opacity',
+                          transitionDuration: logoActive ? `${V_LOGO_FADE_MS}ms` : '700ms',
+                          transitionTimingFunction: EASE,
+                          transitionDelay: logoActive ? `${vTextStartWaitMs}ms` : '0ms',
+                        }}
+                      />
+                    </div>
                   </div>
                 )
               })()}

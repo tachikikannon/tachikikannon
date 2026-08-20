@@ -190,6 +190,9 @@ export default async function HomePage({
           verticalHeading={loc !== 'en'}
           subheadingLogoSrc={loc === 'en' ? undefined : '/images/chuzenji/chuzenji-rogo.png'}
           subheadingLogoAlt="日光山中禅寺"
+          stampSrc={loc === 'en' ? undefined : '/images/tachiki-stamp.png'}
+          stampTopFrac={0.383}
+          stampHeightFrac={0.617}
           crestSrc="/images/chuzenji/common/jimon-navy-mask.png"
           crestTargetCharFrac={0.587}
           darkColor="#1a2a4a"

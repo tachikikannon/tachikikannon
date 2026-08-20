@@ -212,6 +212,9 @@ export default async function OnsenjPage({
           verticalHeading={loc !== 'en'}
           subheadingLogoSrc={loc === 'en' ? undefined : '/images/chuzenji/onsenji-rogo.png'}
           subheadingLogoAlt="日光山温泉寺"
+          stampSrc={loc === 'en' ? undefined : '/images/onsenji-stamp.png'}
+          stampTopFrac={0.376}
+          stampHeightFrac={0.624}
           crestSrc="/images/onsenji/common/jimon-green-mask.png"
           crestTargetCharFrac={0.591}
           secondLineOffsetEm={2}
