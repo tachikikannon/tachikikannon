@@ -150,51 +150,57 @@ export default function ReserveForm() {
             />
           </div>
 
-          {/* 人数 */}
-          <div>
-            <label className="admin-label">{t('partySizeLabel')}</label>
-            <input type="number" min={1} max={20} required className="admin-input w-24" value={form.party_size}
-              onChange={e => setForm({...form, party_size: Number(e.target.value)})} />
-            <span className="text-sm text-gray-500 ml-2">{t('partySizeUnit')}</span>
-          </div>
-
-          {/* 氏名 */}
-          <div className={showNameKana ? 'grid grid-cols-2 gap-4' : ''}>
-            <div>
-              <label className="admin-label">{t('nameLabel')}</label>
-              <input required className="admin-input" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
-            </div>
-            {showNameKana && (
+          {/* 坐禅はWeb予約自体を受け付けない（カレンダーの案内どおり電話予約のみ）ため、
+              人数以降の入力欄・送信ボタンは表示しない */}
+          {form.type !== 'zazen' && (
+            <>
+              {/* 人数 */}
               <div>
-                <label className="admin-label">{t('nameKanaLabel')}</label>
-                <input required className="admin-input" value={form.name_kana} onChange={e => setForm({...form, name_kana: e.target.value})} />
+                <label className="admin-label">{t('partySizeLabel')}</label>
+                <input type="number" min={1} max={20} required className="admin-input w-24" value={form.party_size}
+                  onChange={e => setForm({...form, party_size: Number(e.target.value)})} />
+                <span className="text-sm text-gray-500 ml-2">{t('partySizeUnit')}</span>
               </div>
-            )}
-          </div>
 
-          <div>
-            <label className="admin-label">{t('emailLabel')}</label>
-            <input type="email" required className="admin-input" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
-          </div>
-          <div>
-            <label className="admin-label">{t('phoneLabel')}</label>
-            <input type="tel" required className="admin-input" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
-          </div>
-          <div>
-            <label className="admin-label">{t('notesLabel')}</label>
-            <textarea className="admin-input min-h-[80px]" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
-          </div>
+              {/* 氏名 */}
+              <div className={showNameKana ? 'grid grid-cols-2 gap-4' : ''}>
+                <div>
+                  <label className="admin-label">{t('nameLabel')}</label>
+                  <input required className="admin-input" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                </div>
+                {showNameKana && (
+                  <div>
+                    <label className="admin-label">{t('nameKanaLabel')}</label>
+                    <input required className="admin-input" value={form.name_kana} onChange={e => setForm({...form, name_kana: e.target.value})} />
+                  </div>
+                )}
+              </div>
 
-          {status === 'error' && <p className="text-red-600 text-sm">{t('submitError')}</p>}
+              <div>
+                <label className="admin-label">{t('emailLabel')}</label>
+                <input type="email" required className="admin-input" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-label">{t('phoneLabel')}</label>
+                <input type="tel" required className="admin-input" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-label">{t('notesLabel')}</label>
+                <textarea className="admin-input min-h-[80px]" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
+              </div>
 
-          <button type="submit"
-            disabled={status === 'loading' || !form.date || !form.time_slot}
-            className="btn-primary w-full text-center disabled:opacity-50">
-            {status === 'loading' ? t('submitting') : t('submit')}
-          </button>
-          <p className="text-xs text-gray-400 text-center">
-            {t('submitNote')}
-          </p>
+              {status === 'error' && <p className="text-red-600 text-sm">{t('submitError')}</p>}
+
+              <button type="submit"
+                disabled={status === 'loading' || !form.date || !form.time_slot}
+                className="btn-primary w-full text-center disabled:opacity-50">
+                {status === 'loading' ? t('submitting') : t('submit')}
+              </button>
+              <p className="text-xs text-gray-400 text-center">
+                {t('submitNote')}
+              </p>
+            </>
+          )}
         </form>
       </div>
     </main>
