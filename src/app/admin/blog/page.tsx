@@ -47,7 +47,9 @@ export default function AdminBlogPage() {
     setLoading(true)
     // 投稿日は常にこの日付欄の値を使う（過去の実績など、記事を書いた日と
     // 実際の出来事の日付がずれるケースに対応するため、公開時に自動採番しない）。
-    const publishedAt = new Date(`${dateStr}T00:00:00`).toISOString()
+    // ローカルタイムゾーン経由でDateを作ると、UTCより進んだタイムゾーン（JST等）では
+    // 保存のたびに前日にずれるため、日付文字列からUTC 0時の時刻文字列を直接組み立てる。
+    const publishedAt = `${dateStr}T00:00:00.000Z`
     const payload = {
       ...editing,
       gallery_urls: toGalleryUrls(galleryText),
