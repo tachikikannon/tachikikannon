@@ -6,27 +6,29 @@ import { useHeroRevealed } from '@/components/HeroReveal'
 interface HeroMediaCycleProps {
   imageSrc: string
   imageAlt: string
+  /** 1本目の動画（左→右パン） */
   videoSrc?: string
-  /** 1本目の動画の後に続けて再生する2本目の動画（任意） */
+  /** 2本目の動画（1本目の後に続けて再生、左→右パン） */
   videoSrc2?: string
+  /** 3本目の動画（2本目の後に続けて再生、上→下パン） */
+  videoSrc3?: string
   /** 静止画を表示する時間（ミリ秒）。この時間が経つと動画に切り替わる */
   imageDurationMs?: number
-  /** 2本目の動画を再生する時間（ミリ秒）。この時間が経つと自動で静止画に戻る */
-  video2DurationMs?: number
 }
 
-type MediaPhase = 'image' | 'video1' | 'video2'
+type MediaPhase = 'image' | 'video1' | 'video2' | 'video3'
 
-// トップページのヒーロー背景を「静止画→動画→（2本目の動画）→静止画…」と自動で切り替える。
-// 1本目の動画は再生が終わる（onEnded）と2本目（あれば）に、なければ静止画に戻る。
-// 2本目の動画は指定秒数が経つと自動で静止画に戻る。videoSrc未指定の場合は
-// 従来どおり静止画のみを表示する。
+// トップページのヒーロー背景を「静止画→動画1→動画2→動画3→静止画…」と自動で切り替える。
+// 各動画はあらかじめ表示したい長さぴったりに書き出してあるので、再生が終わる
+// （onEnded）と次の動画に切り替わるだけでよい。videoSrc2・videoSrc3が未指定なら
+// そこで打ち切って静止画に戻る（例: 3本目が無ければ2本目の後は静止画に戻る）。
 export default function HeroMediaCycle({
-  imageSrc, imageAlt, videoSrc, videoSrc2, imageDurationMs = 5000, video2DurationMs = 5000,
+  imageSrc, imageAlt, videoSrc, videoSrc2, videoSrc3, imageDurationMs = 5000,
 }: HeroMediaCycleProps) {
   const [phase, setPhase] = useState<MediaPhase>('image')
   const video1Ref = useRef<HTMLVideoElement>(null)
   const video2Ref = useRef<HTMLVideoElement>(null)
+  const video3Ref = useRef<HTMLVideoElement>(null)
   // HeroRevealの白背景演出が終わって写真が実際に見えたタイミング（Context経由）。
   // これがtrueになるまでは静止画のまま待機し、演出中に裏でタイマーが進んで
   // 写真が見えた瞬間には既に動画フェーズに入っている…という食い違いを防ぐ
@@ -37,12 +39,6 @@ export default function HeroMediaCycle({
     const t = setTimeout(() => setPhase('video1'), imageDurationMs)
     return () => clearTimeout(t)
   }, [revealed, videoSrc, phase, imageDurationMs])
-
-  useEffect(() => {
-    if (phase !== 'video2' || !videoSrc2) return
-    const t = setTimeout(() => setPhase('image'), video2DurationMs)
-    return () => clearTimeout(t)
-  }, [phase, videoSrc2, video2DurationMs])
 
   const restartPan = (v: HTMLVideoElement) => {
     // スマホ用のパン演出（hero-video-pan / hero-video-pan-vertical、globals.css）を毎回の再生開始時に
@@ -55,24 +51,19 @@ export default function HeroMediaCycle({
   useEffect(() => {
     if (phase !== 'video1') return
     const v = video1Ref.current
-    if (v) {
-      v.currentTime = 0
-      v.play().catch(() => {})
-      restartPan(v)
-    }
+    if (v) { v.currentTime = 0; v.play().catch(() => {}); restartPan(v) }
   }, [phase])
 
   useEffect(() => {
     if (phase !== 'video2') return
     const v = video2Ref.current
-    if (v) {
-      v.currentTime = 0
-      v.play().catch(() => {})
-      restartPan(v)
-    }
-    // 5秒経つとphaseは'image'に切り替わるが、動画自体（20秒超の場合もある）は
-    // 止めないと裏で再生され続けてしまうので、このphaseを抜けるときに一時停止する
-    return () => { v?.pause() }
+    if (v) { v.currentTime = 0; v.play().catch(() => {}); restartPan(v) }
+  }, [phase])
+
+  useEffect(() => {
+    if (phase !== 'video3') return
+    const v = video3Ref.current
+    if (v) { v.currentTime = 0; v.play().catch(() => {}); restartPan(v) }
   }, [phase])
 
   return (
@@ -104,8 +95,21 @@ export default function HeroMediaCycle({
           muted
           playsInline
           preload="auto"
-          className="hero-video-pan-vertical absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
+          onEnded={() => setPhase(videoSrc3 ? 'video3' : 'image')}
+          className="hero-video-pan absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
           style={{ opacity: phase === 'video2' ? 1 : 0 }}
+        />
+      )}
+      {videoSrc3 && (
+        <video
+          ref={video3Ref}
+          src={videoSrc3}
+          muted
+          playsInline
+          preload="auto"
+          onEnded={() => setPhase('image')}
+          className="hero-video-pan-vertical absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
+          style={{ opacity: phase === 'video3' ? 1 : 0 }}
         />
       )}
     </>

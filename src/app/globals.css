@@ -24,14 +24,16 @@ img, video, picture {
 }
 
 /* ヒーロー背景動画（HeroMediaCycle）: スマートフォン画面でだけ、動画の見える範囲を
-   左端→右端へゆっくりパンさせる。横長の動画をobject-coverで縦長画面に収めると
+   左端→右端へパンさせる。横長の動画をobject-coverで縦長画面に収めると
    左右が大きく削れてしまうため、再生中に視点を動かして画面の見え方に変化を出す。
+   1本目・2本目の動画はどちらも表示時間ぴったり8秒で書き出してあるので、
+   アニメーションも8秒＝動画が終わると同時にちょうど右端まで動き切る。
    PC画面（sm以上）は対象外で、常にobject-cover中央固定のまま */
 @keyframes hero-video-pan-lr {
   0%   { object-position: 0% 50%; }
   100% { object-position: 100% 50%; }
 }
-/* 2本目のヒーロー動画用：左→右ではなく上→下へパン。
+/* 3本目のヒーロー動画用：左→右ではなく上→下へパン。
    この動画は横長（16:9）で、縦長のスマホ画面にobject-coverで収めると
    高さ方向はぴったり画面に一致してしまい余白が全く無い（横方向にしか
    はみ出さない）ため、object-positionで上下に動かしても見た目上まったく
@@ -45,16 +47,16 @@ img, video, picture {
 }
 @media (max-width: 639px) {
   .hero-video-pan {
-    /* 動画の表示時間（5秒）より長い8秒かけて動かすことで、範囲を最後まで
-       動き切らせず、ゆっくりした動きに見せている */
     animation: hero-video-pan-lr 8s linear forwards;
   }
   video.hero-video-pan-vertical {
     height: 125%;
     /* 上下パンは高さ方向の話なので、横方向の切り取り位置は別途指定する
-       （0%=左端、50%=中央、100%=右端。中央固定は初期値と同じなので省略可） */
-    object-position: 50% 50%;
-    animation: hero-video-pan-tb 8s linear forwards;
+       （0%=左端、50%=中央、100%=右端）。この動画は右半分を基準に切り取る */
+    object-position: 100% 50%;
+    /* 3本目の動画は表示時間ぴったり11秒で書き出してあるので、アニメーションも
+       11秒＝動画が終わると同時にちょうど下端まで動き切る */
+    animation: hero-video-pan-tb 11s linear forwards;
   }
 }
 
