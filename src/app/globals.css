@@ -31,10 +31,17 @@ img, video, picture {
   0%   { object-position: 0% 50%; }
   100% { object-position: 100% 50%; }
 }
-/* 2本目のヒーロー動画用：左→右ではなく上→下へパン */
+/* 2本目のヒーロー動画用：左→右ではなく上→下へパン。
+   この動画は横長（16:9）で、縦長のスマホ画面にobject-coverで収めると
+   高さ方向はぴったり画面に一致してしまい余白が全く無い（横方向にしか
+   はみ出さない）ため、object-positionで上下に動かしても見た目上まったく
+   動かない。そこで動画の高さ自体を125%にして縦方向に25%分のはみ出しを
+   作り、そのはみ出し分をtransform: translateYで動かして上→下のパンを実現する
+   （125%→20%移動という数値は 0.25/1.25=20% の関係で、動き切った時に
+   ちょうど下端が画面下端に一致するよう逆算したもの） */
 @keyframes hero-video-pan-tb {
-  0%   { object-position: 50% 0%; }
-  100% { object-position: 50% 100%; }
+  0%   { transform: translateY(0%); }
+  100% { transform: translateY(-20%); }
 }
 @media (max-width: 639px) {
   .hero-video-pan {
@@ -42,7 +49,8 @@ img, video, picture {
        動き切らせず、ゆっくりした動きに見せている */
     animation: hero-video-pan-lr 8s linear forwards;
   }
-  .hero-video-pan-vertical {
+  video.hero-video-pan-vertical {
+    height: 125%;
     animation: hero-video-pan-tb 8s linear forwards;
   }
 }
