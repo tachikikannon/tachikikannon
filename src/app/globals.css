@@ -51,9 +51,9 @@ img, video, picture {
   }
   video.hero-video-pan-vertical {
     height: 125%;
-    /* 上下パンは高さ方向の話なので、横方向の切り取り位置は別途固定で指定する必要がある
-       （何も指定しないと初期値の中央になる）。右側を基準に切り取る指定 */
-    object-position: 100% 50%;
+    /* 上下パンは高さ方向の話なので、横方向の切り取り位置は別途指定する
+       （0%=左端、50%=中央、100%=右端。中央固定は初期値と同じなので省略可） */
+    object-position: 50% 50%;
     animation: hero-video-pan-tb 8s linear forwards;
   }
 }
