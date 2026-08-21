@@ -31,9 +31,19 @@ img, video, picture {
   0%   { object-position: 0% 50%; }
   100% { object-position: 100% 50%; }
 }
+/* 2本目のヒーロー動画用：左→右ではなく上→下へパン */
+@keyframes hero-video-pan-tb {
+  0%   { object-position: 50% 0%; }
+  100% { object-position: 50% 100%; }
+}
 @media (max-width: 639px) {
   .hero-video-pan {
-    animation: hero-video-pan-lr 5s linear forwards;
+    /* 動画の表示時間（5秒）より長い8秒かけて動かすことで、範囲を最後まで
+       動き切らせず、ゆっくりした動きに見せている */
+    animation: hero-video-pan-lr 8s linear forwards;
+  }
+  .hero-video-pan-vertical {
+    animation: hero-video-pan-tb 8s linear forwards;
   }
 }
 

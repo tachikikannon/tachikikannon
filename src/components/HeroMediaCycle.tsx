@@ -40,7 +40,7 @@ export default function HeroMediaCycle({
   }, [phase, videoSrc2, video2DurationMs])
 
   const restartPan = (v: HTMLVideoElement) => {
-    // スマホ用の左→右パン演出（hero-video-pan、globals.css）を毎回の再生開始時に
+    // スマホ用のパン演出（hero-video-pan / hero-video-pan-vertical、globals.css）を毎回の再生開始時に
     // リスタートさせる。animationをnoneにしてreflowを挟んでから元に戻す定番の方法
     v.style.animation = 'none'
     void v.offsetHeight
@@ -99,7 +99,7 @@ export default function HeroMediaCycle({
           muted
           playsInline
           preload="auto"
-          className="hero-video-pan absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
+          className="hero-video-pan-vertical absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
           style={{ opacity: phase === 'video2' ? 1 : 0 }}
         />
       )}
