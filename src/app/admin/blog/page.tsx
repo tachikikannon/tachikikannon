@@ -33,7 +33,14 @@ export default function AdminBlogPage() {
   }
 
   function toDateInputValue(iso: string | null | undefined) {
-    return (iso ?? new Date().toISOString()).slice(0, 10)
+    // UTC文字列をそのままsliceすると、UTCより進んだタイムゾーン（JST等）で
+    // 保存された過去データ（現地0時=前日UTC午後）の日付が1日前にずれて表示される。
+    // ローカルタイムゾーンの日付要素から組み立てることで正しい暦日を復元する。
+    const d = iso ? new Date(iso) : new Date()
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
   }
 
   function openEditor(post: Partial<Post> | null) {
