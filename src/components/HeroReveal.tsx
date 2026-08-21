@@ -1,5 +1,13 @@
 'use client'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+
+// 白背景の見出し演出が完全に終わって写真が現れたか（imageActive）を、
+// background（HeroMediaCycle等）側からuseContextで読めるようにする。
+// page.tsx（サーバーコンポーネント）からbackgroundへは関数を渡せない
+// （RSC境界を越えて渡せるのはJSX要素のみ）ため、propではなくContextで伝える。
+// Providerの外（他ページ等）で読んだ場合はtrue＝常時稼働として振る舞う
+export const HeroRevealedContext = createContext(true)
+export const useHeroRevealed = () => useContext(HeroRevealedContext)
 
 interface HeroRevealProps {
   eyebrow: string
@@ -308,7 +316,7 @@ export default function HeroReveal({
         {/* 白背景の上に半透明の写真をそのまま重ねると色が薄く見えてしまうため、
             写真の下に地色を敷いてから重ねる */}
         <div className="absolute inset-0" style={{ backgroundColor: darkColor }} />
-        {background}
+        <HeroRevealedContext.Provider value={imageActive}>{background}</HeroRevealedContext.Provider>
         {/* 文字を読みやすくするための薄いオーバーレイ（濃すぎない程度） */}
         <div className="absolute inset-0" style={{ backgroundColor: darkColor, opacity: 0.22 }} />
       </div>

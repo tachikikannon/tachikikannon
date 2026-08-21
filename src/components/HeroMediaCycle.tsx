@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import { useHeroRevealed } from '@/components/HeroReveal'
 
 interface HeroMediaCycleProps {
   imageSrc: string
@@ -26,12 +27,16 @@ export default function HeroMediaCycle({
   const [phase, setPhase] = useState<MediaPhase>('image')
   const video1Ref = useRef<HTMLVideoElement>(null)
   const video2Ref = useRef<HTMLVideoElement>(null)
+  // HeroRevealの白背景演出が終わって写真が実際に見えたタイミング（Context経由）。
+  // これがtrueになるまでは静止画のまま待機し、演出中に裏でタイマーが進んで
+  // 写真が見えた瞬間には既に動画フェーズに入っている…という食い違いを防ぐ
+  const revealed = useHeroRevealed()
 
   useEffect(() => {
-    if (!videoSrc || phase !== 'image') return
+    if (!revealed || !videoSrc || phase !== 'image') return
     const t = setTimeout(() => setPhase('video1'), imageDurationMs)
     return () => clearTimeout(t)
-  }, [videoSrc, phase, imageDurationMs])
+  }, [revealed, videoSrc, phase, imageDurationMs])
 
   useEffect(() => {
     if (phase !== 'video2' || !videoSrc2) return
