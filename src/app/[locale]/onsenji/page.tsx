@@ -9,7 +9,7 @@ import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
 import HeroReveal from '@/components/HeroReveal'
 import { createServerClient } from '@/lib/supabase-server'
-import { getLocalizedContent } from '@/lib/site-content'
+import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -305,7 +305,7 @@ export default async function OnsenjPage({
                         {new Date(n.published_at ?? n.created_at).toLocaleDateString('ja-JP')}
                       </span>
                       <span className="badge bg-onsenji/10 text-onsenji text-[10px] flex-shrink-0 w-fit">{n.category}</span>
-                      <span className="text-sm leading-relaxed group-hover:text-[#2d6b57] transition-colors truncate">{n.title}</span>
+                      <span className="text-sm leading-relaxed group-hover:text-[#2d6b57] transition-colors truncate">{pickLocalized(loc, n.title, n.title_en)}</span>
                     </Link>
                   </li>
                 ))}

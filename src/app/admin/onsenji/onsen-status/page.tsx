@@ -19,6 +19,7 @@ const FIELDS = [
       { key: 'name', label: '行事名（例: 薬師講大祭）' },
     ],
     defaultValue: J([]),
+    translatable: true,
   },
 ] as const
 
