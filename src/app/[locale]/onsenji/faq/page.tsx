@@ -15,19 +15,19 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_FAQS = [
-  { q: '温泉（薬師の湯）は誰でも利用できますか？', a: 'はい、志納金（大人500円・小中学生300円）をお納めいただいた方はどなたでもご利用いただけます。令和8年4月11日より開湯した源泉かけ流しの温泉です。タオルをご持参ください。' },
+  { q: '温泉（薬師の湯）は誰でも利用できますか？', a: 'はい、入湯料（大人500円・小中学生300円）をお納めいただいた方はどなたでもご利用いただけます。源泉かけ流しの温泉です。タオルをご持参ください。お持ちでない方は、１枚５００円で販売もしております。' },
   { q: '薬師の湯の泉質を教えてください。', a: '泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉で、泉温は71.4℃です。完全かけ流しで、加水すると乳白色に変わる美しい湯です。' },
-  { q: '御祈願は予約が必要ですか？', a: 'はい、御祈願は予約制となっております。事前にお電話またはお問い合わせフォームよりご連絡ください。' },
-  { q: '写経体験はできますか？', a: 'はい、毎日実施しています。体験料1,000円で特別御朱印もお授けします。所要時間は約15分です。予約不要で、受付時にお申し付けください。' },
-  { q: '営業時間・休業期間を教えてください。', a: '受付時間は8時00分〜16時00分、参篭時間は8時00分〜17時00分です。12月〜4月上旬は冬季休業となります。閉湯・開湯の正確な日程は公式ホームページをご確認ください。' },
+  { q: '御祈願は予約が必要ですか？', a: 'ご祈願は行っておりませんが、毎年8月8日に薬師講大祭・採灯大護摩供が行われます。' },
+  { q: '写経体験はできますか？', a: 'はい、毎日実施しています。体験料1,000円で特別御朱印もお授けします。所要時間は約15分です。予約不要で、玄関にて係にお申し付けください。' },
+  { q: '車でのアクセスはできますか？', a: 'はい、お車でお越しいただけます。境内に無料駐車場がございます。' },
   { q: '温泉寺は輪王寺と関係がありますか？', a: 'はい、日光山温泉寺は世界遺産「日光山輪王寺」の別院です。延暦7年（788年）に勝道上人によって開創され、江戸時代には輪王寺宮の直轄寺院として栄えました。' },
 ]
 const DEFAULT_FAQS_EN = [
-  { q: 'Can anyone use the hot spring (Yakushi-no-Yu)?', a: 'Yes, anyone who pays the visiting donation (adults ¥500, elementary/junior high school students ¥300) may use it. This fully sourced hot spring opened on April 11, 2026. Please bring your own towel.' },
+  { q: 'Can anyone use the hot spring (Yakushi-no-Yu)?', a: "Yes, anyone who pays the bathing fee (adults ¥500, elementary/junior high school students ¥300) may use it. It is a fully sourced, uninterrupted-flow hot spring. Please bring your own towel — if you don't have one, towels are also available for purchase for ¥500 each." },
   { q: 'What is the water quality of Yakushi-no-Yu?', a: 'The spring is sulfur–calcium–sodium–sulfate–bicarbonate with a water temperature of 71.4°C. It is fully sourced and turns a beautiful milky white when mixed with water.' },
-  { q: 'Do I need a reservation for a prayer service?', a: 'Yes, prayer services require a reservation. Please contact us in advance by phone or through the inquiry form.' },
-  { q: 'Can I try the sutra copying experience?', a: 'Yes, it is offered daily. The fee is ¥1,000 and includes a special goshuin stamp. It takes about 15 minutes. No reservation is needed — just ask at reception.' },
-  { q: 'What are your hours and closure period?', a: 'Reception is 8:00 AM–4:00 PM, and visiting hours are 8:00 AM–5:00 PM. The temple is closed for winter from December to early April. Please check the official website for exact opening/closing dates.' },
+  { q: 'Do I need a reservation for a prayer service?', a: 'We do not currently offer prayer services, but the Yakushiko Grand Festival and Saito Goma Fire Ritual are held every year on August 8.' },
+  { q: 'Can I try the sutra copying experience?', a: 'Yes, it is offered daily. The fee is ¥1,000 and includes a special goshuin stamp. It takes about 15 minutes. No reservation is needed — please ask staff at the entrance.' },
+  { q: 'Can I access by car?', a: 'Yes, you can come by car. Free parking is available on the grounds.' },
   { q: 'Is Onsenji connected to Rinnoji?', a: 'Yes, Nikkozan Onsenji is a branch temple of the World Heritage site Nikkozan Rinnoji. It was founded in Enryaku 7 (788 CE) by the priest Shodo, and flourished in the Edo period as a temple directly administered by Rinnoji.' },
 ]
 

@@ -17,13 +17,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 const DEFAULT_NOTES = [
   { text: '御朱印は信仰の証です。コレクション目的でのお受け取りはご遠慮ください。' },
-  { text: '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。' },
+  { text: '閉門時刻の30分ほど前までを目安に、余裕をもってお越しください。' },
   { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
   { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
 ]
 const DEFAULT_NOTES_EN = [
   { text: 'A goshuin is a proof of faith — please do not request one solely for collecting purposes.' },
-  { text: 'Reception closes 30 minutes before the temple closes. Please allow enough time.' },
+  { text: 'Please arrive with time to spare, aiming to be here by around 30 minutes before closing time.' },
   { text: 'Hand-written stamps may take extra time during busy periods.' },
   { text: 'Pre-inscribed stamps are also available for those without a goshuin book.' },
 ]
@@ -47,8 +47,8 @@ const DEFAULT_SPECIAL_EN = [
 const DEFAULTS: Record<string, string> = {
   goshuin_heading_regular: '御朱印',
   goshuin_heading_regular_en: 'Goshuin Stamps',
-  goshuin_intro: '御朱印は御朱印所・本堂・五大堂の各所にてお受けいただけます。\n場所によって授与しているものが異なります。',
-  goshuin_intro_en: 'Goshuin stamps can be received at the Goshuin Office, Main Hall, and Godaido.\nAvailable stamps vary by location.',
+  goshuin_intro: '御朱印は御朱印所にてお受けいただけます。\nなお、特別朱印は写経･写仏体験後に寺務所 体験受付窓口にてお渡しいたします',
+  goshuin_intro_en: 'Goshuin stamps can be received at the goshuin counter.\nSpecial goshuin are given at the temple office experience counter after the sutra-copying or Buddha-tracing experience.',
   goshuin_regular: JSON.stringify(DEFAULT_REGULAR),
   goshuin_regular_en: JSON.stringify(DEFAULT_REGULAR_EN),
   goshuin_fee_note: '御朱印代：各500円　／　書き入れ・書き置きともに同じ金額です。\n受付時間は拝観時間に準じます（閉門30分前に終了）。',

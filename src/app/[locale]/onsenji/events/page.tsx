@@ -25,14 +25,14 @@ const DEFAULT_EVENTS = [
     date: '8月8日',
     time: '午前11時〜',
     name: '薬師講大祭・採灯大護摩供',
-    desc: '湯の湖畔にて、山伏によって採灯大護摩供が焚かれます。写経が御本尊に奉じられ、護摩の炎で焚き上げられる、温泉寺最大の法要です。',
+    desc: '薬師堂にてご本尊・薬師瑠璃光如来への法要を執り行います。又、湯の湖畔では、山伏によって採灯大護摩供が行われます。写経などが御本尊に奉じられ、護摩の炎で焚き上げられる、温泉寺最大の法要です。',
   },
   {
     month: '1月',
     date: '1月下旬',
     time: '午前11時〜',
     name: '温泉寺 節分大祭',
-    desc: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。',
+    desc: '新年の邪気を払い、福を招く節分の法要です。参拝者の一年の健康と幸福をお祈りします。',
   },
 ]
 const DEFAULT_EVENTS_EN = [
@@ -41,14 +41,14 @@ const DEFAULT_EVENTS_EN = [
     date: 'August 8',
     time: 'From 11:00 AM',
     name: 'Yakushiko Grand Festival & Saito Goma Fire Ritual',
-    desc: 'On the shore of Lake Yunoko, mountain ascetics (yamabushi) perform the Saito Goma fire ritual. Copied sutras are offered to the principal image and burned in the goma flames — the largest ceremony of the year at Onsenji.',
+    desc: 'A memorial service to the principal image, Yakushi Rurikou Nyorai, is held at the Yakushi Hall. Mountain ascetics (yamabushi) also perform the Saito Goma fire ritual on the shore of Lake Yunoko. Copied sutras and other offerings are presented to the principal image and burned in the goma flames — the largest ceremony of the year at Onsenji.',
   },
   {
     month: 'January',
     date: 'Late January',
     time: 'From 11:00 AM',
     name: 'Onsenji Setsubun Grand Festival',
-    desc: 'A Setsubun ceremony to drive away misfortune and welcome good luck for the new year. Bean-throwing and a goma fire ritual pray for the health and happiness of all visitors in the year ahead.',
+    desc: 'A Setsubun ceremony to drive away misfortune and welcome good luck for the new year, praying for the health and happiness of all visitors in the year ahead.',
   },
 ]
 const EVENT_IMAGES = ['/images/onsenji/events/yakushiko/saitougoma-onsen.JPEG', '/images/onsenji/events/setsubun/onsenji-setubun-hiro.JPG']

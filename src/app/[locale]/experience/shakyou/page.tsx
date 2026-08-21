@@ -17,12 +17,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_CONTENTS = [
-  { icon: '📜', title: '延命十句観音経', desc: '観音様のお力を借り、長寿・安全を祈るお経。十六文字を丁寧にお写しいただきます。' },
-  { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。金紙特別御朱印（大日如来）とセットです。' },
+  { icon: '📜', title: '延命十句観音経', desc: '観音様念じることで、心を穏やかにし、人を思いやる生き方につながるお経。十六文字を丁寧にお写しいただきます。金紙特別御朱印（立木大悲殿）とセットです。' },
+  { icon: '✍️', title: '懺悔文', desc: '過去の罪業を懺悔し、心を清めるお経。二八文字を丁寧にお写しいただきます。金紙特別御朱印（大日如来）とセットです。' },
 ]
 const DEFAULT_CONTENTS_EN = [
-  { icon: '📜', title: 'Enmei Jikku Kannon Sutra', desc: 'A sutra invoking Kannon\'s power to pray for longevity and safety. You will carefully copy its 16 characters.' },
-  { icon: '✍️', title: 'Repentance Sutra', desc: 'A sutra to repent past wrongdoing and purify the heart, paired with a gold-paper special goshuin (Dainichi Nyorai).' },
+  { icon: '📜', title: 'Enmei Jikku Kannon Sutra', desc: 'A sutra that, through invoking Kannon, calms the heart and guides you toward a life of compassion for others. You will carefully copy its 16 characters. Paired with a gold-paper special goshuin (Tachiki Daihiden).' },
+  { icon: '✍️', title: 'Sange-mon (Repentance Verse)', desc: 'A sutra to repent past wrongdoing and purify the heart. You will carefully copy its 28 characters. Paired with a gold-paper special goshuin (Dainichi Nyorai).' },
 ]
 const DEFAULT_FLOW = [
   { title: '受付', text: '寺務所体験窓口にてお申し込みください。体験料をお納めいただきます。' },
@@ -59,8 +59,8 @@ const DEFAULTS: Record<string, string> = {
   shakyou_heading_about_en: 'What is Shakyou?',
   shakyou_about_p1: '写経とは、お経の文字を一文字一文字丁寧に書き写す修行です。文字を書くことで雑念を払い、心を清め、仏様との縁を結ぶとされています。',
   shakyou_about_p1_en: 'Shakyou is a practice of carefully copying the characters of a sutra, one by one. Writing is said to clear the mind of distraction, purify the heart, and form a bond with the Buddha.',
-  shakyou_about_p2: '立木観音では、十六文字のお経（延命十句観音経・懺悔文）をお写しいただきます。短いお経のため、筆を持ったことのない方でも約15分でお写しいただけます。',
-  shakyou_about_p2_en: 'At Tachiki Kannon, you will copy a 16-character sutra (either the Enmei Jikku Kannon Sutra or the Repentance Sutra). Because it is short, even those who have never held a brush can complete it in about 15 minutes.',
+  shakyou_about_p2: '立木観音では、十六文字のお経（延命十句観音経）または二十八文字の御経（懺悔文）をお写しいただきます。短いお経のため、約15分でお写しいただけます。',
+  shakyou_about_p2_en: 'At Tachiki Kannon, you will copy either a 16-character sutra (the Enmei Jikku Kannon Gyo) or a 28-character sutra (the Sange-mon repentance verse). As these are short sutras, the experience takes about 15 minutes.',
   shakyou_heading_contents: '体験内容',
   shakyou_heading_contents_en: 'Experience Details',
   shakyou_heading_flow: '体験の流れ',
@@ -71,8 +71,8 @@ const DEFAULTS: Record<string, string> = {
   shakyou_fee_en: '¥1,000 (includes special goshuin stamp)',
   shakyou_time: '約15分',
   shakyou_time_en: 'Approx. 15 minutes',
-  shakyou_target: 'どなたでも（筆が初めての方も歓迎）',
-  shakyou_target_en: 'Anyone welcome (first-time brush users too)',
+  shakyou_target: '小学生以上',
+  shakyou_target_en: 'Elementary school age and up',
   shakyou_place:  '寺務所 体験受付窓口',
   shakyou_place_en: 'Temple Office Experience Counter',
   shakyou_hours:  '拝観時間内（閉門1時間前まで）',

@@ -27,7 +27,7 @@ const FIELDS = [
     defaultValue: J([
       { title: '好きな珠を選ぶ', text: '天然石・天然木をご自由に組み合わせてお選びいただけます。' },
       { title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。' },
-      { title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。' },
+      { title: 'ご祈願', text: '僧侶がご祈願し、お守りとして当日お持ち帰りいただけます。' },
     ]),
     translatable: true,
     defaultValueEn: J([
@@ -83,7 +83,7 @@ const FIELDS = [
       { name: 'ライトブルータイガーアイ', desc: '冷静さや判断力を高めるとされるタイガーアイの一種です。' },
       { name: 'ミックスタイガーアイ', desc: '成功や勝利、チャンスをつかむご利益があるとされています。' },
       { name: 'パープルキャッツアイ', desc: '直感力を研ぎ澄まし、判断力を強めるとされる石です。' },
-      { name: 'ピーチジェイド', desc: '心と体のバランスを整えるとされる石です。' },
+      { name: 'ピーチ', desc: '心と体のバランスを整えるとされる石です。' },
       { name: '茶金石', desc: '精神を安定させ、心の疲れを癒すとされる石です。' },
       { name: '紫金石', desc: '善い人や物、チャンスとの出会いを導くとされる石です。' },
       { name: 'ハウライト', desc: '厄除け効果があり、精神の安定・浄化、意志を強くするとされています。' },
@@ -91,7 +91,7 @@ const FIELDS = [
       { name: 'カーネリアン', desc: '気力アップ・体を丈夫にし、迷いを断ち切るとされる石です。' },
       { name: 'オニキス', desc: '邪気祓い・厄除け・魔除けの効果があるとされる石です。' },
       { name: 'インド翡翠', desc: '失った気力を回復させ、強いパワーで物事を成し遂げるとされています。' },
-      { name: 'プラムジェイド', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
+      { name: 'プラム', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
     ]),
     translatable: true,
     defaultValueEn: J([
@@ -107,7 +107,7 @@ const FIELDS = [
       { name: 'Light Blue Tiger Eye', desc: 'A type of tiger eye said to enhance calmness and judgment.' },
       { name: 'Mixed Tiger Eye', desc: 'Said to bring success, victory, and the ability to seize opportunity.' },
       { name: 'Purple Cat\'s Eye', desc: 'Said to sharpen intuition and strengthen judgment.' },
-      { name: 'Peach Jade', desc: 'Said to balance mind and body.' },
+      { name: 'Peach', desc: 'Said to balance mind and body.' },
       { name: 'Bronzite', desc: 'Said to stabilize the spirit and heal mental fatigue.' },
       { name: 'Purple Sunstone', desc: 'Said to bring encounters with good people, things, and opportunities.' },
       { name: 'Howlite', desc: 'Said to ward off misfortune, stabilize and purify the spirit, and strengthen willpower.' },
@@ -115,7 +115,7 @@ const FIELDS = [
       { name: 'Carnelian', desc: 'Said to boost vitality, strengthen the body, and cut through hesitation.' },
       { name: 'Onyx', desc: 'Said to ward off negative energy and misfortune.' },
       { name: 'Indian Jade', desc: 'Said to restore lost energy and accomplish tasks with strong power.' },
-      { name: 'Plum Jade', desc: 'A deeply colored stone said to bring elegance and composure.' },
+      { name: 'Plum', desc: 'A deeply colored stone said to bring elegance and composure.' },
     ]),
   },
   {

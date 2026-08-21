@@ -26,27 +26,21 @@ const CONTENT_IMAGES = ['/images/chuzenji/experience/shabutu/shabutu-template.jp
 const GOSHUIN_IMAGES = ['/images/chuzenji/experience/shabutu/goshuin-shabutu.jpg']
 const DEFAULT_FLOW = [
   { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
-  { title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
+  { title: '用具の準備', text: 'すべて貸し出しですので手ぶらでお越しいただけます。' },
   { title: 'お描きいただきます', text: '下絵に沿って、立木観世音菩薩のお姿をゆっくりお描きください。係の者がご説明いたします。' },
   { title: '特別御朱印のお授け', text: '完成後、銀紙特別朱印（立木観世音）をお授けします。' },
-  { title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
 ]
 const DEFAULT_FLOW_EN = [
   { title: 'Reception', text: 'Please apply at the Temple Office experience reception counter and pay the experience fee.' },
   { title: 'Preparing Materials', text: 'A template, brush, ink, and other materials are provided — all on loan, so you may come empty-handed.' },
   { title: 'Tracing the Image', text: 'Following the template, slowly trace the figure of Tachiki Kanzeon Bodhisattva. Our staff will guide you.' },
   { title: 'Receiving the Special Goshuin', text: 'Upon completion, you will receive a silver-paper special stamp (Tachiki Kanzeon).' },
-  { title: 'Taking It Home', text: 'You may take your completed tracing home. Please display it with care.' },
 ]
 const DEFAULT_ITEMS = [
-  { text: '下絵・筆・墨・硯はすべてご用意しています。手ぶらでお越しください。' },
-  { text: '墨が衣服につく場合がありますので、汚れてもよい服装でお越しください。' },
-  { text: '完成した作品はお持ち帰りいただけます。筒状にお渡しします。' },
+  { text: '手ぶらでお越しください。' },
 ]
 const DEFAULT_ITEMS_EN = [
-  { text: 'Templates, brushes, ink, and inkstones are all provided. Please come empty-handed.' },
-  { text: 'Ink may get on your clothing — please wear something you don\'t mind getting dirty.' },
-  { text: 'Your completed work can be taken home, presented rolled in a tube.' },
+  { text: 'Please come empty-handed.' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -56,16 +50,16 @@ const DEFAULTS: Record<string, string> = {
   shabutu_heading_about_en: 'What is Shabutu?',
   shabutu_about_p1: '写仏とは、仏様のお姿を下絵に沿って丁寧にお描きする修行です。写経と並ぶ伝統的な仏道修行のひとつで、描きながら仏様の功徳をいただき、心を落ち着けることができます。',
   shabutu_about_p1_en: 'Shabutu is a practice of carefully tracing the figure of a Buddha following a template. Alongside sutra copying, it is one of the traditional Buddhist practices — as you draw, you receive the Buddha\'s merit and settle your mind.',
-  shabutu_about_p2: '立木観音の写仏体験では、立木観世音菩薩のお姿をお描きいただきます。完成した写仏は記念にお持ち帰りいただけます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。',
-  shabutu_about_p2_en: 'In Tachiki Kannon\'s Buddhist image tracing experience, you will trace the figure of Tachiki Kanzeon Bodhisattva. You may take your completed tracing home as a keepsake. Since you trace along a template, anyone can enjoy it, even those who find drawing difficult.',
+  shabutu_about_p2: '立木観音の写仏体験では、立木観世音菩薩のお姿をお描きいただきます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。',
+  shabutu_about_p2_en: 'In Tachiki Kannon\'s shabutsu experience, you will trace the image of Tachiki Kanzeon Bodhisattva. Since you trace along a printed outline, anyone can enjoy it, even those who are not confident in their drawing.',
   shabutu_heading_contents: '体験内容',
   shabutu_heading_contents_en: 'Experience Details',
   shabutu_heading_fees: '料金・所要時間',
   shabutu_heading_fees_en: 'Fee & Duration',
   shabutu_fee:  '1,000円（特別御朱印込み）',
   shabutu_fee_en: '¥1,000 (includes special goshuin stamp)',
-  shabutu_time: '約30〜60分（個人差があります）',
-  shabutu_time_en: 'Approx. 30–60 minutes (varies by individual)',
+  shabutu_time: '約15〜20分（個人差があります）',
+  shabutu_time_en: 'Approx. 15–20 minutes (varies by person)',
   shabutu_target: 'どなたでも（絵が苦手な方も歓迎）',
   shabutu_target_en: 'Anyone welcome (even if drawing is not your strength)',
   shabutu_place:  '寺務所 体験受付窓口',

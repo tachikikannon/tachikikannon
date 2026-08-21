@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 const DEFAULT_FLOW = [
   { icon: '📿', title: '好きな珠を選ぶ', text: '天然石・天然木をご自由に組み合わせてお選びいただけます。', image: '/images/chuzenji/experience/jyuzu/erabu.jpg' },
   { icon: '🤲', title: '数珠を作る', text: 'スタッフが丁寧にサポートしますので、どなたでも簡単にお作りいただけます。', image: '/images/chuzenji/experience/jyuzu/tukuru.jpg' },
-  { icon: '🙏', title: 'ご祈祷', text: '僧侶がご祈祷し、お守りとして当日お持ち帰りいただけます。', image: '/images/chuzenji/experience/jyuzu/kitousuru.jpg' },
+  { icon: '🙏', title: 'ご祈願', text: '僧侶がご祈願し、お守りとして当日お持ち帰りいただけます。', image: '/images/chuzenji/experience/jyuzu/kitousuru.jpg' },
 ]
 const DEFAULT_FLOW_EN = [
   { icon: '📿', title: 'Choose Your Beads', text: 'Freely combine natural stone and wood beads to your liking.', image: '/images/chuzenji/experience/jyuzu/erabu.jpg' },
@@ -73,7 +73,7 @@ const DEFAULT_STONE_SWATCHES: Swatch[] = [
   { name: 'ライトブルータイガーアイ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-lightbluetiger.png', desc: '冷静さや判断力を高めるとされるタイガーアイの一種です。' },
   { name: 'ミックスタイガーアイ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-mixtiger.png', desc: '成功や勝利、チャンスをつかむご利益があるとされています。' },
   { name: 'パープルキャッツアイ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-purplecatseye.png', desc: '直感力を研ぎ澄まし、判断力を強めるとされる石です。' },
-  { name: 'ピーチジェイド', image: '/images/chuzenji/experience/jyuzu/swatches/stone-peachjade.png', desc: '心と体のバランスを整えるとされる石です。' },
+  { name: 'ピーチ', image: '/images/chuzenji/experience/jyuzu/swatches/stone-peachjade.png', desc: '心と体のバランスを整えるとされる石です。' },
   { name: '茶金石', image: '/images/chuzenji/experience/jyuzu/swatches/stone-chakinseki.png', desc: '精神を安定させ、心の疲れを癒すとされる石です。' },
   { name: '紫金石', image: '/images/chuzenji/experience/jyuzu/swatches/stone-shikinseki.png', desc: '善い人や物、チャンスとの出会いを導くとされる石です。' },
   { name: 'ハウライト', image: '/images/chuzenji/experience/jyuzu/swatches/stone-howlite.png', desc: '厄除け効果があり、精神の安定・浄化、意志を強くするとされています。' },
@@ -81,7 +81,7 @@ const DEFAULT_STONE_SWATCHES: Swatch[] = [
   { name: 'カーネリアン', image: '/images/chuzenji/experience/jyuzu/swatches/stone-carnelian.png', desc: '気力アップ・体を丈夫にし、迷いを断ち切るとされる石です。' },
   { name: 'オニキス', image: '/images/chuzenji/experience/jyuzu/swatches/stone-onyx.png', desc: '邪気祓い・厄除け・魔除けの効果があるとされる石です。' },
   { name: 'インド翡翠', image: '/images/chuzenji/experience/jyuzu/swatches/stone-indohisui.png', desc: '失った気力を回復させ、強いパワーで物事を成し遂げるとされています。' },
-  { name: 'プラムジェイド', image: '/images/chuzenji/experience/jyuzu/swatches/stone-plumjade.png', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
+  { name: 'プラム', image: '/images/chuzenji/experience/jyuzu/swatches/stone-plumjade.png', desc: '気品と落ち着きをもたらすとされる、深みのある色合いの石です。' },
 ]
 const DEFAULT_STONE_SWATCHES_EN: Swatch[] = [
   { name: 'Crystal', image: '/images/chuzenji/experience/jyuzu/swatches/stone-suisho.png', desc: 'An all-purpose stone said to purify, ward off negative energy, and prevent misfortune.' },
@@ -96,7 +96,7 @@ const DEFAULT_STONE_SWATCHES_EN: Swatch[] = [
   { name: 'Light Blue Tiger Eye', image: '/images/chuzenji/experience/jyuzu/swatches/stone-lightbluetiger.png', desc: 'A type of tiger eye said to enhance calmness and judgment.' },
   { name: 'Mixed Tiger Eye', image: '/images/chuzenji/experience/jyuzu/swatches/stone-mixtiger.png', desc: 'Said to bring success, victory, and the ability to seize opportunity.' },
   { name: 'Purple Cat\'s Eye', image: '/images/chuzenji/experience/jyuzu/swatches/stone-purplecatseye.png', desc: 'Said to sharpen intuition and strengthen judgment.' },
-  { name: 'Peach Jade', image: '/images/chuzenji/experience/jyuzu/swatches/stone-peachjade.png', desc: 'Said to balance mind and body.' },
+  { name: 'Peach', image: '/images/chuzenji/experience/jyuzu/swatches/stone-peachjade.png', desc: 'Said to balance mind and body.' },
   { name: 'Bronzite', image: '/images/chuzenji/experience/jyuzu/swatches/stone-chakinseki.png', desc: 'Said to stabilize the spirit and heal mental fatigue.' },
   { name: 'Purple Sunstone', image: '/images/chuzenji/experience/jyuzu/swatches/stone-shikinseki.png', desc: 'Said to bring encounters with good people, things, and opportunities.' },
   { name: 'Howlite', image: '/images/chuzenji/experience/jyuzu/swatches/stone-howlite.png', desc: 'Said to ward off misfortune, stabilize and purify the spirit, and strengthen willpower.' },
@@ -104,7 +104,7 @@ const DEFAULT_STONE_SWATCHES_EN: Swatch[] = [
   { name: 'Carnelian', image: '/images/chuzenji/experience/jyuzu/swatches/stone-carnelian.png', desc: 'Said to boost vitality, strengthen the body, and cut through hesitation.' },
   { name: 'Onyx', image: '/images/chuzenji/experience/jyuzu/swatches/stone-onyx.png', desc: 'Said to ward off negative energy and misfortune.' },
   { name: 'Indian Jade', image: '/images/chuzenji/experience/jyuzu/swatches/stone-indohisui.png', desc: 'Said to restore lost energy and accomplish tasks with strong power.' },
-  { name: 'Plum Jade', image: '/images/chuzenji/experience/jyuzu/swatches/stone-plumjade.png', desc: 'A deeply colored stone said to bring elegance and composure.' },
+  { name: 'Plum', image: '/images/chuzenji/experience/jyuzu/swatches/stone-plumjade.png', desc: 'A deeply colored stone said to bring elegance and composure.' },
 ]
 const DEFAULT_WOOD_SWATCHES: Swatch[] = [
   { name: 'けやき', image: '/images/chuzenji/experience/jyuzu/swatches/wood-keyaki.png', desc: '古くから神木として親しまれ、成長・発展の象徴とされる木材です。' },
@@ -186,8 +186,8 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_cta_sub_en: 'Held daily. For group visits, please call in advance.',
   jyuzu_heading_instagram: '数珠作り体験ギャラリー',
   jyuzu_heading_instagram_en: 'Juzu Making Experience Gallery',
-  jyuzu_instagram_hint: '「#中禅寺立木観音」「#数珠づくり体験」のハッシュタグをつけて投稿すると、こちらでご紹介させていただくことがあります。',
-  jyuzu_instagram_hint_en: 'Posts tagged with both "#中禅寺立木観音" and "#数珠づくり体験" may be featured here.',
+  jyuzu_instagram_hint: '「#中禅寺立木観音ギャラリー」「#数珠づくり体験」のハッシュタグをつけて投稿すると、こちらでご紹介させていただくことがあります。',
+  jyuzu_instagram_hint_en: 'Posts tagged with both "#中禅寺立木観音ギャラリー" and "#数珠づくり体験" may be featured here.',
   jyuzu_instagram_urls: '[]',
   jyuzu_flow: JSON.stringify(DEFAULT_FLOW),
   jyuzu_flow_en: JSON.stringify(DEFAULT_FLOW_EN),

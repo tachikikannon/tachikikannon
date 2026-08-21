@@ -19,24 +19,24 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_SCHEDULE = [
-  { time: '10:00', title: '観音講（法要）', desc: '18日は観音様の縁日にあたり、10時より法要が厳修されます。大慈大悲の観音様の慈悲にすがり、日光の観音浄土といわれますここ中禅寺におきまして、ご参列頂きました皆様のご先祖様のご供養を執り行います。' },
-  { time: '11:15', title: '波之利大黒天 大護摩供', desc: '波之利大黒天の大護摩供を厳修いたします。家内安全・商売繁盛・交通安全・湖上安全・開運・厄除け・安産など、皆様のご祈願をお焚き上げします。' },
-  { time: '午後', title: '地蔵流し', desc: '船に乗り、中禅寺湖上にて「地蔵流し」を行います。「地蔵流し」とは、お地蔵様の絵姿のある御札を１枚ずつ湖に投じて、ご先祖様の冥福を祈る、大変珍しい行事です。' },
+  { time: '10:00', title: '観音講（法要）', desc: '18日は観音様の縁日です。大慈大悲の観音様の慈悲にすがり、日光の観音浄土といわれますここ中禅寺におきまして、ご参列頂きました皆様のご先祖様のご供養を執り行います。' },
+  { time: '11:15', title: '波之利大黒天 大護摩供', desc: '波之利大黒天の大護摩供を厳修いたします。家内安全・商売繁盛・交通安全・湖上安全・開運・厄除け・安産など、皆様の願いをご祈願いたします。' },
+  { time: '午後', title: '地蔵流し', desc: '遊覧船に乗り、中禅寺湖上にて「地蔵流し」を行います。「地蔵流し」とは、お地蔵様の絵姿のある御札を１枚ずつ湖に投じて、ご先祖様の冥福を祈る、大変珍しい行事です。' },
 ]
 const DEFAULT_SCHEDULE_EN = [
-  { time: '10:00', title: 'Kannon-ko (Ceremony)', desc: 'The 18th is Kannon\'s sacred day, and a ceremony is solemnly held from 10:00. Calling upon the great compassion of Kannon, we perform memorial rites for the ancestors of all who attend, here at Chuzenji, said to be Nikko\'s pure land of Kannon.' },
-  { time: '11:15', title: 'Hashiri-Daikokuten Grand Goma Ritual', desc: 'A grand goma fire ritual is solemnly held for Hashiri-Daikokuten. Wishes for household safety, business prosperity, traffic safety, safety on the lake, good fortune, protection from misfortune, and safe childbirth are offered to the flames.' },
-  { time: 'Afternoon', title: 'Jizo-nagashi (Jizo Release)', desc: 'We board a boat and perform "Jizo-nagashi" on Lake Chuzenji. In this rare and unique ceremony, ofuda bearing the image of Jizo are cast into the lake one by one, praying for the repose of ancestors.' },
+  { time: '10:00', title: 'Kannon-ko (Ceremony)', desc: 'The 18th is Kannon\'s sacred day. Calling upon the great compassion of Kannon, we perform memorial rites for the ancestors of all who attend, here at Chuzenji, said to be Nikko\'s pure land of Kannon.' },
+  { time: '11:15', title: 'Hashiri-Daikokuten Grand Goma Ritual', desc: 'A grand goma fire ritual is solemnly held for Hashiri-Daikokuten. We pray for the wishes of all who attend — household safety, business prosperity, traffic safety, safety on the lake, good fortune, protection from misfortune, and safe childbirth.' },
+  { time: 'Afternoon', title: 'Jizo-nagashi (Jizo Release)', desc: 'We board a sightseeing boat and perform "Jizo-nagashi" on Lake Chuzenji. In this rare and unique ceremony, ofuda bearing the image of Jizo are cast into the lake one by one, praying for the repose of ancestors.' },
 ]
 
 const DEFAULT_NOTES = [
-  { text: '参列は自由です。事前のお申し込みは不要ですが、お願い事の御札をご希望の方は申し込みフォームよりお申し込みください。' },
+  { text: '事前のお申し込みが必要です。ご希望の方は申し込みフォームよりお申し込みください。' },
   { text: '動きやすい服装でお越しください。中禅寺湖周辺は天候が変わりやすいため、羽織るものをお持ちいただくことをお勧めします。' },
   { text: 'お支払いは当日・現地にてお受けいたします。' },
   { text: '詳細・変更がある場合は当サイトにてお知らせいたします。' },
 ]
 const DEFAULT_NOTES_EN = [
-  { text: 'Attendance is open to all — no advance registration required. If you would like an ofuda talisman inscribed with a wish, please apply via the application form.' },
+  { text: 'Advance application is required. Please apply via the application form if you wish to attend.' },
   { text: 'Please wear comfortable, easy-to-move-in clothing. Weather around Lake Chuzenji can change quickly, so we recommend bringing something to layer on top.' },
   { text: 'Payment is accepted on the day, on site.' },
   { text: 'Any details or changes will be announced on this website.' },
@@ -53,8 +53,8 @@ const DEFAULTS: Record<string, string> = {
   kannonko_info_date_en: 'June 18th (annually)',
   kannonko_info_time: '午前10時〜',
   kannonko_info_time_en: 'From 10:00 AM',
-  kannonko_info_join: '自由（申し込み不要）',
-  kannonko_info_join_en: 'Open to all (no registration needed)',
+  kannonko_info_join: '申込者のみ',
+  kannonko_info_join_en: 'Advance application required',
   kannonko_heading_schedule: 'タイムスケジュール',
   kannonko_heading_schedule_en: 'Schedule',
   kannonko_heading_gallery: '行事の様子',
@@ -63,8 +63,8 @@ const DEFAULTS: Record<string, string> = {
   kannonko_heading_notes_en: 'Notes for Attendees',
   kannonko_cta_heading: '御札のお申し込み',
   kannonko_cta_heading_en: 'Ofuda Talisman Application',
-  kannonko_cta_text: '大護摩供にてお焚き上げする御札をご希望の方は\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
-  kannonko_cta_text_en: 'If you would like an ofuda talisman burned in the grand goma fire ritual,\nplease apply in advance via the application form.\nPayment is accepted on the day, on site.',
+  kannonko_cta_text: '大護摩供にて祈願する御札をご希望の方は\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
+  kannonko_cta_text_en: 'If you would like an ofuda talisman prayed over in the grand goma fire ritual,\nplease apply in advance via the application form.\nPayment is accepted on the day, on site.',
   kannonko_schedule: JSON.stringify(DEFAULT_SCHEDULE),
   kannonko_schedule_en: JSON.stringify(DEFAULT_SCHEDULE_EN),
   kannonko_notes: JSON.stringify(DEFAULT_NOTES),

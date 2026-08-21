@@ -5,7 +5,7 @@ const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
   { key: 'goshuin_heading_regular', label: '「御朱印」見出し', defaultValue: '御朱印', translatable: true },
-  { key: 'goshuin_intro', label: '御朱印セクションの説明文', multiline: true, defaultValue: '御朱印は御朱印所・本堂・五大堂の各所にてお受けいただけます。\n場所によって授与しているものが異なります。', translatable: true },
+  { key: 'goshuin_intro', label: '御朱印セクションの説明文', multiline: true, defaultValue: '御朱印は御朱印所にてお受けいただけます。\nなお、特別朱印は写経･写仏体験後に寺務所 体験受付窓口にてお渡しいたします', translatable: true, defaultValueEn: 'Goshuin stamps can be received at the goshuin counter.\nSpecial goshuin are given at the temple office experience counter after the sutra-copying or Buddha-tracing experience.' },
   {
     key: 'goshuin_regular', label: '通常御朱印（画像は固定・4件）', type: 'list' as const,
     listFields: [{ key: 'title', label: 'タイトル' }],
@@ -44,14 +44,14 @@ const FIELDS = [
     listFields: [{ key: 'text', label: '注意事項', multiline: true }],
     defaultValue: J([
       { text: '御朱印は信仰の証です。コレクション目的でのお受け取りはご遠慮ください。' },
-      { text: '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。' },
+      { text: '閉門時刻の30分ほど前までを目安に、余裕をもってお越しください。' },
       { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
       { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
     ]),
     translatable: true,
     defaultValueEn: J([
       { text: 'A goshuin is a proof of faith — please do not request one solely for collecting purposes.' },
-      { text: 'Reception closes 30 minutes before the temple closes. Please allow enough time.' },
+      { text: 'Please arrive with time to spare, aiming to be here by around 30 minutes before closing time.' },
       { text: 'Hand-written stamps may take extra time during busy periods.' },
       { text: 'Pre-inscribed stamps are also available for those without a goshuin book.' },
     ]),

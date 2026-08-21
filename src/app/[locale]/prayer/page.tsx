@@ -16,12 +16,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_FEES = [
-  { price: '5,000円', size: '28㎝' }, { price: '10,000円', size: '32㎝' },
-  { price: '20,000円', size: '38㎝' }, { price: '30,000円', size: '42.5㎝' },
+  { price: '5,000円', size: '高さ28㎝ 横幅10cm' }, { price: '10,000円', size: '高さ32㎝ 横幅11.5cm' },
+  { price: '20,000円', size: '高さ38㎝ 横幅12cm' }, { price: '30,000円', size: '高さ42.5㎝ 横幅13cm' },
 ]
 const DEFAULT_FEES_EN = [
-  { price: '¥5,000', size: '28cm' }, { price: '¥10,000', size: '32cm' },
-  { price: '¥20,000', size: '38cm' }, { price: '¥30,000', size: '42.5cm' },
+  { price: '¥5,000', size: 'H28cm × W10cm' }, { price: '¥10,000', size: 'H32cm × W11.5cm' },
+  { price: '¥20,000', size: 'H38cm × W12cm' }, { price: '¥30,000', size: 'H42.5cm × W13cm' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -47,16 +47,16 @@ const DEFAULTS: Record<string, string> = {
   prayer_hours_note1_en: 'There is no fixed prayer time.',
   prayer_hours_note2: '予約制となりますので、事前にお申し込みをお願い致します。',
   prayer_hours_note2_en: 'Reservations are required — please apply in advance.',
-  prayer_exclude_dates: '6月18日・8月4日・8月8日',
-  prayer_exclude_dates_en: 'June 18, August 4, August 8',
+  prayer_exclude_dates: '6月17日・6月18日・8月4日・8月8日',
+  prayer_exclude_dates_en: 'June 17, June 18, August 4, August 8',
   prayer_exclude_note: '他にも行事によっては祈祷できない日もございますので、一度お問い合わせください。',
   prayer_exclude_note_en: 'Prayer services may also be unavailable on other event days — please contact us to confirm.',
   prayer_fees_note: '原則、御札の料金にて受付しております。金額によって御札と木箱の大きさが変わります。',
   prayer_fees_note_en: 'Fees are generally based on the ofuda tablet. The size of the ofuda and wooden box varies with the amount.',
   prayer_fees: JSON.stringify(DEFAULT_FEES),
   prayer_fees_en: JSON.stringify(DEFAULT_FEES_EN),
-  prayer_mail_text: '万が一、参列できない場合は郵送にてお札をお送りします。着払いにて発送させて頂きますので、申込用紙に必要事項をご記入の上、現金書留にてお送りください。',
-  prayer_mail_text_en: 'If you are unable to attend, we can mail your ofuda tablet to you. It will be sent cash-on-delivery — please fill out the application form and send it by registered mail with cash enclosed.',
+  prayer_mail_text: '万が一、参列できない場合は郵送にてお札をお送りします。ECｻｲﾄ又は着払いにて発送させて頂きます。着払いの場合、申込用紙に必要事項をご記入の上、現金書留にてお送りください。',
+  prayer_mail_text_en: 'If you are unable to attend in person, we can mail the ofuda to you. Shipping is via our online shop or cash-on-delivery. For cash-on-delivery, please fill in the required details on the application form and send payment by registered mail.',
   prayer_mail_note: '※お申込み頂き御祈願後、発送させて頂きますので1〜2週間ほどお待ちください。',
   prayer_mail_note_en: '※ The ofuda will be shipped after the prayer is performed — please allow 1–2 weeks.',
   prayer_car_title: '新車祈願（車両安全祈願）',

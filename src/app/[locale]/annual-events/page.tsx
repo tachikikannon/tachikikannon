@@ -39,7 +39,7 @@ const DEFAULT_EVENTS = [
     date: '1月1日',
     time: '午前0時〜',
     name: '正月元旦特別護摩祈願',
-    desc: '新しい年の始まりにあたり、皆様の一年の無病息災・家内安全・開運招福を祈願する特別な護摩祈祷です。御札は5,000円〜30,000円よりお選びいただけます。事前申し込み・最大5名まで同時申込可。',
+    desc: '新しい年の始まりにあたり、皆様の一年の無病息災・家内安全・交通安全･開運招福･合格祈願･厄除けなどを祈願する特別な護摩祈祷です。御札は5,000円〜30,000円よりお選びいただけます。事前申し込み・最大5名まで同時申込可。',
   },
 ]
 const DEFAULT_EVENTS_EN = [
@@ -62,7 +62,7 @@ const DEFAULT_EVENTS_EN = [
     date: 'January 1',
     time: 'From 12:00 AM',
     name: 'New Year\'s Day Special Goma Prayer',
-    desc: 'At the start of the new year, a special goma fire prayer for good health, household safety, and good fortune for all. Ofuda talismans range from ¥5,000 to ¥30,000. Advance application required; up to 5 people per application.',
+    desc: 'At the start of the new year, a special goma fire prayer for good health, household safety, traffic safety, good fortune, success in exams, and protection from misfortune throughout the year. Ofuda talismans range from ¥5,000 to ¥30,000. Advance application required; up to 5 people per application.',
   },
 ]
 const EVENT_IMAGES = ['/images/chuzenji/events/gyouji.JPEG', '/images/chuzenji/events/mizuumi.jpg', '/images/chuzenji/events/ganjitsu-goma-1920.jpg']

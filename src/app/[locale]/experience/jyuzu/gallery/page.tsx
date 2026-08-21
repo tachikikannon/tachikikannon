@@ -12,8 +12,8 @@ import type { Locale } from '@/i18n/routing'
 const DEFAULTS: Record<string, string> = {
   jyuzu_heading_instagram: '数珠作り体験ギャラリー',
   jyuzu_heading_instagram_en: 'Juzu Making Experience Gallery',
-  jyuzu_instagram_hint: '「#中禅寺立木観音」「#数珠づくり体験」のハッシュタグをつけて投稿すると、こちらでご紹介させていただくことがあります。',
-  jyuzu_instagram_hint_en: 'Posts tagged with both "#中禅寺立木観音" and "#数珠づくり体験" may be featured here.',
+  jyuzu_instagram_hint: '「#中禅寺立木観音ギャラリー」「#数珠づくり体験」のハッシュタグをつけて投稿すると、こちらでご紹介させていただくことがあります。',
+  jyuzu_instagram_hint_en: 'Posts tagged with both "#中禅寺立木観音ギャラリー" and "#数珠づくり体験" may be featured here.',
   jyuzu_instagram_urls: '[]',
 }
 

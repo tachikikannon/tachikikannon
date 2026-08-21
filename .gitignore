@@ -10,3 +10,6 @@ out/
 # 動画などGitHubの容量上限(100MB)を超える可能性のある元素材（ローカルには残す）
 public/images/chuzenji/wedding/archive-video-images/*.mp4
 public/images/**/~$*
+
+.vercel
+.env*

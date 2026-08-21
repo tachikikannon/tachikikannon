@@ -18,8 +18,42 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-const DEFAULT_SCHEDULE: { time: string; title: string; desc: string }[] = []
-const DEFAULT_SCHEDULE_EN: { time: string; title: string; desc: string }[] = []
+const DEFAULT_SCHEDULE: { time: string; title: string; desc: string }[] = [
+  { time: '9:00', title: '受付開始', desc: '' },
+  { time: '10:00', title: '開式の儀', desc: '執行挨拶、律院住職の挨拶' },
+  { time: '10:15', title: '石護摩壇不動尊祈願', desc: '' },
+  { time: '10:20', title: '浜地蔵供養', desc: '' },
+  { time: '10:30', title: '歌ヶ浜出発', desc: '勝道上人が弟子と共に霊場を巡拝した場所を巡り読経をあげます' },
+  { time: '10:45', title: '八丁出島 寺ヶ崎 薬師堂跡法要', desc: '読誦法要' },
+  { time: '11:00', title: '松﨑 日輪寺跡', desc: '読誦法要' },
+  { time: '11:15', title: '上野島', desc: '勝道上人、天海大僧正墓供養' },
+  { time: '11:30', title: '巡拝', desc: '上陸できないため、乗船したまま読経を行う' },
+  { time: '11:50', title: '千手ヶ浜桟橋到着', desc: '下船して千手堂へ' },
+  { time: '12:10', title: '千手ヶ浜 千手堂法要', desc: '' },
+  { time: '12:50', title: '千手ヶ浜 不動尊法要', desc: '' },
+  { time: '13:10', title: '千手ヶ浜桟橋から乗船し、立木観音へ', desc: '乗船中に昼食' },
+  { time: '14:00', title: '立木観音桟橋到着　下船', desc: '' },
+  { time: '14:15', title: '本堂参拝', desc: '' },
+  { time: '14:30', title: '五大堂参拝し、御札を「大黒天堂」にて授与', desc: '' },
+]
+const DEFAULT_SCHEDULE_EN: { time: string; title: string; desc: string }[] = [
+  { time: '9:00', title: 'Reception Opens', desc: '' },
+  { time: '10:00', title: 'Opening Ceremony', desc: 'Remarks by the officiant and the head priest of Ritsu-in.' },
+  { time: '10:15', title: 'Fudo Myo-o Prayer at the Stone Goma Altar', desc: '' },
+  { time: '10:20', title: 'Memorial Service for the Shoreline Jizo', desc: '' },
+  { time: '10:30', title: 'Departure from Utagahama', desc: 'Sutras are chanted while visiting sites once visited by Priest Shodo and his disciples on their pilgrimage.' },
+  { time: '10:45', title: 'Memorial Service at the Site of Yakushido Hall, Terugasaki, Hatcho Peninsula', desc: 'Sutra recitation service.' },
+  { time: '11:00', title: 'Site of Nichirin-ji Temple, Matsuzaki', desc: 'Sutra recitation service.' },
+  { time: '11:15', title: 'Ueno-jima Island', desc: 'Memorial service at the graves of Priest Shodo and Great Priest Tenkai.' },
+  { time: '11:30', title: 'Pilgrimage', desc: 'As landing is not possible here, sutras are chanted while remaining aboard the boat.' },
+  { time: '11:50', title: 'Arrival at Senjugahama Pier', desc: 'Disembark and proceed to Senju-do Hall.' },
+  { time: '12:10', title: 'Memorial Service at Senju-do Hall, Senjugahama', desc: '' },
+  { time: '12:50', title: 'Fudo Myo-o Memorial Service, Senjugahama', desc: '' },
+  { time: '13:10', title: 'Board the Boat at Senjugahama Pier bound for Tachiki Kannon', desc: 'Lunch is served aboard the boat.' },
+  { time: '14:00', title: 'Arrival at Tachiki Kannon Pier, Disembark', desc: '' },
+  { time: '14:15', title: 'Visit to the Main Hall', desc: '' },
+  { time: '14:30', title: 'Visit Godaido Hall; Ofuda Talismans Distributed at Daikokuten Hall', desc: '' },
+]
 
 const DEFAULT_NOTES = [
   { text: '事前の申し込みが必要です。定員になり次第締め切りますので、お早めにお申し込みください。' },
@@ -39,8 +73,8 @@ const DEFAULTS: Record<string, string> = {
   funazento_subtitle_en: 'Held every year on August 4th, from 10:00 AM. *Advance application required.',
   funazento_heading_about: '行事について',
   funazento_heading_about_en: 'About the Event',
-  funazento_about: '船禅頂（ふなぜんじょう）は、日光山を開いた勝道上人（737〜817）が中禅寺湖を舟で渡り、湖上から霊峰・男体山を遙拝したという故事に由来する伝統行事です。毎年8月4日、中禅寺湖を舞台に、上人が切り開いた修験の道を水上から辿ります。湖上から望む男体山と中禅寺の景観とともに、千二百余年の歴史に思いを馳せる特別な体験です。',
-  funazento_about_en: 'Funazenjyo is a traditional ceremony originating from the story of Shodo Shonin (737–817), who founded Nikkozan, crossing Lake Chuzenji by boat and worshipping the sacred Mount Nantai from the water. Every year on August 4th, we retrace by boat the ascetic path he opened, set against Lake Chuzenji. Viewing Mount Nantai and Chuzenji from the lake is a special experience, evoking twelve hundred years of history.',
+  funazento_about: '船禅頂（ふなぜんじょう）は、日光山を開いた勝道上人（737〜817）が中禅寺湖を舟で渡り、湖上から霊峰・男体山を遙拝したという故事に由来する伝統行事です。毎年8月4日、中禅寺湖を舞台に、上人が切り開いた修験の道を水上から辿ります。湖上から望む男体山と中禅寺の景観とともに、千二百余年の歴史に思いを馳せる特別な体験で、歌が浜を出発し、各地を巡りながら千手堂に向かい、戻ってくる特別なルートです。',
+  funazento_about_en: 'Funazenjo is a traditional event rooted in the story of Priest Shodo (737–817), who opened Nikkozan and crossed Lake Chuzenji by boat to venerate the sacred Mt. Nantai from the water. Every year on August 4, participants retrace by boat the ascetic path he once carved out across Lake Chuzenji. Taking in the views of Mt. Nantai and Chuzenji from the lake, it is a special experience reflecting on over 1,200 years of history — a unique route departing from Utagahama, circling past various sites toward the Senju-do Hall, and returning.',
   funazento_info_date: '8月4日（毎年）',
   funazento_info_date_en: 'August 4th (annually)',
   funazento_info_time: '午前10時〜',
@@ -49,8 +83,8 @@ const DEFAULTS: Record<string, string> = {
   funazento_info_join_en: 'Advance application required',
   funazento_heading_schedule: 'タイムスケジュール',
   funazento_heading_schedule_en: 'Schedule',
-  funazento_heading_map: '船禅頂ルール・ルート図',
-  funazento_heading_map_en: 'Funazenjyo Rules & Route Map',
+  funazento_heading_map: '船禅頂ルート図',
+  funazento_heading_map_en: 'Boat Zenjo Route Map',
   funazento_heading_gallery: '行事の様子',
   funazento_heading_gallery_en: 'Photos from the Event',
   funazento_heading_notes: 'ご参加にあたって',

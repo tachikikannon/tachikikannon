@@ -17,14 +17,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 const DEFAULT_TIMELINE = [
   { year: '784年（延暦3年）', title: '勝道上人による開山', text: '勝道上人が中禅寺湖畔に立木観音を刻み、中禅寺を創建。日光山修験道の霊場として栄え始める。' },
-  { year: '810年（弘仁元年）', title: '空海（弘法大師）参詣', text: '弘法大師が中禅寺に参詣したと伝わる。真言密教の聖地としての性格が強まる。' },
+  { year: '848年（嘉祥元年）', title: '円仁（慈覚大師）参詣', text: '慈覚大師が中禅寺に登り薬師寺を創健したと伝わる。天台宗としての性格が強まる。' },
   { year: '1627年（寛永4年）', title: '天海大僧正による復興', text: '江戸幕府の庇護のもと、天海大僧正によって伽藍が整備・復興される。' },
   { year: '明治時代', title: '外国公使の避暑地として', text: '明治以降、中禅寺湖畔は各国外交官の夏の避暑地として栄え、中禅寺も国際的に知られるようになる。' },
   { year: '現在', title: '関東屈指の観音霊場', text: '関東有数の観音霊場として多くの参拝者が訪れる。坂東三十三観音霊場の第十八番札所にも数えられる。' },
 ]
 const DEFAULT_TIMELINE_EN = [
   { year: '784 CE (Enryaku 3)', title: 'Founded by Priest Shodo', text: 'Priest Shodo carved the Tachiki Kannon on the shore of Lake Chuzenji, founding the temple. It began to flourish as a sacred site of Nikko mountain asceticism.' },
-  { year: '810 CE (Konin 1)', title: 'Visit by Kukai (Kobo Daishi)', text: 'Kobo Daishi is said to have visited Chuzenji, strengthening its character as a sacred site of Shingon esoteric Buddhism.' },
+  { year: '848 CE (Kasho 1)', title: 'Visit by Ennin (Jikaku Daishi)', text: 'Jikaku Daishi is said to have climbed to Chuzenji and founded Yakushi-ji Temple there, strengthening its character as a site of the Tendai sect.' },
   { year: '1627 (Kan\'ei 4)', title: 'Restoration by Tenkai', text: 'Under the protection of the Edo shogunate, the temple complex was maintained and restored by the great priest Tenkai.' },
   { year: 'Meiji Era', title: 'A Summer Retreat for Foreign Envoys', text: 'From the Meiji era onward, the shore of Lake Chuzenji flourished as a summer retreat for diplomats from various countries, and Chuzenji became known internationally.' },
   { year: 'Today', title: 'A Leading Kannon Pilgrimage Site in Kanto', text: 'Chuzenji draws many visitors as one of the leading Kannon pilgrimage sites in the Kanto region, and is counted as the 18th sacred site of the Bando 33 Kannon Pilgrimage.' },
@@ -41,14 +41,14 @@ const DEFAULTS: Record<string, string> = {
   history_heading_honzon_en: 'About the Principal Image, the Thousand-Armed Kannon',
   history_heading_bando: '坂東三十三観音 第十八番札所',
   history_heading_bando_en: 'The 18th Site of the Bando 33 Kannon Pilgrimage',
-  history_founding_p1: '日光山中禅寺は、784年（延暦3年）、勝道上人によって開かれました。勝道上人は日光山を開いた高僧であり、幾多の困難を乗り越えながら男体山に登頂し、山頂で大日如来を感得したとされています。',
-  history_founding_p1_en: 'Nikkozan Chuzenji was founded in 784 CE (Enryaku 3) by the priest Shodo. Shodo, the high priest who opened Mt. Nikko, is said to have overcome many hardships to reach the summit of Mt. Nantai, where he attained a vision of Dainichi Nyorai.',
+  history_founding_p1: '日光山中禅寺は、784年（延暦3年）、勝道上人によって開かれました。勝道上人は日光山を開いた高僧であり、幾多の困難を乗り越えながら男体山に登頂し、山頂で観音様を感得したとされています。',
+  history_founding_p1_en: 'Nikkozan Chuzenji Temple was founded in 784 by the Buddhist monk Shodo Shonin, who is revered as the founder of sacred Mount Nikko. After overcoming many hardships, he successfully reached the summit of Mount Nantai, where tradition holds that he experienced a divine vision of Kannon, the Bodhisattva of Compassion.',
   history_founding_p2: '中禅寺湖のほとりに建てられた本堂には、上人が湖畔に立つ桂の立木に直接刻んだと伝わる千手観世音菩薩が祀られています。木を切り倒すことなく、立ったままの木に彫り上げたことから「立木観音」と呼ばれ、今日まで人々の信仰を集めてきました。',
   history_founding_p2_en: 'The main hall, built on the shore of Lake Chuzenji, enshrines the thousand-armed Kannon Bodhisattva, said to have been carved directly by Shodo into a katsura tree standing at the lakeshore. Because the tree was carved while still standing, without being felled, it came to be called "Tachiki Kannon" (Standing-Tree Kannon), and has drawn devotion ever since.',
   history_timeline: JSON.stringify(DEFAULT_TIMELINE),
   history_timeline_en: JSON.stringify(DEFAULT_TIMELINE_EN),
-  history_honzon: 'ご本尊の千手観世音菩薩は、高さ約6メートルに及ぶ大きな仏様です。勝道上人が湖畔の桂の立木に直接刻んだとされ、木は今も根を張ったまま祀られています。千の手で人々のあらゆる願いを救い、千の眼で衆生の苦しみを見守るとされる観音様は、縁結び・病気平癒・学業成就など様々なご利益があるとされています。',
-  history_honzon_en: 'The principal image, the thousand-armed Kannon Bodhisattva, stands roughly 6 meters tall. It is said to have been carved directly by Priest Shodo into a katsura tree at the lakeshore, and the tree remains rooted in the earth to this day. Kannon, who is said to save every wish with her thousand hands and watch over all suffering with her thousand eyes, is believed to grant blessings including matchmaking, recovery from illness, and success in studies.',
+  history_honzon: 'ご本尊の千手観世音菩薩は、高さ約6メートルに及ぶ大きな仏様です。勝道上人が湖畔の桂の立木に直接刻んだとされ、木は今も根を張ったまま祀られています。千の手で人々のあらゆる願いを救い、千の眼で衆生の苦しみを見守るとされる観音様は、諸願成就のご利益があるとされています。',
+  history_honzon_en: 'The principal image of the temple is Senju Kannon, the Thousand-Armed Bodhisattva of Compassion, an imposing statue approximately six meters tall. According to tradition, Shodo Shonin carved the image directly into a living katsura tree on the shores of Lake Chuzenji, and the tree remains rooted in the ground to this day.\n\nWith a thousand hands to offer aid and a thousand eyes to watch over the suffering of all beings, Senju Kannon is believed to respond to many different prayers and wishes.',
   history_bando: '中禅寺立木観音は、関東・東北一円にわたる坂東三十三観音霊場の第十八番札所に数えられています。多くの巡礼者がこの地を訪れ、千手観世音菩薩に手を合わせてきました。',
   history_bando_en: 'Chuzenji Tachiki Kannon is counted as the 18th sacred site of the Bando 33 Kannon Pilgrimage, spanning the Kanto and Tohoku regions. Many pilgrims have visited this place to pray before the thousand-armed Kannon Bodhisattva.',
 }

@@ -25,13 +25,11 @@ const DEFAULT_NOTES = [
   { text: '事前の申し込みが必要です。1回のお申し込みで最大5名様までまとめてお申し込みいただけます。' },
   { text: '御札は5,000円（28㎝）・10,000円（32㎝）・20,000円（38㎝）・30,000円（42.5㎝）よりお選びいただけます。' },
   { text: 'お申し込みは、申し込みフォーム内の代金引換（代引き）またはECサイトよりお選びいただけます。代引きの場合、送料・手数料は別途ご負担いただきます。' },
-  { text: '天候・状況により内容が変更・中止となる場合がございます。詳細はお電話にてご確認ください。' },
 ]
 const DEFAULT_NOTES_EN = [
   { text: 'Advance application is required. A single application can cover up to 5 people.' },
   { text: 'Ofuda talismans are available in 4 sizes: ¥5,000 (28cm), ¥10,000 (32cm), ¥20,000 (38cm), and ¥30,000 (42.5cm).' },
   { text: 'You may apply via cash on delivery or the online shop within the application form. For cash on delivery, shipping and handling fees are charged separately.' },
-  { text: 'Content may change or be cancelled depending on weather and conditions. Please call for details.' },
 ]
 
 const DEFAULT_FEES = [

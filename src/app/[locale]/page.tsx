@@ -29,17 +29,17 @@ const DEFAULT_ABOUT_CARDS_EN = [
   { label: 'Annual Events',             desc: 'Services & event information' },
 ]
 const DEFAULT_EXPERIENCE_CARDS = [
-  { label: '御祈願',        sub: '御祈願料：5,000円〜' },
-  { label: '数珠づくり体験', sub: '2,000円〜' },
+  { label: '御祈願',        sub: '約40分/5,000円～' },
+  { label: '数珠づくり体験', sub: '約30分~/2,000円〜' },
   { label: '写経体験',      sub: '約15分 / 1,000円' },
-  { label: '写仏体験',      sub: '1,000円' },
+  { label: '写仏体験',      sub: '約15分/1,000円' },
   { label: '坐禅体験',      sub: '20分 / 2,000円' },
 ]
 const DEFAULT_EXPERIENCE_CARDS_EN = [
-  { label: 'Prayer Service',           sub: 'From ¥5,000' },
-  { label: 'Juzu Bracelet Making',     sub: 'From ¥2,000' },
+  { label: 'Prayer Service',           sub: 'Approx. 40 min / From ¥5,000' },
+  { label: 'Juzu Bracelet Making',     sub: 'Approx. 30 min~ / From ¥2,000' },
   { label: 'Sutra Copying',            sub: 'Approx. 15 min / ¥1,000' },
-  { label: 'Buddhist Image Tracing',   sub: '¥1,000' },
+  { label: 'Buddhist Image Tracing',   sub: 'Approx. 15 min / ¥1,000' },
   { label: 'Zazen Meditation',         sub: '20 min / ¥2,000' },
 ]
 const DEFAULT_SERVICE_CARDS = [
@@ -67,7 +67,7 @@ const DEFAULT_GALLERY_SLIDES = [
 
 const DEFAULT_CONTENT: Record<string, string> = {
   hero_en:        'Nikkozan Chuzenji Temple',
-  hero_title:     '中禅寺湖畔に佇む、\n祈りと巡礼の寺',
+  hero_title:     '中禅寺湖畔に佇む\n祈りと巡礼の寺',
   hero_title_en:  'A temple of prayer and pilgrimage\non the shore of Lake Chuzenji',
   access_address: '〒321-1661\n栃木県日光市中宮祠2578',
   access_address_en: '2578 Chugushi, Nikko, Tochigi 321-1661, Japan',

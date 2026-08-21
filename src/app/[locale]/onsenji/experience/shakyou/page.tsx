@@ -28,16 +28,18 @@ const DEFAULT_ITEMS_EN = [
 ]
 
 const DEFAULT_FLOW = [
-  { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
-  { title: '用具の準備', text: '筆・硯・お経の手本をご用意します。すべて貸し出しですので手ぶらでお越しください。' },
-  { title: 'お写しいただきます', text: 'お経の手本に沿って、一文字一文字丁寧にお写しください。係の者がご説明いたします。' },
+  { title: '受付', text: '玄関にて係にお申し付けください。体験料をお納めいただきます。' },
+  { title: '用具の準備', text: '手ぶらでお越しください。' },
+  { title: 'お写しいただきます', text: 'お経の手本に沿って、一文字一文字丁寧にお写しください。' },
   { title: '特別御朱印のお授け', text: '完成後、特別御朱印をお授けします。' },
+  { title: '書き終えた御朱印について', text: '納められた写経は、御本尊 薬師如来に奉じ8月8日に行われる【温泉寺薬師講『採灯大護摩供』】にてお焚き上げされます。' },
 ]
 const DEFAULT_FLOW_EN = [
-  { title: 'Reception', text: 'Please apply at the Temple Office experience reception counter and pay the experience fee.' },
-  { title: 'Preparing Materials', text: 'Brush, inkstone, and a sutra template are provided — all on loan, so please come empty-handed.' },
-  { title: 'Copying the Sutra', text: 'Following the template, carefully copy each character one by one. Our staff will guide you.' },
+  { title: 'Reception', text: 'Please ask staff at the entrance and pay the experience fee.' },
+  { title: 'Preparing Materials', text: 'Please come empty-handed.' },
+  { title: 'Copying the Sutra', text: 'Following the sutra template, carefully copy each character one by one.' },
   { title: 'Receiving the Special Goshuin', text: 'Upon completion, you will receive a special goshuin stamp.' },
+  { title: 'About Your Completed Sutra', text: 'Sutras you copy are offered to Yakushi Nyorai, the principal image, and ritually burned on August 8 at the "Onsenji Yakushi-ko Saito Grand Goma Ceremony."' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -61,10 +63,10 @@ const DEFAULTS: Record<string, string> = {
   onsenji_shakyou_fee_en: '¥1,000 (includes special goshuin stamp)',
   onsenji_shakyou_time: '約15分',
   onsenji_shakyou_time_en: 'Approx. 15 minutes',
-  onsenji_shakyou_target: 'どなたでも（筆が初めての方も歓迎）',
-  onsenji_shakyou_target_en: 'Anyone welcome (first-time brush users too)',
-  onsenji_shakyou_place: '寺務所 体験受付窓口',
-  onsenji_shakyou_place_en: 'Temple Office Experience Counter',
+  onsenji_shakyou_target: '小学生以上',
+  onsenji_shakyou_target_en: 'Elementary school age and up',
+  onsenji_shakyou_place: '玄関にて係にお申し付けください。',
+  onsenji_shakyou_place_en: 'Please ask staff at the entrance.',
   onsenji_shakyou_hours: '拝観時間内（閉門1時間前まで）',
   onsenji_shakyou_hours_en: 'During visiting hours (until 1 hour before closing)',
   onsenji_shakyou_heading_flow: '体験の流れ',
@@ -73,8 +75,8 @@ const DEFAULTS: Record<string, string> = {
   onsenji_shakyou_heading_items_en: 'What to Bring & Wear',
   onsenji_shakyou_cta_heading: '写経体験のご予約・お問い合わせ',
   onsenji_shakyou_cta_heading_en: 'Reservations & Inquiries for the Sutra Copying Experience',
-  onsenji_shakyou_cta_sub: '予約不要・毎日実施。参拝受付時にお申し付けください。',
-  onsenji_shakyou_cta_sub_en: 'No reservation needed — held daily. Please ask at reception during your visit.',
+  onsenji_shakyou_cta_sub: '予約不要・毎日実施。玄関にてお申し付けください。',
+  onsenji_shakyou_cta_sub_en: 'No reservation needed — held daily. Please ask staff at the entrance.',
   onsenji_shakyou_items: JSON.stringify(DEFAULT_ITEMS),
   onsenji_shakyou_items_en: JSON.stringify(DEFAULT_ITEMS_EN),
   onsenji_shakyou_flow: JSON.stringify(DEFAULT_FLOW),

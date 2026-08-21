@@ -14,7 +14,7 @@ const FIELDS = [
   { key: 'about_hours_shoulder', label: '11月・3月 拝観時間', defaultValue: '午前8時〜午後4時', translatable: true },
   { key: 'about_hours_winter',   label: '12月〜2月 拝観時間', defaultValue: '午前8時30分〜午後3時30分', translatable: true },
   { key: 'about_grounds_teaser_title', label: '「境内のご案内」誘導カード見出し', defaultValue: '境内のご案内', translatable: true },
-  { key: 'about_grounds_teaser_desc',  label: '「境内のご案内」誘導カード説明文', multiline: true, defaultValue: '山門・観音堂・鐘楼・札所・天道・愛染堂・延命水など、境内各所の見どころをご紹介しています。', translatable: true },
+  { key: 'about_grounds_teaser_desc',  label: '「境内のご案内」誘導カード説明文', multiline: true, defaultValue: '山門・観音堂・鐘楼・札所・天堂・愛染堂・延命水など、境内各所の見どころをご紹介しています。', translatable: true, defaultValueEn: 'Discover highlights throughout the grounds, including the Sanmon Gate, Kannon Hall, bell tower, pilgrimage hall, Tendo Hall, Aizen Hall, and the Enmei-sui spring water.' },
 ] as const
 
 export default function AdminChuzenjAbout() {

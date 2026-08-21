@@ -20,13 +20,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 const DEFAULT_SCHEDULE = [
   { time: '11:00', title: '節分大祭（法要）', desc: '薬師堂にて節分の法要を執り行います。ご本尊・薬師如来のご加護のもと、新年の無病息災・開運招福をお祈りいたします。' },
-  { time: '11:30', title: '護摩供', desc: '護摩の炎に参拝者の願い事を記した護摩木を奉じ、薬師如来の御力で煩悩や邪気をお焚き上げいたします。' },
-  { time: '終了後', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。参列の皆様にも豆をお配りいたします。' },
+  { time: '11:30', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。特別年男年女の皆様にも豆をお配りいたします。' },
+  { time: '豆まき終了後', title: '縁起がらまき', desc: '薬師堂から特別年男年女の皆様が参拝者の皆様に、縁起がらをまきます。\n' },
 ]
 const DEFAULT_SCHEDULE_EN = [
   { time: '11:00', title: 'Setsubun Grand Ceremony', desc: 'A Setsubun ceremony is held at the Yakushi Hall. Under the protection of Yakushi Nyorai, we pray for good health and good fortune in the new year.' },
-  { time: '11:30', title: 'Goma Fire Ritual', desc: 'Wooden goma sticks inscribed with visitors\' wishes are offered to the flames, burning away worldly desires and misfortune through the power of Yakushi Nyorai.' },
-  { time: 'After the Ceremony', title: 'Bean Throwing', desc: 'Beans are thrown with the call "Oni wa soto, fuku wa uchi" ("Demons out, fortune in"). Beans are also distributed to all attendees.' },
+  { time: '11:30', title: 'Bean Throwing', desc: 'Beans are thrown with the call "Oni wa soto, fuku wa uchi" ("Demons out, fortune in"). Our special toshiotoko and toshionna (those born in this year\'s zodiac sign) also hand out beans.' },
+  { time: 'After the Bean Throwing', title: 'Lucky Charm Scattering', desc: 'From the Yakushi Hall, our special toshiotoko and toshionna scatter lucky paper charms (engigara) to all visitors.' },
 ]
 
 const DEFAULT_NOTES = [
@@ -65,8 +65,8 @@ const DEFAULTS: Record<string, string> = {
   setsubun_heading_notes_en: 'Notes for Attendees',
   setsubun_cta_heading: '御札のお申し込み',
   setsubun_cta_heading_en: 'Ofuda Talisman Application',
-  setsubun_cta_text: '護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
-  setsubun_cta_text_en: 'If you would like an ofuda talisman burned in the goma fire ritual,\nplease apply via the application form.\nPayment is accepted on the day, on site.',
+  setsubun_cta_text: '御札をご希望の方は申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。\n特別年男年女をご希望される方はお電話（0288-55-0013）にてご確認ください。',
+  setsubun_cta_text_en: 'If you would like an ofuda, please apply via the application form.\nPayment is on the day, on site.\nIf you wish to participate as a special toshiotoko/toshionna (person born in the corresponding zodiac year), please confirm by phone (0288-55-0013).',
   setsubun_schedule: JSON.stringify(DEFAULT_SCHEDULE),
   setsubun_schedule_en: JSON.stringify(DEFAULT_SCHEDULE_EN),
   setsubun_notes: JSON.stringify(DEFAULT_NOTES),

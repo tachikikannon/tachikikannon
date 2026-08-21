@@ -15,7 +15,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     section: 'ヒーローセクション',
     fields: [
       { key: 'hero_en',    label: '英語サブタイトル', hint: '例：Nikkozan Chuzenji Temple', defaultValue: 'Nikkozan Chuzenji Temple' },
-      { key: 'hero_title', label: 'キャッチコピー（改行可・Enterで改行）', multiline: true, defaultValue: '中禅寺湖畔に佇む、\n祈りと巡礼の寺', translatable: true },
+      { key: 'hero_title', label: 'キャッチコピー（改行可・Enterで改行）', multiline: true, defaultValue: '中禅寺湖畔に佇む\n祈りと巡礼の寺', translatable: true },
       { key: 'hero_bg_image', label: '背景の写真', type: 'image', defaultValue: '/images/chuzenji/common/main2.png' },
       {
         key: 'hero_bg_video', label: '背景の動画1（任意）', type: 'video',
@@ -77,18 +77,18 @@ const FIELDS: { section: string; fields: Field[] }[] = [
         key: 'top_experience_cards', label: 'カード（1件目＝「祈る」の大きなカード＝御祈願、2〜5件目＝「体験する」の一覧＝数珠づくり・写経・写仏・坐禅の順、5件固定）', type: 'list',
         listFields: [{ key: 'label', label: 'タイトル' }, { key: 'sub', label: '価格・補足' }],
         defaultValue: J([
-          { label: '御祈願', sub: '御祈願料：5,000円〜' },
-          { label: '数珠づくり体験', sub: '2,000円〜' },
+          { label: '御祈願', sub: '約40分/5,000円～' },
+          { label: '数珠づくり体験', sub: '約30分~/2,000円〜' },
           { label: '写経体験', sub: '約15分 / 1,000円' },
-          { label: '写仏体験', sub: '1,000円' },
+          { label: '写仏体験', sub: '約15分/1,000円' },
           { label: '坐禅体験', sub: '20分 / 2,000円' },
         ]),
         translatable: true,
         defaultValueEn: J([
-          { label: 'Prayer Service',           sub: 'From ¥5,000' },
-          { label: 'Juzu Bracelet Making',     sub: 'From ¥2,000' },
+          { label: 'Prayer Service',           sub: 'Approx. 40 min / From ¥5,000' },
+          { label: 'Juzu Bracelet Making',     sub: 'Approx. 30 min~ / From ¥2,000' },
           { label: 'Sutra Copying',            sub: 'Approx. 15 min / ¥1,000' },
-          { label: 'Buddhist Image Tracing',   sub: '¥1,000' },
+          { label: 'Buddhist Image Tracing',   sub: 'Approx. 15 min / ¥1,000' },
           { label: 'Zazen Meditation',         sub: '20 min / ¥2,000' },
         ]),
       },

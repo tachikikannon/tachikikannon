@@ -17,18 +17,18 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_FLOW = [
-  { title: '受付', text: '寺務所 体験受付窓口にてお申し込みください。体験料をお納めいただきます。' },
-  { title: '用具の準備', text: '下絵・筆・墨などをご用意します。すべて貸し出しですので手ぶらでお越しいただけます。' },
-  { title: 'お描きいただきます', text: '下絵に沿って、薬師如来のお姿をゆっくりお描きください。係の者がご説明いたします。' },
-  { title: '特別御朱印のお授け', text: '完成後、特別御朱印をお授けします。' },
-  { title: 'お持ち帰り', text: '完成した写仏はお持ち帰りいただけます。大切に飾ってください。' },
+  { title: '受付', text: '寺務所体験窓口にてお申込みください。体験料を収めていただきます。' },
+  { title: '用具の準備', text: '写仏用紙の入ったクリアファイルと筆をご用意しますので、お教室にそのままお持ちください。' },
+  { title: '体験', text: '下絵に沿って、薬師瑠璃光如来のお姿をゆっくりお描きください。' },
+  { title: '特別御朱印のお授け', text: '体験終了後、三宝（木の台）に写仏を収め、クリアファイルと筆を寺務所にお返しください。引き換えに御朱印をお授けします。' },
+  { title: '描き終えた写仏について', text: '納められた写仏は、御本尊 薬師如来に奉じ8月8日に行われる【温泉寺薬師講『採灯大護摩供』】にてお焚き上げされます。' },
 ]
 const DEFAULT_FLOW_EN = [
-  { title: 'Reception', text: 'Please apply at the Temple Office experience reception counter and pay the experience fee.' },
-  { title: 'Preparing Materials', text: 'A template, brush, ink, and other materials are provided — all on loan, so you may come empty-handed.' },
-  { title: 'Tracing the Image', text: "Following the template, slowly trace the figure of Yakushi Nyorai. Our staff will guide you." },
-  { title: 'Receiving the Special Goshuin', text: 'Upon completion, you will receive a special goshuin stamp.' },
-  { title: 'Taking It Home', text: 'You may take your completed tracing home. Please display it with care.' },
+  { title: 'Reception', text: 'Please apply at the Temple Office experience counter and pay the experience fee.' },
+  { title: 'Preparing Materials', text: 'We will provide a clear file containing the tracing paper and a brush — please bring them with you to the drawing room.' },
+  { title: 'The Experience', text: 'Following the printed outline, slowly trace the image of Yakushi Rurikou Nyorai.' },
+  { title: 'Receiving the Special Goshuin', text: 'When you finish, place your tracing on the sanbo (wooden offering stand) and return the clear file and brush to the Temple Office. You will receive a goshuin stamp in exchange.' },
+  { title: 'About Your Completed Tracing', text: 'Tracings you leave with us are offered to Yakushi Nyorai, the principal image, and ritually burned on August 8 at the "Onsenji Yakushi-ko Saito Grand Goma Ceremony."' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -38,8 +38,8 @@ const DEFAULTS: Record<string, string> = {
   onsenji_shabutu_heading_about_en: 'What is Shabutu?',
   onsenji_shabutu_about_p1: '写仏とは、仏様のお姿を下絵に沿って丁寧にお描きする修行です。写経と並ぶ伝統的な仏道修行のひとつで、描きながら仏様の功徳をいただき、心を落ち着けることができます。',
   onsenji_shabutu_about_p1_en: 'Shabutu is a practice of carefully tracing the figure of a Buddha following a template. Alongside sutra copying, it is one of the traditional Buddhist practices — as you draw, you receive the Buddha\'s merit and settle your mind.',
-  onsenji_shabutu_about_p2: '温泉寺の写仏体験では、ご本尊・薬師如来のお姿をお描きいただきます。完成した写仏は記念にお持ち帰りいただけます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。',
-  onsenji_shabutu_about_p2_en: 'In Onsenji\'s Buddhist image tracing experience, you will trace the figure of the principal image, Yakushi Nyorai. You may take your completed tracing home as a keepsake. Since you trace along a template, anyone can enjoy it, even those who find drawing difficult.',
+  onsenji_shabutu_about_p2: '温泉寺の写仏体験では、ご本尊・薬師如来のお姿をお描きいただきます。絵が苦手な方でも、下絵に沿って描くためどなたでもお楽しみいただけます。',
+  onsenji_shabutu_about_p2_en: "In Onsenji's shabutsu experience, you will trace the image of Yakushi Nyorai, the principal image. Since you trace along a printed outline, anyone can enjoy it, even those who are not confident in their drawing.",
   onsenji_shabutu_heading_contents: '体験内容',
   onsenji_shabutu_heading_contents_en: 'Experience Details',
   onsenji_shabutu_content_title: '薬師如来',
@@ -50,12 +50,12 @@ const DEFAULTS: Record<string, string> = {
   onsenji_shabutu_heading_fees_en: 'Fee & Duration',
   onsenji_shabutu_fee:  '1,000円（御朱印込み）',
   onsenji_shabutu_fee_en: '¥1,000 (includes goshuin stamp)',
-  onsenji_shabutu_time: '約30〜60分（個人差があります）',
-  onsenji_shabutu_time_en: 'Approx. 30–60 minutes (varies by individual)',
+  onsenji_shabutu_time: '約20〜30分（個人差があります）',
+  onsenji_shabutu_time_en: 'Approx. 20–30 minutes (varies by person)',
   onsenji_shabutu_target: 'どなたでも（絵が苦手な方も歓迎）',
   onsenji_shabutu_target_en: 'Anyone welcome (even if drawing is not your strength)',
-  onsenji_shabutu_place: '寺務所 体験受付窓口',
-  onsenji_shabutu_place_en: 'Temple Office Experience Counter',
+  onsenji_shabutu_place: '玄関にて係にお申し付けください。',
+  onsenji_shabutu_place_en: 'Please ask staff at the entrance.',
   onsenji_shabutu_hours: '拝観時間内（閉門1時間前まで）',
   onsenji_shabutu_hours_en: 'During visiting hours (until 1 hour before closing)',
   onsenji_shabutu_heading_flow: '体験の流れ',

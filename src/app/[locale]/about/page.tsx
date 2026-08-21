@@ -40,8 +40,8 @@ const DEFAULTS: Record<string, string> = {
   about_hours_winter_en: '8:30 AM – 3:30 PM',
   about_grounds_teaser_title: '境内のご案内',
   about_grounds_teaser_title_en: 'Grounds Guide',
-  about_grounds_teaser_desc: '山門・観音堂・鐘楼・札所・天道・愛染堂・延命水など、境内各所の見どころをご紹介しています。',
-  about_grounds_teaser_desc_en: 'Explore the temple gate, main hall, bell tower, pilgrimage stations, Tendo, Aizen-do, and the Enmeisui spring water.',
+  about_grounds_teaser_desc: '山門・観音堂・鐘楼・札所・天堂・愛染堂・延命水など、境内各所の見どころをご紹介しています。',
+  about_grounds_teaser_desc_en: 'Discover highlights throughout the grounds, including the Sanmon Gate, Kannon Hall, bell tower, pilgrimage hall, Tendo Hall, Aizen Hall, and the Enmei-sui spring water.',
 }
 
 async function getContent() {

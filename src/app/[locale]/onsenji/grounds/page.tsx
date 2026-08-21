@@ -33,16 +33,14 @@ const DEFAULT_SPOTS_EN = [
   { name: 'Main Hall (Sutra Copying & Image Tracing Venue)', image: '/images/onsenji/grounds/onsenji-kaijou.jpg', desc: 'The main hall enshrining Yakushi Nyorai. Sutra copying and Buddhist image tracing are also held here.' },
 ]
 const DEFAULT_FLOW = [
-  { title: '拝観受付（山門）', text: '入口にて拝観料をお納めください。受付は閉門30分前に終了いたします。' },
-  { title: '本堂参拝', text: 'ご本尊・薬師如来（医王如来）にお参りください。' },
-  { title: '薬師の湯', text: '参拝後は境内の温泉（薬師の湯）をご利用いただけます。足湯・手湯があります。' },
-  { title: '御朱印所', text: '御朱印やお守りをお受けいただけます。' },
+  { title: '拝観受付（山門）', text: 'ご自由にご参拝ください。' },
+  { title: '本堂参拝', text: 'ご本尊・薬師如来にお参りください。\nご参拝の後、御朱印もお受けいただけます。玄関にて係にお声かけください。' },
+  { title: '薬師の湯', text: '参拝後は境内の温泉（薬師の湯）をご利用いただけます。有料。' },
 ]
 const DEFAULT_FLOW_EN = [
-  { title: 'Reception (Temple Gate)', text: 'Please pay the admission fee at the entrance. Reception closes 30 minutes before the gate closes.' },
-  { title: 'Worship at the Main Hall', text: 'Please worship the principal image, Yakushi Nyorai (King of Medicine Buddha).' },
-  { title: 'Yakushi-no-Yu Hot Spring', text: 'After worship, you may use the hot spring on the grounds. Foot and hand baths are available.' },
-  { title: 'Goshuin Stamp Office', text: 'Goshuin stamps and amulets can be received here.' },
+  { title: 'Reception (Sanmon Gate)', text: 'Please feel free to visit.' },
+  { title: 'Worship at the Main Hall', text: 'Please pay respects to Yakushi Nyorai, the principal image.\nAfter your visit, you may also receive a goshuin stamp — please speak to staff at the entrance.' },
+  { title: 'Yakushi-no-Yu Hot Spring', text: 'After your visit, you may use the hot spring on the grounds (Yakushi-no-Yu). A fee applies.' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -56,8 +54,8 @@ const DEFAULTS: Record<string, string> = {
   onsenji_grounds_spots_en: JSON.stringify(DEFAULT_SPOTS_EN),
   onsenji_grounds_heading_onsen: '薬師の湯（温泉）',
   onsenji_grounds_heading_onsen_en: 'Yakushi-no-Yu (Hot Spring)',
-  onsenji_grounds_onsen_text: '境内には令和8年4月11日に開湯した「薬師の湯」があります。泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（泉温71.4℃）の完全かけ流し。加水すると乳白色に変わる神秘的な湯は、参拝者に開放されています。薬師如来の御加護とともに心身を清めていただけます。',
-  onsenji_grounds_onsen_text_en: 'The grounds are home to "Yakushi-no-Yu," which opened on April 11, 2026. Its fully sourced spring water is sulfur–calcium–sodium–sulfate–bicarbonate (71.4°C), turning a mystical milky white when mixed with water, and is open to all visitors. Purify body and mind under the protection of Yakushi Nyorai.',
+  onsenji_grounds_onsen_text: '境内には（本年度は4月11日に開湯）「薬師の湯」があります。泉質は含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（泉温71.4℃）の完全かけ流し。加水すると乳白色に変わる神秘的な湯は、参拝者に開放されています。薬師如来の御加護とともに心身を清めていただけます。',
+  onsenji_grounds_onsen_text_en: 'The grounds feature "Yakushi-no-Yu" (opened for the season on April 11 this year). Its water — a sulfur-calcium-sodium sulfate-bicarbonate spring at 71.4°C — flows completely fresh (kake-nagashi) without recirculation. The mystical water, which turns milky white when mixed with fresh water, is open to worshippers, offering purification of body and mind under the protection of Yakushi Nyorai.',
   onsenji_grounds_heading_flow: '参拝の流れ',
   onsenji_grounds_heading_flow_en: 'Visiting Flow',
   onsenji_grounds_flow: JSON.stringify(DEFAULT_FLOW),

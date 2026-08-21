@@ -20,7 +20,7 @@ const DEFAULT_TIMELINE = [
   { year: '平安〜鎌倉時代', title: '天台宗の霊場として栄える', text: '天台宗の修験道の拠点として整備され、多くの僧侶や参拝者が訪れるようになる。' },
   { year: '江戸時代', title: '輪王寺宮の直轄寺院に', text: '輪王寺宮（法親王）の直轄寺院として保護・整備された。日光東照宮参詣とあわせた参拝が盛んとなる。' },
   { year: '昭和41年（1966年）9月', title: '台風による土砂崩れ', text: '台風で薬師堂が土砂崩れにより全壊。しかし薬師如来像は落下した大岩の上に無傷で鎮座しており、人々を驚かせた。' },
-  { year: '昭和48年（1973年）', title: '現在地に温泉寺として再建', text: '現在地（日光市山内2300）に温泉寺として再建。世界遺産「日光山輪王寺」の別院として今日に至る。' },
+  { year: '昭和48年（1973年）', title: '現在地に温泉寺として再建', text: '現在地（栃木県日光市湯元2559）に温泉寺として再建。世界遺産「日光山輪王寺」の別院として今日に至る。' },
   { year: '令和8年（2026年）4月', title: '「薬師の湯」開湯', text: '泉質：含硫黄‐カルシウム・ナトリウム‐硫酸塩・炭酸水素塩泉（71.4℃）の源泉かけ流しの湯が参拝者に開放された。' },
 ]
 const DEFAULT_TIMELINE_EN = [
@@ -28,7 +28,7 @@ const DEFAULT_TIMELINE_EN = [
   { year: 'Heian to Kamakura Periods', title: 'Flourished as a Tendai Sacred Site', text: 'Developed as a base for Tendai mountain ascetic practice, drawing many monks and pilgrims.' },
   { year: 'Edo Period', title: 'Became a Directly Administered Temple of Rinnoji', text: 'Protected and maintained as a temple directly administered by the Rinnoji-no-miya princely abbot. Worship flourished alongside pilgrimages to Nikko Toshogu.' },
   { year: 'September, Showa 41 (1966)', title: 'Landslide from a Typhoon', text: 'A typhoon caused a landslide that completely destroyed the Yakushi Hall. Remarkably, the statue of Yakushi Nyorai was found unharmed atop a fallen boulder, astonishing those who witnessed it.' },
-  { year: 'Showa 48 (1973)', title: 'Rebuilt at the Current Site as Onsenji', text: 'Rebuilt at its present location (2300 Yamauchi, Nikko) as Onsenji, continuing today as a branch temple of the World Heritage site Nikkozan Rinnoji.' },
+  { year: 'Showa 48 (1973)', title: 'Rebuilt at the Current Site as Onsenji', text: 'Rebuilt at its present location (2559 Yumoto, Nikko) as Onsenji, continuing today as a branch temple of the World Heritage site Nikkozan Rinnoji.' },
   { year: 'April, Reiwa 8 (2026)', title: 'Opening of "Yakushi-no-Yu"', text: 'Sulfur–calcium–sodium–sulfate–bicarbonate spring water (71.4°C), drawn directly from the source, was opened to visitors.' },
 ]
 

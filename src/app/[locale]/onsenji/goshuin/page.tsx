@@ -18,14 +18,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 const DEFAULT_NOTES = [
   { text: '御朱印は信仰の証です。コレクション目的でのお受け取りはご遠慮ください。' },
   { text: '受付時間は閉門30分前に終了いたします。余裕をもってお越しください。' },
-  { text: '書き入れは混雑時にお時間をいただく場合がございます。' },
-  { text: '御朱印帳をお持ちでない方には書き置きもございます。' },
+  { text: '書き置きでのお渡しです。お書入れご希望の方は中禅寺立木観音までお願いします。' },
+  { text: '御朱印帳に書き入れの場合は中禅寺立木観音にてお願い致します。' },
 ]
 const DEFAULT_NOTES_EN = [
   { text: 'A goshuin is a proof of faith — please do not request one solely for collecting purposes.' },
   { text: 'Reception closes 30 minutes before the temple closes. Please allow enough time.' },
-  { text: 'Hand-written stamps may take extra time during busy periods.' },
-  { text: 'Pre-inscribed stamps are also available for those without a goshuin book.' },
+  { text: 'Goshuin here are given pre-inscribed only. If you would like yours hand-written in your book, please visit Chuzenji Tachiki Kannon.' },
+  { text: 'To have your goshuin book hand-inscribed, please visit Chuzenji Tachiki Kannon.' },
 ]
 const DEFAULT_ITEMS = [
   { title: '薬師如来', sub: '温泉寺 本堂（通常御朱印）' },

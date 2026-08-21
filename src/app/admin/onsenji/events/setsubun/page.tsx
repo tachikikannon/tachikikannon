@@ -17,14 +17,14 @@ const FIELDS = [
     listFields: [{ key: 'time', label: '時間' }, { key: 'title', label: '行事名' }, { key: 'desc', label: '説明', multiline: true }],
     defaultValue: J([
       { time: '11:00', title: '節分大祭（法要）', desc: '薬師堂にて節分の法要を執り行います。ご本尊・薬師如来のご加護のもと、新年の無病息災・開運招福をお祈りいたします。' },
-      { time: '11:30', title: '護摩供', desc: '護摩の炎に参拝者の願い事を記した護摩木を奉じ、薬師如来の御力で煩悩や邪気をお焚き上げいたします。' },
-      { time: '終了後', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。参列の皆様にも豆をお配りいたします。' },
+      { time: '11:30', title: '豆まき', desc: '「鬼は外、福は内」の声とともに豆まきを行います。特別年男年女の皆様にも豆をお配りいたします。' },
+      { time: '豆まき終了後', title: '縁起がらまき', desc: '薬師堂から特別年男年女の皆様が参拝者の皆様に、縁起がらをまきます。\n' },
     ]),
     translatable: true,
     defaultValueEn: J([
       { time: '11:00', title: 'Setsubun Grand Ceremony', desc: 'A Setsubun ceremony is held at the Yakushi Hall. Under the protection of Yakushi Nyorai, we pray for good health and good fortune in the new year.' },
-      { time: '11:30', title: 'Goma Fire Ritual', desc: 'Wooden goma sticks inscribed with visitors\' wishes are offered to the flames, burning away worldly desires and misfortune through the power of Yakushi Nyorai.' },
-      { time: 'After the Ceremony', title: 'Bean Throwing', desc: 'Beans are thrown with the call "Oni wa soto, fuku wa uchi" ("Demons out, fortune in"). Beans are also distributed to all attendees.' },
+      { time: '11:30', title: 'Bean Throwing', desc: 'Beans are thrown with the call "Oni wa soto, fuku wa uchi" ("Demons out, fortune in"). Our special toshiotoko and toshionna (those born in this year\'s zodiac sign) also hand out beans.' },
+      { time: 'After the Bean Throwing', title: 'Lucky Charm Scattering', desc: 'From the Yakushi Hall, our special toshiotoko and toshionna scatter lucky paper charms (engigara) to all visitors.' },
     ]),
   },
   { key: 'setsubun_heading_gallery', label: '「行事の様子」見出し（画像は固定・3件）', defaultValue: '行事の様子', translatable: true },
@@ -47,7 +47,7 @@ const FIELDS = [
     ]),
   },
   { key: 'setsubun_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み', translatable: true },
-  { key: 'setsubun_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。', translatable: true },
+  { key: 'setsubun_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '御札をご希望の方は申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。\n特別年男年女をご希望される方はお電話（0288-55-0013）にてご確認ください。', translatable: true },
 ] as const
 
 export default function AdminSetsubun() {

@@ -15,24 +15,28 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_FAQS = [
-  { q: '拝観時間を教えてください。', a: '4月〜11月は8:00〜17:00、12月〜3月は9:00〜16:00です。受付は閉門30分前までとなります。' },
+  { q: '拝観時間を教えてください。', a: '4月〜10月は8:00〜17:00、11月と3月は9:00〜16:00、12月～２月は午前8時30分〜午後3時30分です。' },
   { q: '拝観料はいくらですか？', a: '大人500円、小中学生200円です。' },
+  { q: '障がい者の拝観料の免除、減免はありますか？', a: '障がい者手帳、療育手帳をお持ちであれば、ご来山の際に原本をご提示いただくことで割引になります。ご本人のみ拝観料が大人の方100円、小中学生無料でお参りいただけます。' },
   { q: '御祈願の予約は必要ですか？', a: '事前予約をお勧めしております。当日受付も可能な場合がありますが、混雑時はお断りする場合がございます。' },
   { q: '写経・写仏・数珠づくり体験の予約方法を教えてください。', a: 'ウェブサイトの「体験のご予約はこちら」よりオンラインでご予約いただけます。' },
-  { q: '駐車場はありますか？', a: '境内に無料駐車場がございます（予約不可）。満車の際はお近くの有料駐車場をご利用ください。春・秋の観光シーズンはいろは坂が渋滞します。公共交通機関のご利用をお勧めします。' },
+  { q: '駐車場はありますか？', a: '１０台駐車スペースがございます(予約不可)。満車の場合は、中禅寺温泉周辺の有料駐車場をご利用ください。春・秋の観光シーズンはいろは坂が渋滞します。公共交通機関のご利用をお勧めします。' },
   { q: '御朱印はいただけますか？', a: 'はい、書き入れと書き置きをご用意しております。拝観時間内にお声がけください。' },
   { q: 'ベビーカーや車椅子での参拝はできますか？', a: '境内は段差がある箇所もございます。詳しくは事前にお問い合わせください。' },
   { q: 'お守り・授与品の通販はできますか？', a: 'はい、公式通販サイト（chuzenji.official.ec）にてお求めいただけます。' },
+  { q: 'ペットは連れてはいれますか？', a: '入れます。お堂の中に入るにはキャリーバックをご持参いただき、お参りください。' },
 ]
 const DEFAULT_FAQS_EN = [
-  { q: 'What are the visiting hours?', a: 'April–November: 8:00 AM–5:00 PM. December–March: 9:00 AM–4:00 PM. Reception closes 30 minutes before closing.' },
+  { q: 'What are the visiting hours?', a: '8:00 AM–5:00 PM from April to October, 9:00 AM–4:00 PM in November and March, and 8:30 AM–3:30 PM from December to February.' },
   { q: 'What is the admission fee?', a: '¥500 for adults, ¥200 for elementary/junior high school students.' },
+  { q: 'Is there a discount or fee waiver for visitors with disabilities?', a: 'If you hold a physical disability certificate or a rehabilitation (therapeutic) certificate, please present the original at the time of your visit for a discount. The discount applies to the certificate holder only: ¥100 for adults, and free admission for elementary/junior high school students.' },
   { q: 'Is a reservation required for prayer services?', a: 'Reservations are recommended. Same-day reception may be possible, but may be declined during busy periods.' },
   { q: 'How do I reserve the sutra-copying, Buddha-tracing, or juzu-making experiences?', a: 'You can reserve online via the "Reserve an Experience" link on the website.' },
-  { q: 'Is parking available?', a: 'Free parking is available on the grounds (no reservations). If the lot is full, please use a nearby paid parking lot. Irohazaka gets congested during spring and autumn — public transport is recommended.' },
+  { q: 'Is parking available?', a: 'We have parking for 10 vehicles. If full, please use one of the paid parking lots around Chuzenji-Onsen. Irohazaka gets congested during the spring and autumn tourist seasons, so we recommend using public transport.' },
   { q: 'Can I receive a goshuin stamp?', a: 'Yes, both hand-written and pre-inscribed stamps are available. Please ask during visiting hours.' },
   { q: 'Can I visit with a stroller or wheelchair?', a: 'Some areas of the grounds have steps. Please contact us in advance for details.' },
   { q: 'Can I order amulets or other items online?', a: 'Yes, they are available through our official online shop (chuzenji.official.ec).' },
+  { q: 'Can I bring my pet?', a: 'Yes, pets are welcome. To enter the halls, please bring a carrier bag for your pet.' },
 ]
 
 const DEFAULTS: Record<string, string> = {

@@ -20,27 +20,23 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_SCHEDULE = [
-  { time: '11:00', title: '薬師講大祭', desc: '薬師堂にてご本尊・薬師瑠璃光如来への法要を執り行います。ご信徒・参拝者の皆様とともに薬師経をお唱えし、健康増進・病気平癒をご祈念いたします。' },
-  { time: '11:30', title: '採灯大護摩供', desc: '湯の湖畔にて、山伏装束に身を包んだ僧侶たちによる採灯大護摩供を厳修いたします。護摩の炎に願い事を記した護摩木や写経を奉じ、薬師如来の御加護を祈ります。' },
-  { time: '終了後', title: '写経奉納・御朱印授与', desc: '写経体験でお写しいただいた写経を御本尊に奉納いたします。特別御朱印のお授けも行います。' },
+  { time: '11:00', title: '薬師講大祭', desc: '薬師堂にてご本尊・薬師瑠璃光如来への法要を執り行います。' },
+  { time: '11:30', title: '採灯大護摩供', desc: '湯の湖畔にて、山伏装束に身を包んだ僧侶たちによる採灯大護摩供を厳修いたします。' },
 ]
 const DEFAULT_SCHEDULE_EN = [
-  { time: '11:00', title: 'Yakushiko Grand Ceremony', desc: 'A ceremony to the principal image, Yakushi Ruriko Nyorai, is held at the Yakushi Hall. Together with devotees and visitors, we chant the Yakushi Sutra and pray for improved health and recovery from illness.' },
-  { time: '11:30', title: 'Saito Goma Fire Ritual', desc: 'On the shore of Lake Yunoko, monks dressed as mountain ascetics (yamabushi) solemnly perform the Saito Goma fire ritual. Wooden goma sticks inscribed with wishes and copied sutras are offered to the flames, praying for the protection of Yakushi Nyorai.' },
-  { time: 'After the Ceremony', title: 'Sutra Offering & Goshuin Distribution', desc: 'Sutras copied during the sutra-copying experience are offered to the principal image. A special goshuin stamp is also given.' },
+  { time: '11:00', title: 'Yakushiko Grand Ceremony', desc: 'A memorial service to the principal image, Yakushi Rurikou Nyorai, is held at the Yakushi Hall.' },
+  { time: '11:30', title: 'Saito Goma Fire Ritual', desc: 'On the shore of Lake Yunoko, monks dressed as mountain ascetics (yamabushi) solemnly perform the Saito Goma fire ritual.' },
 ]
 
 const DEFAULT_NOTES = [
-  { text: '参列は自由です。事前のお申し込みは不要ですが、御札・願い事をご希望の方は申し込みフォームよりお申し込みください。' },
-  { text: '写経体験（1,000円）は開湯期間中毎日受付しています。当日の写経奉納も可能です。' },
+  { text: '参列は自由です。御札をご希望の方は申し込みフォームよりお申し込みください。' },
   { text: 'お支払いは当日・現地にてお受けいたします。' },
   { text: '詳細・変更がある場合は当サイトまたはお電話にてご確認ください。' },
 ]
 const DEFAULT_NOTES_EN = [
-  { text: 'Attendance is open to all — no advance registration required. If you would like an ofuda talisman or wish offering, please apply via the application form.' },
-  { text: 'The sutra-copying experience (¥1,000) is accepted daily during the open season. Same-day sutra offering is also possible.' },
+  { text: 'Attendance is open to all. If you would like an ofuda, please apply via the application form.' },
   { text: 'Payment is accepted on the day, on site.' },
-  { text: 'Please check our website or call us for any details or changes.' },
+  { text: 'Any details or changes will be announced on this website or by phone.' },
 ]
 
 const DEFAULTS: Record<string, string> = {
@@ -64,8 +60,8 @@ const DEFAULTS: Record<string, string> = {
   yakushiko_heading_notes_en: 'Notes for Attendees',
   yakushiko_cta_heading: '御札のお申し込み',
   yakushiko_cta_heading_en: 'Ofuda Talisman Application',
-  yakushiko_cta_text: '大護摩供にてお焚き上げする御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
-  yakushiko_cta_text_en: 'If you would like an ofuda talisman burned in the grand goma fire ritual,\nplease apply via the application form.\nPayment is accepted on the day, on site.',
+  yakushiko_cta_text: '薬師講の御札をご希望の方は\n申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
+  yakushiko_cta_text_en: 'If you would like an ofuda for the Yakushi-ko service,\nplease apply via the application form.\nPayment is on the day, on site.',
   yakushiko_schedule: JSON.stringify(DEFAULT_SCHEDULE),
   yakushiko_schedule_en: JSON.stringify(DEFAULT_SCHEDULE_EN),
   yakushiko_notes: JSON.stringify(DEFAULT_NOTES),
