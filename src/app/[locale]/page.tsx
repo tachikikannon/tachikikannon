@@ -98,6 +98,7 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_gallery_slides:   JSON.stringify(DEFAULT_GALLERY_SLIDES),
   hero_bg_image: '/images/chuzenji/common/main2.png',
   hero_bg_video: '/videos/chuzenji/hero-goma.mp4',
+  hero_bg_video_2: '/videos/chuzenji/hero-goma-2.mp4',
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
@@ -160,6 +161,7 @@ export default async function HomePage({
   const heroTitle = getLocalizedContent(content, 'hero_title', loc)
   const heroBgImage = content['hero_bg_image'] || DEFAULT_CONTENT.hero_bg_image
   const heroBgVideo = content['hero_bg_video']
+  const heroBgVideo2 = content['hero_bg_video_2']
   const accessAddress = getLocalizedContent(content, 'access_address', loc)
   const accessCar = getLocalizedContent(content, 'access_car', loc)
   const accessBus = getLocalizedContent(content, 'access_bus', loc)
@@ -202,7 +204,7 @@ export default async function HomePage({
           eyebrowDarkColor="#c8a96e"
           eyebrowLightColor="#c8a96e"
           background={
-            <HeroMediaCycle imageSrc={heroBgImage} imageAlt="中禅寺 立木観音" videoSrc={heroBgVideo} />
+            <HeroMediaCycle imageSrc={heroBgImage} imageAlt="中禅寺 立木観音" videoSrc={heroBgVideo} videoSrc2={heroBgVideo2} />
           }
         >
           <div className="hero-pop-buttons flex flex-wrap gap-3 justify-center">

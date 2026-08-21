@@ -22,6 +22,11 @@ const FIELDS: { section: string; fields: Field[] }[] = [
         hint: '設定すると、写真の表示後にこの動画が自動再生され、終わるとまた写真に戻る…を繰り返します。空にすると写真のみになります。',
         defaultValue: '/videos/chuzenji/hero-goma.mp4',
       },
+      {
+        key: 'hero_bg_video_2', label: '背景の動画2（任意）', type: 'video',
+        hint: '設定すると、上の動画の再生が終わった後に続けてこの動画が5秒間再生され、そのあと写真に戻ります。空にすると1本目の動画だけで写真に戻ります。',
+        defaultValue: '/videos/chuzenji/hero-goma-2.mp4',
+      },
     ],
   },
   {
