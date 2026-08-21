@@ -788,6 +788,8 @@
     "tableTarget": "対象",
     "tablePlace": "受付場所",
     "tableHours": "受付時間",
+    "sheetLabel": "写経用紙",
+    "goshuinLabelSuffix": "の特別御朱印",
     "contactCta": "お問い合わせ",
     "quickShabutu": "写仏体験"
   },

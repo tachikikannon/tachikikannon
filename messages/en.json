@@ -788,6 +788,8 @@
     "tableTarget": "Who Can Join",
     "tablePlace": "Reception Location",
     "tableHours": "Reception Hours",
+    "sheetLabel": "Sutra Sheet",
+    "goshuinLabelSuffix": " Special Goshuin",
     "contactCta": "Contact Us",
     "quickShabutu": "Buddhist Image Tracing"
   },

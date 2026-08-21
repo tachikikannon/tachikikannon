@@ -157,15 +157,15 @@ export default async function OnsenjShakyouPage({
               <div className="grid grid-cols-2">
                 <div>
                   <div className="relative h-56 bg-cream-alt">
-                    <ZoomableImage src="/images/onsenji/experience/shakyou/onsen-syakyou.png" alt="薬師経 写経用紙" fill className="object-contain p-2" />
+                    <ZoomableImage src="/images/onsenji/experience/shakyou/onsen-syakyou.png" alt={`${g('onsenji_shakyou_content_title')} ${t('sheetLabel')}`} fill className="object-contain p-2" />
                   </div>
-                  <p className="text-center text-[11px] text-gray-400 py-1.5">写経用紙</p>
+                  <p className="text-center text-[11px] text-gray-400 py-1.5">{t('sheetLabel')}</p>
                 </div>
                 <div className="border-l border-gray-100">
                   <div className="relative h-56 bg-cream-alt">
-                    <ZoomableImage src="/images/onsenji/experience/shakyou/onsenji-goshuin-shakyou.png" alt="薬師経の特別御朱印" fill className="object-contain p-2" />
+                    <ZoomableImage src="/images/onsenji/experience/shakyou/onsenji-goshuin-shakyou.png" alt={`${g('onsenji_shakyou_content_title')}${t('goshuinLabelSuffix')}`} fill className="object-contain p-2" />
                   </div>
-                  <p className="text-center text-[11px] text-gray-400 py-1.5">薬師経の特別御朱印</p>
+                  <p className="text-center text-[11px] text-gray-400 py-1.5">{g('onsenji_shakyou_content_title')}{t('goshuinLabelSuffix')}</p>
                 </div>
               </div>
               <div className="p-5">
