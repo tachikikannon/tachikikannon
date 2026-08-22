@@ -9,6 +9,7 @@ const FIELDS = [
   { key: 'onsenji_grounds_map_hint', label: '地図の操作案内文', defaultValue: '地図上のピンをクリックすると各スポットの詳細が見られます', translatable: true },
   {
     key: 'onsenji_grounds_spots', label: '主な見どころ', type: 'list' as const,
+    requireItemKey: 'image',
     listFields: [
       { key: 'name', label: '名称' },
       { key: 'image', label: '画像パス（例: /images/onsenji/grounds/onsenji-sandou.png）' },

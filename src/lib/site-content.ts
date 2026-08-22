@@ -30,3 +30,17 @@ export function pickLocalized(
   if (locale === 'en' && en) return en
   return ja
 }
+
+/**
+ * リスト型フィールドのDB値が、指定キーを持つ項目を1件も含まない「古い形式」なら
+ * fallback（通常はdefaultValue）を返す。項目追加前の古いデータが残っているケースの救済用。
+ */
+export function normalizeStaleList(raw: string, fallback: string, requireKey: string): string {
+  try {
+    const arr = JSON.parse(raw)
+    if (Array.isArray(arr) && arr.some((item: Record<string, unknown>) => item && item[requireKey])) {
+      return raw
+    }
+  } catch {}
+  return fallback
+}

@@ -69,6 +69,17 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
     load()
   }
 
+  async function move(index: number, dir: -1 | 1) {
+    const j = index + dir
+    if (j < 0 || j >= list.length) return
+    const reordered = [...list]
+    ;[reordered[index], reordered[j]] = [reordered[j], reordered[index]]
+    setList(reordered)
+    // 表示中の並び順どおりに sort_order を振り直す（同値の並び順が残っていても解消される）
+    await Promise.all(reordered.map((ev, i) => supabase.from('minor_events').update({ sort_order: i }).eq('id', ev.id)))
+    load()
+  }
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
@@ -267,6 +278,7 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
         <table className="w-full text-sm">
           <thead className="bg-gray-50">
             <tr>
+              <th className="px-4 py-3 w-16" />
               <th className="text-left px-4 py-3 text-xs text-gray-500">行事名</th>
               <th className="text-left px-4 py-3 text-xs text-gray-500">状態</th>
               <th className="text-left px-4 py-3 text-xs text-gray-500">開催日</th>
@@ -274,8 +286,14 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {list.map(ev => (
+            {list.map((ev, i) => (
               <tr key={ev.id} className="hover:bg-gray-50">
+                <td className="px-4 py-3 w-16">
+                  <div className="flex gap-1">
+                    <button onClick={() => move(i, -1)} disabled={i === 0} className="text-gray-400 hover:text-navy disabled:opacity-30 disabled:cursor-not-allowed text-xs px-1.5 py-0.5 rounded">↑</button>
+                    <button onClick={() => move(i, 1)} disabled={i === list.length - 1} className="text-gray-400 hover:text-navy disabled:opacity-30 disabled:cursor-not-allowed text-xs px-1.5 py-0.5 rounded">↓</button>
+                  </div>
+                </td>
                 <td className="px-4 py-3 font-medium">{ev.title}</td>
                 <td className="px-4 py-3">
                   <span className={`badge ${ev.is_published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
@@ -289,7 +307,7 @@ export default function MinorEventsAdmin({ site, title, accent = 'chuzenji' }: {
                 </td>
               </tr>
             ))}
-            {list.length === 0 && <tr><td colSpan={4} className="px-4 py-8 text-center text-gray-400 text-sm">まだ行事がありません</td></tr>}
+            {list.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">まだ行事がありません</td></tr>}
           </tbody>
         </table>
       </div>

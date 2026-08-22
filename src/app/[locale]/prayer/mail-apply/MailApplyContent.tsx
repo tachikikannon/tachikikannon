@@ -1,29 +1,16 @@
 'use client'
 import { useState } from 'react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 
 const EC_SITE_URL = 'https://chuzenji.official.ec/'
 const CASH_MAIL_FORM_URL = '/images/' + encodeURIComponent('護摩申込書.pdf')
 
-const FEE_OPTIONS = [
-  { price: '5,000円', size: '28㎝' },
-  { price: '10,000円', size: '32㎝' },
-  { price: '20,000円', size: '38㎝' },
-  { price: '30,000円', size: '42.5㎝' },
-]
-const FEE_OPTIONS_EN = [
-  { price: '¥5,000', size: '28cm' },
-  { price: '¥10,000', size: '32cm' },
-  { price: '¥20,000', size: '38cm' },
-  { price: '¥30,000', size: '42.5cm' },
-]
+type Fee = { price: string; size: string }
 
-export default function MailApplyContent() {
+export default function MailApplyContent({ fees }: { fees: Fee[] }) {
   const t = useTranslations('prayerMailApply')
   const tc = useTranslations('common')
-  const locale = useLocale()
-  const fees = locale === 'en' ? FEE_OPTIONS_EN : FEE_OPTIONS
   const [showEcConfirm, setShowEcConfirm] = useState(false)
   const [showCashMail, setShowCashMail] = useState(false)
 

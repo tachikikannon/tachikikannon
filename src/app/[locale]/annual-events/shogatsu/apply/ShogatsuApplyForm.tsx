@@ -11,12 +11,6 @@ const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安
 const CIRCLED = ['②', '③', '④', '⑤']
 const emptyApplicant = (): Applicant => ({ name: '', address: '', wish1: '', wish2: '' })
 
-const FEE_OPTIONS = [
-  { price: '5,000円', size: '28㎝' },
-  { price: '10,000円', size: '32㎝' },
-  { price: '20,000円', size: '38㎝' },
-  { price: '30,000円', size: '42.5㎝' },
-]
 const EC_SITE_URL = 'https://chuzenji.official.ec/'
 const CASH_MAIL_FORM_URL = '/images/chuzenji/events/shogatsu/gomamousikomi.pdf'
 
@@ -29,7 +23,9 @@ function WishSelect({ value, onChange, required, placeholder }: { value: string;
   )
 }
 
-export default function ShogatsuApplyForm() {
+type Fee = { price: string; size: string }
+
+export default function ShogatsuApplyForm({ fees: FEE_OPTIONS }: { fees: Fee[] }) {
   const supabase = createClient()
   const t = useTranslations('shogatsuApply')
   const tS = useTranslations('shogatsu')
