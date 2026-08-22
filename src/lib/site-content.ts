@@ -44,3 +44,19 @@ export function normalizeStaleList(raw: string, fallback: string, requireKey: st
   } catch {}
   return fallback
 }
+
+/**
+ * 件数固定のリストが、既定件数より少ない状態でDBに保存されている場合
+ * （後からコード側に項目を追加した直後など）、不足分をdefaultValueの該当インデックスで補う。
+ * 公開ページ側の同種のパディング処理と管理画面の表示件数を一致させるためのもの。
+ */
+export function padListToDefault(raw: string, defaultValue: string): string {
+  try {
+    const arr = JSON.parse(raw)
+    const defaults = JSON.parse(defaultValue)
+    if (Array.isArray(arr) && Array.isArray(defaults) && arr.length < defaults.length) {
+      return JSON.stringify(defaults.map((d: unknown, i: number) => arr[i] ?? d))
+    }
+  } catch {}
+  return raw
+}

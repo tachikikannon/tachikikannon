@@ -4,10 +4,25 @@ import { createClient } from '@/lib/supabase'
 
 type Field = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string }
 
-const FIELDS: Field[] = [
-  { key: 'site_address', label: '住所', multiline: true, defaultValue: '〒321-1661 栃木県日光市中宮祠2578' },
-  { key: 'site_tel',     label: '電話番号', defaultValue: '0288-55-0013' },
+const SECTIONS: { title: string; fields: Field[] }[] = [
+  {
+    title: '中禅寺立木観音',
+    fields: [
+      { key: 'site_address', label: '住所', multiline: true, defaultValue: '〒321-1661 栃木県日光市中宮祠2578' },
+      { key: 'site_tel',     label: '電話番号', defaultValue: '0288-55-0013' },
+    ],
+  },
+  {
+    title: '温泉寺',
+    fields: [
+      { key: 'onsenji_address', label: '住所', multiline: true, defaultValue: '栃木県日光市湯元2559' },
+      { key: 'onsenji_tel',     label: '電話番号', defaultValue: '0288-55-0013' },
+      { key: 'onsenji_fax',     label: 'FAX番号', defaultValue: '0288-55-0801' },
+    ],
+  },
 ]
+
+const FIELDS: Field[] = SECTIONS.flatMap(s => s.fields)
 
 export default function SettingsAdmin() {
   const supabase = createClient()
@@ -38,35 +53,42 @@ export default function SettingsAdmin() {
       <h1 className="text-2xl font-serif text-navy mb-1">サイト設定</h1>
       <p className="text-gray-500 text-sm mb-8">フッターなどに表示される基本情報を編集できます。</p>
 
-      <div className="bg-white rounded-xl shadow-sm p-6 space-y-5">
-        {FIELDS.map(({ key, label, hint, multiline, defaultValue }) => (
-          <div key={key}>
-            <label className="admin-label">{label}</label>
-            {hint && <p className="text-xs text-gray-400 mb-1">{hint}</p>}
-            {multiline ? (
-              <textarea
-                className="admin-input min-h-[80px]"
-                value={values[key] ?? ''}
-                placeholder={defaultValue}
-                onChange={e => setValues(v => ({ ...v, [key]: e.target.value }))}
-              />
-            ) : (
-              <input
-                type="text"
-                className="admin-input"
-                value={values[key] ?? ''}
-                placeholder={defaultValue}
-                onChange={e => setValues(v => ({ ...v, [key]: e.target.value }))}
-              />
-            )}
-            <div className="mt-2 flex justify-end">
-              <button
-                onClick={() => save(key)}
-                disabled={saving === key}
-                className="btn-primary text-sm px-5 py-2 disabled:opacity-50"
-              >
-                {saving === key ? '保存中...' : saved === key ? '✓ 保存しました' : '保存'}
-              </button>
+      <div className="space-y-8">
+        {SECTIONS.map(({ title, fields }) => (
+          <div key={title}>
+            <h2 className="text-sm font-medium text-gray-500 tracking-widest mb-3 uppercase">{title}</h2>
+            <div className="bg-white rounded-xl shadow-sm p-6 space-y-5">
+              {fields.map(({ key, label, hint, multiline, defaultValue }) => (
+                <div key={key}>
+                  <label className="admin-label">{label}</label>
+                  {hint && <p className="text-xs text-gray-400 mb-1">{hint}</p>}
+                  {multiline ? (
+                    <textarea
+                      className="admin-input min-h-[80px]"
+                      value={values[key] ?? ''}
+                      placeholder={defaultValue}
+                      onChange={e => setValues(v => ({ ...v, [key]: e.target.value }))}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      className="admin-input"
+                      value={values[key] ?? ''}
+                      placeholder={defaultValue}
+                      onChange={e => setValues(v => ({ ...v, [key]: e.target.value }))}
+                    />
+                  )}
+                  <div className="mt-2 flex justify-end">
+                    <button
+                      onClick={() => save(key)}
+                      disabled={saving === key}
+                      className="btn-primary text-sm px-5 py-2 disabled:opacity-50"
+                    >
+                      {saving === key ? '保存中...' : saved === key ? '✓ 保存しました' : '保存'}
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}

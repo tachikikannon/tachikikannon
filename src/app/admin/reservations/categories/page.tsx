@@ -54,6 +54,17 @@ export default function ReservationCategoriesPage() {
     load()
   }
 
+  async function move(index: number, dir: -1 | 1) {
+    const j = index + dir
+    if (j < 0 || j >= list.length) return
+    const reordered = [...list]
+    ;[reordered[index], reordered[j]] = [reordered[j], reordered[index]]
+    setList(reordered)
+    // 表示中の並び順どおりに sort_order を振り直す
+    await Promise.all(reordered.map((c, i) => supabase.from('reservation_categories').update({ sort_order: i }).eq('id', c.id)))
+    load()
+  }
+
   return (
     <div className="p-8 max-w-2xl">
       <h1 className="text-2xl font-serif text-navy mb-2">予約区分の管理</h1>
@@ -78,8 +89,14 @@ export default function ReservationCategoriesPage() {
       )}
 
       <div className="bg-white rounded-xl shadow overflow-hidden divide-y divide-gray-100">
-        {list.map(c => (
+        {list.map((c, i) => (
           <div key={c.id} className="flex items-center gap-3 px-5 py-4">
+            {canEdit && (
+              <div className="flex gap-1 flex-shrink-0">
+                <button onClick={() => move(i, -1)} disabled={i === 0} className="text-gray-400 hover:text-navy disabled:opacity-30 disabled:cursor-not-allowed text-xs px-1.5 py-0.5 rounded">↑</button>
+                <button onClick={() => move(i, 1)} disabled={i === list.length - 1} className="text-gray-400 hover:text-navy disabled:opacity-30 disabled:cursor-not-allowed text-xs px-1.5 py-0.5 rounded">↓</button>
+              </div>
+            )}
             {editingId === c.id ? (
               <input className="admin-input flex-1" value={editingName}
                 onChange={e => setEditingName(e.target.value)}

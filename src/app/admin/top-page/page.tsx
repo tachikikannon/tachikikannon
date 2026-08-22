@@ -1,12 +1,13 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase'
+import { padListToDefault } from '@/lib/site-content'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
 const J = (v: unknown) => JSON.stringify(v)
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
-type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
+type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string; padToDefault?: boolean }
 type MediaField = { key: string; label: string; type: 'image' | 'video'; hint?: string; defaultValue?: string }
 type Field = TextField | ListFieldDef | MediaField
 
@@ -75,6 +76,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     fields: [
       {
         key: 'top_experience_cards', label: 'カード（1件目＝「祈る」の大きなカード＝御祈願、2〜5件目＝「体験する」の一覧＝数珠づくり・写経・写仏・坐禅の順、5件固定）', type: 'list',
+        padToDefault: true,
         listFields: [{ key: 'label', label: 'タイトル' }, { key: 'sub', label: '価格・補足' }],
         defaultValue: J([
           { label: '御祈願', sub: '約40分/5,000円～' },
@@ -222,6 +224,15 @@ export default function TopPageEditor() {
       .then(({ data }) => {
         const map: Record<string, string> = { ...defaults }
         data?.forEach(row => { if (row.value) map[row.key] = row.value })
+        FIELDS.forEach(({ fields }) => fields.forEach(f => {
+          if (f.type === 'list' && f.padToDefault) {
+            map[f.key] = padListToDefault(map[f.key] ?? f.defaultValue, f.defaultValue)
+            if (f.translatable) {
+              const fallbackEn = f.defaultValueEn ?? '[]'
+              map[`${f.key}_en`] = padListToDefault(map[`${f.key}_en`] ?? fallbackEn, fallbackEn)
+            }
+          }
+        }))
         setValues(map)
       })
   }, [])

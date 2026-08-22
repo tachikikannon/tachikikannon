@@ -1,10 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
+import { normalizeStaleList } from '@/lib/site-content'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
 type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
-type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string }
+type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string; requireItemKey?: string }
 type Field = TextField | ListFieldDef
 type Section = { section: string; href: string; fields: Field[] }
 
@@ -54,6 +55,7 @@ const SECTIONS: Section[] = [
       { key: 'grounds_map_hint', label: '地図の操作案内文', defaultValue: '地図上のピンをクリックすると各スポットの詳細が見られます', translatable: true },
       {
         key: 'grounds_spots', label: '主な見どころ', type: 'list',
+        requireItemKey: 'image',
         listFields: [{ key: 'name', label: '名称' }, { key: 'image', label: '画像パス（例: /images/chuzenji/grounds/sanmon.png）' }, { key: 'desc', label: '説明', multiline: true }],
         defaultValue: J([
           { name: '山門', image: '/images/chuzenji/grounds/sanmon.png', desc: '境内への入口。拝観受付はこちらで行います。' },
@@ -749,6 +751,15 @@ export default function PagesEditor() {
     supabase.from('site_content').select('key,value').then(({ data }) => {
       const map: Record<string, string> = { ...defaults }
       data?.forEach(row => { if (row.value) map[row.key] = row.value })
+      SECTIONS.forEach(({ fields }) => fields.forEach(f => {
+        if (f.type === 'list' && f.requireItemKey) {
+          map[f.key] = normalizeStaleList(map[f.key] ?? f.defaultValue, f.defaultValue, f.requireItemKey)
+          if (f.translatable) {
+            const fallbackEn = f.defaultValueEn ?? '[]'
+            map[`${f.key}_en`] = normalizeStaleList(map[`${f.key}_en`] ?? fallbackEn, fallbackEn, f.requireItemKey)
+          }
+        }
+      }))
       setValues(map)
     })
   }, [])

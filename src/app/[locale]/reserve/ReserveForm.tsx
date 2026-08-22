@@ -9,7 +9,7 @@ import type { ReservationType } from '@/types'
 
 const RESERVATION_TYPES: ReservationType[] = ['prayer', 'shakyou', 'shabutu', 'jyuzu', 'zazen']
 
-export default function ReserveForm() {
+export default function ReserveForm({ fees }: { fees: Record<ReservationType, string> }) {
   const supabase = createClient()
   const searchParams = useSearchParams()
   const t = useTranslations('reserve')
@@ -20,11 +20,11 @@ export default function ReserveForm() {
   const initialType = searchParams.get('type') ?? ''
 
   const TYPES: { value: ReservationType; label: string; price: string }[] = [
-    { value: 'prayer',   label: t('typePrayer'),  price: '5,000円〜' },
-    { value: 'shakyou',  label: t('typeShakyou'),      price: '1,000円' },
-    { value: 'shabutu',  label: t('typeShabutu'),      price: '1,000円' },
-    { value: 'jyuzu',    label: t('typeJyuzu'), price: '2,000円〜' },
-    { value: 'zazen',    label: t('typeZazen'), price: '2,000円' },
+    { value: 'prayer',   label: t('typePrayer'),  price: fees.prayer },
+    { value: 'shakyou',  label: t('typeShakyou'), price: fees.shakyou },
+    { value: 'shabutu',  label: t('typeShabutu'), price: fees.shabutu },
+    { value: 'jyuzu',    label: t('typeJyuzu'),   price: fees.jyuzu },
+    { value: 'zazen',    label: t('typeZazen'),   price: fees.zazen },
   ]
 
   const PURPOSES: { value: string; label: string }[] = [
