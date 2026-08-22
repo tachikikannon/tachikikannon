@@ -52,12 +52,16 @@ export default function HeroMediaCycle({
     if (phase !== 'video1') return
     const v = video1Ref.current
     if (v) { v.currentTime = 0; v.play().catch(() => {}); restartPan(v) }
+    // 動画1の再生中（8秒）にバックグラウンドで動画2を読み込んでおく
+    video2Ref.current?.load()
   }, [phase])
 
   useEffect(() => {
     if (phase !== 'video2') return
     const v = video2Ref.current
     if (v) { v.currentTime = 0; v.play().catch(() => {}); restartPan(v) }
+    // 動画2の再生中（8秒）にバックグラウンドで動画3を読み込んでおく
+    video3Ref.current?.load()
   }, [phase])
 
   useEffect(() => {
@@ -94,7 +98,7 @@ export default function HeroMediaCycle({
           src={videoSrc2}
           muted
           playsInline
-          preload="auto"
+          preload="none"
           onEnded={() => setPhase(videoSrc3 ? 'video3' : 'image')}
           className="hero-video-pan absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
           style={{ opacity: phase === 'video2' ? 1 : 0 }}
@@ -106,7 +110,7 @@ export default function HeroMediaCycle({
           src={videoSrc3}
           muted
           playsInline
-          preload="auto"
+          preload="none"
           onEnded={() => setPhase('image')}
           className="hero-video-fixed-crop absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-out"
           style={{ opacity: phase === 'video3' ? 1 : 0 }}
