@@ -75,6 +75,12 @@ const EASE = 'cubic-bezier(0,0,0.2,1)'
 // （1440x800・9文字の行で実測し、余裕を持って収まる値に調整済み）
 const FIXED_HEADER_PX = 130
 
+// 写真フェーズで見出し（h1）以下のブロックをまとめて下にずらす量。transformは
+// レイアウト上の高さ（offsetHeight）に影響しないため、この分をheadingContentRef
+// の実測高さに別途加算しないと、下にずれた分だけ下部コンテンツ（ボタン等）が
+// セクションのoverflow-hiddenで見切れてしまう
+const PHOTO_PHASE_HEADING_SHIFT_PX = 38
+
 // 横書き見出し（verticalHeading=false、英語ページ用）のタイミング
 const TEXT_START_MS = 250      // idle → text（マウントからの絶対時間）
 const STAGGER_MS = 90          // 1文字ごとの遅延（text開始からの相対時間）
@@ -207,7 +213,14 @@ export default function HeroReveal({
     const update = () => {
       const headingH = headingEl.offsetHeight
       const bottomH = bottomEl.offsetHeight
-      setMinHeightPx(headingH + bottomH * 2)
+      // 縦書きモードはheadingContentRef自体がFIXED_HEADER_PX分だけ
+      // セクション上端からオフセットして配置される（outerWrapperのtop指定）。
+      // さらに写真フェーズでは下部コンテンツ一式がPHOTO_PHASE_HEADING_SHIFT_PX分
+      // 下にずれる（transformなのでheadingHには反映されない）。これらのオフセット分を
+      // セクションの最小高さに含めないと、見出し+ステータスカード+ボタン一式の実測高さが
+      // 画面の高さに近い端末で、一番下のボタンがセクションのoverflow-hiddenによって
+      // 見切れてしまう（温泉寺は入浴ステータスカードがある分、立木観音よりこの現象が起きやすい）。
+      setMinHeightPx(verticalHeading ? FIXED_HEADER_PX + PHOTO_PHASE_HEADING_SHIFT_PX + headingH : headingH + bottomH * 2)
       setHeadingAreaMinHeightPx(headingH)
     }
     update()
@@ -215,7 +228,7 @@ export default function HeroReveal({
     ro.observe(headingEl)
     ro.observe(bottomEl)
     return () => ro.disconnect()
-  }, [])
+  }, [verticalHeading])
 
   useEffect(() => {
     // crestTargetCharFracが指定されている場合、寺紋は常に見出しエリアの正確な
@@ -530,7 +543,7 @@ export default function HeroReveal({
                   gridArea: '1 / 1',
                   opacity: verticalImageActive ? 1 : 0,
                   // 見出し（薬師の霊場、以下）をまとめて約1cm下げる
-                  transform: 'translateY(38px)',
+                  transform: `translateY(${PHOTO_PHASE_HEADING_SHIFT_PX}px)`,
                   transitionProperty: 'opacity',
                   transitionDuration: '900ms',
                   transitionTimingFunction: EASE,
