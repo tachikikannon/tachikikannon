@@ -77,6 +77,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
   {
     section: '祈る・体験する',
     fields: [
+      { key: 'top_heading_experience', label: '「体験する」セクション見出し', defaultValue: '体験する', translatable: true },
       {
         key: 'top_experience_cards', label: 'カード（1件目＝「祈る」の大きなカード＝御祈願、2〜5件目＝「体験する」の一覧＝数珠づくり・写経・写仏・坐禅の順、5件固定）', type: 'list',
         padToDefault: true,
@@ -116,6 +117,12 @@ const FIELDS: { section: string; fields: Field[] }[] = [
           { title: 'Amulets & Mail Order', text: 'Omamori charms, ofuda tablets, and other items are available online or by cash-on-delivery order.', info: 'Choose online shop or cash-on-delivery' },
         ]),
       },
+    ],
+  },
+  {
+    section: '中禅寺ギャラリー',
+    fields: [
+      { key: 'top_heading_gallery', label: 'セクション見出し', hint: '写真・動画の中身は「ギャラリー管理」（/admin/chuzenji/gallery）から追加・編集してください。', defaultValue: '中禅寺ギャラリー', translatable: true },
     ],
   },
   {

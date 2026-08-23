@@ -85,6 +85,10 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_heading_events_en:  'Upcoming Events',
   top_heading_service:    '受ける',
   top_heading_service_en: 'Receive',
+  top_heading_experience:    '体験する',
+  top_heading_experience_en: 'Experiences',
+  top_heading_gallery:    '中禅寺ギャラリー',
+  top_heading_gallery_en: 'Chuzenji Gallery',
   top_heading_records:    '過去の実績',
   top_heading_records_en: 'Past Events',
   top_heading_access:     'アクセス',
@@ -174,6 +178,8 @@ export default async function HomePage({
   const headingService = getLocalizedContent(content, 'top_heading_service', loc)
   const headingRecords = getLocalizedContent(content, 'top_heading_records', loc)
   const headingAccess = getLocalizedContent(content, 'top_heading_access', loc)
+  const headingExperience = getLocalizedContent(content, 'top_heading_experience', loc)
+  const headingGallery = getLocalizedContent(content, 'top_heading_gallery', loc)
 
   // 管理画面「中禅寺ギャラリー」（/admin/chuzenji/gallery）で編集可能。
   // 日英でsrcが分かれないよう、1つのJSONにcaption_ja/caption_enを両方持たせている。
@@ -351,7 +357,7 @@ export default async function HomePage({
         {/* 体験する */}
         <section id="experience" className="py-16">
           <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">{t('experienceHeading')}</h2>
+            <h2 className="section-title">{headingExperience}</h2>
             <div className="section-divider" />
             <div className="grid gap-3 h-[420px] md:h-[380px]" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'repeat(3, 1fr)' }}>
               {[
@@ -417,10 +423,10 @@ export default async function HomePage({
         {/* 中禅寺ギャラリー */}
         <section className="py-16 bg-cream-alt">
           <div className="max-w-5xl mx-auto px-4">
-            <h2 className="section-title">{t('galleryHeading')}</h2>
+            <h2 className="section-title">{headingGallery}</h2>
             <div className="section-divider" />
             <div className="rounded-xl overflow-hidden shadow-sm mb-4 aspect-video">
-              <YouTubeAutoplay videoId="LkCwCjWsjUM" alt={t('galleryHeading')} className="h-full" />
+              <YouTubeAutoplay videoId="LkCwCjWsjUM" alt={headingGallery} className="h-full" />
             </div>
             <ChuzenjiGallery slides={gallerySlides} />
           </div>
