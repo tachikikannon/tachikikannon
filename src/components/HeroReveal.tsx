@@ -511,12 +511,18 @@ export default function HeroReveal({
                     }}
                     aria-hidden={step !== frames.length}
                   >
+                    {/* このロゴ画像はgridスタック中で一番背が高く、headingContentRefの
+                        実測高さ（→minHeightPx、セクション自体の高さ）を決めている。
+                        vh単位のまま（svhでなく）だと、モバイルのアドレスバー収縮で
+                        ロゴの高さ自体が変化→ResizeObserverが再発火→セクション全体が
+                        伸縮し「画面が上下に動く」形で見えてしまう。100svh化（コミット
+                        ba119d1）のときに見落とされていた箇所 */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       ref={logoImgRef}
                       src={subheadingLogoSrc}
                       alt={subheadingLogoAlt ?? ''}
-                      className="h-[52vh] sm:h-[60vh] md:h-[66vh] max-h-[680px] w-auto object-contain"
+                      className="h-[52svh] sm:h-[60svh] md:h-[66svh] max-h-[680px] w-auto object-contain"
                       style={{
                         // logoExtraPxで、寺紋の中心に対して対象の一文字（crestTargetCharFrac）
                         // の位置まで、ロゴ画像だけをさらにずらす（他のコマはgridShiftPxのみ）。
