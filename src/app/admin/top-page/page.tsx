@@ -83,7 +83,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
           { label: '数珠づくり体験', sub: '約30分~/2,000円〜' },
           { label: '写経体験', sub: '約15分 / 1,000円' },
           { label: '写仏体験', sub: '約15分/1,000円' },
-          { label: '坐禅体験', sub: '20分 / 2,000円' },
+          { label: '坐禅体験', sub: '約30分 / 2,000円' },
         ]),
         translatable: true,
         defaultValueEn: J([
@@ -91,7 +91,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
           { label: 'Juzu Bracelet Making',     sub: 'Approx. 30 min~ / From ¥2,000' },
           { label: 'Sutra Copying',            sub: 'Approx. 15 min / ¥1,000' },
           { label: 'Buddhist Image Tracing',   sub: 'Approx. 15 min / ¥1,000' },
-          { label: 'Zazen Meditation',         sub: '20 min / ¥2,000' },
+          { label: 'Zazen Meditation',         sub: 'Approx. 30 min / ¥2,000' },
         ]),
       },
     ],
