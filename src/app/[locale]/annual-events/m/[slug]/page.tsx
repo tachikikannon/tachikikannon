@@ -61,6 +61,25 @@ export default async function MinorEventDetailPage({ params }: { params: Promise
     { label: t('infoJoinLabel'), value: infoJoin },
   ].filter(c => c.value)
 
+  // 管理画面「ギャラリー写真の位置」（説明文の下＝below／説明文の上＝above）に応じて、
+  // ギャラリーセクションをタイムスケジュールの前後どちらに表示するか切り替える。
+  // 未設定（既存データ）はこれまで通り below（タイムスケジュールの後）扱い。
+  const gallerySection = ev.gallery_urls?.length > 0 && (
+    <section>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-1 h-8 bg-gold rounded-full" />
+        <h2 className="font-serif text-2xl text-navy">{t('headingGallery')}</h2>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {ev.gallery_urls.map((url: string, i: number) => (
+          <div key={i} className="relative h-40 md:h-52 rounded-xl overflow-hidden shadow-sm">
+            <ZoomableImage src={url} alt={`${title} 写真${i + 1}`} fill className="object-cover" />
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+
   return (
     <>
       <Header />
@@ -110,6 +129,8 @@ export default async function MinorEventDetailPage({ params }: { params: Promise
             )}
           </section>
 
+          {gallerySection && ev.gallery_placement === 'above' && gallerySection}
+
           {schedule.length > 0 && (
             <section>
               <div className="flex items-center gap-3 mb-6">
@@ -135,21 +156,7 @@ export default async function MinorEventDetailPage({ params }: { params: Promise
             </section>
           )}
 
-          {ev.gallery_urls?.length > 0 && (
-            <section>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-1 h-8 bg-gold rounded-full" />
-                <h2 className="font-serif text-2xl text-navy">{t('headingGallery')}</h2>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {ev.gallery_urls.map((url: string, i: number) => (
-                  <div key={i} className="relative h-40 md:h-52 rounded-xl overflow-hidden shadow-sm">
-                    <ZoomableImage src={url} alt={`${title} 写真${i + 1}`} fill className="object-cover" />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          {gallerySection && ev.gallery_placement !== 'above' && gallerySection}
 
           {notes.length > 0 && (
             <section>
