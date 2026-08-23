@@ -302,6 +302,19 @@
     "doneTitle": "お問い合わせを受け付けました",
     "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。"
   },
+  "events": {
+    "title": "行事カレンダー",
+    "bannerTitle": "年間行事（6月18日・8月4日）",
+    "bannerSub": "大法要・大護摩供・地蔵流し、船禅頂のご案内",
+    "emptyTitle": "現在予定されている行事はありません",
+    "emptyText": "行事が登録されるとここに表示されます。",
+    "contactPrompt": "行事についてのお問い合わせはこちら",
+    "contactCta": "お問い合わせ",
+    "weekdays": "日,月,火,水,木,金,土",
+    "months": "1月,2月,3月,4月,5月,6月,7月,8月,9月,10月,11月,12月",
+    "yearMonth": "{year}年 {month}",
+    "toDate": "〜 {month}{day}日"
+  },
   "annualEvents": {
     "title": "年間行事",
     "eventsLabel": "行事カレンダー",

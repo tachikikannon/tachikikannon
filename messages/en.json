@@ -302,6 +302,19 @@
     "doneTitle": "Your Message Has Been Received",
     "doneText": "We will reply within 3–5 business days. Thank you for your patience."
   },
+  "events": {
+    "title": "Events Calendar",
+    "bannerTitle": "Annual Events (June 18 & August 4)",
+    "bannerSub": "Grand ceremonies, goma fire rituals, Jizo-nagashi, and the boat pilgrimage",
+    "emptyTitle": "No events are currently scheduled",
+    "emptyText": "Events will appear here once they're registered.",
+    "contactPrompt": "Have a question about an event?",
+    "contactCta": "Contact Us",
+    "weekdays": "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
+    "months": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
+    "yearMonth": "{month} {year}",
+    "toDate": "– {month} {day}"
+  },
   "annualEvents": {
     "title": "Annual Events",
     "eventsLabel": "Event Calendar",
