@@ -47,12 +47,14 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     fields: [
       { key: 'top_heading_about', label: 'セクション見出し', defaultValue: '立木観音について', translatable: true },
       {
-        key: 'top_about_cards', label: 'カード（歴史・拝観料金・境内案内・年間行事の順、4件固定）', type: 'list',
+        key: 'top_about_cards', label: 'カード（歴史・拝観料金・境内案内・花ごよみ・年間行事の順、5件固定）', type: 'list',
+        padToDefault: true,
         listFields: [{ key: 'label', label: 'タイトル' }, { key: 'desc', label: '説明' }],
         defaultValue: J([
           { label: '立木観音の歴史', desc: '歴史と縁起' },
           { label: '拝観料金', desc: '拝観料・各種料金' },
           { label: '境内のご案内', desc: '見どころ・境内マップ' },
+          { label: '花ごよみ', desc: '四季折々の花' },
           { label: '年間行事', desc: '法要・行事のご案内' },
         ]),
         translatable: true,
@@ -60,6 +62,7 @@ const FIELDS: { section: string; fields: Field[] }[] = [
           { label: 'History of Tachiki Kannon', desc: 'History & origins' },
           { label: 'Admission Fees',            desc: 'Admission & other fees' },
           { label: 'Grounds Guide',             desc: 'Highlights & temple map' },
+          { label: 'Flower Calendar',           desc: 'Seasonal flowers' },
           { label: 'Annual Events',             desc: 'Services & event information' },
         ]),
       },
