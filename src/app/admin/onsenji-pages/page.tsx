@@ -496,7 +496,7 @@ const SECTIONS: Section[] = [
     fields: [
       { key: 'setsubun_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '毎年1月下旬　午前11時より　※日程は年によって異なります', translatable: true },
       { key: 'setsubun_heading_about', label: '「行事について」見出し', defaultValue: '行事について', translatable: true },
-      { key: 'setsubun_about', label: '行事について（説明文）', multiline: true, defaultValue: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。', translatable: true },
+      { key: 'setsubun_about', label: '行事について（説明文）', multiline: true, defaultValue: '新年の邪気を払い、福を招く節分の法要です。豆まきや護摩供を通じて、参拝者の一年の健康と幸福をお祈りします。冬季の静けさのなか、厳かな雰囲気に包まれた温泉寺ならではの行事です。', translatable: true, defaultValueEn: 'A Setsubun ceremony to drive away misfortune and welcome good luck for the new year. Bean-throwing and a goma fire ritual pray for the health and happiness of visitors for the year ahead. A uniquely Onsenji event, held in the quiet, solemn atmosphere of winter.' },
       { key: 'setsubun_info_date', label: '開催日（カード表示）', defaultValue: '1月下旬（毎年）', translatable: true },
       { key: 'setsubun_info_time', label: '開始時間（カード表示）', defaultValue: '午前11時〜', translatable: true },
       { key: 'setsubun_info_join', label: '参列（カード表示）', defaultValue: '自由（申し込み不要）', translatable: true },
@@ -546,7 +546,7 @@ const SECTIONS: Section[] = [
     fields: [
       { key: 'yakushiko_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '毎年8月8日　午前11時より', translatable: true },
       { key: 'yakushiko_heading_about', label: '「行事について」見出し', defaultValue: '行事について', translatable: true },
-      { key: 'yakushiko_about', label: '行事について（説明文）', multiline: true, defaultValue: '毎年8月8日、温泉寺では湯の湖畔を舞台に、山伏によって採灯大護摩供が焚かれます。', translatable: true },
+      { key: 'yakushiko_about', label: '行事について（説明文）', multiline: true, defaultValue: '毎年8月8日、温泉寺では湯の湖畔を舞台に、山伏によって採灯大護摩供が焚かれます。写経体験でお写しいただいた写経が御本尊に奉じられ、護摩の炎で焚き上げられます。薬師如来の御加護のもと、参拝者の願いが天に届けられる、温泉寺最大の法要です。', translatable: true, defaultValueEn: 'Every August 8, mountain ascetics (yamabushi) perform the Saito Goma fire ritual on the shore of Lake Yunoko. Sutras copied during the sutra-copying experience are offered to the principal image and burned in the goma flames. Under the protection of Yakushi Nyorai, visitors\' wishes are carried to the heavens — the largest ceremony of the year at Onsenji.' },
       { key: 'yakushiko_info_date', label: '開催日（カード表示）', defaultValue: '8月8日（毎年）', translatable: true },
       { key: 'yakushiko_info_time', label: '開始時間（カード表示）', defaultValue: '午前11時〜', translatable: true },
       { key: 'yakushiko_info_join', label: '参列（カード表示）', defaultValue: '自由（申し込み不要）', translatable: true },
