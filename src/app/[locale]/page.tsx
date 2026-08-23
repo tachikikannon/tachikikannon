@@ -337,7 +337,7 @@ export default async function HomePage({
 
         {/* 祈る */}
         <section id="prayer" className="relative h-80 md:h-[28rem] overflow-hidden group">
-          <img src="/images/chuzenji/hero/goma-card.png" alt={prayerCard?.label}
+          <img src="/images/chuzenji/hero/goma-card.jpg" alt={prayerCard?.label}
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-navy/10" />
           <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
