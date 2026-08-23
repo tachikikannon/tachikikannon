@@ -63,6 +63,7 @@ export default async function Footer() {
           <div>
             <h4 className="text-gold text-xs tracking-widest mb-3">関連サイト</h4>
             <ul className="space-y-2 text-sm mb-5">
+              <li><Link href="/onsenji" className="hover:text-gold transition-colors">日光山温泉寺</Link></li>
               <li><a href="https://www.rinnoji.or.jp/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">輪王寺 公式サイト</a></li>
               <li><a href="https://bandou.gr.jp/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">坂東三十三観音 公式サイト</a></li>
             </ul>
