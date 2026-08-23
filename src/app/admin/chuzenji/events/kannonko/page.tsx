@@ -6,7 +6,7 @@ const J = (v: unknown) => JSON.stringify(v)
 const FIELDS = [
   { key: 'kannonko_subtitle', label: '見出し（ヒーロー サブタイトル）', defaultValue: '毎年6月18日　午前10時より', translatable: true },
   { key: 'kannonko_heading_about', label: '「行事について」見出し', defaultValue: '行事について', translatable: true },
-  { key: 'kannonko_about', label: '行事について（説明文）', multiline: true, defaultValue: '毎年6月18日、日光山中禅寺 立木観音では、ご信徒・一般参拝者の皆様をお迎えして年に一度の大法要を執り行います。', translatable: true },
+  { key: 'kannonko_about', label: '行事について（説明文）', multiline: true, defaultValue: '毎年6月18日、日光山中禅寺 立木観音では、ご信徒・一般参拝者の皆様をお迎えして年に一度の大法要を執り行います。観音講・大護摩供・地蔵流しと三つの行事が続き、中禅寺湖の豊かな自然のなかで千二百余年の祈りが受け継がれます。', translatable: true, defaultValueEn: 'Every year on June 18th, Chuzenji Tachiki Kannon welcomes devotees and visitors for its once-a-year grand ceremony. Three rites follow in succession — Kannon-ko, the Grand Goma Ritual, and Jizo-nagashi — carrying on twelve hundred years of prayer amid the rich nature of Lake Chuzenji.' },
   { key: 'kannonko_info_date', label: '開催日（カード表示）', defaultValue: '6月18日（毎年）', translatable: true },
   { key: 'kannonko_info_time', label: '開始時間（カード表示）', defaultValue: '午前10時〜', translatable: true },
   { key: 'kannonko_info_join', label: '参列（カード表示）', defaultValue: '申込者のみ', translatable: true, defaultValueEn: 'Advance application required' },
