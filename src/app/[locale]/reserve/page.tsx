@@ -15,12 +15,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 const DEFAULT_PRAYER_FEES = [
-  { price: '5,000円', size: '28㎝' }, { price: '10,000円', size: '32㎝' },
-  { price: '20,000円', size: '38㎝' }, { price: '30,000円', size: '42.5㎝' },
+  { price: '5,000円', size: '高さ28㎝ 横幅10cm' }, { price: '10,000円', size: '高さ32㎝ 横幅11.5cm' },
+  { price: '20,000円', size: '高さ38㎝ 横幅12cm' }, { price: '30,000円', size: '高さ42.5㎝ 横幅13cm' },
 ]
 const DEFAULT_PRAYER_FEES_EN = [
-  { price: '¥5,000', size: '28cm' }, { price: '¥10,000', size: '32cm' },
-  { price: '¥20,000', size: '38cm' }, { price: '¥30,000', size: '42.5cm' },
+  { price: '¥5,000', size: 'H28cm × W10cm' }, { price: '¥10,000', size: 'H32cm × W11.5cm' },
+  { price: '¥20,000', size: 'H38cm × W12cm' }, { price: '¥30,000', size: 'H42.5cm × W13cm' },
 ]
 
 // 各種別カードの料金は、御祈願・写経・写仏・数珠づくり・坐禅それぞれの
