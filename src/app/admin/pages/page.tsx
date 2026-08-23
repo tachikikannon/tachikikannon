@@ -119,7 +119,7 @@ const SECTIONS: Section[] = [
         listFields: [
           { key: 'month', label: '見頃（例：4月〜5月）' },
           { key: 'name', label: '花の名前・見出し' },
-          { key: 'image', label: '画像パス（「画像管理」でアップロードしたURLを貼り付け）' },
+          { key: 'images', label: '画像パス（「画像管理」でアップロードしたURLを貼り付け）', images: true },
           { key: 'desc', label: '説明', multiline: true },
         ],
         defaultValue: J([
