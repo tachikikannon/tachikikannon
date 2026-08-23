@@ -1,4 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+/* 見出し(font-serif)はヒーロー演出で1文字ずつ厳密に位置合わせしているため、
+   display=swapだとフォールバック→本来のフォントへの差し替え時に文字幅が変わり、
+   見出しの位置が視覚的にジャンプして見える。displayをoptionalにし、フォントが
+   即座に使えない場合はそのページ表示中はフォールバックのまま統一し、差し替えによる
+   ジャンプが起きないようにする */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=optional');
 
 @tailwind base;
 @tailwind components;
