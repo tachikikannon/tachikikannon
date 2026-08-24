@@ -11,6 +11,7 @@ import HeroReveal from '@/components/HeroReveal'
 import HeroMediaCycle from '@/components/HeroMediaCycle'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
+import { newsCategoriesKey, parseNewsCategories, categoryColor } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
 import type { News, Event, Post } from '@/types'
 
@@ -147,6 +148,8 @@ export default async function HomePage({
     .order('published_at', { ascending: false })
     .limit(5)
 
+  const newsCategories = parseNewsCategories(content[newsCategoriesKey('chuzenji')])
+
   const { data: pastRecords } = await supabase
     .from('posts')
     .select('id, title, slug, excerpt, cover_url, published_at')
@@ -261,7 +264,7 @@ export default async function HomePage({
                         {new Date(n.published_at ?? n.created_at).toLocaleDateString('ja-JP')}
                       </span>
                       <span className="sm:w-32 sm:flex-shrink-0">
-                        <span className="badge bg-navy/10 text-navy text-[13px] whitespace-nowrap">{n.category}</span>
+                        <span className={`badge text-[13px] whitespace-nowrap ${categoryColor(newsCategories, n.category)}`}>{n.category}</span>
                       </span>
                       <span className="min-w-0">
                         <span className="block text-base leading-relaxed group-hover:text-gold transition-colors truncate">{title}</span>

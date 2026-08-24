@@ -10,6 +10,7 @@ import ZoomableImage from '@/components/ZoomableImage'
 import HeroReveal from '@/components/HeroReveal'
 import { createServerClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
+import { newsCategoriesKey, parseNewsCategories, categoryColor } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -197,6 +198,9 @@ export default async function OnsenjPage({
     .eq('site', 'onsenji')
     .order('published_at', { ascending: false })
     .limit(5)
+
+  const { data: newsCategoriesRow } = await supabase.from('site_content').select('value').eq('key', newsCategoriesKey('onsenji')).maybeSingle()
+  const newsCategories = parseNewsCategories(newsCategoriesRow?.value)
   const news = (newsList ?? []) as News[]
 
   return (
@@ -304,7 +308,7 @@ export default async function OnsenjPage({
                       <span className="text-xs text-gray-400 whitespace-nowrap sm:pt-0.5 sm:w-24 sm:flex-shrink-0">
                         {new Date(n.published_at ?? n.created_at).toLocaleDateString('ja-JP')}
                       </span>
-                      <span className="badge bg-onsenji/10 text-onsenji text-[10px] flex-shrink-0 w-fit">{n.category}</span>
+                      <span className={`badge text-[10px] flex-shrink-0 w-fit ${categoryColor(newsCategories, n.category)}`}>{n.category}</span>
                       <span className="text-sm leading-relaxed group-hover:text-[#2d6b57] transition-colors truncate">{pickLocalized(loc, n.title, n.title_en)}</span>
                     </Link>
                   </li>
