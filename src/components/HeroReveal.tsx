@@ -528,13 +528,17 @@ export default function HeroReveal({
                         // の位置まで、ロゴ画像だけをさらにずらす（他のコマはgridShiftPxのみ）。
                         // 親divではなくimg自身にtransformをかける（親divへのtransformが
                         // 子のgetBoundingClientRectに反映されない挙動が確認されたため）
-                        transform: `translateY(${logoExtraPx}px)`,
+                        transform: `translateY(${logoExtraPx}px) translateZ(0)`,
                         opacity: logoActive ? 1 : 0,
                         transitionProperty: 'opacity',
                         transitionDuration: logoActive ? `${V_LOGO_FADE_MS}ms` : '700ms',
                         transitionTimingFunction: EASE,
                         // stampSrc指定時、朱印が現れてからV_STAMP_TEXT_GAP_MS（2秒）待って現れる
                         transitionDelay: logoActive ? `${vTextStartWaitMs}ms` : '0ms',
+                        // 隣の寺紋（mask-image使用）起因のiOS Safari再描画漏れ対策。
+                        // crestSrc・stampSrc側には適用済みだったが、この筆文字ロゴにだけ
+                        // 抜けていた（温泉寺で朱印・筆文字が実機で表示されない不具合の原因）
+                        WebkitBackfaceVisibility: 'hidden',
                       }}
                     />
                   </div>
