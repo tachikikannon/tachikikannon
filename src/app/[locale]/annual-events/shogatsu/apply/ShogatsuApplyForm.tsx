@@ -214,18 +214,18 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
         <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
           <p className="font-medium text-navy text-sm mb-4">{t('methodHeading')}</p>
           <div className="grid sm:grid-cols-3 gap-4">
-            <a href="#apply-form"
-              className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors">
-              <span className="text-2xl">📦</span>
-              <span className="font-medium text-navy text-sm">{t('methodCodTitle')}</span>
-              <span className="text-xs text-gray-500 leading-relaxed">{t('methodCodText')}</span>
-            </a>
             <button type="button" onClick={() => setShowEcConfirm(true)}
               className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors text-left">
               <span className="text-2xl">🛒</span>
               <span className="font-medium text-navy text-sm">{t('methodEcTitle')}</span>
               <span className="text-xs text-gray-500 leading-relaxed">{t('methodEcText')}</span>
             </button>
+            <a href="#apply-form"
+              className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors">
+              <span className="text-2xl">📦</span>
+              <span className="font-medium text-navy text-sm">{t('methodCodTitle')}</span>
+              <span className="text-xs text-gray-500 leading-relaxed">{t('methodCodText')}</span>
+            </a>
             <button type="button" onClick={() => setShowCashMail(true)}
               className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors text-left">
               <span className="text-2xl">✉️</span>
