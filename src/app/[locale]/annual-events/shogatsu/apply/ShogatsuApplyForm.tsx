@@ -6,11 +6,12 @@ import { createClient } from '@/lib/supabase'
 import { calcShippingFeeByWeight, type ShippingTier } from '@/lib/shipping'
 
 type Status = 'idle' | 'loading' | 'done' | 'error'
-type Applicant = { name: string; address: string; wish1: string; wish2: string; fee: string }
+type ShipMode = 'same' | 'separate'
+type Applicant = { name: string; address: string; wish1: string; wish2: string; fee: string; shipMode: ShipMode }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
 const CIRCLED = ['②', '③', '④', '⑤']
-const emptyApplicant = (): Applicant => ({ name: '', address: '', wish1: '', wish2: '', fee: '' })
+const emptyApplicant = (): Applicant => ({ name: '', address: '', wish1: '', wish2: '', fee: '', shipMode: 'same' })
 
 function priceToNumber(price: string): number {
   return Number(price.replace(/[^\d]/g, '')) || 0
@@ -61,18 +62,41 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
   function setApplicant(i: number, field: keyof Applicant, value: string) {
     setApplicants(prev => prev.map((a, idx) => idx === i ? { ...a, [field]: value } : a))
   }
+  function setApplicantShipMode(i: number, mode: ShipMode) {
+    setApplicants(prev => prev.map((a, idx) => idx === i ? { ...a, shipMode: mode } : a))
+  }
 
-  const selectedFees = [
-    ...(fee ? [fee] : []),
-    ...applicants.filter(a => a.name.trim() && a.fee).map(a => a.fee),
-  ]
-  const feeCounts = FEE_OPTIONS
-    .map(f => ({ price: f.price, count: selectedFees.filter(p => p === f.price).length }))
-    .filter(x => x.count > 0)
+  function weightOf(price: string): number {
+    return FEE_OPTIONS.find(f => f.price === price)?.weight_g ?? 0
+  }
+  function countBy(prices: string[]) {
+    return FEE_OPTIONS
+      .map(f => ({ price: f.price, count: prices.filter(p => p === f.price).length }))
+      .filter(x => x.count > 0)
+  }
+
+  const activeApplicants = applicants
+    .map((a, i) => ({ ...a, circled: CIRCLED[i] }))
+    .filter(a => a.name.trim() && a.fee)
+  const sameAddressApplicants = activeApplicants.filter(a => a.shipMode === 'same')
+  const separateApplicants = activeApplicants.filter(a => a.shipMode === 'separate')
+
+  // まとめて発送分（代表者＋「代表者と同じ住所」を選んだ申込者）：重量を合算して1件分の送料
+  const mainFees = [...(fee ? [fee] : []), ...sameAddressApplicants.map(a => a.fee)]
+  const mainWeightG = mainFees.reduce((sum, p) => sum + weightOf(p), 0)
+  const mainShippingFee = mainFees.length > 0 ? calcShippingFeeByWeight(mainWeightG, shippingTiers) : null
+
+  // 個別発送分（「別の住所に送る」を選んだ申込者）：1人＝1件として、それぞれ別に送料計算
+  const separateShipments = separateApplicants.map(a => ({
+    applicant: a,
+    shippingFee: calcShippingFeeByWeight(weightOf(a.fee), shippingTiers),
+  }))
+
+  const selectedFees = activeApplicants.map(a => a.fee).concat(fee ? [fee] : [])
   const subtotal = selectedFees.reduce((sum, p) => sum + priceToNumber(p), 0)
-  const totalWeightG = selectedFees.reduce((sum, p) => sum + (FEE_OPTIONS.find(f => f.price === p)?.weight_g ?? 0), 0)
-  const shippingFee = selectedFees.length > 0 ? calcShippingFeeByWeight(totalWeightG, shippingTiers) : null
-  const grandTotal = subtotal + (shippingFee ?? 0)
+  const shippingFeeTotal = (mainShippingFee ?? 0) + separateShipments.reduce((sum, s) => sum + (s.shippingFee ?? 0), 0)
+  const hasUnknownShippingFee = (mainFees.length > 0 && mainShippingFee === null) || separateShipments.some(s => s.shippingFee === null)
+  const grandTotal = subtotal + shippingFeeTotal
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -81,8 +105,24 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
     const applicantLines = applicants
       .map((a, i) => ({ ...a, num: CIRCLED[i] }))
       .filter(a => a.name.trim())
-      .map(a => `${a.num} ${a.name}（${a.address || '住所未記入'}）　御札：${a.fee || '未選択'}　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`)
+      .map(a => {
+        const shipLabel = !a.fee ? '' : a.shipMode === 'separate' ? '　発送：別住所に個別発送' : '　発送：代表者とまとめて発送'
+        return `${a.num} ${a.name}（${a.address || '住所未記入'}）　御札：${a.fee || '未選択'}${shipLabel}　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`
+      })
       .join('\n')
+
+    const mainLines = mainFees.length > 0
+      ? [
+          `【まとめて発送（代表者住所）】`,
+          ...countBy(mainFees).map(({ price, count }) => `${price} × ${count}点`),
+          `送料：${mainShippingFee !== null ? `¥${mainShippingFee.toLocaleString()}` : '追ってご案内'}`,
+        ]
+      : []
+    const separateLines = separateShipments.flatMap(({ applicant: a, shippingFee: sf }) => [
+      `【${a.circled} ${a.name}様へ個別発送（${a.address || '住所未記入'}）】`,
+      `${a.fee} × 1点`,
+      `送料：${sf !== null ? `¥${sf.toLocaleString()}` : '追ってご案内'}`,
+    ])
 
     const message = [
       `【行事名】正月元旦特別護摩祈願（1月1日）`,
@@ -94,9 +134,10 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
       `御札：${fee}`,
       `お支払い方法：代金引換（代引き）`,
       applicantLines ? `\n【申込者一覧】\n${applicantLines}` : '',
-      `\n【御札内訳】\n${feeCounts.map(({ price, count }) => `${price} × ${count}点`).join('\n')}`,
-      `御札代金小計：¥${subtotal.toLocaleString()}`,
-      `送料：${shippingFee !== null ? `¥${shippingFee.toLocaleString()}` : '追ってご案内'}`,
+      mainLines.length ? `\n${mainLines.join('\n')}` : '',
+      separateLines.length ? `\n${separateLines.join('\n')}` : '',
+      `\n御札代金小計：¥${subtotal.toLocaleString()}`,
+      `送料合計：¥${shippingFeeTotal.toLocaleString()}${hasUnknownShippingFee ? '（一部追ってご案内）' : ''}`,
       `合計：¥${grandTotal.toLocaleString()}`,
       notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
@@ -279,6 +320,24 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
                     <label className="text-xs text-gray-500 block mb-0.5">{t('applicantFeeLabel')}</label>
                     <FeeSelect value={a.fee} onChange={v => setApplicant(i, 'fee', v)} options={FEE_OPTIONS} placeholder={t('applicantFeePlaceholder')} />
                   </div>
+                  {a.fee && (
+                    <div className="mb-3">
+                      <label className="text-xs text-gray-500 block mb-1">{t('shipModeLabel')}</label>
+                      <div className="flex gap-2">
+                        <button type="button" onClick={() => setApplicantShipMode(i, 'same')}
+                          className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'same' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                          {t('shipModeSame')}
+                        </button>
+                        <button type="button" onClick={() => setApplicantShipMode(i, 'separate')}
+                          className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'separate' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                          {t('shipModeSeparate')}
+                        </button>
+                      </div>
+                      {a.shipMode === 'separate' && (
+                        <p className="text-[11px] text-gray-400 mt-1">{t('shipModeSeparateHint')}</p>
+                      )}
+                    </div>
+                  )}
                   <div className="grid sm:grid-cols-2 gap-3">
                     <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
                     <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} placeholder={t('wishSelectPlaceholder')} />
@@ -290,16 +349,36 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
 
           {selectedFees.length > 0 && (
             <div className="border-t border-gray-200 pt-5">
-              <div className="bg-cream-alt rounded-lg p-4 text-sm space-y-1">
-                {feeCounts.map(({ price, count }) => (
-                  <p key={price} className="text-gray-500 text-xs">{price} × {count}{t('feeCountUnit')}</p>
+              <div className="bg-cream-alt rounded-lg p-4 text-sm space-y-3">
+                {mainFees.length > 0 && (
+                  <div>
+                    <p className="text-xs text-navy font-medium mb-1">{t('mainShipmentLabel')}</p>
+                    {countBy(mainFees).map(({ price, count }) => (
+                      <p key={price} className="text-gray-500 text-xs">{price} × {count}{t('feeCountUnit')}</p>
+                    ))}
+                    <p className="text-gray-500 text-xs">
+                      {t('shippingFeeLabel')}
+                      {mainShippingFee !== null ? `¥${mainShippingFee.toLocaleString()}` : t('shippingUnknownNote')}
+                    </p>
+                  </div>
+                )}
+                {separateShipments.map(({ applicant: a, shippingFee: sf }) => (
+                  <div key={a.circled} className="border-t border-white pt-2">
+                    <p className="text-xs text-navy font-medium mb-1">
+                      {t('separateShipmentLabel', { name: `${a.circled} ${a.name}` })}
+                    </p>
+                    <p className="text-gray-500 text-xs">{a.fee} × 1{t('feeCountUnit')}</p>
+                    <p className="text-gray-500 text-xs">
+                      {t('shippingFeeLabel')}
+                      {sf !== null ? `¥${sf.toLocaleString()}` : t('shippingUnknownNote')}
+                    </p>
+                  </div>
                 ))}
-                <p className="text-gray-600">{t('subtotalLabel')}¥{subtotal.toLocaleString()}</p>
-                <p className="text-gray-600">
-                  {t('shippingFeeLabel')}
-                  {shippingFee !== null ? `¥${shippingFee.toLocaleString()}` : t('shippingUnknownNote')}
-                </p>
-                <p className="text-gold font-medium text-base">{t('grandTotalLabel')}¥{grandTotal.toLocaleString()}</p>
+                <div className="border-t border-white pt-2 space-y-1">
+                  <p className="text-gray-600">{t('subtotalLabel')}¥{subtotal.toLocaleString()}</p>
+                  <p className="text-gray-600">{t('shippingTotalLabel')}¥{shippingFeeTotal.toLocaleString()}{hasUnknownShippingFee && t('shippingUnknownSuffix')}</p>
+                  <p className="text-gold font-medium text-base">{t('grandTotalLabel')}¥{grandTotal.toLocaleString()}</p>
+                </div>
               </div>
             </div>
           )}
