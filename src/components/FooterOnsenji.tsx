@@ -35,9 +35,9 @@ export default async function FooterOnsenji() {
             </address>
           </div>
           <div>
-            <h4 className="text-[#7ec8a4] text-xs tracking-widest mb-3">ご参拝・ご祈願</h4>
+            <h4 className="text-[#7ec8a4] text-xs tracking-widest mb-3">ご参拝</h4>
             <ul className="space-y-2 text-sm">
-              {[['拝観案内','/onsenji/about'],['御祈願','/onsenji/prayer'],['御朱印','/onsenji/goshuin'],['よくある質問','/onsenji/faq']].map(([l,h])=>(
+              {[['拝観案内','/onsenji/about'],['薬師の湯','/onsenji/onsen'],['御朱印','/onsenji/goshuin'],['よくある質問','/onsenji/faq']].map(([l,h])=>(
                 <li key={h}><Link href={h} className="hover:text-[#7ec8a4] transition-colors">{l}</Link></li>
               ))}
             </ul>
