@@ -97,7 +97,7 @@ export default async function NewsPage({
                       <time className="text-xs text-gray-400 whitespace-nowrap sm:w-24 sm:flex-shrink-0">
                         {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
                       </time>
-                      <span className="sm:w-32 sm:flex-shrink-0">
+                      <span className="sm:w-fit sm:flex-shrink-0">
                         <span className={`badge text-[13px] whitespace-nowrap ${categoryColor(CATEGORIES, item.category)}`}>{CAT_LABELS[item.category] ?? item.category}</span>
                       </span>
                       <p className="flex-1 min-w-0 text-base text-navy group-hover:text-gold transition-colors leading-relaxed truncate">{title}</p>
