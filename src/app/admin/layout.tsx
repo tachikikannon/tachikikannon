@@ -19,6 +19,9 @@ const navItems: NavItem[] = [
   { href: '/admin/capacity',      label: '定員設定',         icon: '👥', group: '予約・体験' },
   // ── 授与品 ──
   { href: '/admin/cod-orders',    label: '代金引換の申込',   icon: '📦', group: '授与品' },
+  // ── 通信販売設定 ──
+  { href: '/admin/mail-order/weights',  label: '商品重量設定',   icon: '⚖️', group: '通信販売設定' },
+  { href: '/admin/mail-order/shipping', label: '送料テーブル設定', icon: '🚚', group: '通信販売設定' },
   // ── 行事 ──
   { href: '/admin/events',        label: '行事カレンダー',   icon: '📅', group: '行事' },
   // ── お問い合わせ ──
