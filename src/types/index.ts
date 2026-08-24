@@ -150,6 +150,7 @@ export interface CodOrder {
   address: string
   items: CodOrderItem[]
   total_amount: number
+  shipping_fee: number
   notes: string | null
   status: CodOrderStatus
   assigned_admin_id: string | null

@@ -144,7 +144,11 @@ export default function AdminCodOrdersPage() {
                   </tbody>
                 </table>
               </div>
-              <p className="text-sm text-gold font-medium mt-2 text-right">合計：¥{detail.total_amount.toLocaleString()}（送料別）</p>
+              <div className="text-sm mt-2 text-right space-y-0.5">
+                <p className="text-gray-500 text-xs">商品代金小計：¥{detail.items.reduce((sum, it) => sum + it.price * it.quantity, 0).toLocaleString()}</p>
+                <p className="text-gray-500 text-xs">送料：¥{detail.shipping_fee.toLocaleString()}</p>
+                <p className="text-gold font-medium">合計：¥{detail.total_amount.toLocaleString()}</p>
+              </div>
             </div>
 
             <dl className="space-y-3 text-sm">

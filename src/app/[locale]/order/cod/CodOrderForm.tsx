@@ -3,6 +3,11 @@ import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
+import {
+  GOODS_WEIGHTS_KEY, SHIPPING_TABLE_KEY,
+  parseGoodsWeights, parseShippingTable, calcOrderShippingFee,
+  type GoodsWeights, type ShippingTier,
+} from '@/lib/shipping'
 import type { GoodsItem, CodOrderItem } from '@/types'
 
 type Row = { key: number; goodsId: string; customName: string; quantity: number }
@@ -19,6 +24,8 @@ export default function CodOrderForm() {
   const [goods, setGoods] = useState<GoodsItem[]>([])
   const [goodsError, setGoodsError] = useState(false)
   const [loadingGoods, setLoadingGoods] = useState(true)
+  const [weights, setWeights] = useState<GoodsWeights>({})
+  const [shippingTiers, setShippingTiers] = useState<ShippingTier[]>([])
   const [rows, setRows] = useState<Row[]>([newRow()])
   const [form, setForm] = useState({
     name: '', name_kana: '', email: '', phone: '',
@@ -36,6 +43,16 @@ export default function CodOrderForm() {
       })
       .catch(() => setGoodsError(true))
       .finally(() => setLoadingGoods(false))
+
+    supabase.from('site_content').select('key,value')
+      .in('key', [GOODS_WEIGHTS_KEY, SHIPPING_TABLE_KEY])
+      .then(({ data }) => {
+        const weightsRow = data?.find(r => r.key === GOODS_WEIGHTS_KEY)
+        const shippingRow = data?.find(r => r.key === SHIPPING_TABLE_KEY)
+        setWeights(parseGoodsWeights(weightsRow?.value))
+        setShippingTiers(parseShippingTable(shippingRow?.value))
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function updateRow(key: number, patch: Partial<Row>) {
@@ -58,8 +75,14 @@ export default function CodOrderForm() {
     return { name: g.name, price: g.price, quantity: r.quantity }
   }
 
-  const items = rows.map(resolveItem).filter((it): it is CodOrderItem => it !== null)
-  const totalAmount = items.reduce((sum, it) => sum + it.price * it.quantity, 0)
+  const resolvedRows = rows
+    .map(r => ({ row: r, item: resolveItem(r) }))
+    .filter((x): x is { row: Row; item: CodOrderItem } => x.item !== null)
+  const items = resolvedRows.map(x => x.item)
+  const subtotal = items.reduce((sum, it) => sum + it.price * it.quantity, 0)
+  const cart = resolvedRows.map(x => ({ goodsId: x.row.goodsId, quantity: x.row.quantity }))
+  const shippingFee = calcOrderShippingFee(cart, weights, shippingTiers)
+  const totalAmount = subtotal + (shippingFee ?? 0)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -74,6 +97,7 @@ export default function CodOrderForm() {
       ...form,
       items,
       total_amount: totalAmount,
+      shipping_fee: shippingFee ?? 0,
       status: 'unconfirmed' as const,
     }
     const { data, error } = await supabase.from('cod_orders').insert(payload).select('id').single()
@@ -155,8 +179,18 @@ export default function CodOrderForm() {
               )}
             </div>
             <button type="button" onClick={addRow} className="text-navy text-xs underline mt-2">{t('addItem')}</button>
-            {totalAmount > 0 && (
-              <p className="text-sm text-gold font-medium mt-3">{t('totalPrefix')}¥{totalAmount.toLocaleString()}{t('totalSuffix')}</p>
+            {subtotal > 0 && (
+              <div className="text-sm mt-3 space-y-1">
+                <p className="text-gray-600">{t('subtotalLabel')}¥{subtotal.toLocaleString()}</p>
+                <p className="text-gray-600">
+                  {t('shippingFeeLabel')}
+                  {shippingFee !== null ? `¥${shippingFee.toLocaleString()}` : t('shippingUnknownNote')}
+                </p>
+                <p className="text-gold font-medium">
+                  {t('grandTotalLabel')}¥{totalAmount.toLocaleString()}
+                  {shippingFee === null && t('shippingUnknownSuffix')}
+                </p>
+              </div>
             )}
           </div>
 

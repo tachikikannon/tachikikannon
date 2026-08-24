@@ -18,14 +18,15 @@ export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const body = await req.json()
-    const { id, name, name_kana, email, phone, postal_code, address, items, total_amount, notes } = body
+    const { id, name, name_kana, email, phone, postal_code, address, items, total_amount, shipping_fee, notes } = body
+    const subtotal = (total_amount ?? 0) - (shipping_fee ?? 0)
 
     const toEmail = process.env.NOTIFY_EMAIL!
     const adminUrl = `${process.env.SITE_URL ?? ''}/admin/cod-orders`
 
     const [, , replyResult] = await Promise.allSettled([
       sendLinePush(
-        `【代金引換 新規申込】\n申込番号: ${id ?? '(不明)'}\n氏名: ${name}\n${itemsText(items)}\n合計: ¥${(total_amount ?? 0).toLocaleString()}（送料別）\n管理画面: ${adminUrl}`
+        `【代金引換 新規申込】\n申込番号: ${id ?? '(不明)'}\n氏名: ${name}\n${itemsText(items)}\n商品代金: ¥${subtotal.toLocaleString()}\n送料: ¥${(shipping_fee ?? 0).toLocaleString()}\n合計: ¥${(total_amount ?? 0).toLocaleString()}\n管理画面: ${adminUrl}`
       ),
 
       resend.emails.send({
@@ -39,7 +40,9 @@ export async function POST(req: Request) {
             ${itemsRows(items)}
           </table>
           <table style="border-collapse:collapse;width:100%;font-size:14px;">
-            <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;width:120px;">商品代金合計</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">¥${(total_amount ?? 0).toLocaleString()}（送料別途）</td></tr>
+            <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;width:120px;">商品代金小計</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">¥${subtotal.toLocaleString()}</td></tr>
+            <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">送料</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">¥${(shipping_fee ?? 0).toLocaleString()}</td></tr>
+            <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">合計</th><td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:bold;">¥${(total_amount ?? 0).toLocaleString()}</td></tr>
             <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">お名前</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${name}（${name_kana}）</td></tr>
             <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">メール</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${email}</td></tr>
             <tr><th style="text-align:left;padding:8px 12px;background:#f5f2ec;">電話番号</th><td style="padding:8px 12px;border-bottom:1px solid #eee;">${phone}</td></tr>
@@ -65,7 +68,7 @@ export async function POST(req: Request) {
                 <tr><th style="text-align:left;padding:6px 12px;background:#f5f2ec;">商品</th><th style="text-align:right;padding:6px 12px;background:#f5f2ec;">数量</th><th style="text-align:right;padding:6px 12px;background:#f5f2ec;">小計</th></tr>
                 ${itemsRows(items)}
               </table>
-              <p style="font-size:13px;">商品代金合計：¥${(total_amount ?? 0).toLocaleString()}（送料別途）<br>商品お届け時に配達員へお支払いください。</p>
+              <p style="font-size:13px;">商品代金小計：¥${subtotal.toLocaleString()}<br>送料：¥${(shipping_fee ?? 0).toLocaleString()}<br>合計：¥${(total_amount ?? 0).toLocaleString()}<br>商品お届け時に配達員へお支払いください。</p>
               <p style="font-size:13px;color:#555;margin-top:20px;">
                 お問い合わせ　TEL：0288-55-0013（受付時間：拝観時間内）
               </p>
