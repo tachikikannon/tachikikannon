@@ -3,13 +3,18 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
+import { calcShippingFeeByWeight, type ShippingTier } from '@/lib/shipping'
 
 type Status = 'idle' | 'loading' | 'done' | 'error'
-type Applicant = { name: string; address: string; wish1: string; wish2: string }
+type Applicant = { name: string; address: string; wish1: string; wish2: string; fee: string }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
 const CIRCLED = ['②', '③', '④', '⑤']
-const emptyApplicant = (): Applicant => ({ name: '', address: '', wish1: '', wish2: '' })
+const emptyApplicant = (): Applicant => ({ name: '', address: '', wish1: '', wish2: '', fee: '' })
+
+function priceToNumber(price: string): number {
+  return Number(price.replace(/[^\d]/g, '')) || 0
+}
 
 const EC_SITE_URL = 'https://chuzenji.official.ec/'
 const CASH_MAIL_FORM_URL = '/images/chuzenji/events/shogatsu/gomamousikomi.pdf'
@@ -23,9 +28,18 @@ function WishSelect({ value, onChange, required, placeholder }: { value: string;
   )
 }
 
-type Fee = { price: string; size: string }
+type Fee = { price: string; size: string; weight_g: number }
 
-export default function ShogatsuApplyForm({ fees: FEE_OPTIONS }: { fees: Fee[] }) {
+function FeeSelect({ value, onChange, options, placeholder }: { value: string; onChange: (v: string) => void; options: Fee[]; placeholder: string }) {
+  return (
+    <select className="admin-input" value={value} onChange={e => onChange(e.target.value)}>
+      <option value="">{placeholder}</option>
+      {options.map(f => <option key={f.price} value={f.price}>{f.size}（{f.price}）</option>)}
+    </select>
+  )
+}
+
+export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: { fees: Fee[]; shippingTiers: ShippingTier[] }) {
   const supabase = createClient()
   const t = useTranslations('shogatsuApply')
   const tS = useTranslations('shogatsu')
@@ -48,6 +62,15 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS }: { fees: Fee[] }
     setApplicants(prev => prev.map((a, idx) => idx === i ? { ...a, [field]: value } : a))
   }
 
+  const selectedFees = [
+    ...(fee ? [fee] : []),
+    ...applicants.filter(a => a.name.trim() && a.fee).map(a => a.fee),
+  ]
+  const subtotal = selectedFees.reduce((sum, p) => sum + priceToNumber(p), 0)
+  const totalWeightG = selectedFees.reduce((sum, p) => sum + (FEE_OPTIONS.find(f => f.price === p)?.weight_g ?? 0), 0)
+  const shippingFee = selectedFees.length > 0 ? calcShippingFeeByWeight(totalWeightG, shippingTiers) : null
+  const grandTotal = subtotal + (shippingFee ?? 0)
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('loading')
@@ -55,7 +78,7 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS }: { fees: Fee[] }
     const applicantLines = applicants
       .map((a, i) => ({ ...a, num: CIRCLED[i] }))
       .filter(a => a.name.trim())
-      .map(a => `${a.num} ${a.name}（${a.address || '住所未記入'}）　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`)
+      .map(a => `${a.num} ${a.name}（${a.address || '住所未記入'}）　御札：${a.fee || '未選択'}　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`)
       .join('\n')
 
     const message = [
@@ -68,6 +91,9 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS }: { fees: Fee[] }
       `御札：${fee}`,
       `お支払い方法：代金引換（代引き）`,
       applicantLines ? `\n【申込者一覧】\n${applicantLines}` : '',
+      `\n御札代金小計：¥${subtotal.toLocaleString()}`,
+      `送料：${shippingFee !== null ? `¥${shippingFee.toLocaleString()}` : '追ってご案内'}`,
+      `合計：¥${grandTotal.toLocaleString()}`,
       notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
 
@@ -245,6 +271,10 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS }: { fees: Fee[] }
                     <input className="admin-input" placeholder={t('applicantNamePlaceholder')} value={a.name} onChange={e => setApplicant(i, 'name', e.target.value)} />
                     <input className="admin-input" placeholder={t('applicantAddressPlaceholder')} value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
                   </div>
+                  <div className="mb-3">
+                    <label className="text-xs text-gray-500 block mb-0.5">{t('applicantFeeLabel')}</label>
+                    <FeeSelect value={a.fee} onChange={v => setApplicant(i, 'fee', v)} options={FEE_OPTIONS} placeholder={t('applicantFeePlaceholder')} />
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
                     <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} placeholder={t('wishSelectPlaceholder')} />
@@ -253,6 +283,19 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS }: { fees: Fee[] }
               ))}
             </div>
           </div>
+
+          {selectedFees.length > 0 && (
+            <div className="border-t border-gray-200 pt-5">
+              <div className="bg-cream-alt rounded-lg p-4 text-sm space-y-1">
+                <p className="text-gray-600">{t('subtotalLabel')}¥{subtotal.toLocaleString()}</p>
+                <p className="text-gray-600">
+                  {t('shippingFeeLabel')}
+                  {shippingFee !== null ? `¥${shippingFee.toLocaleString()}` : t('shippingUnknownNote')}
+                </p>
+                <p className="text-gold font-medium text-base">{t('grandTotalLabel')}¥{grandTotal.toLocaleString()}</p>
+              </div>
+            </div>
+          )}
 
           <div className="border-t border-gray-200 pt-5">
             <label className="admin-label">{t('notesLabel')} <span className="text-gray-400 text-xs">{t('notesHint')}</span></label>
