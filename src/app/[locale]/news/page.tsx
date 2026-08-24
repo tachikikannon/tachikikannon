@@ -6,7 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { createServerClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
-import { newsCategoriesKey, parseNewsCategories, categoryColor } from '@/lib/newsCategories'
+import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -45,13 +45,6 @@ export default async function NewsPage({
 
   const { data: categoriesRow } = await supabase.from('site_content').select('value').eq('key', newsCategoriesKey('chuzenji')).maybeSingle()
   const CATEGORIES = parseNewsCategories(categoriesRow?.value)
-  const CAT_LABELS: Record<string, string> = {
-    'お知らせ': t('catNews'),
-    '行事案内': t('catEvent'),
-    '季節のお知らせ': t('catSeasonal'),
-    '交通情報': t('catTraffic'),
-    '授与品のお知らせ': t('catGoods'),
-  }
   const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
 
   return (
@@ -78,7 +71,7 @@ export default async function NewsPage({
             {CATEGORIES.map(cat => (
               <Link key={cat.name} href={`/news?category=${encodeURIComponent(cat.name)}`}
                 className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${category === cat.name ? 'bg-navy text-white border-navy' : 'text-gray-600 border-gray-300 hover:border-navy'}`}>
-                {CAT_LABELS[cat.name] ?? cat.name}
+                {categoryLabel(CATEGORIES, cat.name, loc)}
               </Link>
             ))}
           </div>
@@ -98,7 +91,7 @@ export default async function NewsPage({
                         {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
                       </time>
                       <span className="sm:w-fit sm:flex-shrink-0">
-                        <span className={`badge text-[13px] whitespace-nowrap ${categoryColor(CATEGORIES, item.category)}`}>{CAT_LABELS[item.category] ?? item.category}</span>
+                        <span className={`badge text-[13px] whitespace-nowrap ${categoryColor(CATEGORIES, item.category)}`}>{categoryLabel(CATEGORIES, item.category, loc)}</span>
                       </span>
                       <p className="flex-1 min-w-0 text-base text-navy group-hover:text-gold transition-colors leading-relaxed truncate">{title}</p>
                       <span className="hidden sm:inline text-gray-300 group-hover:text-gold transition-colors flex-shrink-0 text-lg">›</span>

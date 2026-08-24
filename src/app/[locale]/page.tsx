@@ -11,7 +11,7 @@ import HeroReveal from '@/components/HeroReveal'
 import HeroMediaCycle from '@/components/HeroMediaCycle'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
-import { newsCategoriesKey, parseNewsCategories, categoryColor } from '@/lib/newsCategories'
+import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
 import type { News, Event, Post } from '@/types'
 
@@ -264,7 +264,7 @@ export default async function HomePage({
                         {new Date(n.published_at ?? n.created_at).toLocaleDateString('ja-JP')}
                       </span>
                       <span className="sm:w-fit sm:flex-shrink-0">
-                        <span className={`badge text-[13px] whitespace-nowrap ${categoryColor(newsCategories, n.category)}`}>{n.category}</span>
+                        <span className={`badge text-[13px] whitespace-nowrap ${categoryColor(newsCategories, n.category)}`}>{categoryLabel(newsCategories, n.category, loc)}</span>
                       </span>
                       <span className="min-w-0">
                         <span className="block text-base leading-relaxed group-hover:text-gold transition-colors truncate">{title}</span>

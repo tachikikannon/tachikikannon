@@ -1,6 +1,6 @@
 import type { NewsSite } from '@/types'
 
-export type NewsCategoryDef = { name: string; color: string }
+export type NewsCategoryDef = { name: string; name_en?: string; color: string }
 
 // カテゴリーバッジの色見本。管理画面のカテゴリー追加・編集でここから選ぶ。
 export const CATEGORY_COLOR_SWATCHES: { key: string; label: string; className: string }[] = [
@@ -21,14 +21,15 @@ export const CATEGORY_COLOR_SWATCHES: { key: string; label: string; className: s
 
 const DEFAULT_COLOR = CATEGORY_COLOR_SWATCHES[0].className
 
-// お知らせカテゴリーの初期セット。管理画面から自由に追加・削除・色変更できるようになった後も、
-// 未設定（新規サイトや移行前のデータ）の場合のフォールバックとして使う。
+// お知らせカテゴリーの初期セット。管理画面から自由に追加・削除・色変更・英語名変更できる
+// ようになった後も、未設定（新規サイトや移行前のデータ）の場合のフォールバックとして使う。
+// name_enは元々next-intl（news.catNews等）で管理していた英語訳と同じ文言。
 export const DEFAULT_NEWS_CATEGORIES: NewsCategoryDef[] = [
-  { name: 'お知らせ',         color: 'bg-blue-100 text-blue-700' },
-  { name: '行事案内',         color: 'bg-amber-100 text-amber-700' },
-  { name: '季節のお知らせ',   color: 'bg-teal-100 text-teal-700' },
-  { name: '交通情報',         color: 'bg-red-100 text-red-700' },
-  { name: '授与品のお知らせ', color: 'bg-purple-100 text-purple-700' },
+  { name: 'お知らせ',         name_en: 'News',                    color: 'bg-blue-100 text-blue-700' },
+  { name: '行事案内',         name_en: 'Event Info',               color: 'bg-amber-100 text-amber-700' },
+  { name: '季節のお知らせ',   name_en: 'Seasonal Notice',          color: 'bg-teal-100 text-teal-700' },
+  { name: '交通情報',         name_en: 'Traffic Info',             color: 'bg-red-100 text-red-700' },
+  { name: '授与品のお知らせ', name_en: 'Amulet & Goods Notice',    color: 'bg-purple-100 text-purple-700' },
 ]
 
 export function newsCategoriesKey(site: NewsSite): string {
@@ -40,12 +41,16 @@ export function parseNewsCategories(raw: string | null | undefined): NewsCategor
     try {
       const arr = JSON.parse(raw)
       if (Array.isArray(arr) && arr.length > 0) {
-        // 色分け機能を追加する前の旧形式（文字列配列）が残っている場合の移行
+        // 色分け・英語名対応を追加する前の旧形式（文字列配列）が残っている場合の移行
         if (arr.every((v): v is string => typeof v === 'string')) {
           return arr.map(name => ({ name, color: DEFAULT_COLOR }))
         }
         if (arr.every(v => v && typeof v === 'object' && typeof v.name === 'string')) {
-          return (arr as Partial<NewsCategoryDef>[]).map(v => ({ name: v.name!, color: v.color || DEFAULT_COLOR }))
+          return (arr as Partial<NewsCategoryDef>[]).map(v => ({
+            name: v.name!,
+            name_en: v.name_en || undefined,
+            color: v.color || DEFAULT_COLOR,
+          }))
         }
       }
     } catch {}
@@ -55,6 +60,16 @@ export function parseNewsCategories(raw: string | null | undefined): NewsCategor
 
 export function categoryColor(categories: NewsCategoryDef[], name: string): string {
   return categories.find(c => c.name === name)?.color ?? DEFAULT_COLOR
+}
+
+// 表示用のカテゴリー名。英語ロケールでは name_en を優先し、保存されていなければ
+// 既定5カテゴリーの元の英語訳にフォールバック、それも無ければ日本語名のまま表示する。
+export function categoryLabel(categories: NewsCategoryDef[], name: string, locale: string): string {
+  if (locale !== 'en') return name
+  const found = categories.find(c => c.name === name)
+  if (found?.name_en) return found.name_en
+  const fallback = DEFAULT_NEWS_CATEGORIES.find(c => c.name === name)
+  return fallback?.name_en ?? name
 }
 
 // 新規カテゴリーのデフォルト色として、まだ使われていない色を提案する

@@ -22,6 +22,7 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
   const [categories, setCategories] = useState<NewsCategoryDef[]>(DEFAULT_NEWS_CATEGORIES)
   const [showCategoryManager, setShowCategoryManager] = useState(false)
   const [newCategoryInput, setNewCategoryInput] = useState('')
+  const [newCategoryNameEn, setNewCategoryNameEn] = useState('')
   const [newCategoryColor, setNewCategoryColor] = useState('')
 
   const accentBtn = accent === 'onsenji' ? 'bg-onsenji hover:bg-onsenji/90' : 'btn-primary'
@@ -47,8 +48,10 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
     const name = newCategoryInput.trim()
     if (!name || categories.some(c => c.name === name)) { setNewCategoryInput(''); return }
     const color = newCategoryColor || suggestUnusedColor(categories)
-    saveCategories([...categories, { name, color }])
+    const name_en = newCategoryNameEn.trim() || undefined
+    saveCategories([...categories, { name, name_en, color }])
     setNewCategoryInput('')
+    setNewCategoryNameEn('')
     setNewCategoryColor('')
   }
 
@@ -58,6 +61,14 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
 
   function updateCategoryColor(name: string, color: string) {
     saveCategories(categories.map(c => c.name === name ? { ...c, color } : c))
+  }
+
+  function updateCategoryNameEn(name: string, name_en: string) {
+    setCategories(cs => cs.map(c => c.name === name ? { ...c, name_en } : c))
+  }
+
+  function commitCategoryNameEn(name: string, name_en: string) {
+    saveCategories(categories.map(c => c.name === name ? { ...c, name_en: name_en.trim() || undefined } : c))
   }
 
   useEffect(() => {
@@ -212,35 +223,47 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                 {showCategoryManager && (
                   <div className="mt-2 p-3 bg-cream-alt rounded-lg space-y-2">
                     {categories.map(c => (
-                      <div key={c.name} className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2">
-                        <span className={`text-xs rounded px-2 py-0.5 flex-shrink-0 whitespace-nowrap ${c.color}`}>{c.name}</span>
-                        <div className="flex gap-1 flex-wrap flex-1">
-                          {CATEGORY_COLOR_SWATCHES.map(sw => (
-                            <button key={sw.key} type="button" title={sw.label} onClick={() => updateCategoryColor(c.name, sw.className)}
-                              className={`w-5 h-5 rounded-full border-2 ${sw.className.split(' ')[0]} ${c.color === sw.className ? 'border-navy' : 'border-transparent'}`} />
-                          ))}
+                      <div key={c.name} className="bg-white rounded-lg border border-gray-200 px-3 py-2 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs rounded px-2 py-0.5 flex-shrink-0 whitespace-nowrap ${c.color}`}>{c.name}</span>
+                          <div className="flex gap-1 flex-wrap flex-1">
+                            {CATEGORY_COLOR_SWATCHES.map(sw => (
+                              <button key={sw.key} type="button" title={sw.label} onClick={() => updateCategoryColor(c.name, sw.className)}
+                                className={`w-5 h-5 rounded-full border-2 ${sw.className.split(' ')[0]} ${c.color === sw.className ? 'border-navy' : 'border-transparent'}`} />
+                            ))}
+                          </div>
+                          <button type="button" onClick={() => removeCategory(c.name)} aria-label={`${c.name}を削除`}
+                            className="text-gray-400 hover:text-red-500 text-xs flex-shrink-0">削除</button>
                         </div>
-                        <button type="button" onClick={() => removeCategory(c.name)} aria-label={`${c.name}を削除`}
-                          className="text-gray-400 hover:text-red-500 text-xs flex-shrink-0">削除</button>
+                        <input className="admin-input text-sm py-1" placeholder="英語名（未入力なら英語ページでも日本語のまま表示）"
+                          value={c.name_en ?? ''}
+                          onChange={e => updateCategoryNameEn(c.name, e.target.value)}
+                          onBlur={e => commitCategoryNameEn(c.name, e.target.value)} />
                       </div>
                     ))}
-                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-200">
-                      <input className="admin-input text-sm flex-1 min-w-[140px]" placeholder="新しいカテゴリー名"
-                        value={newCategoryInput}
-                        onChange={e => setNewCategoryInput(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCategory() } }} />
-                      <div className="flex gap-1">
-                        {CATEGORY_COLOR_SWATCHES.map(sw => (
-                          <button key={sw.key} type="button" title={sw.label} onClick={() => setNewCategoryColor(sw.className)}
-                            className={`w-5 h-5 rounded-full border-2 ${sw.className.split(' ')[0]} ${(newCategoryColor || suggestUnusedColor(categories)) === sw.className ? 'border-navy' : 'border-transparent'}`} />
-                        ))}
+                    <div className="pt-2 border-t border-gray-200 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <input className="admin-input text-sm flex-1 min-w-[140px]" placeholder="新しいカテゴリー名"
+                          value={newCategoryInput}
+                          onChange={e => setNewCategoryInput(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCategory() } }} />
+                        <div className="flex gap-1">
+                          {CATEGORY_COLOR_SWATCHES.map(sw => (
+                            <button key={sw.key} type="button" title={sw.label} onClick={() => setNewCategoryColor(sw.className)}
+                              className={`w-5 h-5 rounded-full border-2 ${sw.className.split(' ')[0]} ${(newCategoryColor || suggestUnusedColor(categories)) === sw.className ? 'border-navy' : 'border-transparent'}`} />
+                          ))}
+                        </div>
+                        <button type="button" onClick={addCategory}
+                          className="text-xs px-3 py-1.5 rounded border border-navy text-navy hover:bg-navy hover:text-white transition-colors flex-shrink-0">
+                          追加
+                        </button>
                       </div>
-                      <button type="button" onClick={addCategory}
-                        className="text-xs px-3 py-1.5 rounded border border-navy text-navy hover:bg-navy hover:text-white transition-colors flex-shrink-0">
-                        追加
-                      </button>
+                      <input className="admin-input text-sm" placeholder="英語名（任意・後から追加もできます）"
+                        value={newCategoryNameEn}
+                        onChange={e => setNewCategoryNameEn(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCategory() } }} />
                     </div>
-                    <p className="text-[11px] text-gray-400">色の丸をクリックすると変更できます。新規追加時は未使用の色が自動で選ばれます。削除しても、既にそのカテゴリーが付いている記事はそのまま表示されます（新規記事で選べなくなるだけです）。</p>
+                    <p className="text-[11px] text-gray-400">色の丸をクリックすると変更できます。新規追加時は未使用の色が自動で選ばれます。英語名を入れると英語ページでその表記になります（空欄なら日本語のまま表示）。削除しても、既にそのカテゴリーが付いている記事はそのまま表示されます（新規記事で選べなくなるだけです）。</p>
                   </div>
                 )}
               </div>

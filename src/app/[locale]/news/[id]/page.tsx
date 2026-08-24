@@ -8,7 +8,7 @@ import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
 import { renderNewsBody } from '@/lib/newsBody'
-import { newsCategoriesKey, parseNewsCategories, categoryColor } from '@/lib/newsCategories'
+import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -58,13 +58,6 @@ export default async function NewsDetailPage({
     .order('published_at', { ascending: false })
     .limit(3)
 
-  const CAT_LABELS: Record<string, string> = {
-    'お知らせ': t('catNews'),
-    '行事案内': t('catEvent'),
-    '季節のお知らせ': t('catSeasonal'),
-    '交通情報': t('catTraffic'),
-    '授与品のお知らせ': t('catGoods'),
-  }
   const { data: categoriesRow } = await supabase.from('site_content').select('value').eq('key', newsCategoriesKey('chuzenji')).maybeSingle()
   const CATEGORIES = parseNewsCategories(categoriesRow?.value)
   const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
@@ -96,7 +89,7 @@ export default async function NewsDetailPage({
             {/* メタ情報 */}
             <div className="flex items-center gap-3 mb-4">
               <span className={`text-xs rounded px-2 py-0.5 ${categoryColor(CATEGORIES, news.category)}`}>
-                {CAT_LABELS[news.category] ?? news.category}
+                {categoryLabel(CATEGORIES, news.category, loc)}
               </span>
               <time className="text-xs text-gray-400">
                 {new Date(news.published_at ?? news.created_at).toLocaleDateString(dateLocale, { year:'numeric', month:'long', day:'numeric' })}
