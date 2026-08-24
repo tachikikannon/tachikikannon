@@ -1,24 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
-import { getTimeSlots, blockedDateMatchesType, parseSlotMinutes } from '@/lib/reservationSlots'
+import { getTimeSlots, blockedDateMatchesType, parseSlotMinutes, nowInJST, toDateStr, getMonday } from '@/lib/reservationSlots'
 import type { ReservationType, SlotOverride } from '@/types'
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; party_size: number }
 type CapacitySetting = { max_groups: number; max_people: number; buffer_minutes: number }
-
-function toDateStr(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-function getMonday(d: Date) {
-  const day = d.getDay()
-  const diff = day === 0 ? -6 : 1 - day
-  const mon = new Date(d)
-  mon.setDate(d.getDate() + diff)
-  mon.setHours(0, 0, 0, 0)
-  return mon
-}
 
 const DAY_LABELS = ['日', '月', '火', '水', '木', '金', '土']
 
@@ -34,12 +22,13 @@ interface Props {
 
 export default function AdminSlotPicker({ reservationType, selectedDate, selectedTime, onSelectSlot, initialDate }: Props) {
   const supabase = createClient()
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const today = nowInJST()
+  today.setUTCHours(0, 0, 0, 0)
 
   const [weekStart, setWeekStart] = useState(() => {
     if (initialDate) {
-      const d = new Date(initialDate + 'T00:00:00')
+      const [y, m, day] = initialDate.split('-').map(Number)
+      const d = new Date(Date.UTC(y, m - 1, day))
       if (!isNaN(d.getTime())) return getMonday(d)
     }
     return getMonday(today)
@@ -54,7 +43,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
 
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart)
-    d.setDate(weekStart.getDate() + i)
+    d.setUTCDate(weekStart.getUTCDate() + i)
     return d
   })
 
@@ -104,11 +93,11 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
     return Array.from(new Set(conflicting.map(r => r.time_slot)))
   }
 
-  function prevWeek() { const d = new Date(weekStart); d.setDate(d.getDate() - 7); setWeekStart(d) }
-  function nextWeek() { const d = new Date(weekStart); d.setDate(d.getDate() + 7); setWeekStart(d) }
+  function prevWeek() { const d = new Date(weekStart); d.setUTCDate(d.getUTCDate() - 7); setWeekStart(d) }
+  function nextWeek() { const d = new Date(weekStart); d.setUTCDate(d.getUTCDate() + 7); setWeekStart(d) }
   function goThisWeek() { setWeekStart(getMonday(today)) }
 
-  const slots = Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getMonth() + 1))))
+  const slots = Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getUTCMonth() + 1))))
 
   async function closeSlot(date: string, slot: string) {
     setBusy(true)
@@ -158,7 +147,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
       <div className="flex items-center justify-between mb-2">
         <button type="button" onClick={prevWeek} className="text-xs px-2 py-1 border border-gray-200 rounded hover:border-navy transition-colors">← 前週</button>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">{weekDays[0].getMonth() + 1}/{weekDays[0].getDate()} 〜 {weekDays[6].getMonth() + 1}/{weekDays[6].getDate()}</span>
+          <span className="text-xs text-gray-500">{weekDays[0].getUTCMonth() + 1}/{weekDays[0].getUTCDate()} 〜 {weekDays[6].getUTCMonth() + 1}/{weekDays[6].getUTCDate()}</span>
           <button type="button" onClick={goThisWeek} className="text-[11px] px-2 py-0.5 border border-gray-200 rounded hover:border-navy transition-colors">今週</button>
         </div>
         <button type="button" onClick={nextWeek} className="text-xs px-2 py-1 border border-gray-200 rounded hover:border-navy transition-colors">次週 →</button>
@@ -172,11 +161,11 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
               {weekDays.map(d => {
                 const dateStr = toDateStr(d)
                 const isToday = dateStr === toDateStr(today)
-                const dow = d.getDay()
+                const dow = d.getUTCDay()
                 return (
                   <th key={dateStr} className={`border border-gray-200 px-1 py-1.5 text-center ${isToday ? 'bg-gold/10' : 'bg-gray-50'}`}>
                     <div className={`text-[10px] ${dow === 0 ? 'text-red-500' : dow === 6 ? 'text-blue-500' : 'text-gray-700'}`}>{DAY_LABELS[dow]}</div>
-                    <div className={`text-sm font-bold ${dow === 0 ? 'text-red-500' : dow === 6 ? 'text-blue-500' : 'text-navy'}`}>{d.getDate()}</div>
+                    <div className={`text-sm font-bold ${dow === 0 ? 'text-red-500' : dow === 6 ? 'text-blue-500' : 'text-navy'}`}>{d.getUTCDate()}</div>
                   </th>
                 )
               })}
@@ -188,7 +177,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
                 <td className="border border-gray-200 bg-gray-50 px-1 py-1.5 text-center text-gray-500 whitespace-nowrap">{slot}</td>
                 {weekDays.map(d => {
                   const dateStr = toDateStr(d)
-                  const validSlots = getTimeSlots(reservationType, d.getMonth() + 1)
+                  const validSlots = getTimeSlots(reservationType, d.getUTCMonth() + 1)
                   if (!validSlots.includes(slot)) return <td key={dateStr} className="border border-gray-200 bg-gray-50" />
                   const blocked = isDateBlocked(dateStr)
                   const override = getOverride(dateStr, slot)

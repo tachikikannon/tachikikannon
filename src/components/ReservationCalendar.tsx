@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
-import { getTimeSlots, blockedDateMatchesType, getSeason, parseSlotMinutes } from '@/lib/reservationSlots'
+import { getTimeSlots, blockedDateMatchesType, getSeason, parseSlotMinutes, nowInJST, toDateStr, getMonday } from '@/lib/reservationSlots'
 
 type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; type: string; party_size: number; category_id: string | null }
@@ -48,19 +48,6 @@ interface Props {
   isAdmin?: boolean
 }
 
-function toDateStr(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
-}
-
-function getMonday(d: Date) {
-  const day = d.getDay()
-  const diff = day === 0 ? -6 : 1 - day
-  const mon = new Date(d)
-  mon.setDate(d.getDate() + diff)
-  mon.setHours(0,0,0,0)
-  return mon
-}
-
 export default function ReservationCalendar({
   reservationType, selectedDate, selectedTime, onSelectSlot, isAdmin = false
 }: Props) {
@@ -69,16 +56,16 @@ export default function ReservationCalendar({
   const locale = useLocale()
   const dateLocale = locale === 'en' ? 'en-US' : 'ja-JP'
   const DAY_LABELS = t.raw('days') as string[]
-  const now = new Date()
+  const now = nowInJST()
   // サーバー描画時とクライアントのhydration時とで現在時刻がズレることがあり、
   // それによって「本日締切済み判定」の結果が食い違うとReactのhydrationエラーになる。
   // マウント前（サーバー描画・hydration直後の初回描画）は常に「未締切」として扱い、
   // マウント後のクライアント再描画で実際の現在時刻を反映する。
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
-  const nowMinutes = mounted ? now.getHours() * 60 + now.getMinutes() : -1
+  const nowMinutes = mounted ? now.getUTCHours() * 60 + now.getUTCMinutes() : -1
   const today = new Date(now)
-  today.setHours(0,0,0,0)
+  today.setUTCHours(0,0,0,0)
 
   const [weekStart, setWeekStart] = useState(() => {
     // 今日が含まれる週の月曜日
@@ -95,7 +82,7 @@ export default function ReservationCalendar({
   // 今週の7日間
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart)
-    d.setDate(weekStart.getDate() + i)
+    d.setUTCDate(weekStart.getUTCDate() + i)
     return d
   })
 
@@ -181,13 +168,13 @@ export default function ReservationCalendar({
 
   function prevWeek() {
     const d = new Date(weekStart)
-    d.setDate(d.getDate() - 7)
+    d.setUTCDate(d.getUTCDate() - 7)
     setWeekStart(d)
   }
 
   function nextWeek() {
     const d = new Date(weekStart)
-    d.setDate(d.getDate() + 7)
+    d.setUTCDate(d.getUTCDate() + 7)
     setWeekStart(d)
   }
 
@@ -202,7 +189,7 @@ export default function ReservationCalendar({
           {t('prevWeek')}
         </button>
         <span className="text-sm text-gray-500">
-          {weekDays[0].getMonth()+1}/{weekDays[0].getDate()} 〜 {weekDays[6].getMonth()+1}/{weekDays[6].getDate()}
+          {weekDays[0].getUTCMonth()+1}/{weekDays[0].getUTCDate()} 〜 {weekDays[6].getUTCMonth()+1}/{weekDays[6].getUTCDate()}
         </span>
         <button type="button" onClick={nextWeek}
           className="text-sm px-3 py-1.5 border border-gray-200 rounded-lg hover:border-navy transition-colors">
@@ -219,7 +206,7 @@ export default function ReservationCalendar({
               const dateStr = toDateStr(d)
               const isPast = d < today
               const isToday = toDateStr(d) === toDateStr(today)
-              const dow = d.getDay()
+              const dow = d.getUTCDay()
               return (
                 <th key={dateStr}
                   className={`border border-gray-200 px-1 py-2 text-center
@@ -231,7 +218,7 @@ export default function ReservationCalendar({
                   </div>
                   <div className={`text-base font-bold
                     ${dow === 0 ? 'text-red-500' : dow === 6 ? 'text-blue-500' : 'text-navy'}`}>
-                    {d.getDate()}
+                    {d.getUTCDate()}
                   </div>
                   {isToday && <div className="text-[10px] text-gold font-medium">{t('today')}</div>}
                 </th>
@@ -241,7 +228,7 @@ export default function ReservationCalendar({
         </thead>
         <tbody>
           {/* 週内の全日付のスロットを合わせて行を決定 */}
-          {Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getMonth() + 1)))).map(slot => (
+          {Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getUTCMonth() + 1)))).map(slot => (
             <tr key={slot}>
               <td className="border border-gray-200 bg-gray-50 px-2 py-2 text-xs text-gray-500 text-center whitespace-nowrap">
                 {slot}
@@ -251,7 +238,7 @@ export default function ReservationCalendar({
                 const isPast = d < today
                 const isToday = dateStr === toDateStr(today)
                 const slotMinutes = parseSlotMinutes(slot)
-                const labelCutoffMinutes = getLabelSlotCutoffMinutes(slot, d.getMonth() + 1)
+                const labelCutoffMinutes = getLabelSlotCutoffMinutes(slot, d.getUTCMonth() + 1)
                 // 今日の枠は、開始時刻（または"午前"/"午後"の受付締切）を過ぎていたら予約不可にする。
                 // 管理画面からの登録は締切後も可能とする。
                 const slotTimePassed = !isAdmin && isToday && (
@@ -262,7 +249,7 @@ export default function ReservationCalendar({
                 const override = getOverride(dateStr, slot)
                 const full = isSlotFull(dateStr, slot)
                 const isSelected = selectedDate === dateStr && selectedTime === slot
-                const validSlots = getTimeSlots(reservationType, d.getMonth() + 1)
+                const validSlots = getTimeSlots(reservationType, d.getUTCMonth() + 1)
                 const unavailable = isPast || slotTimePassed || !!blocked || !!override?.is_closed || full || !validSlots.includes(slot)
                 const sameDayPhoneOnly = !isAdmin && isToday && SAME_DAY_PHONE_ONLY_TYPES.includes(reservationType)
                 const alwaysPhoneOnly = !isAdmin && ALWAYS_PHONE_ONLY_TYPES.includes(reservationType)

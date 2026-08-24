@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import { getTimeSlots, blockedDateMatchesType } from '@/lib/reservationSlots'
+import { getTimeSlots, blockedDateMatchesType, nowInJST, toDateStr, getMonday } from '@/lib/reservationSlots'
 import type { ReservationType, SlotOverride } from '@/types'
 
 const TYPES: { value: ReservationType; label: string }[] = [
@@ -19,24 +19,11 @@ type BlockedDate = { date: string; type: string; reason: string }
 type Reservation = { date: string; time_slot: string; party_size: number }
 type CapacitySetting = { max_groups: number; max_people: number }
 
-function toDateStr(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-function getMonday(d: Date) {
-  const day = d.getDay()
-  const diff = day === 0 ? -6 : 1 - day
-  const mon = new Date(d)
-  mon.setDate(d.getDate() + diff)
-  mon.setHours(0, 0, 0, 0)
-  return mon
-}
-
 export default function AvailabilityPage() {
   const supabase = createClient()
   const { canEditReservations: canEdit } = useAdminProfile()
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const today = nowInJST()
+  today.setUTCHours(0, 0, 0, 0)
 
   const [type, setType] = useState<ReservationType>('prayer')
   const [weekStart, setWeekStart] = useState(() => getMonday(today))
@@ -50,7 +37,7 @@ export default function AvailabilityPage() {
 
   const weekDays = useMemo(() => Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekStart)
-    d.setDate(weekStart.getDate() + i)
+    d.setUTCDate(weekStart.getUTCDate() + i)
     return d
   }), [weekStart])
 
@@ -130,11 +117,11 @@ export default function AvailabilityPage() {
     setSelected(null)
   }
 
-  function prevWeek() { const d = new Date(weekStart); d.setDate(d.getDate() - 7); setWeekStart(d) }
-  function nextWeek() { const d = new Date(weekStart); d.setDate(d.getDate() + 7); setWeekStart(d) }
+  function prevWeek() { const d = new Date(weekStart); d.setUTCDate(d.getUTCDate() - 7); setWeekStart(d) }
+  function nextWeek() { const d = new Date(weekStart); d.setUTCDate(d.getUTCDate() + 7); setWeekStart(d) }
   function goThisWeek() { setWeekStart(getMonday(today)) }
 
-  const slots = Array.from(new Set(weekDays.flatMap(d => getTimeSlots(type, d.getMonth() + 1))))
+  const slots = Array.from(new Set(weekDays.flatMap(d => getTimeSlots(type, d.getUTCMonth() + 1))))
   const selectedOverride = selected ? getOverride(selected.date, selected.slot) : null
   const selectedCounts = selected ? getCounts(selected.date, selected.slot) : null
   const selectedBlocked = selected ? isDateBlocked(selected.date) : null
@@ -161,7 +148,7 @@ export default function AvailabilityPage() {
       <div className="flex items-center justify-between mb-3">
         <button onClick={prevWeek} className="text-sm px-3 py-1.5 border border-gray-200 rounded-lg hover:border-navy transition-colors">← 前の1週間</button>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500">{weekDays[0].getMonth() + 1}/{weekDays[0].getDate()} 〜 {weekDays[6].getMonth() + 1}/{weekDays[6].getDate()}</span>
+          <span className="text-sm text-gray-500">{weekDays[0].getUTCMonth() + 1}/{weekDays[0].getUTCDate()} 〜 {weekDays[6].getUTCMonth() + 1}/{weekDays[6].getUTCDate()}</span>
           <button onClick={goThisWeek} className="text-xs px-2.5 py-1 border border-gray-200 rounded hover:border-navy transition-colors">今週</button>
         </div>
         <button onClick={nextWeek} className="text-sm px-3 py-1.5 border border-gray-200 rounded-lg hover:border-navy transition-colors">次の1週間 →</button>
@@ -176,12 +163,12 @@ export default function AvailabilityPage() {
                 <th className="w-16 border border-gray-200 bg-gray-50 px-2 py-2 text-xs text-gray-500">時間</th>
                 {weekDays.map(d => {
                   const dateStr = toDateStr(d)
-                  const dow = d.getDay()
+                  const dow = d.getUTCDay()
                   const isToday = dateStr === toDateStr(today)
                   return (
                     <th key={dateStr} className={`border border-gray-200 px-1 py-2 text-center ${isToday ? 'bg-gold/10' : 'bg-gray-50'}`}>
                       <div className={`text-xs font-medium ${dow === 0 ? 'text-red-500' : dow === 6 ? 'text-blue-500' : 'text-gray-700'}`}>{DAY_LABELS[dow]}</div>
-                      <div className={`text-base font-bold ${dow === 0 ? 'text-red-500' : dow === 6 ? 'text-blue-500' : 'text-navy'}`}>{d.getDate()}</div>
+                      <div className={`text-base font-bold ${dow === 0 ? 'text-red-500' : dow === 6 ? 'text-blue-500' : 'text-navy'}`}>{d.getUTCDate()}</div>
                     </th>
                   )
                 })}
@@ -193,7 +180,7 @@ export default function AvailabilityPage() {
                   <td className="border border-gray-200 bg-gray-50 px-2 py-2 text-xs text-gray-500 text-center whitespace-nowrap">{slot}</td>
                   {weekDays.map(d => {
                     const dateStr = toDateStr(d)
-                    const validSlots = getTimeSlots(type, d.getMonth() + 1)
+                    const validSlots = getTimeSlots(type, d.getUTCMonth() + 1)
                     if (!validSlots.includes(slot)) {
                       return <td key={dateStr} className="border border-gray-200 bg-gray-50" />
                     }

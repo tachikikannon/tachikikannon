@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import { getTimeSlots } from '@/lib/reservationSlots'
+import { getTimeSlots, nowInJST } from '@/lib/reservationSlots'
 import NewReservationForm from '@/components/admin/NewReservationForm'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus } from '@/types'
 
@@ -36,8 +36,10 @@ const STATUS_COLORS: Record<ReservationStatus, string> = {
 const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_progress', 'confirmed', 'completed', 'cancelled']
 const WEEKDAY_LABELS = ['月', '火', '水', '木', '金', '土', '日']
 
+// この画面の日付計算はすべてnowInJST()由来のUTC系メソッドで統一する
+// （ReservationCalendar.tsxと同じ理由。詳しくはreservationSlots.tsのnowInJSTを参照）。
 function dstr(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`
 }
 
 function timeSlotValue(slot: string) {
@@ -48,12 +50,12 @@ function timeSlotValue(slot: string) {
 }
 
 function getMonthMatrix(year: number, month: number) {
-  const firstDay = new Date(year, month, 1)
-  const startWeekday = (firstDay.getDay() + 6) % 7 // 月曜=0始まり
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const firstDay = new Date(Date.UTC(year, month, 1))
+  const startWeekday = (firstDay.getUTCDay() + 6) % 7 // 月曜=0始まり
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
   const cells: (Date | null)[] = []
   for (let i = 0; i < startWeekday; i++) cells.push(null)
-  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d))
+  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(Date.UTC(year, month, d)))
   while (cells.length % 7 !== 0) cells.push(null)
   const weeks: (Date | null)[][] = []
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
@@ -69,9 +71,9 @@ function tagClasses(r: Reservation) {
 export default function AdminReservationSchedulePage() {
   const supabase = createClient()
   const { profile, canEditReservations: canEdit } = useAdminProfile()
-  const today = new Date()
-  const [year, setYear] = useState(today.getFullYear())
-  const [month, setMonth] = useState(today.getMonth()) // 0始まり
+  const today = nowInJST()
+  const [year, setYear] = useState(today.getUTCFullYear())
+  const [month, setMonth] = useState(today.getUTCMonth()) // 0始まり
   const [list, setList] = useState<Reservation[]>([])
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [categories, setCategories] = useState<ReservationCategory[]>([])
@@ -87,8 +89,8 @@ export default function AdminReservationSchedulePage() {
   const monthLabel = new Date(year, month, 1).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })
 
   async function load() {
-    const first = dstr(new Date(year, month, 1))
-    const last = dstr(new Date(year, month + 1, 0))
+    const first = dstr(new Date(Date.UTC(year, month, 1)))
+    const last = dstr(new Date(Date.UTC(year, month + 1, 0)))
     const { data } = await supabase.from('reservations').select('*').gte('date', first).lte('date', last)
     setList(data ?? [])
     const { data: adminData } = await supabase.from('admin_profiles').select('*').eq('is_active', true)
@@ -99,16 +101,16 @@ export default function AdminReservationSchedulePage() {
   useEffect(() => { load() }, [year, month])
 
   function changeMonth(diff: number) {
-    const d = new Date(year, month + diff, 1)
-    setYear(d.getFullYear())
-    setMonth(d.getMonth())
+    const d = new Date(Date.UTC(year, month + diff, 1))
+    setYear(d.getUTCFullYear())
+    setMonth(d.getUTCMonth())
     setSelectedDate(null)
     setDetail(null)
   }
 
   function goToday() {
-    setYear(today.getFullYear())
-    setMonth(today.getMonth())
+    setYear(today.getUTCFullYear())
+    setMonth(today.getUTCMonth())
     setSelectedDate(dstr(today))
   }
 
@@ -269,7 +271,7 @@ export default function AdminReservationSchedulePage() {
                     className={`min-h-[6.5rem] p-1.5 text-left align-top hover:bg-blue-50 transition-colors
                       ${isSelected ? 'bg-blue-50 ring-1 ring-inset ring-navy/30' : ''}`}>
                     <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs
-                      ${isToday ? 'bg-navy text-white' : 'text-gray-500'}`}>{d.getDate()}</span>
+                      ${isToday ? 'bg-navy text-white' : 'text-gray-500'}`}>{d.getUTCDate()}</span>
                     <div className="mt-1 space-y-0.5">
                       {visible.map(r => (
                         <div key={r.id} className={`truncate rounded px-1 py-0.5 text-[10px] ${tagClasses(r)}`}>

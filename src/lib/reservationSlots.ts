@@ -1,5 +1,38 @@
 import type { ReservationType } from '@/types'
 
+// Vercelのサーバー関数はTZ=UTCで動作するため、素の new Date() のローカルgetterを
+// SSR時に使うと日本時間の0〜9時台は「前日」を今日だと誤認してしまう
+// （UTCではまだ日付が変わっていないため）。この関数は実行環境のタイムゾーンに関わらず
+// 常に日本時間の壁時計値を返す。戻り値は必ず getUTC*/setUTC* 系のメソッドで
+// 読み書きすること（getDate()等ローカル系と混在させると、今度はJST環境のブラウザで
+// 二重にズレるため）。
+export function nowInJST(): Date {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false,
+  }).formatToParts(new Date())
+  const get = (type: string) => Number(parts.find(p => p.type === type)?.value)
+  // 環境によってはhour12:falseでも深夜0時が"24"表記になるため0-23に丸める
+  const hour = get('hour') % 24
+  return new Date(Date.UTC(get('year'), get('month') - 1, get('day'), hour, get('minute'), get('second')))
+}
+
+// nowInJST() が返すDate（UTC系メソッドで日本時間を表す）専用のフォーマッタ／週計算。
+export function toDateStr(d: Date): string {
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`
+}
+
+export function getMonday(d: Date): Date {
+  const day = d.getUTCDay()
+  const diff = day === 0 ? -6 : 1 - day
+  const mon = new Date(d)
+  mon.setUTCDate(d.getUTCDate() + diff)
+  mon.setUTCHours(0, 0, 0, 0)
+  return mon
+}
+
 // 予約不可日（blocked_dates）の種別コード。
 // 単体の体験種別に加えて、複数種別をまとめて指定できるグループも用意する。
 export const BLOCKED_DATE_TYPES = [
