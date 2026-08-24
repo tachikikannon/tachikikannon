@@ -7,6 +7,19 @@
 export const GOODS_WEIGHTS_KEY = 'goods_weights_chuzenji'
 export const SHIPPING_TABLE_KEY = 'shipping_rate_table_chuzenji'
 
+// 御札（護摩札）は正月護摩・通常の御祈願郵送のどちらも同じ4種類・同じ金額
+// （5,000円=小/10,000円=中/20,000円=大/30,000円=特大）で、実体はBASE商品の
+// 「御札 小/中/大/特大」と同一。重量は新規に管理項目を作らず、この4商品に対して
+// 「商品重量設定」（/admin/mail-order/weights）で登録済みの重量をそのまま流用する。
+// 御祈願料（price）は商品価格と完全に一致し、変わることがまず無いためこれをキーにする。
+// BASE側でこの4商品が削除・作り直しされてIDが変わった場合はここも更新が必要。
+export const OFUDA_GOODS_ID_BY_PRICE: Record<string, string> = {
+  '5,000円': '46991730',  // 御札 小（28cm）
+  '10,000円': '81452564', // 御札 中（32cm）
+  '20,000円': '46991593', // 御札 大（38cm）
+  '30,000円': '46940868', // 御札 特大（42.5cm）
+}
+
 export type GoodsShippingInfo = { weight_g: number; free_shipping: boolean }
 export type GoodsWeights = Record<string, GoodsShippingInfo>
 

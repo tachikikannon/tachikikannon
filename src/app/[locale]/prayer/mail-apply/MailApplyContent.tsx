@@ -38,13 +38,19 @@ export default function MailApplyContent({ fees }: { fees: Fee[] }) {
         {/* お申し込み方法の選択 */}
         <div className="bg-white border border-gray-200 rounded-xl p-5 mb-8">
           <p className="font-medium text-navy text-sm mb-4">{t('chooseMethod')}</p>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-3 gap-4">
             <button type="button" onClick={() => setShowEcConfirm(true)}
               className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors text-left">
               <span className="text-2xl">🛒</span>
               <span className="font-medium text-navy text-sm">{t('ecTitle')}</span>
               <span className="text-xs text-gray-500 leading-relaxed">{t('ecDesc')}</span>
             </button>
+            <Link href="/prayer/mail-apply/cod"
+              className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors">
+              <span className="text-2xl">📦</span>
+              <span className="font-medium text-navy text-sm">{t('codTitle')}</span>
+              <span className="text-xs text-gray-500 leading-relaxed">{t('codDesc')}</span>
+            </Link>
             <button type="button" onClick={() => setShowCashMail(true)}
               className="flex flex-col gap-2 rounded-xl border border-navy/20 p-4 hover:bg-navy/5 hover:border-navy transition-colors text-left">
               <span className="text-2xl">✉️</span>
