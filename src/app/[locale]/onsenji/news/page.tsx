@@ -6,7 +6,7 @@ import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import { createServerClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
-import { newsCategoriesKey, parseNewsCategories } from '@/lib/newsCategories'
+import { newsCategoriesKey, parseNewsCategories, categoryColor } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -14,14 +14,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiNews' })
   return { title: `${t('title')} | 日光山温泉寺` }
-}
-
-const CAT_COLORS: Record<string, string> = {
-  'お知らせ':       'bg-onsenji/10 text-onsenji',
-  '行事案内':       'bg-[#7ec8a4]/20 text-[#2d6b57]',
-  '季節のお知らせ': 'bg-teal-100 text-teal-800',
-  '交通情報':       'bg-red-100 text-red-700',
-  '授与品のお知らせ':'bg-purple-100 text-purple-700',
 }
 
 export default async function OnsenjiNewsPage({
@@ -84,9 +76,9 @@ export default async function OnsenjiNewsPage({
               {t('filterAll')}
             </Link>
             {CATEGORIES.map(cat => (
-              <Link key={cat} href={`/onsenji/news?category=${encodeURIComponent(cat)}`}
-                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${category === cat ? 'bg-onsenji text-white border-onsenji' : 'text-gray-600 border-gray-300 hover:border-onsenji'}`}>
-                {CAT_LABELS[cat] ?? cat}
+              <Link key={cat.name} href={`/onsenji/news?category=${encodeURIComponent(cat.name)}`}
+                className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${category === cat.name ? 'bg-onsenji text-white border-onsenji' : 'text-gray-600 border-gray-300 hover:border-onsenji'}`}>
+                {CAT_LABELS[cat.name] ?? cat.name}
               </Link>
             ))}
           </div>
@@ -106,7 +98,7 @@ export default async function OnsenjiNewsPage({
                         {new Date(item.published_at ?? item.created_at).toLocaleDateString(dateLocale)}
                       </time>
                       <span className="sm:w-32 sm:flex-shrink-0">
-                        <span className={`badge text-[13px] whitespace-nowrap ${CAT_COLORS[item.category] ?? 'bg-gray-100 text-gray-600'}`}>{CAT_LABELS[item.category] ?? item.category}</span>
+                        <span className={`badge text-[13px] whitespace-nowrap ${categoryColor(CATEGORIES, item.category)}`}>{CAT_LABELS[item.category] ?? item.category}</span>
                       </span>
                       <p className="flex-1 min-w-0 text-base text-onsenji group-hover:text-[#2d6b57] transition-colors leading-relaxed truncate">{title}</p>
                       <span className="hidden sm:inline text-gray-300 group-hover:text-[#2d6b57] transition-colors flex-shrink-0 text-lg">›</span>

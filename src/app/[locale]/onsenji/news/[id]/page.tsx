@@ -8,6 +8,7 @@ import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
 import { renderNewsBody } from '@/lib/newsBody'
+import { newsCategoriesKey, parseNewsCategories, categoryColor } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -22,14 +23,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: title ? `${title} | 日光山温泉寺` : `${t('title')} | 日光山温泉寺`,
     description: data ? (pickLocalized(loc, data.excerpt ?? '', data.excerpt_en) || undefined) : undefined,
   }
-}
-
-const CAT_COLORS: Record<string, string> = {
-  'お知らせ':       'bg-onsenji/10 text-onsenji',
-  '行事案内':       'bg-[#7ec8a4]/20 text-[#2d6b57]',
-  '季節のお知らせ': 'bg-teal-100 text-teal-800',
-  '交通情報':       'bg-red-100 text-red-700',
-  '授与品のお知らせ':'bg-purple-100 text-purple-700',
 }
 
 export default async function OnsenjiNewsDetailPage({
@@ -73,6 +66,8 @@ export default async function OnsenjiNewsDetailPage({
     '交通情報': t('catTraffic'),
     '授与品のお知らせ': t('catGoods'),
   }
+  const { data: categoriesRow } = await supabase.from('site_content').select('value').eq('key', newsCategoriesKey('onsenji')).maybeSingle()
+  const CATEGORIES = parseNewsCategories(categoriesRow?.value)
   const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
   const title = pickLocalized(loc, news.title, news.title_en)
   const excerpt = pickLocalized(loc, news.excerpt ?? '', news.excerpt_en)
@@ -101,7 +96,7 @@ export default async function OnsenjiNewsDetailPage({
           <div className="bg-white rounded-2xl shadow-sm p-8">
             {/* メタ情報 */}
             <div className="flex items-center gap-3 mb-4">
-              <span className={`text-xs rounded px-2 py-0.5 ${CAT_COLORS[news.category] ?? 'bg-gray-100 text-gray-600'}`}>
+              <span className={`text-xs rounded px-2 py-0.5 ${categoryColor(CATEGORIES, news.category)}`}>
                 {CAT_LABELS[news.category] ?? news.category}
               </span>
               <time className="text-xs text-gray-400">

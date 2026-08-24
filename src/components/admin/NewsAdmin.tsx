@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { renderNewsBody } from '@/lib/newsBody'
-import { DEFAULT_NEWS_CATEGORIES, newsCategoriesKey, parseNewsCategories } from '@/lib/newsCategories'
+import { CATEGORY_COLOR_SWATCHES, DEFAULT_NEWS_CATEGORIES, categoryColor, newsCategoriesKey, parseNewsCategories, suggestUnusedColor, type NewsCategoryDef } from '@/lib/newsCategories'
 import type { News, NewsSite } from '@/types'
 
 type BodyField = 'body' | 'body_en'
@@ -19,13 +19,13 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
   const bodyRef = useRef<HTMLTextAreaElement>(null)
   const bodyEnRef = useRef<HTMLTextAreaElement>(null)
   const insertTargetField = useRef<BodyField>('body')
-  const [categories, setCategories] = useState<string[]>(DEFAULT_NEWS_CATEGORIES)
+  const [categories, setCategories] = useState<NewsCategoryDef[]>(DEFAULT_NEWS_CATEGORIES)
   const [showCategoryManager, setShowCategoryManager] = useState(false)
   const [newCategoryInput, setNewCategoryInput] = useState('')
+  const [newCategoryColor, setNewCategoryColor] = useState('')
 
   const accentBtn = accent === 'onsenji' ? 'bg-onsenji hover:bg-onsenji/90' : 'btn-primary'
   const accentBorder = accent === 'onsenji' ? 'border-[#7ec8a4]' : 'border-gold'
-  const accentBadge = accent === 'onsenji' ? 'bg-onsenji/10 text-onsenji' : 'bg-navy/10 text-navy'
   const accentText = accent === 'onsenji' ? 'text-onsenji' : 'text-navy'
 
   async function load() {
@@ -38,20 +38,26 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
     setCategories(parseNewsCategories(data?.value))
   }
 
-  async function saveCategories(next: string[]) {
+  async function saveCategories(next: NewsCategoryDef[]) {
     setCategories(next)
     await supabase.from('site_content').upsert({ key: newsCategoriesKey(site), value: JSON.stringify(next) }, { onConflict: 'key' })
   }
 
   function addCategory() {
     const name = newCategoryInput.trim()
-    if (!name || categories.includes(name)) { setNewCategoryInput(''); return }
-    saveCategories([...categories, name])
+    if (!name || categories.some(c => c.name === name)) { setNewCategoryInput(''); return }
+    const color = newCategoryColor || suggestUnusedColor(categories)
+    saveCategories([...categories, { name, color }])
     setNewCategoryInput('')
+    setNewCategoryColor('')
   }
 
   function removeCategory(name: string) {
-    saveCategories(categories.filter(c => c !== name))
+    saveCategories(categories.filter(c => c.name !== name))
+  }
+
+  function updateCategoryColor(name: string, color: string) {
+    saveCategories(categories.map(c => c.name === name ? { ...c, color } : c))
   }
 
   useEffect(() => {
@@ -172,7 +178,7 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
               )}
               <div className="flex items-center gap-2 text-xs text-gray-400">
                 <span>{new Date().toLocaleDateString('ja-JP')}</span>
-                <span className={`rounded px-2 py-0.5 ${accentBadge}`}>{editing.category}</span>
+                <span className={`rounded px-2 py-0.5 ${categoryColor(categories, editing.category ?? '')}`}>{editing.category}</span>
               </div>
               <h3 className={`text-xl font-serif ${accentText}`}>{editing.title || '（タイトルなし）'}</h3>
               {editing.excerpt && <p className={`text-sm text-gray-500 border-l-4 ${accentBorder} pl-4`}>{editing.excerpt}</p>}
@@ -201,30 +207,40 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                 </div>
                 <select className="admin-input" value={editing.category ?? 'お知らせ'}
                   onChange={e => setEditing({...editing, category: e.target.value})}>
-                  {categories.map(c => <option key={c}>{c}</option>)}
+                  {categories.map(c => <option key={c.name}>{c.name}</option>)}
                 </select>
                 {showCategoryManager && (
                   <div className="mt-2 p-3 bg-cream-alt rounded-lg space-y-2">
-                    <div className="flex flex-wrap gap-2">
-                      {categories.map(c => (
-                        <span key={c} className="inline-flex items-center gap-1 text-xs bg-white border border-gray-200 rounded-full pl-3 pr-1.5 py-1">
-                          {c}
-                          <button type="button" onClick={() => removeCategory(c)} aria-label={`${c}を削除`}
-                            className="w-4 h-4 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center">×</button>
-                        </span>
-                      ))}
-                    </div>
-                    <div className="flex gap-2">
-                      <input className="admin-input text-sm" placeholder="新しいカテゴリー名"
+                    {categories.map(c => (
+                      <div key={c.name} className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2">
+                        <span className={`text-xs rounded px-2 py-0.5 flex-shrink-0 whitespace-nowrap ${c.color}`}>{c.name}</span>
+                        <div className="flex gap-1 flex-wrap flex-1">
+                          {CATEGORY_COLOR_SWATCHES.map(sw => (
+                            <button key={sw.key} type="button" title={sw.label} onClick={() => updateCategoryColor(c.name, sw.className)}
+                              className={`w-5 h-5 rounded-full border-2 ${sw.className.split(' ')[0]} ${c.color === sw.className ? 'border-navy' : 'border-transparent'}`} />
+                          ))}
+                        </div>
+                        <button type="button" onClick={() => removeCategory(c.name)} aria-label={`${c.name}を削除`}
+                          className="text-gray-400 hover:text-red-500 text-xs flex-shrink-0">削除</button>
+                      </div>
+                    ))}
+                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-200">
+                      <input className="admin-input text-sm flex-1 min-w-[140px]" placeholder="新しいカテゴリー名"
                         value={newCategoryInput}
                         onChange={e => setNewCategoryInput(e.target.value)}
                         onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCategory() } }} />
+                      <div className="flex gap-1">
+                        {CATEGORY_COLOR_SWATCHES.map(sw => (
+                          <button key={sw.key} type="button" title={sw.label} onClick={() => setNewCategoryColor(sw.className)}
+                            className={`w-5 h-5 rounded-full border-2 ${sw.className.split(' ')[0]} ${(newCategoryColor || suggestUnusedColor(categories)) === sw.className ? 'border-navy' : 'border-transparent'}`} />
+                        ))}
+                      </div>
                       <button type="button" onClick={addCategory}
                         className="text-xs px-3 py-1.5 rounded border border-navy text-navy hover:bg-navy hover:text-white transition-colors flex-shrink-0">
                         追加
                       </button>
                     </div>
-                    <p className="text-[11px] text-gray-400">削除しても、既にそのカテゴリーが付いている記事はそのまま表示されます（新規記事で選べなくなるだけです）。</p>
+                    <p className="text-[11px] text-gray-400">色の丸をクリックすると変更できます。新規追加時は未使用の色が自動で選ばれます。削除しても、既にそのカテゴリーが付いている記事はそのまま表示されます（新規記事で選べなくなるだけです）。</p>
                   </div>
                 )}
               </div>
@@ -314,7 +330,9 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                   <p className="font-medium">{n.title}</p>
                   {n.excerpt && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{n.excerpt}</p>}
                 </td>
-                <td className="px-4 py-3 text-gray-500">{n.category}</td>
+                <td className="px-4 py-3">
+                  <span className={`badge ${categoryColor(categories, n.category)}`}>{n.category}</span>
+                </td>
                 <td className="px-4 py-3">
                   <span className={`badge ${n.is_published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                     {n.is_published ? '公開中' : '下書き'}
