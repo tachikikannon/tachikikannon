@@ -521,6 +521,7 @@
     "applicantAddressPlaceholder": "Address",
     "applicantFeeLabel": "Ofuda",
     "applicantFeePlaceholder": "Select ofuda size (if applying)",
+    "feeCountUnit": "",
     "subtotalLabel": "Ofuda Subtotal: ",
     "shippingFeeLabel": "Shipping Fee: ",
     "shippingUnknownNote": "To be advised",

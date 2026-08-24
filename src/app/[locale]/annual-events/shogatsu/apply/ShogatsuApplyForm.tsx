@@ -34,7 +34,7 @@ function FeeSelect({ value, onChange, options, placeholder }: { value: string; o
   return (
     <select className="admin-input" value={value} onChange={e => onChange(e.target.value)}>
       <option value="">{placeholder}</option>
-      {options.map(f => <option key={f.price} value={f.price}>{f.size}（{f.price}）</option>)}
+      {options.map(f => <option key={f.price} value={f.price}>{f.price}（{f.size}）</option>)}
     </select>
   )
 }
@@ -66,6 +66,9 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
     ...(fee ? [fee] : []),
     ...applicants.filter(a => a.name.trim() && a.fee).map(a => a.fee),
   ]
+  const feeCounts = FEE_OPTIONS
+    .map(f => ({ price: f.price, count: selectedFees.filter(p => p === f.price).length }))
+    .filter(x => x.count > 0)
   const subtotal = selectedFees.reduce((sum, p) => sum + priceToNumber(p), 0)
   const totalWeightG = selectedFees.reduce((sum, p) => sum + (FEE_OPTIONS.find(f => f.price === p)?.weight_g ?? 0), 0)
   const shippingFee = selectedFees.length > 0 ? calcShippingFeeByWeight(totalWeightG, shippingTiers) : null
@@ -91,7 +94,8 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
       `御札：${fee}`,
       `お支払い方法：代金引換（代引き）`,
       applicantLines ? `\n【申込者一覧】\n${applicantLines}` : '',
-      `\n御札代金小計：¥${subtotal.toLocaleString()}`,
+      `\n【御札内訳】\n${feeCounts.map(({ price, count }) => `${price} × ${count}点`).join('\n')}`,
+      `御札代金小計：¥${subtotal.toLocaleString()}`,
       `送料：${shippingFee !== null ? `¥${shippingFee.toLocaleString()}` : '追ってご案内'}`,
       `合計：¥${grandTotal.toLocaleString()}`,
       notes ? `\n【備考】\n${notes}` : '',
@@ -287,6 +291,9 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
           {selectedFees.length > 0 && (
             <div className="border-t border-gray-200 pt-5">
               <div className="bg-cream-alt rounded-lg p-4 text-sm space-y-1">
+                {feeCounts.map(({ price, count }) => (
+                  <p key={price} className="text-gray-500 text-xs">{price} × {count}{t('feeCountUnit')}</p>
+                ))}
                 <p className="text-gray-600">{t('subtotalLabel')}¥{subtotal.toLocaleString()}</p>
                 <p className="text-gray-600">
                   {t('shippingFeeLabel')}

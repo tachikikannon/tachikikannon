@@ -521,6 +521,7 @@
     "applicantAddressPlaceholder": "ご住所",
     "applicantFeeLabel": "御札",
     "applicantFeePlaceholder": "御札のサイズを選択（申し込む場合）",
+    "feeCountUnit": "点",
     "subtotalLabel": "御札代金小計：",
     "shippingFeeLabel": "送料：",
     "shippingUnknownNote": "追ってご案内いたします",
