@@ -520,7 +520,7 @@
     "applicantNamePlaceholder": "Name",
     "applicantAddressPlaceholder": "Address",
     "applicantFeeLabel": "Ofuda",
-    "applicantFeePlaceholder": "Select ofuda size (if applying)",
+    "applicantFeePlaceholder": "Select ofuda size",
     "shipModeLabel": "Shipping",
     "shipModeSame": "Ship with representative (same address)",
     "shipModeSeparate": "Ship to a different address",

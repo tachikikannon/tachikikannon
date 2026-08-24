@@ -520,7 +520,7 @@
     "applicantNamePlaceholder": "お名前",
     "applicantAddressPlaceholder": "ご住所",
     "applicantFeeLabel": "御札",
-    "applicantFeePlaceholder": "御札のサイズを選択（申し込む場合）",
+    "applicantFeePlaceholder": "御札のサイズを選択",
     "shipModeLabel": "発送方法",
     "shipModeSame": "代表者と一緒に送る（同じ住所）",
     "shipModeSeparate": "別の住所に送る",
