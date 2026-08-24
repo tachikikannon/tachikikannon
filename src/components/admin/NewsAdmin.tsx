@@ -2,9 +2,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { renderNewsBody } from '@/lib/newsBody'
-import type { News, NewsCategory, NewsSite } from '@/types'
-
-const CATEGORIES: NewsCategory[] = ['お知らせ','行事案内','季節のお知らせ','交通情報','授与品のお知らせ']
+import { DEFAULT_NEWS_CATEGORIES, newsCategoriesKey, parseNewsCategories } from '@/lib/newsCategories'
+import type { News, NewsSite } from '@/types'
 
 type BodyField = 'body' | 'body_en'
 
@@ -20,6 +19,9 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
   const bodyRef = useRef<HTMLTextAreaElement>(null)
   const bodyEnRef = useRef<HTMLTextAreaElement>(null)
   const insertTargetField = useRef<BodyField>('body')
+  const [categories, setCategories] = useState<string[]>(DEFAULT_NEWS_CATEGORIES)
+  const [showCategoryManager, setShowCategoryManager] = useState(false)
+  const [newCategoryInput, setNewCategoryInput] = useState('')
 
   const accentBtn = accent === 'onsenji' ? 'bg-onsenji hover:bg-onsenji/90' : 'btn-primary'
   const accentBorder = accent === 'onsenji' ? 'border-[#7ec8a4]' : 'border-gold'
@@ -31,8 +33,30 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
     setList(data ?? [])
   }
 
+  async function loadCategories() {
+    const { data } = await supabase.from('site_content').select('value').eq('key', newsCategoriesKey(site)).maybeSingle()
+    setCategories(parseNewsCategories(data?.value))
+  }
+
+  async function saveCategories(next: string[]) {
+    setCategories(next)
+    await supabase.from('site_content').upsert({ key: newsCategoriesKey(site), value: JSON.stringify(next) }, { onConflict: 'key' })
+  }
+
+  function addCategory() {
+    const name = newCategoryInput.trim()
+    if (!name || categories.includes(name)) { setNewCategoryInput(''); return }
+    saveCategories([...categories, name])
+    setNewCategoryInput('')
+  }
+
+  function removeCategory(name: string) {
+    saveCategories(categories.filter(c => c !== name))
+  }
+
   useEffect(() => {
     load()
+    loadCategories()
     if (new URLSearchParams(window.location.search).get('new') === '1') {
       setEditing({ title:'', excerpt:'', body:'', cover_url:'', category:'お知らせ', site, is_published:false })
       setPreview(false)
@@ -168,11 +192,41 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                   value={editing.title ?? ''} onChange={e => setEditing({...editing, title: e.target.value})} />
               </div>
               <div>
-                <label className="admin-label">カテゴリ</label>
+                <div className="flex items-center justify-between">
+                  <label className="admin-label mb-0">カテゴリ</label>
+                  <button type="button" onClick={() => setShowCategoryManager(s => !s)}
+                    className="text-xs text-gray-400 hover:text-navy underline">
+                    {showCategoryManager ? '閉じる' : 'カテゴリーを追加・削除'}
+                  </button>
+                </div>
                 <select className="admin-input" value={editing.category ?? 'お知らせ'}
-                  onChange={e => setEditing({...editing, category: e.target.value as NewsCategory})}>
-                  {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+                  onChange={e => setEditing({...editing, category: e.target.value})}>
+                  {categories.map(c => <option key={c}>{c}</option>)}
                 </select>
+                {showCategoryManager && (
+                  <div className="mt-2 p-3 bg-cream-alt rounded-lg space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      {categories.map(c => (
+                        <span key={c} className="inline-flex items-center gap-1 text-xs bg-white border border-gray-200 rounded-full pl-3 pr-1.5 py-1">
+                          {c}
+                          <button type="button" onClick={() => removeCategory(c)} aria-label={`${c}を削除`}
+                            className="w-4 h-4 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center">×</button>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <input className="admin-input text-sm" placeholder="新しいカテゴリー名"
+                        value={newCategoryInput}
+                        onChange={e => setNewCategoryInput(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCategory() } }} />
+                      <button type="button" onClick={addCategory}
+                        className="text-xs px-3 py-1.5 rounded border border-navy text-navy hover:bg-navy hover:text-white transition-colors flex-shrink-0">
+                        追加
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-gray-400">削除しても、既にそのカテゴリーが付いている記事はそのまま表示されます（新規記事で選べなくなるだけです）。</p>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="admin-label">カバー画像URL <span className="text-gray-400 font-normal text-xs">（画像管理からコピー）</span></label>

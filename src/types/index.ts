@@ -1,4 +1,6 @@
-export type NewsCategory = 'お知らせ' | '行事案内' | '季節のお知らせ' | '交通情報' | '授与品のお知らせ'
+// 既定の5種のほか、管理画面からカテゴリーを自由に追加できるため文字列型にしている
+// （追加分の一覧は news_categories_<site> というsite_contentキーで管理。src/lib/newsCategories.ts参照）
+export type NewsCategory = string
 export type NewsSite = 'chuzenji' | 'onsenji'
 
 export interface News {

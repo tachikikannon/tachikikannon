@@ -6,8 +6,9 @@ import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import { createServerClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
+import { newsCategoriesKey, parseNewsCategories } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
-import type { News, NewsCategory } from '@/types'
+import type { News } from '@/types'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -50,7 +51,8 @@ export default async function OnsenjiNewsPage({
   const { data: items } = await query
   const news = (items ?? []) as News[]
 
-  const CATEGORIES: NewsCategory[] = ['お知らせ','行事案内','季節のお知らせ','交通情報','授与品のお知らせ']
+  const { data: categoriesRow } = await supabase.from('site_content').select('value').eq('key', newsCategoriesKey('onsenji')).maybeSingle()
+  const CATEGORIES = parseNewsCategories(categoriesRow?.value)
   const CAT_LABELS: Record<string, string> = {
     'お知らせ': t('catNews'),
     '行事案内': t('catEvent'),
