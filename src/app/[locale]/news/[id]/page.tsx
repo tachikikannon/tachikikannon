@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
+import { renderNewsBody } from '@/lib/newsBody'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -117,7 +118,7 @@ export default async function NewsDetailPage({
 
             {/* 本文 */}
             <div className="prose prose-sm max-w-none text-gray-700 leading-[2] whitespace-pre-wrap">
-              {body}
+              {renderNewsBody(body)}
             </div>
           </div>
 

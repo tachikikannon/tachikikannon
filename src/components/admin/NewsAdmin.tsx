@@ -1,9 +1,12 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import { renderNewsBody } from '@/lib/newsBody'
 import type { News, NewsCategory, NewsSite } from '@/types'
 
 const CATEGORIES: NewsCategory[] = ['お知らせ','行事案内','季節のお知らせ','交通情報','授与品のお知らせ']
+
+type BodyField = 'body' | 'body_en'
 
 export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { site: NewsSite; siteLabel: string; accent?: 'chuzenji' | 'onsenji' }) {
   const supabase = createClient()
@@ -11,6 +14,12 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
   const [editing, setEditing] = useState<Partial<News> | null>(null)
   const [loading, setLoading] = useState(false)
   const [preview, setPreview] = useState(false)
+  const [uploadingField, setUploadingField] = useState<BodyField | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const bodyImageInputRef = useRef<HTMLInputElement>(null)
+  const bodyRef = useRef<HTMLTextAreaElement>(null)
+  const bodyEnRef = useRef<HTMLTextAreaElement>(null)
+  const insertTargetField = useRef<BodyField>('body')
 
   const accentBtn = accent === 'onsenji' ? 'bg-onsenji hover:bg-onsenji/90' : 'btn-primary'
   const accentBorder = accent === 'onsenji' ? 'border-[#7ec8a4]' : 'border-gold'
@@ -57,8 +66,56 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
     load()
   }
 
+  function insertAtCursor(field: BodyField, ref: React.RefObject<HTMLTextAreaElement | null>, snippet: string) {
+    const el = ref.current
+    setEditing(v => {
+      if (!v) return v
+      const current = v[field] ?? ''
+      if (!el) return { ...v, [field]: current + snippet }
+      const start = el.selectionStart ?? current.length
+      const end = el.selectionEnd ?? current.length
+      const next = current.slice(0, start) + snippet + current.slice(end)
+      requestAnimationFrame(() => {
+        el.focus()
+        const pos = start + snippet.length
+        el.setSelectionRange(pos, pos)
+      })
+      return { ...v, [field]: next }
+    })
+  }
+
+  function triggerBodyImageUpload(field: BodyField) {
+    insertTargetField.current = field
+    bodyImageInputRef.current?.click()
+  }
+
+  async function handleBodyImageSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    const field = insertTargetField.current
+    setUploadError(null)
+    setUploadingField(field)
+    const ext = file.name.split('.').pop()
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const { error } = await supabase.storage.from('temple-images').upload(path, file)
+    if (error) {
+      setUploadError(error.message)
+      setUploadingField(null)
+      return
+    }
+    const { data: { publicUrl } } = supabase.storage.from('temple-images').getPublicUrl(path)
+    await supabase.from('media').insert({
+      filename: file.name, storage_path: path, public_url: publicUrl,
+      size_bytes: file.size, mime_type: file.type, site,
+    })
+    insertAtCursor(field, field === 'body' ? bodyRef : bodyEnRef, `\n![](${publicUrl})\n`)
+    setUploadingField(null)
+  }
+
   return (
     <div className="p-8 max-w-5xl">
+      <input ref={bodyImageInputRef} type="file" accept="image/*" className="hidden" onChange={handleBodyImageSelected} />
       <div className="flex items-center justify-between mb-6">
         <h1 className={`text-2xl font-serif ${accentText}`}>{siteLabel} お知らせ管理</h1>
         <button
@@ -95,11 +152,16 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
               </div>
               <h3 className={`text-xl font-serif ${accentText}`}>{editing.title || '（タイトルなし）'}</h3>
               {editing.excerpt && <p className={`text-sm text-gray-500 border-l-4 ${accentBorder} pl-4`}>{editing.excerpt}</p>}
-              <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{editing.body || '（本文なし）'}</div>
+              <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                {editing.body ? renderNewsBody(editing.body) : '（本文なし）'}
+              </div>
             </div>
           ) : (
             /* 編集フォーム */
             <div className="space-y-4">
+              {uploadError && (
+                <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded p-3">{uploadError}</p>
+              )}
               <div>
                 <label className="admin-label">タイトル <span className="text-red-400">*</span></label>
                 <input className="admin-input" placeholder="例：夏季拝観時間のお知らせ"
@@ -124,9 +186,15 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
               </div>
               <div>
                 <label className="admin-label">本文 <span className="text-red-400">*</span></label>
-                <textarea className="admin-input min-h-[240px] font-mono text-sm" placeholder="本文を入力してください。改行はそのまま反映されます。"
+                <textarea ref={bodyRef} className="admin-input min-h-[240px] font-mono text-sm" placeholder="本文を入力してください。改行はそのまま反映されます。"
                   value={editing.body ?? ''} onChange={e => setEditing({...editing, body: e.target.value})} />
-                <p className="text-xs text-gray-400 mt-1">改行・空行はそのまま表示されます</p>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-xs text-gray-400">改行・空行やURLはそのまま表示・リンク化されます</p>
+                  <button type="button" onClick={() => triggerBodyImageUpload('body')} disabled={uploadingField === 'body'}
+                    className="text-xs text-navy border border-navy rounded px-3 py-1.5 hover:bg-navy hover:text-white transition-colors disabled:opacity-50 flex-shrink-0 ml-3">
+                    {uploadingField === 'body' ? 'アップロード中...' : '📷 本文に写真を挿入'}
+                  </button>
+                </div>
               </div>
 
               <div className="pt-3 border-t border-gray-100 space-y-4">
@@ -141,7 +209,13 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                 </div>
                 <div>
                   <label className="admin-label">本文（英語）</label>
-                  <textarea className="admin-input min-h-[180px] font-mono text-sm" value={editing.body_en ?? ''} onChange={e => setEditing({...editing, body_en: e.target.value})} />
+                  <textarea ref={bodyEnRef} className="admin-input min-h-[180px] font-mono text-sm" value={editing.body_en ?? ''} onChange={e => setEditing({...editing, body_en: e.target.value})} />
+                  <div className="flex justify-end mt-1">
+                    <button type="button" onClick={() => triggerBodyImageUpload('body_en')} disabled={uploadingField === 'body_en'}
+                      className="text-xs text-navy border border-navy rounded px-3 py-1.5 hover:bg-navy hover:text-white transition-colors disabled:opacity-50">
+                      {uploadingField === 'body_en' ? 'アップロード中...' : '📷 本文に写真を挿入'}
+                    </button>
+                  </div>
                 </div>
               </div>
 

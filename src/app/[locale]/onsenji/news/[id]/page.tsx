@@ -7,6 +7,7 @@ import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
 import { createServerClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
+import { renderNewsBody } from '@/lib/newsBody'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -118,7 +119,7 @@ export default async function OnsenjiNewsDetailPage({
 
             {/* 本文 */}
             <div className="prose prose-sm max-w-none text-gray-700 leading-[2] whitespace-pre-wrap">
-              {body}
+              {renderNewsBody(body)}
             </div>
           </div>
 
