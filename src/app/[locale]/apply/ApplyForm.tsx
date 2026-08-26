@@ -346,6 +346,14 @@ export default function ApplyForm() {
             {isPress && (
               <div className="space-y-5 border-t border-gray-200 pt-6">
                 <h2 className="font-serif text-navy text-lg">{t('sectionMediaHeading')}</h2>
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700 space-y-1">
+                  <p className="font-medium text-amber-800 mb-1">{t('filmingFeeHeading')}</p>
+                  <p>{t('filmingFeeMorning')}</p>
+                  <p>{t('filmingFeeAfternoon')}</p>
+                  <p>{t('filmingFeeFullDay')}</p>
+                  <p>{t('filmingFeeOutside')}</p>
+                  <p className="pt-1">{t('filmingFeeExclusive')}</p>
+                </div>
                 <div>
                   <label className="admin-label">{t('mediaCategoryLabel')}</label>
                   <div className="grid grid-cols-2 gap-2">
