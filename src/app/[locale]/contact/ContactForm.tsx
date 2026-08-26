@@ -10,12 +10,21 @@ export default function ContactForm() {
   const tc = useTranslations('common')
   const locale = useLocale()
   const [form, setForm] = useState({ name:'', email:'', subject:'', message:'' })
-  const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
-  const [confirming, setConfirming] = useState(false)
+  const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
+  const [status, setStatus] = useState<'idle'|'loading'|'error'>('idle')
 
-  async function handleSubmit(e: React.FormEvent) {
+  function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
-    if (!confirming) { setConfirming(true); return }
+    setStep('confirm')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function backToInput() {
+    setStep('input')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function handleSubmit() {
     setStatus('loading')
     const id = crypto.randomUUID()
     const { error } = await supabase.from('contacts').insert({ ...form, id })
@@ -25,10 +34,12 @@ export default function ContactForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...form, id, locale, temple: 'chuzenji' }),
     }).catch(() => {})
-    setStatus('done')
+    setStatus('idle')
+    setStep('done')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  if (status === 'done') return (
+  if (step === 'done') return (
     <main className="min-h-screen pt-24 flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <p className="text-5xl mb-4">✉️</p>
@@ -40,6 +51,13 @@ export default function ContactForm() {
     </main>
   )
 
+  const confirmRows: [string, string][] = [
+    [t('nameLabel'), form.name],
+    [t('emailLabel'), form.email],
+    [t('subjectLabel'), form.subject],
+    [t('messageLabel'), form.message],
+  ]
+
   return (
     <main className="pt-24 pb-16 px-4">
       <div className="max-w-lg mx-auto">
@@ -47,8 +65,8 @@ export default function ContactForm() {
         <h1 className="text-3xl font-serif text-navy mb-1">{t('title')}</h1>
         <p className="text-gray-500 text-sm mb-8">{t('intro')}</p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <fieldset disabled={confirming} className="contents">
+        {step === 'input' && (
+          <form onSubmit={goToConfirm} className="space-y-5">
             <div>
               <label className="admin-label">{t('nameLabel')}</label>
               <input required className="admin-input" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
@@ -65,25 +83,37 @@ export default function ContactForm() {
               <label className="admin-label">{t('messageLabel')}</label>
               <textarea required className="admin-input min-h-[150px]" value={form.message} onChange={e => setForm({...form, message: e.target.value})} />
             </div>
-          </fieldset>
-          {status === 'error' && <p className="text-red-600 text-sm">{t('submitError')}</p>}
-          {confirming && <p className="text-sm text-navy bg-cream-alt rounded-lg p-3">{tc('confirmQuestion')}</p>}
-          {confirming ? (
+            <button type="submit" className="btn-primary w-full text-center">
+              {t('goToConfirm')}
+            </button>
+          </form>
+        )}
+
+        {step === 'confirm' && (
+          <div className="space-y-6">
+            <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
+            <p className="text-sm text-gray-500">{t('confirmNote')}</p>
+            <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
+              {confirmRows.map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
+                  <dt className="text-gray-500">{label}</dt>
+                  <dd className="whitespace-pre-wrap">{value}</dd>
+                </div>
+              ))}
+            </dl>
+            {status === 'error' && <p className="text-red-600 text-sm">{t('submitError')}</p>}
             <div className="flex gap-3">
-              <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+              <button type="button" onClick={backToInput} disabled={status === 'loading'}
                 className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
-                {tc('confirmNo')}
+                {t('backButton')}
               </button>
-              <button type="submit" disabled={status === 'loading'} className="flex-1 btn-primary text-center disabled:opacity-50">
-                {status === 'loading' ? t('submitting') : tc('confirmYes')}
+              <button type="button" onClick={handleSubmit} disabled={status === 'loading'}
+                className="flex-1 btn-primary text-center disabled:opacity-50">
+                {status === 'loading' ? t('submitting') : t('confirmSubmit')}
               </button>
             </div>
-          ) : (
-            <button type="submit" className="btn-primary w-full text-center">
-              {t('submit')}
-            </button>
-          )}
-        </form>
+          </div>
+        )}
 
         <div className="mt-10 p-5 bg-cream-alt rounded-xl text-sm text-gray-600">
           <p className="font-medium text-navy mb-2">{t('phoneContactTitle')}</p>

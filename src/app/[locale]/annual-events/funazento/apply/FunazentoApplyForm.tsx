@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
-type Status = 'idle' | 'loading' | 'done' | 'error'
+type Status = 'idle' | 'loading' | 'error'
 type Applicant = { name: string; address: string; wish1: string; wish2: string }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
@@ -29,8 +29,8 @@ export default function FunazentoApplyForm() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
   const [applicants, setApplicants] = useState<Applicant[]>(Array.from({ length: 10 }, emptyApplicant))
   const [notes, setNotes] = useState('')
+  const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<Status>('idle')
-  const [confirming, setConfirming] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -41,9 +41,18 @@ export default function FunazentoApplyForm() {
     setApplicants(prev => prev.map((a, idx) => idx === i ? { ...a, [field]: value } : a))
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
-    if (!confirming) { setConfirming(true); return }
+    setStep('confirm')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function backToInput() {
+    setStep('input')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function handleSubmit() {
     setStatus('loading')
 
     const applicantLines = applicants
@@ -78,10 +87,12 @@ export default function FunazentoApplyForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, name: form.name, email: form.email, subject: '【8月4日】船禅頂（ふなぜんじょう）申し込み', message }),
     }).catch(() => {})
-    setStatus('done')
+    setStatus('idle')
+    setStep('done')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  if (status === 'done') return (
+  if (step === 'done') return (
     <main className="min-h-screen pt-24 flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <p className="text-5xl mb-4">🙏</p>
@@ -99,6 +110,26 @@ export default function FunazentoApplyForm() {
       </div>
     </main>
   )
+
+  const applicantRows: [string, string][] = applicants
+    .map((a, i) => ({ ...a, num: CIRCLED[i] }))
+    .filter(a => a.name.trim())
+    .map(a => [
+      `${t('applicantLabel')}${a.num}`,
+      `${a.name}（${a.address || '住所未記入'}）\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
+    ] as [string, string])
+
+  const confirmRows: [string, string][] = [
+    [t('repNameLabel'), form.name],
+    [t('emailLabel'), form.email],
+    [t('phoneLabel'), form.phone],
+    ...(form.postal ? [[t('postalLabel'), form.postal] as [string, string]] : []),
+    [t('addressLabel'), form.address],
+    [t('wish1Label'), form.wish1],
+    ...(form.wish2 ? [[t('wish2Label'), form.wish2] as [string, string]] : []),
+    ...applicantRows,
+    ...(notes ? [[t('notesLabel'), notes] as [string, string]] : []),
+  ]
 
   return (
     <main className="pt-16 pb-16">
@@ -153,8 +184,8 @@ export default function FunazentoApplyForm() {
         </div>
 
         {/* フォーム */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <fieldset disabled={confirming} className="contents">
+        {step === 'input' && (
+        <form onSubmit={goToConfirm} className="space-y-5">
           <div>
             <label className="admin-label">{t('repNameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" placeholder={t('repNamePlaceholder')} value={form.name} onChange={set('name')} />
@@ -215,32 +246,43 @@ export default function FunazentoApplyForm() {
             <label className="admin-label">{t('notesLabel')} <span className="text-gray-400 text-xs">{t('notesHint')}</span></label>
             <textarea className="admin-input min-h-[80px]" placeholder={t('notesPlaceholder')} value={notes} onChange={e => setNotes(e.target.value)} />
           </div>
-          </fieldset>
 
-          {status === 'error' && (
-            <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-              {t('submitError')}
-            </p>
-          )}
+          <button type="submit" className="btn-primary w-full text-center py-3">
+            {t('goToConfirm')}
+          </button>
+        </form>
+        )}
 
-          {confirming && <p className="text-sm text-navy bg-cream-alt rounded-lg p-3">{tc('confirmQuestion')}</p>}
-          {confirming ? (
+        {step === 'confirm' && (
+          <div className="space-y-6">
+            <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
+            <p className="text-sm text-gray-500">{t('confirmNote')}</p>
+            <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
+              {confirmRows.map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
+                  <dt className="text-gray-500">{label}</dt>
+                  <dd className="whitespace-pre-wrap">{value}</dd>
+                </div>
+              ))}
+            </dl>
+            {status === 'error' && (
+              <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                {t('submitError')}
+              </p>
+            )}
             <div className="flex gap-3">
-              <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+              <button type="button" onClick={backToInput} disabled={status === 'loading'}
                 className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
-                {tc('confirmNo')}
+                {t('backButton')}
               </button>
-              <button type="submit" disabled={status === 'loading'} className="flex-1 btn-primary text-center disabled:opacity-50 py-3">
-                {status === 'loading' ? t('submitting') : tc('confirmYes')}
+              <button type="button" onClick={handleSubmit} disabled={status === 'loading'}
+                className="flex-1 btn-primary text-center disabled:opacity-50 py-3">
+                {status === 'loading' ? t('submitting') : t('confirmSubmit')}
               </button>
             </div>
-          ) : (
-            <button type="submit" className="btn-primary w-full text-center py-3">
-              {t('submit')}
-            </button>
-          )}
-          <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
-        </form>
+            <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
+          </div>
+        )}
 
         <div className="mt-8 p-5 bg-cream-alt rounded-xl text-sm text-gray-600">
           <p className="font-medium text-navy mb-1">{t('phoneApplyTitle')}</p>

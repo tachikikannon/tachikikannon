@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 import { calcShippingFeeByWeight, type ShippingTier } from '@/lib/shipping'
 
-type Status = 'idle' | 'loading' | 'done' | 'error'
+type Status = 'idle' | 'loading' | 'error'
 type Fee = { price: string; size: string; weight_g: number }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
@@ -31,9 +31,9 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
   const [form, setForm] = useState({ name: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
   const [fee, setFee] = useState('')
   const [notes, setNotes] = useState('')
+  const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
-  const [confirming, setConfirming] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -45,10 +45,20 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
   const shippingFee = fee ? calcShippingFeeByWeight(weightG, shippingTiers) : null
   const grandTotal = subtotal + (shippingFee ?? 0)
 
-  async function handleSubmit(e: React.FormEvent) {
+  function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
     if (!fee) { setErrorMsg(t('feeRequiredError')); return }
-    if (!confirming) { setConfirming(true); return }
+    setErrorMsg('')
+    setStep('confirm')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function backToInput() {
+    setStep('input')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function handleSubmit() {
     setStatus('loading')
     setErrorMsg('')
 
@@ -82,10 +92,12 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, name: form.name, email: form.email, subject, message }),
     }).catch(() => {})
-    setStatus('done')
+    setStatus('idle')
+    setStep('done')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  if (status === 'done') return (
+  if (step === 'done') return (
     <main className="min-h-screen pt-24 flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <p className="text-5xl mb-4">🙏</p>
@@ -99,6 +111,21 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
     </main>
   )
 
+  const confirmRows: [string, string][] = [
+    [t('nameLabel'), form.name],
+    [t('emailLabel'), form.email],
+    [t('phoneLabel'), form.phone],
+    ...(form.postal ? [[t('postalLabel'), form.postal] as [string, string]] : []),
+    [t('addressLabel'), form.address],
+    [t('feeHeading'), fee],
+    [t('wish1Label'), form.wish1],
+    ...(form.wish2 ? [[t('wish2Label'), form.wish2] as [string, string]] : []),
+    [t('subtotalLabel'), `¥${subtotal.toLocaleString()}`],
+    [t('shippingFeeLabel'), shippingFee !== null ? `¥${shippingFee.toLocaleString()}` : t('shippingUnknownNote')],
+    [t('grandTotalLabel'), `¥${grandTotal.toLocaleString()}`],
+    ...(notes ? [[t('notesLabel'), notes] as [string, string]] : []),
+  ]
+
   return (
     <main className="pt-24 pb-16 px-4">
       <div className="max-w-xl mx-auto">
@@ -108,8 +135,8 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
         <h1 className="text-3xl font-serif text-navy mb-1">{t('title')}</h1>
         <p className="text-gray-500 text-sm mb-8">{t('intro')}</p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <fieldset disabled={confirming} className="contents">
+        {step === 'input' && (
+        <form onSubmit={goToConfirm} className="space-y-5">
           <div>
             <label className="admin-label">{t('nameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" value={form.name} onChange={set('name')} />
@@ -178,28 +205,41 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
             <label className="admin-label">{t('notesLabel')} <span className="text-gray-400 text-xs">{t('notesHint')}</span></label>
             <textarea className="admin-input min-h-[80px]" placeholder={t('notesPlaceholder')} value={notes} onChange={e => setNotes(e.target.value)} />
           </div>
-          </fieldset>
 
           {errorMsg && <p className="text-red-600 text-sm">{errorMsg}</p>}
 
-          {confirming && <p className="text-sm text-navy bg-cream-alt rounded-lg p-3">{tc('confirmQuestion')}</p>}
-          {confirming ? (
+          <button type="submit" className="btn-primary w-full text-center">
+            {t('goToConfirm')}
+          </button>
+        </form>
+        )}
+
+        {step === 'confirm' && (
+          <div className="space-y-6">
+            <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
+            <p className="text-sm text-gray-500">{t('confirmNote')}</p>
+            <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
+              {confirmRows.map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
+                  <dt className="text-gray-500">{label}</dt>
+                  <dd className="whitespace-pre-wrap">{value}</dd>
+                </div>
+              ))}
+            </dl>
+            {errorMsg && <p className="text-red-600 text-sm">{errorMsg}</p>}
             <div className="flex gap-3">
-              <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+              <button type="button" onClick={backToInput} disabled={status === 'loading'}
                 className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
-                {tc('confirmNo')}
+                {t('backButton')}
               </button>
-              <button type="submit" disabled={status === 'loading'} className="flex-1 btn-primary text-center disabled:opacity-50">
-                {status === 'loading' ? t('submitting') : tc('confirmYes')}
+              <button type="button" onClick={handleSubmit} disabled={status === 'loading'}
+                className="flex-1 btn-primary text-center disabled:opacity-50">
+                {status === 'loading' ? t('submitting') : t('confirmSubmit')}
               </button>
             </div>
-          ) : (
-            <button type="submit" className="btn-primary w-full text-center">
-              {t('submit')}
-            </button>
-          )}
-          <p className="text-xs text-gray-400 text-center">{t('submitNote')}</p>
-        </form>
+            <p className="text-xs text-gray-400 text-center">{t('submitNote')}</p>
+          </div>
+        )}
 
         <div className="mt-8 p-5 bg-cream-alt rounded-xl text-sm text-gray-600">
           <p className="font-medium text-navy mb-1">{t('phoneApplyTitle')}</p>

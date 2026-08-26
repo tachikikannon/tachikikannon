@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
-type Status = 'idle' | 'loading' | 'done' | 'error'
+type Status = 'idle' | 'loading' | 'error'
 
 export default function YakushikoApplyForm() {
   const supabase = createClient()
@@ -12,17 +12,26 @@ export default function YakushikoApplyForm() {
   const tYak = useTranslations('onsenjiYakushiko')
   const tc = useTranslations('common')
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', wish1: '', wish2: '' })
+  const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<Status>('idle')
-  const [confirming, setConfirming] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }))
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
-    if (!confirming) { setConfirming(true); return }
+    setStep('confirm')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function backToInput() {
+    setStep('input')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function handleSubmit() {
     setStatus('loading')
     const message = [
       `【行事名】薬師講大祭・採灯大護摩供（8月8日）`,
@@ -47,10 +56,12 @@ export default function YakushikoApplyForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, name: form.name, email: form.email, subject: '【8月8日】薬師講大祭・採灯大護摩供 御札申し込み', message }),
     }).catch(() => {})
-    setStatus('done')
+    setStatus('idle')
+    setStep('done')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  if (status === 'done') return (
+  if (step === 'done') return (
     <main className="min-h-screen pt-24 flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <p className="text-5xl mb-4">🙏</p>
@@ -68,6 +79,15 @@ export default function YakushikoApplyForm() {
       </div>
     </main>
   )
+
+  const confirmRows: [string, string][] = [
+    [t('nameLabel'), form.name],
+    [t('emailLabel'), form.email],
+    [t('phoneLabel'), form.phone],
+    [t('addressLabel'), form.address],
+    [t('wish1Label'), form.wish1],
+    ...(form.wish2 ? [[t('wish2Label'), form.wish2] as [string, string]] : []),
+  ]
 
   return (
     <main className="pt-16 pb-16">
@@ -113,8 +133,8 @@ export default function YakushikoApplyForm() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <fieldset disabled={confirming} className="contents">
+        {step === 'input' && (
+        <form onSubmit={goToConfirm} className="space-y-5">
           <div>
             <label className="admin-label">{t('nameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" placeholder={t('namePlaceholder')} value={form.name} onChange={set('name')} />
@@ -145,33 +165,44 @@ export default function YakushikoApplyForm() {
               </div>
             </div>
           </div>
-          </fieldset>
 
-          {status === 'error' && (
-            <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-              {t('submitError')}
-            </p>
-          )}
-          {confirming && <p className="text-sm text-onsenji bg-onsenji/5 rounded-lg p-3">{tc('confirmQuestion')}</p>}
-          {confirming ? (
+          <button type="submit"
+            className="w-full py-3 bg-onsenji text-white font-medium rounded-full hover:bg-onsenji/80 transition-colors">
+            {t('goToConfirm')}
+          </button>
+        </form>
+        )}
+
+        {step === 'confirm' && (
+          <div className="space-y-6">
+            <h2 className="font-serif text-onsenji text-xl">{t('confirmHeading')}</h2>
+            <p className="text-sm text-gray-500">{t('confirmNote')}</p>
+            <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
+              {confirmRows.map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
+                  <dt className="text-gray-500">{label}</dt>
+                  <dd className="whitespace-pre-wrap">{value}</dd>
+                </div>
+              ))}
+            </dl>
+            {status === 'error' && (
+              <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                {t('submitError')}
+              </p>
+            )}
             <div className="flex gap-3">
-              <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+              <button type="button" onClick={backToInput} disabled={status === 'loading'}
                 className="flex-1 py-3 border border-onsenji text-onsenji font-medium rounded-full hover:bg-onsenji/5 transition-colors disabled:opacity-50">
-                {tc('confirmNo')}
+                {t('backButton')}
               </button>
-              <button type="submit" disabled={status === 'loading'}
+              <button type="button" onClick={handleSubmit} disabled={status === 'loading'}
                 className="flex-1 py-3 bg-onsenji text-white font-medium rounded-full hover:bg-onsenji/80 transition-colors disabled:opacity-50">
-                {status === 'loading' ? t('submitting') : tc('confirmYes')}
+                {status === 'loading' ? t('submitting') : t('confirmSubmit')}
               </button>
             </div>
-          ) : (
-            <button type="submit"
-              className="w-full py-3 bg-onsenji text-white font-medium rounded-full hover:bg-onsenji/80 transition-colors">
-              {t('submit')}
-            </button>
-          )}
-          <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
-        </form>
+            <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
+          </div>
+        )}
 
         <div className="mt-8 p-5 bg-onsenji/5 rounded-xl text-sm text-gray-600">
           <p className="font-medium text-onsenji mb-1">{t('phoneApplyTitle')}</p>

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
-type Status = 'idle' | 'loading' | 'done' | 'error'
+type Status = 'idle' | 'loading' | 'error'
 
 export default function WeddingApplyForm() {
   const supabase = createClient()
@@ -15,17 +15,26 @@ export default function WeddingApplyForm() {
     name: '', nameKana: '', email: '', phone: '',
     wish1: '', wish2: '', partySize: '', notes: '',
   })
+  const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<Status>('idle')
-  const [confirming, setConfirming] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }))
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
-    if (!confirming) { setConfirming(true); return }
+    setStep('confirm')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function backToInput() {
+    setStep('input')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function handleSubmit() {
     setStatus('loading')
 
     const message = [
@@ -53,10 +62,12 @@ export default function WeddingApplyForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, name: form.name, email: form.email, subject: '仏前式（結婚式）のご相談・お申し込み', message }),
     }).catch(() => {})
-    setStatus('done')
+    setStatus('idle')
+    setStep('done')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  if (status === 'done') return (
+  if (step === 'done') return (
     <main className="min-h-screen pt-24 flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <p className="text-5xl mb-4">💐</p>
@@ -69,6 +80,17 @@ export default function WeddingApplyForm() {
       </div>
     </main>
   )
+
+  const confirmRows: [string, string][] = [
+    [t('nameLabel'), form.name],
+    ...(form.nameKana ? [[t('nameKanaLabel'), form.nameKana] as [string, string]] : []),
+    [t('emailLabel'), form.email],
+    [t('phoneLabel'), form.phone],
+    ...(form.wish1 ? [[t('wish1Label'), form.wish1] as [string, string]] : []),
+    ...(form.wish2 ? [[t('wish2Label'), form.wish2] as [string, string]] : []),
+    ...(form.partySize ? [[t('partySizeLabel'), form.partySize] as [string, string]] : []),
+    ...(form.notes ? [[t('notesLabel'), form.notes] as [string, string]] : []),
+  ]
 
   return (
     <main className="pt-16 pb-16">
@@ -93,8 +115,8 @@ export default function WeddingApplyForm() {
           <p>{t('noticeConfirm')}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <fieldset disabled={confirming} className="contents">
+        {step === 'input' && (
+        <form onSubmit={goToConfirm} className="space-y-5">
           <div>
             <label className="admin-label">{t('nameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" value={form.name} onChange={set('name')} />
@@ -136,30 +158,41 @@ export default function WeddingApplyForm() {
             <label className="admin-label">{t('notesLabel')} <span className="text-gray-400 text-xs">{t('optional')}</span></label>
             <textarea className="admin-input min-h-[100px]" placeholder={t('notesPlaceholder')} value={form.notes} onChange={set('notes')} />
           </div>
-          </fieldset>
 
-          {status === 'error' && (
-            <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{t('submitError')}</p>
-          )}
+          <button type="submit" className="btn-primary w-full text-center py-3">
+            {t('goToConfirm')}
+          </button>
+        </form>
+        )}
 
-          {confirming && <p className="text-sm text-navy bg-cream-alt rounded-lg p-3">{tc('confirmQuestion')}</p>}
-          {confirming ? (
+        {step === 'confirm' && (
+          <div className="space-y-6">
+            <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
+            <p className="text-sm text-gray-500">{t('confirmNote')}</p>
+            <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
+              {confirmRows.map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
+                  <dt className="text-gray-500">{label}</dt>
+                  <dd className="whitespace-pre-wrap">{value}</dd>
+                </div>
+              ))}
+            </dl>
+            {status === 'error' && (
+              <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{t('submitError')}</p>
+            )}
             <div className="flex gap-3">
-              <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+              <button type="button" onClick={backToInput} disabled={status === 'loading'}
                 className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
-                {tc('confirmNo')}
+                {t('backButton')}
               </button>
-              <button type="submit" disabled={status === 'loading'} className="flex-1 btn-primary text-center disabled:opacity-50 py-3">
-                {status === 'loading' ? t('submitting') : tc('confirmYes')}
+              <button type="button" onClick={handleSubmit} disabled={status === 'loading'}
+                className="flex-1 btn-primary text-center disabled:opacity-50 py-3">
+                {status === 'loading' ? t('submitting') : t('confirmSubmit')}
               </button>
             </div>
-          ) : (
-            <button type="submit" className="btn-primary w-full text-center py-3">
-              {t('submit')}
-            </button>
-          )}
-          <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
-        </form>
+            <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
+          </div>
+        )}
 
         <div className="mt-8 p-5 bg-cream-alt rounded-xl text-sm text-gray-600">
           <p className="font-medium text-navy mb-1">{t('phoneApplyTitle')}</p>

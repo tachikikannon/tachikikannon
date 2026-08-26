@@ -48,12 +48,21 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialType])
   const [purpose, setPurpose] = useState('gokigan')
-  const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
-  const [confirming, setConfirming] = useState(false)
+  const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
+  const [status, setStatus] = useState<'idle'|'loading'|'error'>('idle')
 
-  async function handleSubmit(e: React.FormEvent) {
+  function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
-    if (!confirming) { setConfirming(true); return }
+    setStep('confirm')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function backToInput() {
+    setStep('input')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function handleSubmit() {
     setStatus('loading')
     // 予約番号（LINE通知等で使用）をクライアント側で採番する。
     // anonロールにはreservationsのSELECT権限が無くinsert後にDB生成IDを
@@ -78,10 +87,12 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...submission, id, locale }),
     }).catch(() => {})
-    setStatus('done')
+    setStatus('idle')
+    setStep('done')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  if (status === 'done') return (
+  if (step === 'done') return (
     <main className="min-h-screen pt-24 flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
         <p className="text-5xl mb-4">🙏</p>
@@ -93,6 +104,20 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
     </main>
   )
 
+  const typeLabel = TYPES.find(ty => ty.value === form.type)?.label ?? form.type
+  const purposeLabel = PURPOSES.find(p => p.value === purpose)?.label ?? ''
+  const confirmRows: [string, string][] = [
+    [t('typeLabel'), typeLabel],
+    ...(form.type === 'prayer' ? [[t('purposeLabel'), purposeLabel] as [string, string]] : []),
+    [t('dateLabel'), `${form.date} ${form.time_slot}`],
+    [t('partySizeLabel'), `${form.party_size}${t('partySizeUnit')}`],
+    [t('nameLabel'), form.name],
+    ...(showNameKana ? [[t('nameKanaLabel'), form.name_kana] as [string, string]] : []),
+    [t('emailLabel'), form.email],
+    [t('phoneLabel'), form.phone],
+    ...(form.notes ? [[t('notesLabel'), form.notes] as [string, string]] : []),
+  ]
+
   return (
     <main className="pt-24 pb-16 px-4">
       <div className="max-w-xl mx-auto">
@@ -102,8 +127,8 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
         <h1 className="text-3xl font-serif text-navy mb-1">{t('title')}</h1>
         <p className="text-gray-500 text-sm mb-8">{t('intro')}</p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <fieldset disabled={confirming} className="contents">
+        {step === 'input' && (
+          <form onSubmit={goToConfirm} className="space-y-5">
             {/* 種別 */}
             <div>
               <label className="admin-label">{t('typeLabel')}</label>
@@ -154,7 +179,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
             </div>
 
             {/* 坐禅はWeb予約自体を受け付けない（カレンダーの案内どおり電話予約のみ）ため、
-                人数以降の入力欄は表示しない */}
+                人数以降の入力欄・送信ボタンは表示しない */}
             {form.type !== 'zazen' && (
               <>
                 {/* 人数 */}
@@ -191,40 +216,45 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
                   <label className="admin-label">{t('notesLabel')}</label>
                   <textarea className="admin-input min-h-[80px]" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
                 </div>
-              </>
-            )}
-          </fieldset>
 
-          {/* 坐禅はWeb予約自体を受け付けないため送信ボタンは表示しない */}
-          {form.type !== 'zazen' && (
-            <>
-              {status === 'error' && <p className="text-red-600 text-sm">{t('submitError')}</p>}
-              {confirming && <p className="text-sm text-navy bg-cream-alt rounded-lg p-3">{tc('confirmQuestion')}</p>}
-              {confirming ? (
-                <div className="flex gap-3">
-                  <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
-                    className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
-                    {tc('confirmNo')}
-                  </button>
-                  <button type="submit"
-                    disabled={status === 'loading' || !form.date || !form.time_slot}
-                    className="flex-1 btn-primary text-center disabled:opacity-50">
-                    {status === 'loading' ? t('submitting') : tc('confirmYes')}
-                  </button>
-                </div>
-              ) : (
                 <button type="submit"
                   disabled={!form.date || !form.time_slot}
                   className="btn-primary w-full text-center disabled:opacity-50">
-                  {t('submit')}
+                  {t('goToConfirm')}
                 </button>
-              )}
-              <p className="text-xs text-gray-400 text-center">
-                {t('submitNote')}
-              </p>
-            </>
-          )}
-        </form>
+              </>
+            )}
+          </form>
+        )}
+
+        {step === 'confirm' && (
+          <div className="space-y-6">
+            <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
+            <p className="text-sm text-gray-500">{t('confirmNote')}</p>
+            <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
+              {confirmRows.map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
+                  <dt className="text-gray-500">{label}</dt>
+                  <dd className="whitespace-pre-wrap">{value}</dd>
+                </div>
+              ))}
+            </dl>
+            {status === 'error' && <p className="text-red-600 text-sm">{t('submitError')}</p>}
+            <div className="flex gap-3">
+              <button type="button" onClick={backToInput} disabled={status === 'loading'}
+                className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
+                {t('backButton')}
+              </button>
+              <button type="button" onClick={handleSubmit} disabled={status === 'loading'}
+                className="flex-1 btn-primary text-center disabled:opacity-50">
+                {status === 'loading' ? t('submitting') : t('confirmSubmit')}
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 text-center">
+              {t('submitNote')}
+            </p>
+          </div>
+        )}
       </div>
     </main>
   )
