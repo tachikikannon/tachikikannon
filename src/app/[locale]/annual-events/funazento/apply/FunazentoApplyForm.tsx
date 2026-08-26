@@ -1,15 +1,15 @@
 'use client'
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
 type Status = 'idle' | 'loading' | 'error'
-type Applicant = { name: string; address: string; wish1: string; wish2: string }
+type Applicant = { name: string; nameKana: string; address: string; wish1: string; wish2: string }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
 const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
-const emptyApplicant = (): Applicant => ({ name: '', address: '', wish1: '', wish2: '' })
+const emptyApplicant = (): Applicant => ({ name: '', nameKana: '', address: '', wish1: '', wish2: '' })
 
 function WishSelect({ value, onChange, required, placeholder }: { value: string; onChange: (v: string) => void; required?: boolean; placeholder: string }) {
   return (
@@ -26,7 +26,10 @@ export default function FunazentoApplyForm() {
   const tF = useTranslations('funazento')
   const tc = useTranslations('common')
   const tAE = useTranslations('annualEvents')
-  const [form, setForm] = useState({ name: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
+  const locale = useLocale()
+  // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
+  const showNameKana = locale === 'ja'
+  const [form, setForm] = useState({ name: '', nameKana: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
   const [applicants, setApplicants] = useState<Applicant[]>(Array.from({ length: 10 }, emptyApplicant))
   const [notes, setNotes] = useState('')
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
@@ -58,12 +61,13 @@ export default function FunazentoApplyForm() {
     const applicantLines = applicants
       .map((a, i) => ({ ...a, num: CIRCLED[i] }))
       .filter(a => a.name.trim())
-      .map(a => `${a.num} ${a.name}（${a.address || '住所未記入'}）　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`)
+      .map(a => `${a.num} ${a.name}${a.nameKana ? `　フリガナ：${a.nameKana}` : ''}（${a.address || '住所未記入'}）　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`)
       .join('\n')
 
     const message = [
       `【行事名】船禅頂（ふなぜんじょう）（8月4日）`,
       `【代表者】`,
+      showNameKana && form.nameKana ? `フリガナ：${form.nameKana}` : '',
       `電話番号：${form.phone}`,
       `郵便番号：${form.postal}`,
       `住所：${form.address}`,
@@ -116,11 +120,12 @@ export default function FunazentoApplyForm() {
     .filter(a => a.name.trim())
     .map(a => [
       `${t('applicantLabel')}${a.num}`,
-      `${a.name}（${a.address || '住所未記入'}）\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
+      `${a.name}${showNameKana && a.nameKana ? `\n${t('repNameKanaLabel')}：${a.nameKana}` : ''}（${a.address || '住所未記入'}）\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
     ] as [string, string])
 
   const confirmRows: [string, string][] = [
     [t('repNameLabel'), form.name],
+    ...(showNameKana ? [[t('repNameKanaLabel'), form.nameKana] as [string, string]] : []),
     [t('emailLabel'), form.email],
     [t('phoneLabel'), form.phone],
     ...(form.postal ? [[t('postalLabel'), form.postal] as [string, string]] : []),
@@ -190,6 +195,13 @@ export default function FunazentoApplyForm() {
             <label className="admin-label">{t('repNameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" placeholder={t('repNamePlaceholder')} value={form.name} onChange={set('name')} />
           </div>
+          {showNameKana && (
+            <div>
+              <label className="admin-label">{t('repNameKanaLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
+              <input required className="admin-input" pattern="[ぁ-んー\s　]+" title={t('repNameKanaLabel')}
+                placeholder={t('repNameKanaPlaceholder')} value={form.nameKana} onChange={set('nameKana')} />
+            </div>
+          )}
           <div>
             <label className="admin-label">{t('emailLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input type="email" required className="admin-input" placeholder={t('emailPlaceholder')} value={form.email} onChange={set('email')} />
@@ -231,6 +243,10 @@ export default function FunazentoApplyForm() {
                   <p className="text-sm font-medium text-navy mb-3">{t('applicantLabel')}{CIRCLED[i]}</p>
                   <div className="space-y-3 mb-3">
                     <input className="admin-input" placeholder={t('applicantNamePlaceholder')} value={a.name} onChange={e => setApplicant(i, 'name', e.target.value)} />
+                    {showNameKana && (
+                      <input className="admin-input" pattern="[ぁ-んー\s　]*" title={t('applicantNameKanaPlaceholder')}
+                        placeholder={t('applicantNameKanaPlaceholder')} value={a.nameKana} onChange={e => setApplicant(i, 'nameKana', e.target.value)} />
+                    )}
                     <input className="admin-input" placeholder={t('applicantAddressPlaceholder')} value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-3">

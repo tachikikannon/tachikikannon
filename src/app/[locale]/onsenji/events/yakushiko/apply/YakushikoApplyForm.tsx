@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
@@ -11,7 +11,10 @@ export default function YakushikoApplyForm() {
   const t = useTranslations('onsenjiYakushikoApply')
   const tYak = useTranslations('onsenjiYakushiko')
   const tc = useTranslations('common')
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', wish1: '', wish2: '' })
+  const locale = useLocale()
+  // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
+  const showNameKana = locale === 'ja'
+  const [form, setForm] = useState({ name: '', nameKana: '', email: '', phone: '', address: '', wish1: '', wish2: '' })
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<Status>('idle')
 
@@ -35,6 +38,7 @@ export default function YakushikoApplyForm() {
     setStatus('loading')
     const message = [
       `【行事名】薬師講大祭・採灯大護摩供（8月8日）`,
+      showNameKana && form.nameKana ? `【フリガナ】${form.nameKana}` : '',
       `【電話番号】${form.phone}`,
       `【住所】${form.address}`,
       `【願い事1】${form.wish1}`,
@@ -82,6 +86,7 @@ export default function YakushikoApplyForm() {
 
   const confirmRows: [string, string][] = [
     [t('nameLabel'), form.name],
+    ...(showNameKana ? [[t('nameKanaLabel'), form.nameKana] as [string, string]] : []),
     [t('emailLabel'), form.email],
     [t('phoneLabel'), form.phone],
     [t('addressLabel'), form.address],
@@ -139,6 +144,13 @@ export default function YakushikoApplyForm() {
             <label className="admin-label">{t('nameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" placeholder={t('namePlaceholder')} value={form.name} onChange={set('name')} />
           </div>
+          {showNameKana && (
+            <div>
+              <label className="admin-label">{t('nameKanaLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
+              <input required className="admin-input" pattern="[ぁ-んー\s　]+" title={t('nameKanaLabel')}
+                placeholder={t('nameKanaPlaceholder')} value={form.nameKana} onChange={set('nameKana')} />
+            </div>
+          )}
           <div>
             <label className="admin-label">{t('emailLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input type="email" required className="admin-input" placeholder={t('emailPlaceholder')} value={form.email} onChange={set('email')} />

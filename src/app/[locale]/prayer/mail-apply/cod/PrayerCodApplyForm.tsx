@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 import { calcShippingFeeByWeight, type ShippingTier } from '@/lib/shipping'
@@ -28,7 +28,10 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
   const t = useTranslations('prayerCodApply')
   const tPMA = useTranslations('prayerMailApply')
   const tc = useTranslations('common')
-  const [form, setForm] = useState({ name: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
+  const locale = useLocale()
+  // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
+  const showNameKana = locale === 'ja'
+  const [form, setForm] = useState({ name: '', nameKana: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
   const [fee, setFee] = useState('')
   const [notes, setNotes] = useState('')
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
@@ -65,6 +68,7 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
     const message = [
       `【御祈願・郵送申し込み】`,
       `お支払い方法：代金引換（代引き）`,
+      showNameKana && form.nameKana ? `フリガナ：${form.nameKana}` : '',
       `電話番号：${form.phone}`,
       `郵便番号：${form.postal}`,
       `住所：${form.address}`,
@@ -113,6 +117,7 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
 
   const confirmRows: [string, string][] = [
     [t('nameLabel'), form.name],
+    ...(showNameKana ? [[t('nameKanaLabel'), form.nameKana] as [string, string]] : []),
     [t('emailLabel'), form.email],
     [t('phoneLabel'), form.phone],
     ...(form.postal ? [[t('postalLabel'), form.postal] as [string, string]] : []),
@@ -141,6 +146,13 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
             <label className="admin-label">{t('nameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" value={form.name} onChange={set('name')} />
           </div>
+          {showNameKana && (
+            <div>
+              <label className="admin-label">{t('nameKanaLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
+              <input required className="admin-input" pattern="[ぁ-んー\s　]+" title={t('nameKanaLabel')}
+                placeholder={t('nameKanaPlaceholder')} value={form.nameKana} onChange={set('nameKana')} />
+            </div>
+          )}
           <div>
             <label className="admin-label">{t('emailLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input type="email" required className="admin-input" value={form.email} onChange={set('email')} />

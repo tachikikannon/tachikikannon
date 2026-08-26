@@ -9,7 +9,9 @@ export default function ContactForm() {
   const t = useTranslations('contact')
   const tc = useTranslations('common')
   const locale = useLocale()
-  const [form, setForm] = useState({ name:'', email:'', subject:'', message:'' })
+  // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
+  const showNameKana = locale === 'ja'
+  const [form, setForm] = useState({ name:'', nameKana:'', email:'', subject:'', message:'' })
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<'idle'|'loading'|'error'>('idle')
 
@@ -27,12 +29,14 @@ export default function ContactForm() {
   async function handleSubmit() {
     setStatus('loading')
     const id = crypto.randomUUID()
-    const { error } = await supabase.from('contacts').insert({ ...form, id })
+    const message = showNameKana && form.nameKana ? `フリガナ：${form.nameKana}\n\n${form.message}` : form.message
+    const payload = { name: form.name, email: form.email, subject: form.subject, message }
+    const { error } = await supabase.from('contacts').insert({ ...payload, id })
     if (error) { setStatus('error'); return }
     await fetch('/api/notify/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, id, locale, temple: 'chuzenji' }),
+      body: JSON.stringify({ ...payload, id, locale, temple: 'chuzenji' }),
     }).catch(() => {})
     setStatus('idle')
     setStep('done')
@@ -53,6 +57,7 @@ export default function ContactForm() {
 
   const confirmRows: [string, string][] = [
     [t('nameLabel'), form.name],
+    ...(showNameKana ? [[t('nameKanaLabel'), form.nameKana] as [string, string]] : []),
     [t('emailLabel'), form.email],
     [t('subjectLabel'), form.subject],
     [t('messageLabel'), form.message],
@@ -71,6 +76,13 @@ export default function ContactForm() {
               <label className="admin-label">{t('nameLabel')}</label>
               <input required className="admin-input" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
             </div>
+            {showNameKana && (
+              <div>
+                <label className="admin-label">{t('nameKanaLabel')}</label>
+                <input required className="admin-input" pattern="[ぁ-んー\s　]+" title={t('nameKanaLabel')}
+                  placeholder={t('nameKanaPlaceholder')} value={form.nameKana} onChange={e => setForm({...form, nameKana: e.target.value})} />
+              </div>
+            )}
             <div>
               <label className="admin-label">{t('emailLabel')}</label>
               <input type="email" required className="admin-input" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />

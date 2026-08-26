@@ -7,7 +7,9 @@ export default function OnsenjiContactForm() {
   const supabase = createClient()
   const t = useTranslations('onsenjiContact')
   const locale = useLocale()
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
+  const showNameKana = locale === 'ja'
+  const [form, setForm] = useState({ name: '', nameKana: '', email: '', message: '' })
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<'idle'|'loading'|'error'>('idle')
 
@@ -25,7 +27,8 @@ export default function OnsenjiContactForm() {
     const id = crypto.randomUUID()
     // contactsテーブルはsubject必須で温泉寺専用の区分カラムが無いため、
     // 管理画面の一覧で見分けられるよう件名の先頭に【温泉寺】を付ける。
-    const submission = { ...form, subject: `【温泉寺】${t('title')}` }
+    const message = showNameKana && form.nameKana ? `フリガナ：${form.nameKana}\n\n${form.message}` : form.message
+    const submission = { name: form.name, email: form.email, message, subject: `【温泉寺】${t('title')}` }
     const { error } = await supabase.from('contacts').insert({ ...submission, id })
     if (error) { setStatus('error'); return }
     await fetch('/api/notify/contact', {
@@ -48,6 +51,7 @@ export default function OnsenjiContactForm() {
   if (step === 'confirm') {
     const confirmRows: [string, string][] = [
       [t('nameLabel'), form.name],
+      ...(showNameKana ? [[t('nameKanaLabel'), form.nameKana] as [string, string]] : []),
       [t('emailLabel'), form.email],
       [t('messageLabel'), form.message],
     ]
@@ -86,6 +90,14 @@ export default function OnsenjiContactForm() {
           <input type="text" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
             placeholder={t('namePlaceholder')} value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
         </div>
+        {showNameKana && (
+          <div>
+            <label className="block text-sm text-onsenji font-medium mb-1">{t('nameKanaLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
+            <input type="text" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
+              pattern="[ぁ-んー\s　]+" title={t('nameKanaLabel')}
+              placeholder={t('nameKanaPlaceholder')} value={form.nameKana} onChange={e => setForm({...form, nameKana: e.target.value})} />
+          </div>
+        )}
         <div>
           <label className="block text-sm text-onsenji font-medium mb-1">{t('emailLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
           <input type="email" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
