@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 
 const EC_SITE_URL = 'https://chuzenji.official.ec/'
-const CASH_MAIL_FORM_URL = '/images/' + encodeURIComponent('護摩申込書.pdf')
+const CASH_MAIL_FORM_URL = '/images/chuzenji/events/shogatsu/' + encodeURIComponent('護摩申込書.pdf')
 
 type Fee = { price: string; size: string }
 
