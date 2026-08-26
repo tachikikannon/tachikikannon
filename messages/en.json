@@ -516,6 +516,7 @@
     "wishSelectPlaceholder": "Please select",
     "applicantsHeading": "Applicants ②–⑤",
     "applicantsSub": "Up to 5 people including the representative. Please list members other than the representative here (optional)",
+    "applicantsAddressNote": "If you want the item shipped to the address you enter here rather than the representative's address, please select \"Ship to a different address\".",
     "applicantLabel": "Applicant",
     "applicantNamePlaceholder": "Name",
     "applicantAddressPlaceholder": "Address",

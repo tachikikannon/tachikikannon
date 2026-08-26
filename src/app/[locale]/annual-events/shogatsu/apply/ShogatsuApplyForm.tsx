@@ -307,7 +307,8 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
 
           <div className="border-t border-gray-200 pt-5">
             <p className="text-sm font-medium text-navy mb-1">{t('applicantsHeading')}</p>
-            <p className="text-xs text-gray-400 mb-4">{t('applicantsSub')}</p>
+            <p className="text-xs text-gray-400 mb-1">{t('applicantsSub')}</p>
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">{t('applicantsAddressNote')}</p>
             <div className="space-y-4">
               {applicants.map((a, i) => (
                 <div key={i} className="border border-gray-200 rounded-lg p-4">

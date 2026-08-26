@@ -516,6 +516,7 @@
     "wishSelectPlaceholder": "選択してください",
     "applicantsHeading": "申込者②〜⑤",
     "applicantsSub": "代表者様を含め最大5名まで。代表者様以外の方をこちらにご記入ください（任意）",
+    "applicantsAddressNote": "代表者様の住所ではなく、ご入力いただいた住所に送る場合は、「別の住所に送る」を選択してください。",
     "applicantLabel": "申込者",
     "applicantNamePlaceholder": "お名前",
     "applicantAddressPlaceholder": "ご住所",
