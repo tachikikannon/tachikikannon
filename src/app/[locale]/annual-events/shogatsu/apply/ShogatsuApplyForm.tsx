@@ -354,7 +354,7 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
               {applicants.map((a, i) => (
                 <div key={i} className="border border-gray-200 rounded-lg p-4">
                   <p className="text-sm font-medium text-navy mb-3">{t('applicantLabel')}{CIRCLED[i]}</p>
-                  <div className="grid sm:grid-cols-2 gap-3 mb-3">
+                  <div className="space-y-3 mb-3">
                     <input className="admin-input" placeholder={t('applicantNamePlaceholder')} value={a.name} onChange={e => setApplicant(i, 'name', e.target.value)} />
                     <input className="admin-input" placeholder={t('applicantAddressPlaceholder')} value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
                   </div>
