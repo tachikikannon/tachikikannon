@@ -324,24 +324,22 @@ export default function ShogatsuApplyForm({ fees: FEE_OPTIONS, shippingTiers }: 
                     <label className="text-xs text-gray-500 block mb-0.5">{t('applicantFeeLabel')}</label>
                     <FeeSelect value={a.fee} onChange={v => setApplicant(i, 'fee', v)} options={FEE_OPTIONS} placeholder={t('applicantFeePlaceholder')} />
                   </div>
-                  {a.fee && (
-                    <div className="mb-3">
-                      <label className="text-xs text-gray-500 block mb-1">{t('shipModeLabel')}</label>
-                      <div className="flex gap-2">
-                        <button type="button" onClick={() => setApplicantShipMode(i, 'same')}
-                          className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'same' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
-                          {t('shipModeSame')}
-                        </button>
-                        <button type="button" onClick={() => setApplicantShipMode(i, 'separate')}
-                          className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'separate' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
-                          {t('shipModeSeparate')}
-                        </button>
-                      </div>
-                      {a.shipMode === 'separate' && (
-                        <p className="text-[11px] text-gray-400 mt-1">{t('shipModeSeparateHint')}</p>
-                      )}
+                  <div className="mb-3">
+                    <label className="text-xs text-gray-500 block mb-1">{t('shipModeLabel')}</label>
+                    <div className="flex gap-2">
+                      <button type="button" onClick={() => setApplicantShipMode(i, 'same')}
+                        className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'same' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                        {t('shipModeSame')}
+                      </button>
+                      <button type="button" onClick={() => setApplicantShipMode(i, 'separate')}
+                        className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'separate' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                        {t('shipModeSeparate')}
+                      </button>
                     </div>
-                  )}
+                    {a.shipMode === 'separate' && (
+                      <p className="text-[11px] text-gray-400 mt-1">{t('shipModeSeparateHint')}</p>
+                    )}
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
                     <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} placeholder={t('wishSelectPlaceholder')} />
