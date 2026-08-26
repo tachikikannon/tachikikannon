@@ -33,6 +33,7 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [confirming, setConfirming] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -47,6 +48,7 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!fee) { setErrorMsg(t('feeRequiredError')); return }
+    if (!confirming) { setConfirming(true); return }
     setStatus('loading')
     setErrorMsg('')
 
@@ -107,6 +109,7 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
         <p className="text-gray-500 text-sm mb-8">{t('intro')}</p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <fieldset disabled={confirming} className="contents">
           <div>
             <label className="admin-label">{t('nameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" value={form.name} onChange={set('name')} />
@@ -175,12 +178,26 @@ export default function PrayerCodApplyForm({ fees: FEE_OPTIONS, shippingTiers }:
             <label className="admin-label">{t('notesLabel')} <span className="text-gray-400 text-xs">{t('notesHint')}</span></label>
             <textarea className="admin-input min-h-[80px]" placeholder={t('notesPlaceholder')} value={notes} onChange={e => setNotes(e.target.value)} />
           </div>
+          </fieldset>
 
           {errorMsg && <p className="text-red-600 text-sm">{errorMsg}</p>}
 
-          <button type="submit" disabled={status === 'loading'} className="btn-primary w-full text-center disabled:opacity-50">
-            {status === 'loading' ? t('submitting') : t('submit')}
-          </button>
+          {confirming && <p className="text-sm text-navy bg-cream-alt rounded-lg p-3">{tc('confirmQuestion')}</p>}
+          {confirming ? (
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+                className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
+                {tc('confirmNo')}
+              </button>
+              <button type="submit" disabled={status === 'loading'} className="flex-1 btn-primary text-center disabled:opacity-50">
+                {status === 'loading' ? t('submitting') : tc('confirmYes')}
+              </button>
+            </div>
+          ) : (
+            <button type="submit" className="btn-primary w-full text-center">
+              {t('submit')}
+            </button>
+          )}
           <p className="text-xs text-gray-400 text-center">{t('submitNote')}</p>
         </form>
 

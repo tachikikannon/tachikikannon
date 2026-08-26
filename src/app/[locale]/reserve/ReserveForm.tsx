@@ -49,9 +49,11 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
   }, [initialType])
   const [purpose, setPurpose] = useState('gokigan')
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
+  const [confirming, setConfirming] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!confirming) { setConfirming(true); return }
     setStatus('loading')
     // 予約番号（LINE通知等で使用）をクライアント側で採番する。
     // anonロールにはreservationsのSELECT権限が無くinsert後にDB生成IDを
@@ -101,101 +103,122 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
         <p className="text-gray-500 text-sm mb-8">{t('intro')}</p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* 種別 */}
-          <div>
-            <label className="admin-label">{t('typeLabel')}</label>
-            <div className="grid grid-cols-2 gap-2">
-              {TYPES.map(type => (
-                <label key={type.value} className={`border rounded-lg p-3 cursor-pointer transition-colors
-                  ${form.type === type.value ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
-                  <input type="radio" name="type" value={type.value} className="sr-only"
-                    checked={form.type === type.value}
-                    onChange={() => setForm(f => ({ ...f, type: type.value, date: '', time_slot: '' }))} />
-                  <p className="font-medium text-navy text-sm">{type.label}</p>
-                  <p className="text-xs text-gold">{type.price}</p>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* 御祈願の内容(護摩祈願選択時のみ) */}
-          {form.type === 'prayer' && (
+          <fieldset disabled={confirming} className="contents">
+            {/* 種別 */}
             <div>
-              <label className="admin-label">{t('purposeLabel')}</label>
+              <label className="admin-label">{t('typeLabel')}</label>
               <div className="grid grid-cols-2 gap-2">
-                {PURPOSES.map(p => (
-                  <label key={p.value} className={`border rounded-lg p-3 cursor-pointer transition-colors
-                    ${purpose === p.value ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
-                    <input type="radio" name="purpose" value={p.value} className="sr-only"
-                      checked={purpose === p.value}
-                      onChange={() => setPurpose(p.value)} />
-                    <p className="font-medium text-navy text-sm">{p.label}</p>
+                {TYPES.map(type => (
+                  <label key={type.value} className={`border rounded-lg p-3 cursor-pointer transition-colors
+                    ${form.type === type.value ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
+                    <input type="radio" name="type" value={type.value} className="sr-only"
+                      checked={form.type === type.value}
+                      onChange={() => setForm(f => ({ ...f, type: type.value, date: '', time_slot: '' }))} />
+                    <p className="font-medium text-navy text-sm">{type.label}</p>
+                    <p className="text-xs text-gold">{type.price}</p>
                   </label>
                 ))}
               </div>
-              {purpose === 'other' && (
-                <p className="text-xs text-gold mt-2">{t('purposeOtherNote')}</p>
-              )}
             </div>
-          )}
 
-          {/* カレンダー・時間帯 */}
-          <div>
-            <label className="admin-label">{t('dateLabel')}</label>
-            <ReservationCalendar
-              reservationType={form.type}
-              selectedDate={form.date}
-              selectedTime={form.time_slot}
-              onSelectSlot={(date, time) => setForm(f => ({ ...f, date, time_slot: time }))}
-            />
-          </div>
-
-          {/* 坐禅はWeb予約自体を受け付けない（カレンダーの案内どおり電話予約のみ）ため、
-              人数以降の入力欄・送信ボタンは表示しない */}
-          {form.type !== 'zazen' && (
-            <>
-              {/* 人数 */}
+            {/* 御祈願の内容(護摩祈願選択時のみ) */}
+            {form.type === 'prayer' && (
               <div>
-                <label className="admin-label">{t('partySizeLabel')}</label>
-                <input type="number" min={1} max={20} required className="admin-input w-24" value={form.party_size}
-                  onChange={e => setForm({...form, party_size: Number(e.target.value)})} />
-                <span className="text-sm text-gray-500 ml-2">{t('partySizeUnit')}</span>
-              </div>
-
-              {/* 氏名 */}
-              <div className={showNameKana ? 'grid grid-cols-2 gap-4' : ''}>
-                <div>
-                  <label className="admin-label">{t('nameLabel')}</label>
-                  <input required className="admin-input" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                <label className="admin-label">{t('purposeLabel')}</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {PURPOSES.map(p => (
+                    <label key={p.value} className={`border rounded-lg p-3 cursor-pointer transition-colors
+                      ${purpose === p.value ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
+                      <input type="radio" name="purpose" value={p.value} className="sr-only"
+                        checked={purpose === p.value}
+                        onChange={() => setPurpose(p.value)} />
+                      <p className="font-medium text-navy text-sm">{p.label}</p>
+                    </label>
+                  ))}
                 </div>
-                {showNameKana && (
-                  <div>
-                    <label className="admin-label">{t('nameKanaLabel')}</label>
-                    <input required className="admin-input" value={form.name_kana} onChange={e => setForm({...form, name_kana: e.target.value})} />
-                  </div>
+                {purpose === 'other' && (
+                  <p className="text-xs text-gold mt-2">{t('purposeOtherNote')}</p>
                 )}
               </div>
+            )}
 
-              <div>
-                <label className="admin-label">{t('emailLabel')}</label>
-                <input type="email" required className="admin-input" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
-              </div>
-              <div>
-                <label className="admin-label">{t('phoneLabel')}</label>
-                <input type="tel" required className="admin-input" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
-              </div>
-              <div>
-                <label className="admin-label">{t('notesLabel')}</label>
-                <textarea className="admin-input min-h-[80px]" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
-              </div>
+            {/* カレンダー・時間帯 */}
+            <div>
+              <label className="admin-label">{t('dateLabel')}</label>
+              <ReservationCalendar
+                reservationType={form.type}
+                selectedDate={form.date}
+                selectedTime={form.time_slot}
+                onSelectSlot={(date, time) => setForm(f => ({ ...f, date, time_slot: time }))}
+              />
+            </div>
 
+            {/* 坐禅はWeb予約自体を受け付けない（カレンダーの案内どおり電話予約のみ）ため、
+                人数以降の入力欄は表示しない */}
+            {form.type !== 'zazen' && (
+              <>
+                {/* 人数 */}
+                <div>
+                  <label className="admin-label">{t('partySizeLabel')}</label>
+                  <input type="number" min={1} max={20} required className="admin-input w-24" value={form.party_size}
+                    onChange={e => setForm({...form, party_size: Number(e.target.value)})} />
+                  <span className="text-sm text-gray-500 ml-2">{t('partySizeUnit')}</span>
+                </div>
+
+                {/* 氏名 */}
+                <div className={showNameKana ? 'grid grid-cols-2 gap-4' : ''}>
+                  <div>
+                    <label className="admin-label">{t('nameLabel')}</label>
+                    <input required className="admin-input" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                  </div>
+                  {showNameKana && (
+                    <div>
+                      <label className="admin-label">{t('nameKanaLabel')}</label>
+                      <input required className="admin-input" value={form.name_kana} onChange={e => setForm({...form, name_kana: e.target.value})} />
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="admin-label">{t('emailLabel')}</label>
+                  <input type="email" required className="admin-input" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                </div>
+                <div>
+                  <label className="admin-label">{t('phoneLabel')}</label>
+                  <input type="tel" required className="admin-input" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
+                </div>
+                <div>
+                  <label className="admin-label">{t('notesLabel')}</label>
+                  <textarea className="admin-input min-h-[80px]" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
+                </div>
+              </>
+            )}
+          </fieldset>
+
+          {/* 坐禅はWeb予約自体を受け付けないため送信ボタンは表示しない */}
+          {form.type !== 'zazen' && (
+            <>
               {status === 'error' && <p className="text-red-600 text-sm">{t('submitError')}</p>}
-
-              <button type="submit"
-                disabled={status === 'loading' || !form.date || !form.time_slot}
-                className="btn-primary w-full text-center disabled:opacity-50">
-                {status === 'loading' ? t('submitting') : t('submit')}
-              </button>
+              {confirming && <p className="text-sm text-navy bg-cream-alt rounded-lg p-3">{tc('confirmQuestion')}</p>}
+              {confirming ? (
+                <div className="flex gap-3">
+                  <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+                    className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
+                    {tc('confirmNo')}
+                  </button>
+                  <button type="submit"
+                    disabled={status === 'loading' || !form.date || !form.time_slot}
+                    className="flex-1 btn-primary text-center disabled:opacity-50">
+                    {status === 'loading' ? t('submitting') : tc('confirmYes')}
+                  </button>
+                </div>
+              ) : (
+                <button type="submit"
+                  disabled={!form.date || !form.time_slot}
+                  className="btn-primary w-full text-center disabled:opacity-50">
+                  {t('submit')}
+                </button>
+              )}
               <p className="text-xs text-gray-400 text-center">
                 {t('submitNote')}
               </p>

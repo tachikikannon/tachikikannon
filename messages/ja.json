@@ -1,7 +1,10 @@
 {
   "common": {
     "langSwitch": "English",
-    "breadcrumbHome": "ホーム"
+    "breadcrumbHome": "ホーム",
+    "confirmQuestion": "この内容でお間違いございませんか？",
+    "confirmYes": "はい",
+    "confirmNo": "いいえ"
   },
   "header": {
     "about": "拝観案内",

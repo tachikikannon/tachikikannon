@@ -16,6 +16,7 @@ export default function WeddingApplyForm() {
     wish1: '', wish2: '', partySize: '', notes: '',
   })
   const [status, setStatus] = useState<Status>('idle')
+  const [confirming, setConfirming] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -24,6 +25,7 @@ export default function WeddingApplyForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!confirming) { setConfirming(true); return }
     setStatus('loading')
 
     const message = [
@@ -92,6 +94,7 @@ export default function WeddingApplyForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <fieldset disabled={confirming} className="contents">
           <div>
             <label className="admin-label">{t('nameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" value={form.name} onChange={set('name')} />
@@ -133,15 +136,28 @@ export default function WeddingApplyForm() {
             <label className="admin-label">{t('notesLabel')} <span className="text-gray-400 text-xs">{t('optional')}</span></label>
             <textarea className="admin-input min-h-[100px]" placeholder={t('notesPlaceholder')} value={form.notes} onChange={set('notes')} />
           </div>
+          </fieldset>
 
           {status === 'error' && (
             <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">{t('submitError')}</p>
           )}
 
-          <button type="submit" disabled={status === 'loading'}
-            className="btn-primary w-full text-center disabled:opacity-50 py-3">
-            {status === 'loading' ? t('submitting') : t('submit')}
-          </button>
+          {confirming && <p className="text-sm text-navy bg-cream-alt rounded-lg p-3">{tc('confirmQuestion')}</p>}
+          {confirming ? (
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+                className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
+                {tc('confirmNo')}
+              </button>
+              <button type="submit" disabled={status === 'loading'} className="flex-1 btn-primary text-center disabled:opacity-50 py-3">
+                {status === 'loading' ? t('submitting') : tc('confirmYes')}
+              </button>
+            </div>
+          ) : (
+            <button type="submit" className="btn-primary w-full text-center py-3">
+              {t('submit')}
+            </button>
+          )}
           <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
         </form>
 

@@ -13,6 +13,7 @@ export default function YakushikoApplyForm() {
   const tc = useTranslations('common')
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', wish1: '', wish2: '' })
   const [status, setStatus] = useState<Status>('idle')
+  const [confirming, setConfirming] = useState(false)
 
   function set(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -21,6 +22,7 @@ export default function YakushikoApplyForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!confirming) { setConfirming(true); return }
     setStatus('loading')
     const message = [
       `【行事名】薬師講大祭・採灯大護摩供（8月8日）`,
@@ -112,6 +114,7 @@ export default function YakushikoApplyForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <fieldset disabled={confirming} className="contents">
           <div>
             <label className="admin-label">{t('nameLabel')} <span className="text-red-500 text-xs">{t('required')}</span></label>
             <input required className="admin-input" placeholder={t('namePlaceholder')} value={form.name} onChange={set('name')} />
@@ -142,16 +145,31 @@ export default function YakushikoApplyForm() {
               </div>
             </div>
           </div>
+          </fieldset>
 
           {status === 'error' && (
             <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
               {t('submitError')}
             </p>
           )}
-          <button type="submit" disabled={status === 'loading'}
-            className="w-full py-3 bg-onsenji text-white font-medium rounded-full hover:bg-onsenji/80 transition-colors disabled:opacity-50">
-            {status === 'loading' ? t('submitting') : t('submit')}
-          </button>
+          {confirming && <p className="text-sm text-onsenji bg-onsenji/5 rounded-lg p-3">{tc('confirmQuestion')}</p>}
+          {confirming ? (
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+                className="flex-1 py-3 border border-onsenji text-onsenji font-medium rounded-full hover:bg-onsenji/5 transition-colors disabled:opacity-50">
+                {tc('confirmNo')}
+              </button>
+              <button type="submit" disabled={status === 'loading'}
+                className="flex-1 py-3 bg-onsenji text-white font-medium rounded-full hover:bg-onsenji/80 transition-colors disabled:opacity-50">
+                {status === 'loading' ? t('submitting') : tc('confirmYes')}
+              </button>
+            </div>
+          ) : (
+            <button type="submit"
+              className="w-full py-3 bg-onsenji text-white font-medium rounded-full hover:bg-onsenji/80 transition-colors">
+              {t('submit')}
+            </button>
+          )}
           <p className="text-xs text-gray-400 text-center">{t('afterSubmitNote')}</p>
         </form>
 

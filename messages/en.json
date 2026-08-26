@@ -1,7 +1,10 @@
 {
   "common": {
     "langSwitch": "日本語",
-    "breadcrumbHome": "Home"
+    "breadcrumbHome": "Home",
+    "confirmQuestion": "Are you sure this information is correct?",
+    "confirmYes": "Yes",
+    "confirmNo": "No"
   },
   "header": {
     "about": "Visiting",

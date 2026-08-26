@@ -6,12 +6,15 @@ import { createClient } from '@/lib/supabase'
 export default function OnsenjiContactForm() {
   const supabase = createClient()
   const t = useTranslations('onsenjiContact')
+  const tc = useTranslations('common')
   const locale = useLocale()
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
+  const [confirming, setConfirming] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!confirming) { setConfirming(true); return }
     setStatus('loading')
     const id = crypto.randomUUID()
     // contactsテーブルはsubject必須で温泉寺専用の区分カラムが無いため、
@@ -37,28 +40,44 @@ export default function OnsenjiContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-8 space-y-6">
-      <div className="grid gap-4">
-        <div>
-          <label className="block text-sm text-onsenji font-medium mb-1">{t('nameLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
-          <input type="text" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
-            placeholder={t('namePlaceholder')} value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+      <fieldset disabled={confirming} className="contents">
+        <div className="grid gap-4">
+          <div>
+            <label className="block text-sm text-onsenji font-medium mb-1">{t('nameLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
+            <input type="text" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
+              placeholder={t('namePlaceholder')} value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+          </div>
+          <div>
+            <label className="block text-sm text-onsenji font-medium mb-1">{t('emailLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
+            <input type="email" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
+              placeholder={t('emailPlaceholder')} value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+          </div>
+          <div>
+            <label className="block text-sm text-onsenji font-medium mb-1">{t('messageLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
+            <textarea rows={6} required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4] resize-none"
+              placeholder={t('messagePlaceholder')} value={form.message} onChange={e => setForm({...form, message: e.target.value})} />
+          </div>
         </div>
-        <div>
-          <label className="block text-sm text-onsenji font-medium mb-1">{t('emailLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
-          <input type="email" required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4]"
-            placeholder={t('emailPlaceholder')} value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
-        </div>
-        <div>
-          <label className="block text-sm text-onsenji font-medium mb-1">{t('messageLabel')} <span className="text-red-400 text-xs">{t('required')}</span></label>
-          <textarea rows={6} required className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#7ec8a4] resize-none"
-            placeholder={t('messagePlaceholder')} value={form.message} onChange={e => setForm({...form, message: e.target.value})} />
-        </div>
-      </div>
+      </fieldset>
       {status === 'error' && <p className="text-red-500 text-sm">{t('submitError')}</p>}
-      <button type="submit" disabled={status === 'loading'}
-        className="w-full py-3 bg-onsenji text-white rounded-full font-medium hover:bg-onsenji-light transition-colors text-sm disabled:opacity-50">
-        {status === 'loading' ? t('submitting') : t('submit')}
-      </button>
+      {confirming && <p className="text-sm text-onsenji bg-onsenji/5 rounded-lg p-3">{tc('confirmQuestion')}</p>}
+      {confirming ? (
+        <div className="flex gap-3">
+          <button type="button" onClick={() => setConfirming(false)} disabled={status === 'loading'}
+            className="flex-1 py-3 border border-onsenji text-onsenji rounded-full font-medium hover:bg-onsenji/5 transition-colors text-sm disabled:opacity-50">
+            {tc('confirmNo')}
+          </button>
+          <button type="submit" disabled={status === 'loading'}
+            className="flex-1 py-3 bg-onsenji text-white rounded-full font-medium hover:bg-onsenji-light transition-colors text-sm disabled:opacity-50">
+            {status === 'loading' ? t('submitting') : tc('confirmYes')}
+          </button>
+        </div>
+      ) : (
+        <button type="submit"
+          className="w-full py-3 bg-onsenji text-white rounded-full font-medium hover:bg-onsenji-light transition-colors text-sm">
+          {t('submit')}
+        </button>
+      )}
     </form>
   )
 }
