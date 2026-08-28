@@ -4,12 +4,37 @@ import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
+import type { AdminRole } from '@/types'
 
 type NavItem = { href: string; label: string; icon: string; group?: string }
 
 // reservation_search_admin ロールがアクセスできる管理画面パス（完全一致）。
 // ミドルウェア（src/middleware.ts）の許可リストと揃えておくこと。
 const RESERVATION_ADMIN_ALLOWED_PATHS = ['/admin/reservations', '/admin/reservations/schedule']
+
+const RESERVATION_GROUP = '予約・体験'
+const CONTACT_GROUP = 'お問い合わせ'
+
+// ロールごとにサイドバーへ表示するナビ項目を絞り込む。
+// ここでの絞り込みは表示（UX）のみで、実際の編集可否は Supabase の RLS が決める
+// （src/lib/useAdminProfile.ts のコメント参照）。ただし reservation_search_admin
+// だけは src/middleware.ts 側でも同じ許可リストにより直接URLアクセスを禁止している。
+function getVisibleNavItems(role: AdminRole | undefined): NavItem[] {
+  switch (role) {
+    case 'reservation_search_admin':
+      return navItems.filter(item => RESERVATION_ADMIN_ALLOWED_PATHS.includes(item.href))
+    case 'reservation_admin':
+      return navItems.filter(item => item.group === RESERVATION_GROUP)
+    case 'contact_admin':
+      return navItems.filter(item => item.group === CONTACT_GROUP)
+    case 'admin':
+    case 'viewer':
+      return navItems.filter(item => item.group === RESERVATION_GROUP || item.group === CONTACT_GROUP)
+    default:
+      // super_admin、またはロール未取得（読み込み中）はフィルタしない
+      return navItems
+  }
+}
 
 const navItems: NavItem[] = [
   { href: '/admin',               label: 'ダッシュボード',   icon: '🏠' },
@@ -81,9 +106,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
   const { profile } = useAdminProfile()
-  const visibleNavItems = profile?.role === 'reservation_search_admin'
-    ? navItems.filter(item => RESERVATION_ADMIN_ALLOWED_PATHS.includes(item.href))
-    : navItems
+  const visibleNavItems = getVisibleNavItems(profile?.role)
 
   async function handleLogout() {
     const supabase = createClient()
