@@ -11,7 +11,7 @@ import type { Locale } from '@/i18n/routing'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiJyuzu' })
-  return { title: `${t('title')} | 日光山温泉寺` }
+  return { title: `${t('title')}` }
 }
 
 const DEFAULT_FLOW = [

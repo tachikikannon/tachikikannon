@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const t = await getTranslations({ locale, namespace: 'onsenjiNews' })
   const title = data ? pickLocalized(loc, data.title, data.title_en) : null
   return {
-    title: title ? `${title} | 日光山温泉寺` : `${t('title')} | 日光山温泉寺`,
+    title: title ? `${title}` : `${t('title')}`,
     description: data ? (pickLocalized(loc, data.excerpt ?? '', data.excerpt_en) || undefined) : undefined,
   }
 }

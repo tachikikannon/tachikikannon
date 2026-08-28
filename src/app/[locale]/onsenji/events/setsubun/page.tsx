@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiSetsubun' })
   return {
-    title: `${t('title')} | 日光山温泉寺`,
+    title: `${t('title')}`,
     description: '毎年1月下旬開催。新年の邪気を払い福を招く節分大祭のご案内。豆まき・護摩供。日程は年によって異なります。',
   }
 }

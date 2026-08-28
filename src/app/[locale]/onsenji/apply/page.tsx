@@ -8,7 +8,7 @@ import OnsenjiApplyForm from './OnsenjiApplyForm'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiApply' })
-  return { title: `${t('title')} | 日光山温泉寺` }
+  return { title: `${t('title')}` }
 }
 
 export default function OnsenjiApplyPage() {

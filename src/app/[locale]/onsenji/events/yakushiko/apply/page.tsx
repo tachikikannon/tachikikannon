@@ -7,7 +7,7 @@ import YakushikoApplyForm from './YakushikoApplyForm'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiYakushikoApply' })
-  return { title: `${t('formTitle')} | 日光山温泉寺` }
+  return { title: `${t('formTitle')}` }
 }
 
 export default function YakushikoApplyPage() {

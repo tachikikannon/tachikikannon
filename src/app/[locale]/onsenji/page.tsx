@@ -8,6 +8,7 @@ import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
 import HeroReveal from '@/components/HeroReveal'
+import { OnsenjiStructuredData } from '@/components/StructuredData'
 import { createServerClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
@@ -15,8 +16,7 @@ import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
 export const metadata: Metadata = {
-  title: '日光山 温泉寺',
-  description: '中禅寺湖畔に佇む、癒しと祈りの霊場 日光山温泉寺',
+  title: { absolute: '日光山温泉寺 【公式】｜中禅寺湖畔の温泉と祈りの霊場' },
 }
 
 const DEFAULT_ABOUT_CARDS = [
@@ -205,6 +205,7 @@ export default async function OnsenjPage({
 
   return (
     <>
+      <OnsenjiStructuredData />
       <HeaderOnsenji />
       <main>
         {/* ヒーロー */}

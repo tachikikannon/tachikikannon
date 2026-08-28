@@ -9,6 +9,7 @@ import ChuzenjiGallery from '@/components/ChuzenjiGallery'
 import YouTubeAutoplay from '@/components/YouTubeAutoplay'
 import HeroReveal from '@/components/HeroReveal'
 import HeroMediaCycle from '@/components/HeroMediaCycle'
+import { ChuzenjiStructuredData } from '@/components/StructuredData'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
@@ -195,6 +196,7 @@ export default async function HomePage({
 
   return (
     <>
+      <ChuzenjiStructuredData />
       <Header />
       <main>
         {/* ヒーロー */}

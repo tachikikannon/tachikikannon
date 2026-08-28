@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiYakushiko' })
   const dateSuffix = locale === 'en' ? ' (August 8)' : '（8月8日）'
   return {
-    title: `${t('title')}${dateSuffix} | 日光山温泉寺`,
+    title: `${t('title')}${dateSuffix}`,
     description: '毎年8月8日開催。湯の湖畔にて山伏による採灯大護摩供を厳修。温泉寺最大の法要のご案内。',
   }
 }

@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiEvents' })
   return {
-    title: `${t('title')} | 日光山温泉寺`,
+    title: `${t('title')}`,
     description: '日光山温泉寺の年間行事・法要のご案内。8月8日 薬師講大祭・採灯大護摩供、1月下旬 節分大祭。',
   }
 }

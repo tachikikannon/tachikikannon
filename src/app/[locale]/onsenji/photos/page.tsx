@@ -11,7 +11,7 @@ import type { Media } from '@/types'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiPhotos' })
-  return { title: `${t('title')} | 日光山温泉寺` }
+  return { title: `${t('title')}` }
 }
 
 async function getLendablePhotos(): Promise<Media[]> {

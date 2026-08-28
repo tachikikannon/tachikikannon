@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiOnsen' })
   return {
-    title: `${t('title')} | 日光山温泉寺`,
+    title: `${t('title')}`,
     description: '令和8年4月開湯。含硫黄泉の完全かけ流し。日光山温泉寺の薬師の湯をご案内します。',
   }
 }
