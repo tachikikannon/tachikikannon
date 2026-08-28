@@ -10,11 +10,13 @@ type Status = 'idle' | 'loading' | 'error'
 type Participate = 'yes' | 'no'
 type AgeCategory = 'adult' | 'child' | 'infant'
 type ShipMode = 'same' | 'separate'
-type Applicant = { name: string; nameKana: string; address: string; wish1: string; wish2: string; participate: Participate; ageCategory: AgeCategory; shipMode: ShipMode }
+type Applicant = { key: number; name: string; nameKana: string; address: string; wish1: string; wish2: string; participate: Participate; ageCategory: AgeCategory; shipMode: ShipMode }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
 const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
-const emptyApplicant = (): Applicant => ({ name: '', nameKana: '', address: '', wish1: '', wish2: '', participate: 'yes', ageCategory: 'adult', shipMode: 'same' })
+const MAX_APPLICANTS = CIRCLED.length
+let applicantKeySeq = 0
+const emptyApplicant = (): Applicant => ({ key: applicantKeySeq++, name: '', nameKana: '', address: '', wish1: '', wish2: '', participate: 'yes', ageCategory: 'adult', shipMode: 'same' })
 const SHIPPING_FEE = 1000
 
 function feeFor(participate: Participate, age: AgeCategory): number {
@@ -99,7 +101,7 @@ export default function FunazentoApplyForm({ content }: { content: Record<string
     name: '', nameKana: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '',
     participate: 'yes' as Participate, ageCategory: 'adult' as AgeCategory,
   })
-  const [applicants, setApplicants] = useState<Applicant[]>(Array.from({ length: 10 }, emptyApplicant))
+  const [applicants, setApplicants] = useState<Applicant[]>([])
   const [notes, setNotes] = useState('')
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<Status>('idle')
@@ -109,8 +111,14 @@ export default function FunazentoApplyForm({ content }: { content: Record<string
       setForm(prev => ({ ...prev, [field]: e.target.value }))
   }
 
-  function setApplicant(i: number, field: keyof Applicant, value: string) {
-    setApplicants(prev => prev.map((a, idx) => idx === i ? { ...a, [field]: value } : a))
+  function setApplicant(key: number, field: keyof Applicant, value: string) {
+    setApplicants(prev => prev.map(a => a.key === key ? { ...a, [field]: value } : a))
+  }
+  function addApplicant() {
+    setApplicants(prev => prev.length < MAX_APPLICANTS ? [...prev, emptyApplicant()] : prev)
+  }
+  function removeApplicant(key: number) {
+    setApplicants(prev => prev.filter(a => a.key !== key))
   }
 
   const repFee = feeFor(form.participate, form.ageCategory)
@@ -374,34 +382,38 @@ export default function FunazentoApplyForm({ content }: { content: Record<string
             <p className="text-xs text-gray-400 mb-4">{t('applicantsSub')}</p>
             <div className="space-y-4">
               {applicants.map((a, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4">
-                  <p className="text-sm font-medium text-navy mb-3">{t('applicantLabel')}{CIRCLED[i]}</p>
+                <div key={a.key} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-medium text-navy">{t('applicantLabel')}{CIRCLED[i]}</p>
+                    <button type="button" onClick={() => removeApplicant(a.key)}
+                      className="text-red-400 hover:text-red-600 text-xs">{t('removeApplicant')}</button>
+                  </div>
                   <div className="space-y-3 mb-3">
-                    <input className="admin-input" placeholder={t('applicantNamePlaceholder')} value={a.name} onChange={e => setApplicant(i, 'name', e.target.value)} />
+                    <input className="admin-input" placeholder={t('applicantNamePlaceholder')} value={a.name} onChange={e => setApplicant(a.key, 'name', e.target.value)} />
                     {showNameKana && (
                       <input className="admin-input" pattern="[ぁ-んー\s　]*" title={t('applicantNameKanaPlaceholder')}
-                        placeholder={t('applicantNameKanaPlaceholder')} value={a.nameKana} onChange={e => setApplicant(i, 'nameKana', e.target.value)} />
+                        placeholder={t('applicantNameKanaPlaceholder')} value={a.nameKana} onChange={e => setApplicant(a.key, 'nameKana', e.target.value)} />
                     )}
-                    <input className="admin-input" placeholder={t('applicantAddressPlaceholder')} value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
+                    <input className="admin-input" placeholder={t('applicantAddressPlaceholder')} value={a.address} onChange={e => setApplicant(a.key, 'address', e.target.value)} />
                   </div>
                   <div className="mb-3">
                     <ParticipateFeeBlock
                       t={t}
                       participate={a.participate}
                       ageCategory={a.ageCategory}
-                      onParticipateChange={p => setApplicant(i, 'participate', p)}
-                      onAgeChange={ag => setApplicant(i, 'ageCategory', ag)}
+                      onParticipateChange={p => setApplicant(a.key, 'participate', p)}
+                      onAgeChange={ag => setApplicant(a.key, 'ageCategory', ag)}
                       fee={feeFor(a.participate, a.ageCategory)}
                     />
                     {a.participate === 'no' && (
                       <div className="mt-3">
                         <label className="text-xs text-gray-500 block mb-1">{t('shipModeLabel')}</label>
                         <div className="flex gap-2">
-                          <button type="button" onClick={() => setApplicant(i, 'shipMode', 'same')}
+                          <button type="button" onClick={() => setApplicant(a.key, 'shipMode', 'same')}
                             className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'same' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
                             {t('shipModeSame')}
                           </button>
-                          <button type="button" onClick={() => setApplicant(i, 'shipMode', 'separate')}
+                          <button type="button" onClick={() => setApplicant(a.key, 'shipMode', 'separate')}
                             className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'separate' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
                             {t('shipModeSeparate')}
                           </button>
@@ -413,12 +425,15 @@ export default function FunazentoApplyForm({ content }: { content: Record<string
                     )}
                   </div>
                   <div className="grid sm:grid-cols-2 gap-3">
-                    <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
-                    <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} placeholder={t('wishSelectPlaceholder')} />
+                    <WishSelect value={a.wish1} onChange={v => setApplicant(a.key, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
+                    <WishSelect value={a.wish2} onChange={v => setApplicant(a.key, 'wish2', v)} placeholder={t('wishSelectPlaceholder')} />
                   </div>
                 </div>
               ))}
             </div>
+            {applicants.length < MAX_APPLICANTS && (
+              <button type="button" onClick={addApplicant} className="text-navy text-xs underline mt-3">{t('addApplicant')}</button>
+            )}
           </div>
 
           <div className="border-t border-gray-200 pt-5">
