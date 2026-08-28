@@ -361,7 +361,7 @@ export default function KannonkoApplyForm() {
           <div className="border-t border-gray-200 pt-5">
             <div className="bg-cream-alt rounded-lg p-4 text-sm space-y-2">
               <p className="text-gray-600 flex justify-between">
-                <span>{t('repFeeRow')}（{form.paymentMethod === 'onsite' ? t('paymentOnsite') : t('paymentCod')}）</span>
+                <span>{t('repFeeRow')}{form.name ? `　${form.name}` : ''}（{form.paymentMethod === 'onsite' ? t('paymentOnsite') : t('paymentCod')}）</span>
                 <span>¥{KANNONKO_FEE.toLocaleString()}</span>
               </p>
               {activeApplicants.map(a => (

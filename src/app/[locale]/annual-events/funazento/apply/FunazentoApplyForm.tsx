@@ -420,7 +420,7 @@ export default function FunazentoApplyForm() {
           <div className="border-t border-gray-200 pt-5">
             <div className="bg-cream-alt rounded-lg p-4 text-sm space-y-2">
               <p className="text-gray-600 flex justify-between">
-                <span>{t('repFeeRow')}（{form.participate === 'yes' ? ageLabel(t, form.ageCategory) : t('participateNo')}）</span>
+                <span>{t('repFeeRow')}{form.name ? `　${form.name}` : ''}（{form.participate === 'yes' ? ageLabel(t, form.ageCategory) : t('participateNo')}）</span>
                 <span>¥{repFee.toLocaleString()}</span>
               </p>
               {activeApplicants.map(a => (
