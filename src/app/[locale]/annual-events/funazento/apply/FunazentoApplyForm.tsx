@@ -7,11 +7,13 @@ import { createClient } from '@/lib/supabase'
 type Status = 'idle' | 'loading' | 'error'
 type Participate = 'yes' | 'no'
 type AgeCategory = 'adult' | 'child' | 'infant'
-type Applicant = { name: string; nameKana: string; address: string; wish1: string; wish2: string; participate: Participate; ageCategory: AgeCategory }
+type ShipMode = 'same' | 'separate'
+type Applicant = { name: string; nameKana: string; address: string; wish1: string; wish2: string; participate: Participate; ageCategory: AgeCategory; shipMode: ShipMode }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
 const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
-const emptyApplicant = (): Applicant => ({ name: '', nameKana: '', address: '', wish1: '', wish2: '', participate: 'yes', ageCategory: 'adult' })
+const emptyApplicant = (): Applicant => ({ name: '', nameKana: '', address: '', wish1: '', wish2: '', participate: 'yes', ageCategory: 'adult', shipMode: 'same' })
+const SHIPPING_FEE = 1000
 
 function feeFor(participate: Participate, age: AgeCategory): number {
   if (participate === 'no') return 4000
@@ -111,7 +113,16 @@ export default function FunazentoApplyForm() {
   const activeApplicants = applicants
     .map((a, i) => ({ ...a, circled: CIRCLED[i] }))
     .filter(a => a.name.trim())
-  const grandTotal = repFee + activeApplicants.reduce((sum, a) => sum + feeFor(a.participate, a.ageCategory), 0)
+  const feesTotal = repFee + activeApplicants.reduce((sum, a) => sum + feeFor(a.participate, a.ageCategory), 0)
+
+  // 当日不参加の方はお札を代引きで郵送するため、送り先1件につき送料がかかる（代表者住所へまとめる、または個別発送を選択）
+  const nonParticipantApplicants = activeApplicants.filter(a => a.participate === 'no')
+  const sameShipApplicants = nonParticipantApplicants.filter(a => a.shipMode === 'same')
+  const separateShipApplicants = nonParticipantApplicants.filter(a => a.shipMode === 'separate')
+  const repNeedsShipping = form.participate === 'no'
+  const mainShipmentNeeded = repNeedsShipping || sameShipApplicants.length > 0
+  const shippingFeeTotal = (mainShipmentNeeded ? SHIPPING_FEE : 0) + separateShipApplicants.length * SHIPPING_FEE
+  const grandTotal = feesTotal + shippingFeeTotal
 
   function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
@@ -129,16 +140,22 @@ export default function FunazentoApplyForm() {
 
     const repParticipateLine = form.participate === 'yes'
       ? `参加する（${ageLabel(t, form.ageCategory)}）`
-      : '参加しない'
+      : `参加しない（代引き発送・代表者住所）`
 
     const applicantLines = applicants
       .map((a, i) => ({ ...a, num: CIRCLED[i] }))
       .filter(a => a.name.trim())
       .map(a => {
+        const shipLabel = a.participate !== 'no' ? '' : a.shipMode === 'separate' ? '　発送：別住所に個別発送' : '　発送：代表者とまとめて発送'
         const participateLine = a.participate === 'yes' ? `参加する（${ageLabel(t, a.ageCategory)}）` : '参加しない'
-        return `${a.num} ${a.name}${a.nameKana ? `　フリガナ：${a.nameKana}` : ''}（${a.address || '住所未記入'}）　当日参加：${participateLine}　参加費：¥${feeFor(a.participate, a.ageCategory).toLocaleString()}　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`
+        return `${a.num} ${a.name}${a.nameKana ? `　フリガナ：${a.nameKana}` : ''}（${a.address || '住所未記入'}）　当日参加：${participateLine}${shipLabel}　参加費：¥${feeFor(a.participate, a.ageCategory).toLocaleString()}　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`
       })
       .join('\n')
+
+    const shippingLines = [
+      mainShipmentNeeded ? `代表者様ご住所へまとめて発送：¥${SHIPPING_FEE.toLocaleString()}` : '',
+      ...separateShipApplicants.map(a => `${a.circled} ${a.name}様へ個別発送：¥${SHIPPING_FEE.toLocaleString()}`),
+    ].filter(Boolean)
 
     const message = [
       `【行事名】船禅頂（ふなぜんじょう）（8月4日）`,
@@ -150,7 +167,10 @@ export default function FunazentoApplyForm() {
       `当日参加：${repParticipateLine}　参加費：¥${repFee.toLocaleString()}`,
       `お願い事：${[form.wish1, form.wish2].filter(Boolean).join('、')}`,
       applicantLines ? `\n【申込者一覧】\n${applicantLines}` : '',
-      `\n合計金額：¥${grandTotal.toLocaleString()}`,
+      shippingLines.length ? `\n【送料】\n${shippingLines.join('\n')}` : '',
+      `\n参加費小計：¥${feesTotal.toLocaleString()}`,
+      `送料合計：¥${shippingFeeTotal.toLocaleString()}`,
+      `合計金額：¥${grandTotal.toLocaleString()}`,
       notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
 
@@ -194,10 +214,18 @@ export default function FunazentoApplyForm() {
   )
 
   const applicantRows: [string, string][] = activeApplicants
-    .map(a => [
-      `${t('applicantLabel')}${a.circled}`,
-      `${a.name}${showNameKana && a.nameKana ? `\n${t('repNameKanaLabel')}：${a.nameKana}` : ''}（${a.address || '住所未記入'}）\n${t('participateHeading')}：${a.participate === 'yes' ? ageLabel(t, a.ageCategory) : t('participateNo')}　${t('feePerPersonLabel')}：¥${feeFor(a.participate, a.ageCategory).toLocaleString()}\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
-    ] as [string, string])
+    .map(a => {
+      const shipLine = a.participate !== 'no' ? '' : `\n${t('shipModeLabel')}：${a.shipMode === 'separate' ? t('shipModeSeparate') : t('shipModeSame')}`
+      return [
+        `${t('applicantLabel')}${a.circled}`,
+        `${a.name}${showNameKana && a.nameKana ? `\n${t('repNameKanaLabel')}：${a.nameKana}` : ''}（${a.address || '住所未記入'}）\n${t('participateHeading')}：${a.participate === 'yes' ? ageLabel(t, a.ageCategory) : t('participateNo')}　${t('feePerPersonLabel')}：¥${feeFor(a.participate, a.ageCategory).toLocaleString()}${shipLine}\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
+      ] as [string, string]
+    })
+
+  const shippingRows: [string, string][] = [
+    ...(mainShipmentNeeded ? [[t('mainShipmentLabel'), `¥${SHIPPING_FEE.toLocaleString()}`] as [string, string]] : []),
+    ...separateShipApplicants.map(a => [t('separateShipmentLabel', { name: `${a.circled} ${a.name}` }), `¥${SHIPPING_FEE.toLocaleString()}`] as [string, string]),
+  ]
 
   const confirmRows: [string, string][] = [
     [t('repNameLabel'), form.name],
@@ -210,6 +238,9 @@ export default function FunazentoApplyForm() {
     [t('wish1Label'), form.wish1],
     ...(form.wish2 ? [[t('wish2Label'), form.wish2] as [string, string]] : []),
     ...applicantRows,
+    ...shippingRows,
+    [t('subtotalLabel'), `¥${feesTotal.toLocaleString()}`],
+    ...(shippingFeeTotal > 0 ? [[t('shippingTotalLabel'), `¥${shippingFeeTotal.toLocaleString()}`] as [string, string]] : []),
     [t('grandTotalLabel'), `¥${grandTotal.toLocaleString()}`],
     ...(notes ? [[t('notesLabel'), notes] as [string, string]] : []),
   ]
@@ -255,6 +286,10 @@ export default function FunazentoApplyForm() {
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">💰</span>
             <p>{t.rich('noticeFee', { b: chunks => <strong>{chunks}</strong> })}</p>
+          </div>
+          <div className="flex gap-2 text-sm text-amber-700">
+            <span className="flex-shrink-0">🚚</span>
+            <p>{t.rich('noticeShipping', { b: chunks => <strong>{chunks}</strong> })}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">💴</span>
@@ -310,6 +345,9 @@ export default function FunazentoApplyForm() {
               onAgeChange={a => setForm(f => ({ ...f, ageCategory: a }))}
               fee={repFee}
             />
+            {form.participate === 'no' && (
+              <p className="text-xs text-gray-500 mt-2">{t('shippingRepNote')}</p>
+            )}
           </div>
 
           <div className="border-t border-gray-200 pt-5">
@@ -351,6 +389,24 @@ export default function FunazentoApplyForm() {
                       onAgeChange={ag => setApplicant(i, 'ageCategory', ag)}
                       fee={feeFor(a.participate, a.ageCategory)}
                     />
+                    {a.participate === 'no' && (
+                      <div className="mt-3">
+                        <label className="text-xs text-gray-500 block mb-1">{t('shipModeLabel')}</label>
+                        <div className="flex gap-2">
+                          <button type="button" onClick={() => setApplicant(i, 'shipMode', 'same')}
+                            className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'same' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                            {t('shipModeSame')}
+                          </button>
+                          <button type="button" onClick={() => setApplicant(i, 'shipMode', 'separate')}
+                            className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'separate' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                            {t('shipModeSeparate')}
+                          </button>
+                        </div>
+                        {a.shipMode === 'separate' && (
+                          <p className="text-[11px] text-gray-400 mt-1">{t('shipModeSeparateHint')}</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
@@ -373,7 +429,33 @@ export default function FunazentoApplyForm() {
                   <span>¥{feeFor(a.participate, a.ageCategory).toLocaleString()}</span>
                 </p>
               ))}
-              <div className="border-t border-white pt-2">
+              {shippingFeeTotal > 0 && (
+                <div className="border-t border-white pt-2 space-y-1">
+                  {mainShipmentNeeded && (
+                    <p className="text-gray-500 text-xs flex justify-between">
+                      <span>{t('mainShipmentLabel')}</span>
+                      <span>¥{SHIPPING_FEE.toLocaleString()}</span>
+                    </p>
+                  )}
+                  {separateShipApplicants.map(a => (
+                    <p key={a.circled} className="text-gray-500 text-xs flex justify-between">
+                      <span>{t('separateShipmentLabel', { name: `${a.circled} ${a.name}` })}</span>
+                      <span>¥{SHIPPING_FEE.toLocaleString()}</span>
+                    </p>
+                  ))}
+                </div>
+              )}
+              <div className="border-t border-white pt-2 space-y-1">
+                <p className="text-gray-600 flex justify-between text-xs">
+                  <span>{t('subtotalLabel')}</span>
+                  <span>¥{feesTotal.toLocaleString()}</span>
+                </p>
+                {shippingFeeTotal > 0 && (
+                  <p className="text-gray-600 flex justify-between text-xs">
+                    <span>{t('shippingTotalLabel')}</span>
+                    <span>¥{shippingFeeTotal.toLocaleString()}</span>
+                  </p>
+                )}
                 <p className="text-gold font-medium text-base flex justify-between">
                   <span>{t('grandTotalLabel')}</span>
                   <span>¥{grandTotal.toLocaleString()}</span>
