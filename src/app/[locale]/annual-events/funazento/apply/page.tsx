@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export const NOTICE_DEFAULTS: Record<string, string> = {
   funazento_apply_notice_ofuda: 'お申し込みの方には御札をお授けいたします。',
   funazento_apply_notice_ofuda_en: 'Applicants will receive an ofuda talisman.',
-  funazento_apply_notice_fee: '参加費は大人5,000円・小中学生4,000円（未就学児は無料）です。当日ご参加されない場合も、御札代として4,000円を頂戴いたします。',
-  funazento_apply_notice_fee_en: 'The participation fee is ¥5,000 for adults and ¥4,000 for elementary/junior high school students (preschool-age children are free). Even if you do not join in person on the day, a fee of ¥4,000 applies for the ofuda talisman.',
+  funazento_apply_notice_fee: '参加費は大人5,000円・小中学生4,000円です。当日ご参加されない場合も、御札代として4,000円を頂戴いたします。',
+  funazento_apply_notice_fee_en: 'The participation fee is ¥5,000 for adults and ¥4,000 for elementary/junior high school students. Even if you do not join in person on the day, a fee of ¥4,000 applies for the ofuda talisman.',
   funazento_apply_notice_shipping: '当日ご参加されない方のお札は代金引換（代引き）にて郵送いたします。送料は送り先1件につき1,000円です。',
   funazento_apply_notice_shipping_en: 'For those not attending in person, the ofuda talisman is shipped by cash on delivery. Shipping is ¥1,000 per destination.',
   funazento_apply_notice_payment: 'お支払いは当日・現地でのお支払いとなります。事前のお振込みは不要です。',

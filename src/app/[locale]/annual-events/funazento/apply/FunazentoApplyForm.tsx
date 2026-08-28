@@ -8,7 +8,7 @@ import type { Locale } from '@/i18n/routing'
 
 type Status = 'idle' | 'loading' | 'error'
 type Participate = 'yes' | 'no'
-type AgeCategory = 'adult' | 'child' | 'infant'
+type AgeCategory = 'adult' | 'child'
 type ShipMode = 'same' | 'separate'
 type Applicant = { key: number; name: string; nameKana: string; address: string; wish1: string; wish2: string; participate: Participate; ageCategory: AgeCategory; shipMode: ShipMode }
 
@@ -21,9 +21,7 @@ const SHIPPING_FEE = 1000
 
 function feeFor(participate: Participate, age: AgeCategory): number {
   if (participate === 'no') return 4000
-  if (age === 'adult') return 5000
-  if (age === 'child') return 4000
-  return 0
+  return age === 'adult' ? 5000 : 4000
 }
 
 function WishSelect({ value, onChange, required, placeholder }: { value: string; onChange: (v: string) => void; required?: boolean; placeholder: string }) {
@@ -64,13 +62,13 @@ function ParticipateFeeBlock({
       {participate === 'yes' ? (
         <div>
           <label className="text-xs text-gray-500 block mb-1">{t('ageCategoryLabel')}</label>
-          <div className="grid grid-cols-3 gap-2">
-            {(['adult', 'child', 'infant'] as const).map(age => (
+          <div className="grid grid-cols-2 gap-2">
+            {(['adult', 'child'] as const).map(age => (
               <button key={age} type="button" onClick={() => onAgeChange(age)}
                 className={`text-xs px-2 py-2 rounded-lg border transition-colors ${ageCategory === age ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
-                {age === 'adult' ? t('ageAdult') : age === 'child' ? t('ageChild') : t('ageInfant')}
+                {age === 'adult' ? t('ageAdult') : t('ageChild')}
                 <br />
-                <span className="text-[11px] text-gray-400">{age === 'adult' ? t('ageAdultFee') : age === 'child' ? t('ageChildFee') : t('ageInfantFee')}</span>
+                <span className="text-[11px] text-gray-400">{age === 'adult' ? t('ageAdultFee') : t('ageChildFee')}</span>
               </button>
             ))}
           </div>
@@ -83,7 +81,7 @@ function ParticipateFeeBlock({
 }
 
 function ageLabel(t: ReturnType<typeof useTranslations>, age: AgeCategory) {
-  return age === 'adult' ? t('ageAdult') : age === 'child' ? t('ageChild') : t('ageInfant')
+  return age === 'adult' ? t('ageAdult') : t('ageChild')
 }
 
 export default function FunazentoApplyForm({ content }: { content: Record<string, string> }) {
