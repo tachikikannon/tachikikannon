@@ -48,6 +48,10 @@ const FIELDS = [
   },
   { key: 'kannonko_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み', translatable: true },
   { key: 'kannonko_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '参加費（お札代込み）はお一人様3,000円。\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地払い、または代金引換（郵送）からお選びいただけます。', translatable: true, defaultValueEn: 'The participation fee (including the ofuda talisman) is ¥3,000 per person.\nPlease apply in advance via the application form.\nYou may pay on the day, on site, or choose cash on delivery (shipped).' },
+  { key: 'kannonko_apply_notice_ofuda', label: '申込フォーム 注意事項（⛩️ 御札・参加費）', multiline: true, defaultValue: 'お申し込みの方には大護摩供にてお焚き上げする御札をお授けいたします。参加費はお一人様3,000円（お札代込み）です。', translatable: true, defaultValueEn: 'Applicants will receive an ofuda talisman burned in the grand goma fire ritual. The participation fee is ¥3,000 per person (includes the ofuda talisman).' },
+  { key: 'kannonko_apply_notice_shipping', label: '申込フォーム 注意事項（🚚 代金引換の送料）', multiline: true, defaultValue: '代金引換をご希望の場合、お札は郵送いたします。送料は送り先1件につき1,000円です。', translatable: true, defaultValueEn: 'If you choose cash on delivery, the ofuda talisman will be shipped. Shipping is ¥1,000 per destination.' },
+  { key: 'kannonko_apply_notice_payment', label: '申込フォーム 注意事項（💴 お支払い方法）', multiline: true, defaultValue: 'お支払いは当日・現地でのお支払い、または代金引換（郵送）からお選びいただけます。', translatable: true, defaultValueEn: 'Payment can be made on the day, on site, or by cash on delivery (shipped).' },
+  { key: 'kannonko_apply_notice_family', label: '申込フォーム 注意事項（👨‍👩‍👧‍👦 ご家族・団体）', multiline: true, defaultValue: 'ご家族・団体でお申し込みの場合は、代表者様の情報に加えて申込者①〜⑩に人数分ご記入ください。', translatable: true, defaultValueEn: "If applying as a family or group, please fill in applicants ①–⑩ in addition to the representative's information." },
 ] as const
 
 export default function AdminKannonko() {

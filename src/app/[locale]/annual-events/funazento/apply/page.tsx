@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
@@ -10,11 +12,43 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return { title: `${t('title')} 申し込み` }
 }
 
-export default function FunazentoApplyPage() {
+export const NOTICE_DEFAULTS: Record<string, string> = {
+  funazento_apply_notice_ofuda: 'お申し込みの方には御札をお授けいたします。',
+  funazento_apply_notice_ofuda_en: 'Applicants will receive an ofuda talisman.',
+  funazento_apply_notice_fee: '参加費は大人5,000円・小中学生4,000円（未就学児は無料）です。当日ご参加されない場合も、御札代として4,000円を頂戴いたします。',
+  funazento_apply_notice_fee_en: 'The participation fee is ¥5,000 for adults and ¥4,000 for elementary/junior high school students (preschool-age children are free). Even if you do not join in person on the day, a fee of ¥4,000 applies for the ofuda talisman.',
+  funazento_apply_notice_shipping: '当日ご参加されない方のお札は代金引換（代引き）にて郵送いたします。送料は送り先1件につき1,000円です。',
+  funazento_apply_notice_shipping_en: 'For those not attending in person, the ofuda talisman is shipped by cash on delivery. Shipping is ¥1,000 per destination.',
+  funazento_apply_notice_payment: 'お支払いは当日・現地でのお支払いとなります。事前のお振込みは不要です。',
+  funazento_apply_notice_payment_en: 'Payment is due on the day, on site. No advance bank transfer is needed.',
+  funazento_apply_notice_capacity: '定員になり次第締め切ります。お早めにお申し込みください。',
+  funazento_apply_notice_capacity_en: 'Applications close once capacity is reached. Please apply early.',
+  funazento_apply_notice_family: 'ご家族・団体でお申し込みの場合は、代表者様の情報に加えて申込者①〜⑩に人数分ご記入ください。',
+  funazento_apply_notice_family_en: "If applying as a family or group, please fill in applicants ①–⑩ in addition to the representative's information.",
+}
+
+async function getContent() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  try {
+    const keys = Object.keys(NOTICE_DEFAULTS).join(',')
+    const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
+    })
+    if (!res.ok) return NOTICE_DEFAULTS
+    const rows: { key: string; value: string }[] = await res.json()
+    const map = { ...NOTICE_DEFAULTS }
+    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    return map
+  } catch { return NOTICE_DEFAULTS }
+}
+
+export default async function FunazentoApplyPage() {
+  const content = await getContent()
   return (
     <>
       <Header />
-      <FunazentoApplyForm />
+      <FunazentoApplyForm content={content} />
       <Footer />
     </>
   )

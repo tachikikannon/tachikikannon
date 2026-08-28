@@ -75,6 +75,12 @@ const FIELDS = [
   },
   { key: 'funazento_cta_heading', label: 'CTA見出し', defaultValue: '船禅頂 お申し込み', translatable: true },
   { key: 'funazento_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '定員になり次第締め切ります。\n御札授与あり・お支払いは当日現地にて。', translatable: true },
+  { key: 'funazento_apply_notice_ofuda', label: '申込フォーム 注意事項（⛩️ 御札）', multiline: true, defaultValue: 'お申し込みの方には御札をお授けいたします。', translatable: true, defaultValueEn: 'Applicants will receive an ofuda talisman.' },
+  { key: 'funazento_apply_notice_fee', label: '申込フォーム 注意事項（💰 参加費）', multiline: true, defaultValue: '参加費は大人5,000円・小中学生4,000円（未就学児は無料）です。当日ご参加されない場合も、御札代として4,000円を頂戴いたします。', translatable: true, defaultValueEn: 'The participation fee is ¥5,000 for adults and ¥4,000 for elementary/junior high school students (preschool-age children are free). Even if you do not join in person on the day, a fee of ¥4,000 applies for the ofuda talisman.' },
+  { key: 'funazento_apply_notice_shipping', label: '申込フォーム 注意事項（🚚 代金引換の送料）', multiline: true, defaultValue: '当日ご参加されない方のお札は代金引換（代引き）にて郵送いたします。送料は送り先1件につき1,000円です。', translatable: true, defaultValueEn: 'For those not attending in person, the ofuda talisman is shipped by cash on delivery. Shipping is ¥1,000 per destination.' },
+  { key: 'funazento_apply_notice_payment', label: '申込フォーム 注意事項（💴 お支払い方法）', multiline: true, defaultValue: 'お支払いは当日・現地でのお支払いとなります。事前のお振込みは不要です。', translatable: true, defaultValueEn: 'Payment is due on the day, on site. No advance bank transfer is needed.' },
+  { key: 'funazento_apply_notice_capacity', label: '申込フォーム 注意事項（👥 定員）', multiline: true, defaultValue: '定員になり次第締め切ります。お早めにお申し込みください。', translatable: true, defaultValueEn: 'Applications close once capacity is reached. Please apply early.' },
+  { key: 'funazento_apply_notice_family', label: '申込フォーム 注意事項（👨‍👩‍👧‍👦 ご家族・団体）', multiline: true, defaultValue: 'ご家族・団体でお申し込みの場合は、代表者様の情報に加えて申込者①〜⑩に人数分ご記入ください。', translatable: true, defaultValueEn: "If applying as a family or group, please fill in applicants ①–⑩ in addition to the representative's information." },
 ] as const
 
 export default function AdminFunazento() {

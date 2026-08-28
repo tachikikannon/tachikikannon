@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
+import { getLocalizedContent } from '@/lib/site-content'
+import type { Locale } from '@/i18n/routing'
 
 type Status = 'idle' | 'loading' | 'error'
 type Participate = 'yes' | 'no'
@@ -82,13 +84,15 @@ function ageLabel(t: ReturnType<typeof useTranslations>, age: AgeCategory) {
   return age === 'adult' ? t('ageAdult') : age === 'child' ? t('ageChild') : t('ageInfant')
 }
 
-export default function FunazentoApplyForm() {
+export default function FunazentoApplyForm({ content }: { content: Record<string, string> }) {
   const supabase = createClient()
   const t = useTranslations('funazentoApply')
   const tF = useTranslations('funazento')
   const tc = useTranslations('common')
   const tAE = useTranslations('annualEvents')
   const locale = useLocale()
+  const loc = locale as Locale
+  const g = (key: string) => getLocalizedContent(content, key, loc)
   // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
   const showNameKana = locale === 'ja'
   const [form, setForm] = useState({
@@ -281,27 +285,27 @@ export default function FunazentoApplyForm() {
           <p className="font-medium text-amber-800 text-sm mb-2">{t('noticeHeading')}</p>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">⛩️</span>
-            <p>{t.rich('noticeOfuda', { b: chunks => <strong>{chunks}</strong> })}</p>
+            <p>{g('funazento_apply_notice_ofuda')}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">💰</span>
-            <p>{t.rich('noticeFee', { b: chunks => <strong>{chunks}</strong> })}</p>
+            <p>{g('funazento_apply_notice_fee')}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">🚚</span>
-            <p>{t.rich('noticeShipping', { b: chunks => <strong>{chunks}</strong> })}</p>
+            <p>{g('funazento_apply_notice_shipping')}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">💴</span>
-            <p>{t.rich('noticePayment', { b: chunks => <strong>{chunks}</strong> })}</p>
+            <p>{g('funazento_apply_notice_payment')}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">👥</span>
-            <p>{t('noticeCapacity')}</p>
+            <p>{g('funazento_apply_notice_capacity')}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">👨‍👩‍👧‍👦</span>
-            <p>{t('noticeFamily')}</p>
+            <p>{g('funazento_apply_notice_family')}</p>
           </div>
         </div>
 
