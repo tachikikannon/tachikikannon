@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 export const NOTICE_DEFAULTS: Record<string, string> = {
-  kannonko_apply_notice_ofuda: 'お申し込みの方には大護摩供にてお焚き上げする御札をお授けいたします。参加費はお一人様3,000円（お札代込み）です。',
-  kannonko_apply_notice_ofuda_en: 'Applicants will receive an ofuda talisman burned in the grand goma fire ritual. The participation fee is ¥3,000 per person (includes the ofuda talisman).',
+  kannonko_apply_notice_ofuda: 'お申し込みの方には御祈祷したお札をお授けします。参加費はお一人様3,000円（お札代込み）です。',
+  kannonko_apply_notice_ofuda_en: 'Applicants will receive a blessed ofuda talisman. The participation fee is ¥3,000 per person (includes the ofuda talisman).',
   kannonko_apply_notice_shipping: '代金引換をご希望の場合、お札は郵送いたします。送料は送り先1件につき1,000円です。',
   kannonko_apply_notice_shipping_en: 'If you choose cash on delivery, the ofuda talisman will be shipped. Shipping is ¥1,000 per destination.',
   kannonko_apply_notice_payment: 'お支払いは当日・現地でのお支払い、または代金引換（郵送）からお選びいただけます。',
