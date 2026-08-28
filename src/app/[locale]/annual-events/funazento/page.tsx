@@ -57,13 +57,13 @@ const DEFAULT_SCHEDULE_EN: { time: string; title: string; desc: string }[] = [
 
 const DEFAULT_NOTES = [
   { text: '事前の申し込みが必要です。定員になり次第締め切りますので、お早めにお申し込みください。' },
-  { text: '参加費は大人5,000円・小中学生4,000円です。当日ご参加されない場合も、御札代として4,000円を頂戴いたします。お支払いは当日・現地にてお受けいたします。' },
+  { text: '参加費は大人5,000円・小中学生以下4,000円です。当日ご参加されない場合も、御札代として4,000円を頂戴いたします。お支払いは当日・現地にてお受けいたします。' },
   { text: '動きやすく濡れても構わない服装でお越しください。湖上は気温が低い場合がありますので、上に羽織るものをご持参ください。' },
   { text: '天候・状況により内容が変更・中止となる場合がございます。詳細はお電話にてご確認ください。' },
 ]
 const DEFAULT_NOTES_EN = [
   { text: 'Advance application is required. Applications close once capacity is reached, so please apply early.' },
-  { text: 'The participation fee is ¥5,000 for adults and ¥4,000 for elementary/junior high school students. Even if you do not join in person on the day, a fee of ¥4,000 applies for the ofuda talisman. Payment is accepted on the day, on site.' },
+  { text: 'The participation fee is ¥5,000 for adults and ¥4,000 for elementary/junior high school students and younger. Even if you do not join in person on the day, a fee of ¥4,000 applies for the ofuda talisman. Payment is accepted on the day, on site.' },
   { text: 'Please wear clothing you can move in easily and that can get wet. Temperatures on the lake can be cool, so please bring something to layer on top.' },
   { text: 'Content may change or be cancelled depending on weather and conditions. Please call for details.' },
 ]
@@ -81,8 +81,8 @@ const DEFAULTS: Record<string, string> = {
   funazento_info_time_en: 'From 10:00 AM',
   funazento_info_join: '事前申し込み必要',
   funazento_info_join_en: 'Advance application required',
-  funazento_info_fee: '5,000円（小中学生4,000円）',
-  funazento_info_fee_en: '¥5,000 (¥4,000 for students)',
+  funazento_info_fee: '5,000円（小中学生以下4,000円）',
+  funazento_info_fee_en: '¥5,000 (¥4,000 for students and younger)',
   funazento_heading_schedule: 'タイムスケジュール',
   funazento_heading_schedule_en: 'Schedule',
   funazento_heading_map: '船禅頂ルート図',
