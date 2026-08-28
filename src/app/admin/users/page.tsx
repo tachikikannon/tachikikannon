@@ -9,6 +9,7 @@ const ROLE_LABELS: Record<AdminRole, string> = {
   super_admin: 'super_admin（全権限）',
   admin: 'admin（予約・お問い合わせ編集可能）',
   reservation_admin: 'reservation_admin（予約担当・予約のみ編集可能）',
+  reservation_search_admin: 'reservation_search_admin（予約検索・予約スケジュールのみ操作可能）',
   contact_admin: 'contact_admin（お問い合わせ担当・お問い合わせのみ編集可能）',
   viewer: 'viewer（閲覧のみ）',
 }

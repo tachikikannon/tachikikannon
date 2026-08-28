@@ -3,8 +3,13 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
+import { useAdminProfile } from '@/lib/useAdminProfile'
 
 type NavItem = { href: string; label: string; icon: string; group?: string }
+
+// reservation_search_admin ロールがアクセスできる管理画面パス（完全一致）。
+// ミドルウェア（src/middleware.ts）の許可リストと揃えておくこと。
+const RESERVATION_ADMIN_ALLOWED_PATHS = ['/admin/reservations', '/admin/reservations/schedule']
 
 const navItems: NavItem[] = [
   { href: '/admin',               label: 'ダッシュボード',   icon: '🏠' },
@@ -75,6 +80,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
+  const { profile } = useAdminProfile()
+  const visibleNavItems = profile?.role === 'reservation_search_admin'
+    ? navItems.filter(item => RESERVATION_ADMIN_ALLOWED_PATHS.includes(item.href))
+    : navItems
 
   async function handleLogout() {
     const supabase = createClient()
@@ -112,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {(() => {
             const rendered: React.ReactNode[] = []
             let lastGroup: string | undefined = undefined
-            navItems.forEach(({ href, label, icon, group }) => {
+            visibleNavItems.forEach(({ href, label, icon, group }) => {
               if (group !== lastGroup) {
                 if (group) {
                   const isOnsenji = group === '温泉寺'

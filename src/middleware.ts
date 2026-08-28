@@ -5,6 +5,10 @@ import { routing } from './i18n/routing'
 
 const intlMiddleware = createIntlMiddleware(routing)
 
+// reservation_search_admin ロールがアクセスできる管理画面パス（完全一致）。
+// サイドバーのフィルタ（src/app/admin/layout.tsx）と揃えておくこと。
+const RESERVATION_ADMIN_ALLOWED_PATHS = ['/admin/reservations', '/admin/reservations/schedule']
+
 async function adminAuthMiddleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -48,7 +52,7 @@ async function adminAuthMiddleware(request: NextRequest) {
   ) {
     const { data: profile } = await supabase
       .from('admin_profiles')
-      .select('is_active')
+      .select('is_active, role')
       .eq('id', user.id)
       .maybeSingle()
 
@@ -57,6 +61,17 @@ async function adminAuthMiddleware(request: NextRequest) {
       const url = new URL('/admin/login', request.url)
       url.searchParams.set('reason', 'inactive')
       return NextResponse.redirect(url)
+    }
+
+    // reservation_search_admin は「予約検索」「予約スケジュール」の2画面のみ操作可能
+    // （既存の reservation_admin とは別ロール。そちらの挙動は変更しない）。
+    // サイドバー側でも他の項目は非表示にしているが、URLを直接叩かれた場合の
+    // 抜け道を防ぐため、ミドルウェアでも同じ許可リストで強制リダイレクトする。
+    if (
+      profile.role === 'reservation_search_admin' &&
+      !RESERVATION_ADMIN_ALLOWED_PATHS.includes(request.nextUrl.pathname)
+    ) {
+      return NextResponse.redirect(new URL('/admin/reservations', request.url))
     }
   }
 
