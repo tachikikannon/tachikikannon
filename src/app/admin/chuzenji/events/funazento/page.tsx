@@ -10,6 +10,7 @@ const FIELDS = [
   { key: 'funazento_info_date', label: '開催日（カード表示）', defaultValue: '8月4日（毎年）', translatable: true },
   { key: 'funazento_info_time', label: '開始時間（カード表示）', defaultValue: '午前10時〜', translatable: true },
   { key: 'funazento_info_join', label: '参加（カード表示）', defaultValue: '事前申し込み必要', translatable: true },
+  { key: 'funazento_info_fee', label: '参加費（カード表示）', defaultValue: '5,000円（小中学生4,000円・未就学児無料）', translatable: true, defaultValueEn: '¥5,000 (¥4,000 for students; free for preschoolers)' },
   { key: 'funazento_heading_schedule', label: '「タイムスケジュール」見出し', defaultValue: 'タイムスケジュール', translatable: true },
   {
     key: 'funazento_schedule', label: 'タイムスケジュール', type: 'list' as const,
@@ -60,14 +61,14 @@ const FIELDS = [
     listFields: [{ key: 'text', label: '注意事項', multiline: true }],
     defaultValue: J([
       { text: '事前の申し込みが必要です。定員になり次第締め切りますので、お早めにお申し込みください。' },
-      { text: '御札をお授けいたします。お支払いは当日・現地にてお受けいたします。' },
+      { text: '参加費は大人5,000円・小中学生4,000円（未就学児は無料）です。当日ご参加されない場合も、御札代として4,000円を頂戴いたします。お支払いは当日・現地にてお受けいたします。' },
       { text: '動きやすく濡れても構わない服装でお越しください。湖上は気温が低い場合がありますので、上に羽織るものをご持参ください。' },
       { text: '天候・状況により内容が変更・中止となる場合がございます。詳細はお電話にてご確認ください。' },
     ]),
     translatable: true,
     defaultValueEn: J([
       { text: 'Advance application is required. Applications close once capacity is reached, so please apply early.' },
-      { text: 'You will receive an ofuda talisman. Payment is accepted on the day, on site.' },
+      { text: 'The participation fee is ¥5,000 for adults and ¥4,000 for elementary/junior high school students (preschool-age children are free). Even if you do not join in person on the day, a fee of ¥4,000 applies for the ofuda talisman. Payment is accepted on the day, on site.' },
       { text: 'Please wear clothing you can move in easily and that can get wet. Temperatures on the lake can be cool, so please bring something to layer on top.' },
       { text: 'Content may change or be cancelled depending on weather and conditions. Please call for details.' },
     ]),

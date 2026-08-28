@@ -5,11 +5,20 @@ import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
 type Status = 'idle' | 'loading' | 'error'
-type Applicant = { name: string; nameKana: string; address: string; wish1: string; wish2: string }
+type Participate = 'yes' | 'no'
+type AgeCategory = 'adult' | 'child' | 'infant'
+type Applicant = { name: string; nameKana: string; address: string; wish1: string; wish2: string; participate: Participate; ageCategory: AgeCategory }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
 const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
-const emptyApplicant = (): Applicant => ({ name: '', nameKana: '', address: '', wish1: '', wish2: '' })
+const emptyApplicant = (): Applicant => ({ name: '', nameKana: '', address: '', wish1: '', wish2: '', participate: 'yes', ageCategory: 'adult' })
+
+function feeFor(participate: Participate, age: AgeCategory): number {
+  if (participate === 'no') return 4000
+  if (age === 'adult') return 5000
+  if (age === 'child') return 4000
+  return 0
+}
 
 function WishSelect({ value, onChange, required, placeholder }: { value: string; onChange: (v: string) => void; required?: boolean; placeholder: string }) {
   return (
@@ -18,6 +27,57 @@ function WishSelect({ value, onChange, required, placeholder }: { value: string;
       {WISH_OPTIONS.map(w => <option key={w} value={w}>{w}</option>)}
     </select>
   )
+}
+
+function ParticipateFeeBlock({
+  t, participate, ageCategory, onParticipateChange, onAgeChange, fee,
+}: {
+  t: ReturnType<typeof useTranslations>
+  participate: Participate
+  ageCategory: AgeCategory
+  onParticipateChange: (p: Participate) => void
+  onAgeChange: (a: AgeCategory) => void
+  fee: number
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-sm font-medium text-navy">{t('participateHeading')} <span className="text-red-500 text-xs">{t('required')}</span></p>
+        <span className="text-gold font-bold text-sm">¥{fee.toLocaleString()}</span>
+      </div>
+      <div className="flex gap-2 mb-3">
+        <button type="button" onClick={() => onParticipateChange('yes')}
+          className={`flex-1 text-sm px-3 py-2 rounded-lg border transition-colors ${participate === 'yes' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+          {t('participateYes')}
+        </button>
+        <button type="button" onClick={() => onParticipateChange('no')}
+          className={`flex-1 text-sm px-3 py-2 rounded-lg border transition-colors ${participate === 'no' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+          {t('participateNo')}
+        </button>
+      </div>
+      {participate === 'yes' ? (
+        <div>
+          <label className="text-xs text-gray-500 block mb-1">{t('ageCategoryLabel')}</label>
+          <div className="grid grid-cols-3 gap-2">
+            {(['adult', 'child', 'infant'] as const).map(age => (
+              <button key={age} type="button" onClick={() => onAgeChange(age)}
+                className={`text-xs px-2 py-2 rounded-lg border transition-colors ${ageCategory === age ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                {age === 'adult' ? t('ageAdult') : age === 'child' ? t('ageChild') : t('ageInfant')}
+                <br />
+                <span className="text-[11px] text-gray-400">{age === 'adult' ? t('ageAdultFee') : age === 'child' ? t('ageChildFee') : t('ageInfantFee')}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="text-xs text-gray-500">{t('notParticipateFeeNote')}</p>
+      )}
+    </div>
+  )
+}
+
+function ageLabel(t: ReturnType<typeof useTranslations>, age: AgeCategory) {
+  return age === 'adult' ? t('ageAdult') : age === 'child' ? t('ageChild') : t('ageInfant')
 }
 
 export default function FunazentoApplyForm() {
@@ -29,13 +89,16 @@ export default function FunazentoApplyForm() {
   const locale = useLocale()
   // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
   const showNameKana = locale === 'ja'
-  const [form, setForm] = useState({ name: '', nameKana: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
+  const [form, setForm] = useState({
+    name: '', nameKana: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '',
+    participate: 'yes' as Participate, ageCategory: 'adult' as AgeCategory,
+  })
   const [applicants, setApplicants] = useState<Applicant[]>(Array.from({ length: 10 }, emptyApplicant))
   const [notes, setNotes] = useState('')
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<Status>('idle')
 
-  function set(field: keyof typeof form) {
+  function set(field: 'name' | 'nameKana' | 'email' | 'phone' | 'postal' | 'address') {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }))
   }
@@ -43,6 +106,12 @@ export default function FunazentoApplyForm() {
   function setApplicant(i: number, field: keyof Applicant, value: string) {
     setApplicants(prev => prev.map((a, idx) => idx === i ? { ...a, [field]: value } : a))
   }
+
+  const repFee = feeFor(form.participate, form.ageCategory)
+  const activeApplicants = applicants
+    .map((a, i) => ({ ...a, circled: CIRCLED[i] }))
+    .filter(a => a.name.trim())
+  const grandTotal = repFee + activeApplicants.reduce((sum, a) => sum + feeFor(a.participate, a.ageCategory), 0)
 
   function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
@@ -58,10 +127,17 @@ export default function FunazentoApplyForm() {
   async function handleSubmit() {
     setStatus('loading')
 
+    const repParticipateLine = form.participate === 'yes'
+      ? `参加する（${ageLabel(t, form.ageCategory)}）`
+      : '参加しない'
+
     const applicantLines = applicants
       .map((a, i) => ({ ...a, num: CIRCLED[i] }))
       .filter(a => a.name.trim())
-      .map(a => `${a.num} ${a.name}${a.nameKana ? `　フリガナ：${a.nameKana}` : ''}（${a.address || '住所未記入'}）　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`)
+      .map(a => {
+        const participateLine = a.participate === 'yes' ? `参加する（${ageLabel(t, a.ageCategory)}）` : '参加しない'
+        return `${a.num} ${a.name}${a.nameKana ? `　フリガナ：${a.nameKana}` : ''}（${a.address || '住所未記入'}）　当日参加：${participateLine}　参加費：¥${feeFor(a.participate, a.ageCategory).toLocaleString()}　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`
+      })
       .join('\n')
 
     const message = [
@@ -71,8 +147,10 @@ export default function FunazentoApplyForm() {
       `電話番号：${form.phone}`,
       `郵便番号：${form.postal}`,
       `住所：${form.address}`,
+      `当日参加：${repParticipateLine}　参加費：¥${repFee.toLocaleString()}`,
       `お願い事：${[form.wish1, form.wish2].filter(Boolean).join('、')}`,
       applicantLines ? `\n【申込者一覧】\n${applicantLines}` : '',
+      `\n合計金額：¥${grandTotal.toLocaleString()}`,
       notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
 
@@ -115,12 +193,10 @@ export default function FunazentoApplyForm() {
     </main>
   )
 
-  const applicantRows: [string, string][] = applicants
-    .map((a, i) => ({ ...a, num: CIRCLED[i] }))
-    .filter(a => a.name.trim())
+  const applicantRows: [string, string][] = activeApplicants
     .map(a => [
-      `${t('applicantLabel')}${a.num}`,
-      `${a.name}${showNameKana && a.nameKana ? `\n${t('repNameKanaLabel')}：${a.nameKana}` : ''}（${a.address || '住所未記入'}）\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
+      `${t('applicantLabel')}${a.circled}`,
+      `${a.name}${showNameKana && a.nameKana ? `\n${t('repNameKanaLabel')}：${a.nameKana}` : ''}（${a.address || '住所未記入'}）\n${t('participateHeading')}：${a.participate === 'yes' ? ageLabel(t, a.ageCategory) : t('participateNo')}　${t('feePerPersonLabel')}：¥${feeFor(a.participate, a.ageCategory).toLocaleString()}\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
     ] as [string, string])
 
   const confirmRows: [string, string][] = [
@@ -130,9 +206,11 @@ export default function FunazentoApplyForm() {
     [t('phoneLabel'), form.phone],
     ...(form.postal ? [[t('postalLabel'), form.postal] as [string, string]] : []),
     [t('addressLabel'), form.address],
+    [t('participateHeading'), `${form.participate === 'yes' ? ageLabel(t, form.ageCategory) : t('participateNo')}　¥${repFee.toLocaleString()}`],
     [t('wish1Label'), form.wish1],
     ...(form.wish2 ? [[t('wish2Label'), form.wish2] as [string, string]] : []),
     ...applicantRows,
+    [t('grandTotalLabel'), `¥${grandTotal.toLocaleString()}`],
     ...(notes ? [[t('notesLabel'), notes] as [string, string]] : []),
   ]
 
@@ -173,6 +251,10 @@ export default function FunazentoApplyForm() {
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">⛩️</span>
             <p>{t.rich('noticeOfuda', { b: chunks => <strong>{chunks}</strong> })}</p>
+          </div>
+          <div className="flex gap-2 text-sm text-amber-700">
+            <span className="flex-shrink-0">💰</span>
+            <p>{t.rich('noticeFee', { b: chunks => <strong>{chunks}</strong> })}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">💴</span>
@@ -220,6 +302,17 @@ export default function FunazentoApplyForm() {
           </div>
 
           <div className="border-t border-gray-200 pt-5">
+            <ParticipateFeeBlock
+              t={t}
+              participate={form.participate}
+              ageCategory={form.ageCategory}
+              onParticipateChange={p => setForm(f => ({ ...f, participate: p }))}
+              onAgeChange={a => setForm(f => ({ ...f, ageCategory: a }))}
+              fee={repFee}
+            />
+          </div>
+
+          <div className="border-t border-gray-200 pt-5">
             <p className="text-sm font-medium text-navy mb-1">{t('repWishHeading')}</p>
             <p className="text-xs text-gray-400 mb-4">{t('repWishSub')}</p>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -249,12 +342,43 @@ export default function FunazentoApplyForm() {
                     )}
                     <input className="admin-input" placeholder={t('applicantAddressPlaceholder')} value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
                   </div>
+                  <div className="mb-3">
+                    <ParticipateFeeBlock
+                      t={t}
+                      participate={a.participate}
+                      ageCategory={a.ageCategory}
+                      onParticipateChange={p => setApplicant(i, 'participate', p)}
+                      onAgeChange={ag => setApplicant(i, 'ageCategory', ag)}
+                      fee={feeFor(a.participate, a.ageCategory)}
+                    />
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
                     <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} placeholder={t('wishSelectPlaceholder')} />
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-5">
+            <div className="bg-cream-alt rounded-lg p-4 text-sm space-y-2">
+              <p className="text-gray-600 flex justify-between">
+                <span>{t('repFeeRow')}（{form.participate === 'yes' ? ageLabel(t, form.ageCategory) : t('participateNo')}）</span>
+                <span>¥{repFee.toLocaleString()}</span>
+              </p>
+              {activeApplicants.map(a => (
+                <p key={a.circled} className="text-gray-600 flex justify-between">
+                  <span>{a.circled} {a.name}（{a.participate === 'yes' ? ageLabel(t, a.ageCategory) : t('participateNo')}）</span>
+                  <span>¥{feeFor(a.participate, a.ageCategory).toLocaleString()}</span>
+                </p>
+              ))}
+              <div className="border-t border-white pt-2">
+                <p className="text-gold font-medium text-base flex justify-between">
+                  <span>{t('grandTotalLabel')}</span>
+                  <span>¥{grandTotal.toLocaleString()}</span>
+                </p>
+              </div>
             </div>
           </div>
 

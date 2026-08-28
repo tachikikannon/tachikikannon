@@ -900,6 +900,7 @@ const SECTIONS: Section[] = [
       { key: 'kannonko_info_date', label: '開催日（カード表示）', defaultValue: '6月18日（毎年）', translatable: true },
       { key: 'kannonko_info_time', label: '開始時間（カード表示）', defaultValue: '午前10時〜', translatable: true },
       { key: 'kannonko_info_join', label: '参列（カード表示）', defaultValue: '申込者のみ', translatable: true, defaultValueEn: 'Advance application required' },
+      { key: 'kannonko_info_fee', label: '参加費（カード表示）', defaultValue: '3,000円（お札代込み）', translatable: true, defaultValueEn: '¥3,000 (includes ofuda talisman)' },
       { key: 'kannonko_heading_schedule', label: '「タイムスケジュール」見出し', defaultValue: 'タイムスケジュール', translatable: true },
       {
         key: 'kannonko_schedule', label: 'タイムスケジュール', type: 'list',
@@ -924,19 +925,19 @@ const SECTIONS: Section[] = [
         defaultValue: J([
           { text: '事前のお申し込みが必要です。ご希望の方は申し込みフォームよりお申し込みください。' },
           { text: '動きやすい服装でお越しください。中禅寺湖周辺は天候が変わりやすいため、羽織るものをお持ちいただくことをお勧めします。' },
-          { text: 'お支払いは当日・現地にてお受けいたします。' },
+          { text: '参加費はお一人様3,000円（お札代込み）です。お支払いは当日・現地払いのみとなります（事前振込不可）。' },
           { text: '詳細・変更がある場合は当サイトにてお知らせいたします。' },
         ]),
         translatable: true,
         defaultValueEn: J([
           { text: 'Advance application is required. Please apply via the application form if you wish to attend.' },
           { text: 'Please wear comfortable, easy-to-move-in clothing. Weather around Lake Chuzenji can change quickly, so we recommend bringing something to layer on top.' },
-          { text: 'Payment is accepted on the day, on site.' },
+          { text: 'The participation fee is ¥3,000 per person (includes the ofuda talisman). Payment is accepted on the day, on-site only — advance bank transfer is not available.' },
           { text: 'Any details or changes will be announced on this website.' },
         ]),
       },
       { key: 'kannonko_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み', translatable: true },
-      { key: 'kannonko_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '大護摩供にて祈願する御札をご希望の方は\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。', translatable: true, defaultValueEn: 'If you would like an ofuda talisman prayed over in the grand goma fire ritual,\nplease apply in advance via the application form.\nPayment is accepted on the day, on site.' },
+      { key: 'kannonko_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '参加費（お札代込み）はお一人様3,000円。\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地払いのみです。', translatable: true, defaultValueEn: 'The participation fee (including the ofuda talisman) is ¥3,000 per person.\nPlease apply in advance via the application form.\nPayment is accepted on the day, on-site only.' },
     ],
   },
   {
@@ -949,6 +950,7 @@ const SECTIONS: Section[] = [
       { key: 'funazento_info_date', label: '開催日（カード表示）', defaultValue: '8月4日（毎年）', translatable: true },
       { key: 'funazento_info_time', label: '開始時間（カード表示）', defaultValue: '午前10時〜', translatable: true },
       { key: 'funazento_info_join', label: '参加（カード表示）', defaultValue: '事前申し込み必要', translatable: true },
+      { key: 'funazento_info_fee', label: '参加費（カード表示）', defaultValue: '5,000円（小中学生4,000円・未就学児無料）', translatable: true, defaultValueEn: '¥5,000 (¥4,000 for students; free for preschoolers)' },
       { key: 'funazento_heading_schedule', label: '「タイムスケジュール」見出し', defaultValue: 'タイムスケジュール', translatable: true },
       {
         key: 'funazento_schedule', label: 'タイムスケジュール', type: 'list',
@@ -999,14 +1001,14 @@ const SECTIONS: Section[] = [
         listFields: [{ key: 'text', label: '注意事項', multiline: true }],
         defaultValue: J([
           { text: '事前の申し込みが必要です。定員になり次第締め切りますので、お早めにお申し込みください。' },
-          { text: '御札をお授けいたします。お支払いは当日・現地にてお受けいたします。' },
+          { text: '参加費は大人5,000円・小中学生4,000円（未就学児は無料）です。当日ご参加されない場合も、御札代として4,000円を頂戴いたします。お支払いは当日・現地にてお受けいたします。' },
           { text: '動きやすく濡れても構わない服装でお越しください。湖上は気温が低い場合がありますので、上に羽織るものをご持参ください。' },
           { text: '天候・状況により内容が変更・中止となる場合がございます。詳細はお電話にてご確認ください。' },
         ]),
         translatable: true,
         defaultValueEn: J([
           { text: 'Advance application is required. Applications close once capacity is reached, so please apply early.' },
-          { text: 'You will receive an ofuda talisman. Payment is accepted on the day, on site.' },
+          { text: 'The participation fee is ¥5,000 for adults and ¥4,000 for elementary/junior high school students (preschool-age children are free). Even if you do not join in person on the day, a fee of ¥4,000 applies for the ofuda talisman. Payment is accepted on the day, on site.' },
           { text: 'Please wear clothing you can move in easily and that can get wet. Temperatures on the lake can be cool, so please bring something to layer on top.' },
           { text: 'Content may change or be cancelled depending on weather and conditions. Please call for details.' },
         ]),

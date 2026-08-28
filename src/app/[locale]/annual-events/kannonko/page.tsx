@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'kannonko' })
   return {
-    title: `${t('title')}（6月18日） | 日光山中禅寺 立木観音`,
+    title: `${t('title')}（6月18日）`,
     description: '毎年6月18日開催。観音講・大護摩供・地蔵流しのご案内。午前10時より執り行います。',
   }
 }
@@ -32,13 +32,13 @@ const DEFAULT_SCHEDULE_EN = [
 const DEFAULT_NOTES = [
   { text: '事前のお申し込みが必要です。ご希望の方は申し込みフォームよりお申し込みください。' },
   { text: '動きやすい服装でお越しください。中禅寺湖周辺は天候が変わりやすいため、羽織るものをお持ちいただくことをお勧めします。' },
-  { text: 'お支払いは当日・現地にてお受けいたします。' },
+  { text: '参加費はお一人様3,000円（お札代込み）です。お支払いは当日・現地払いのみとなります（事前振込不可）。' },
   { text: '詳細・変更がある場合は当サイトにてお知らせいたします。' },
 ]
 const DEFAULT_NOTES_EN = [
   { text: 'Advance application is required. Please apply via the application form if you wish to attend.' },
   { text: 'Please wear comfortable, easy-to-move-in clothing. Weather around Lake Chuzenji can change quickly, so we recommend bringing something to layer on top.' },
-  { text: 'Payment is accepted on the day, on site.' },
+  { text: 'The participation fee is ¥3,000 per person (includes the ofuda talisman). Payment is accepted on the day, on-site only — advance bank transfer is not available.' },
   { text: 'Any details or changes will be announced on this website.' },
 ]
 
@@ -55,6 +55,8 @@ const DEFAULTS: Record<string, string> = {
   kannonko_info_time_en: 'From 10:00 AM',
   kannonko_info_join: '申込者のみ',
   kannonko_info_join_en: 'Advance application required',
+  kannonko_info_fee: '3,000円（お札代込み）',
+  kannonko_info_fee_en: '¥3,000 (includes ofuda talisman)',
   kannonko_heading_schedule: 'タイムスケジュール',
   kannonko_heading_schedule_en: 'Schedule',
   kannonko_heading_gallery: '行事の様子',
@@ -63,8 +65,8 @@ const DEFAULTS: Record<string, string> = {
   kannonko_heading_notes_en: 'Notes for Attendees',
   kannonko_cta_heading: '御札のお申し込み',
   kannonko_cta_heading_en: 'Ofuda Talisman Application',
-  kannonko_cta_text: '大護摩供にて祈願する御札をご希望の方は\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地にて。',
-  kannonko_cta_text_en: 'If you would like an ofuda talisman prayed over in the grand goma fire ritual,\nplease apply in advance via the application form.\nPayment is accepted on the day, on site.',
+  kannonko_cta_text: '参加費（お札代込み）はお一人様3,000円。\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地払いのみです。',
+  kannonko_cta_text_en: 'The participation fee (including the ofuda talisman) is ¥3,000 per person.\nPlease apply in advance via the application form.\nPayment is accepted on the day, on-site only.',
   kannonko_schedule: JSON.stringify(DEFAULT_SCHEDULE),
   kannonko_schedule_en: JSON.stringify(DEFAULT_SCHEDULE_EN),
   kannonko_notes: JSON.stringify(DEFAULT_NOTES),
@@ -141,11 +143,12 @@ export default async function KannonkoPage({
               <h2 className="font-serif text-2xl text-navy">{g('kannonko_heading_about')}</h2>
             </div>
             <p className="text-sm text-gray-700 leading-loose">{g('kannonko_about')}</p>
-            <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
                 { label: t('infoDate'), value: g('kannonko_info_date') },
                 { label: t('infoTime'), value: g('kannonko_info_time') },
                 { label: t('infoJoin'), value: g('kannonko_info_join') },
+                { label: t('infoFee'), value: g('kannonko_info_fee') },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-cream-alt rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-400 mb-1">{label}</p>

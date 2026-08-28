@@ -179,10 +179,6 @@ export default function KannonkoApplyForm() {
             <p>{t.rich('noticePayment', { b: chunks => <strong>{chunks}</strong> })}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
-            <span className="flex-shrink-0">📌</span>
-            <p>{t('noticeAttendance')}</p>
-          </div>
-          <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">👨‍👩‍👧‍👦</span>
             <p>{t('noticeFamily')}</p>
           </div>
