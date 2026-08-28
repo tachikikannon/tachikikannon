@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'shogatsu' })
   return {
-    title: `${t('title')}（1月1日） | 日光山中禅寺 立木観音`,
+    title: `${t('title')}（1月1日）`,
     description: '毎年1月1日開催。新しい年の始まりに一年の無病息災・家内安全・開運招福を祈願する特別護摩祈祷。事前申し込み必要、最大5名まで同時申込可。',
   }
 }
