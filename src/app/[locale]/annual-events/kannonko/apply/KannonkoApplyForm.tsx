@@ -5,11 +5,15 @@ import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 
 type Status = 'idle' | 'loading' | 'error'
-type Applicant = { name: string; nameKana: string; address: string; wish1: string; wish2: string }
+type PaymentMethod = 'onsite' | 'cod'
+type ShipMode = 'same' | 'separate'
+type Applicant = { name: string; nameKana: string; address: string; wish1: string; wish2: string; paymentMethod: PaymentMethod; shipMode: ShipMode }
 
 const WISH_OPTIONS = ['心願成就', '家内安全', '身体健全', '身上安全', '商売繁盛', '開運', '厄除', '良縁成就', '安産', '病気平癒', '闘病平癒']
 const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩']
-const emptyApplicant = (): Applicant => ({ name: '', nameKana: '', address: '', wish1: '', wish2: '' })
+const emptyApplicant = (): Applicant => ({ name: '', nameKana: '', address: '', wish1: '', wish2: '', paymentMethod: 'onsite', shipMode: 'same' })
+const KANNONKO_FEE = 3000
+const SHIPPING_FEE = 1000
 
 function WishSelect({ value, onChange, required, placeholder }: { value: string; onChange: (v: string) => void; required?: boolean; placeholder: string }) {
   return (
@@ -17,6 +21,30 @@ function WishSelect({ value, onChange, required, placeholder }: { value: string;
       <option value="">{placeholder}</option>
       {WISH_OPTIONS.map(w => <option key={w} value={w}>{w}</option>)}
     </select>
+  )
+}
+
+function PaymentMethodBlock({
+  t, method, onChange,
+}: {
+  t: ReturnType<typeof useTranslations>
+  method: PaymentMethod
+  onChange: (m: PaymentMethod) => void
+}) {
+  return (
+    <div>
+      <p className="text-sm font-medium text-navy mb-3">{t('paymentMethodHeading')} <span className="text-red-500 text-xs">{t('required')}</span></p>
+      <div className="flex gap-2">
+        <button type="button" onClick={() => onChange('onsite')}
+          className={`flex-1 text-sm px-3 py-2 rounded-lg border transition-colors ${method === 'onsite' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+          {t('paymentOnsite')}
+        </button>
+        <button type="button" onClick={() => onChange('cod')}
+          className={`flex-1 text-sm px-3 py-2 rounded-lg border transition-colors ${method === 'cod' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+          {t('paymentCod')}
+        </button>
+      </div>
+    </div>
   )
 }
 
@@ -29,13 +57,16 @@ export default function KannonkoApplyForm() {
   const locale = useLocale()
   // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
   const showNameKana = locale === 'ja'
-  const [form, setForm] = useState({ name: '', nameKana: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '' })
+  const [form, setForm] = useState({
+    name: '', nameKana: '', email: '', phone: '', postal: '', address: '', wish1: '', wish2: '',
+    paymentMethod: 'onsite' as PaymentMethod,
+  })
   const [applicants, setApplicants] = useState<Applicant[]>(Array.from({ length: 10 }, emptyApplicant))
   const [notes, setNotes] = useState('')
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<Status>('idle')
 
-  function set(field: keyof typeof form) {
+  function set(field: 'name' | 'nameKana' | 'email' | 'phone' | 'postal' | 'address') {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }))
   }
@@ -43,6 +74,20 @@ export default function KannonkoApplyForm() {
   function setApplicant(i: number, field: keyof Applicant, value: string) {
     setApplicants(prev => prev.map((a, idx) => idx === i ? { ...a, [field]: value } : a))
   }
+
+  const activeApplicants = applicants
+    .map((a, i) => ({ ...a, circled: CIRCLED[i] }))
+    .filter(a => a.name.trim())
+  const feesTotal = KANNONKO_FEE * (1 + activeApplicants.length)
+
+  // 代金引換の場合はお札を郵送するため、送り先1件につき送料がかかる（代表者住所へまとめる、または個別発送を選択）
+  const codApplicants = activeApplicants.filter(a => a.paymentMethod === 'cod')
+  const sameShipApplicants = codApplicants.filter(a => a.shipMode === 'same')
+  const separateShipApplicants = codApplicants.filter(a => a.shipMode === 'separate')
+  const repNeedsShipping = form.paymentMethod === 'cod'
+  const mainShipmentNeeded = repNeedsShipping || sameShipApplicants.length > 0
+  const shippingFeeTotal = (mainShipmentNeeded ? SHIPPING_FEE : 0) + separateShipApplicants.length * SHIPPING_FEE
+  const grandTotal = feesTotal + shippingFeeTotal
 
   function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
@@ -58,11 +103,22 @@ export default function KannonkoApplyForm() {
   async function handleSubmit() {
     setStatus('loading')
 
+    const repPaymentLine = form.paymentMethod === 'onsite' ? '当日現地払い' : '代金引換（郵送・代表者住所）'
+
     const applicantLines = applicants
       .map((a, i) => ({ ...a, num: CIRCLED[i] }))
       .filter(a => a.name.trim())
-      .map(a => `${a.num} ${a.name}${a.nameKana ? `　フリガナ：${a.nameKana}` : ''}（${a.address || '住所未記入'}）　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`)
+      .map(a => {
+        const shipLabel = a.paymentMethod !== 'cod' ? '' : a.shipMode === 'separate' ? '　発送：別住所に個別発送' : '　発送：代表者とまとめて発送'
+        const paymentLine = a.paymentMethod === 'onsite' ? '当日現地払い' : '代金引換'
+        return `${a.num} ${a.name}${a.nameKana ? `　フリガナ：${a.nameKana}` : ''}（${a.address || '住所未記入'}）　お支払い：${paymentLine}${shipLabel}　願い事：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`
+      })
       .join('\n')
+
+    const shippingLines = [
+      mainShipmentNeeded ? `代表者様ご住所へまとめて発送：¥${SHIPPING_FEE.toLocaleString()}` : '',
+      ...separateShipApplicants.map(a => `${a.circled} ${a.name}様へ個別発送：¥${SHIPPING_FEE.toLocaleString()}`),
+    ].filter(Boolean)
 
     const message = [
       `【行事名】観音講・大護摩供・地蔵流し（6月18日）`,
@@ -71,8 +127,13 @@ export default function KannonkoApplyForm() {
       `電話番号：${form.phone}`,
       `郵便番号：${form.postal}`,
       `住所：${form.address}`,
+      `お支払い：${repPaymentLine}`,
       `お願い事：${[form.wish1, form.wish2].filter(Boolean).join('、')}`,
       applicantLines ? `\n【申込者一覧】\n${applicantLines}` : '',
+      shippingLines.length ? `\n【送料】\n${shippingLines.join('\n')}` : '',
+      `\n参加費小計：¥${feesTotal.toLocaleString()}`,
+      `送料合計：¥${shippingFeeTotal.toLocaleString()}`,
+      `合計金額：¥${grandTotal.toLocaleString()}`,
       notes ? `\n【備考】\n${notes}` : '',
     ].filter(Boolean).join('\n')
 
@@ -115,13 +176,19 @@ export default function KannonkoApplyForm() {
     </main>
   )
 
-  const applicantRows: [string, string][] = applicants
-    .map((a, i) => ({ ...a, num: CIRCLED[i] }))
-    .filter(a => a.name.trim())
-    .map(a => [
-      `${t('applicantLabel')}${a.num}`,
-      `${a.name}${showNameKana && a.nameKana ? `\n${t('repNameKanaLabel')}：${a.nameKana}` : ''}（${a.address || '住所未記入'}）\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
-    ] as [string, string])
+  const applicantRows: [string, string][] = activeApplicants
+    .map(a => {
+      const shipLine = a.paymentMethod !== 'cod' ? '' : `\n${t('shipModeLabel')}：${a.shipMode === 'separate' ? t('shipModeSeparate') : t('shipModeSame')}`
+      return [
+        `${t('applicantLabel')}${a.circled}`,
+        `${a.name}${showNameKana && a.nameKana ? `\n${t('repNameKanaLabel')}：${a.nameKana}` : ''}（${a.address || '住所未記入'}）\n${t('paymentMethodHeading')}：${a.paymentMethod === 'onsite' ? t('paymentOnsite') : t('paymentCod')}${shipLine}\n${t('repWishHeading')}：${[a.wish1, a.wish2].filter(Boolean).join('、') || '未選択'}`,
+      ] as [string, string]
+    })
+
+  const shippingRows: [string, string][] = [
+    ...(mainShipmentNeeded ? [[t('mainShipmentLabel'), `¥${SHIPPING_FEE.toLocaleString()}`] as [string, string]] : []),
+    ...separateShipApplicants.map(a => [t('separateShipmentLabel', { name: `${a.circled} ${a.name}` }), `¥${SHIPPING_FEE.toLocaleString()}`] as [string, string]),
+  ]
 
   const confirmRows: [string, string][] = [
     [t('repNameLabel'), form.name],
@@ -130,9 +197,14 @@ export default function KannonkoApplyForm() {
     [t('phoneLabel'), form.phone],
     ...(form.postal ? [[t('postalLabel'), form.postal] as [string, string]] : []),
     [t('addressLabel'), form.address],
+    [t('paymentMethodHeading'), form.paymentMethod === 'onsite' ? t('paymentOnsite') : t('paymentCod')],
     [t('wish1Label'), form.wish1],
     ...(form.wish2 ? [[t('wish2Label'), form.wish2] as [string, string]] : []),
     ...applicantRows,
+    ...shippingRows,
+    [t('subtotalLabel'), `¥${feesTotal.toLocaleString()}`],
+    ...(shippingFeeTotal > 0 ? [[t('shippingTotalLabel'), `¥${shippingFeeTotal.toLocaleString()}`] as [string, string]] : []),
+    [t('grandTotalLabel'), `¥${grandTotal.toLocaleString()}`],
     ...(notes ? [[t('notesLabel'), notes] as [string, string]] : []),
   ]
 
@@ -173,6 +245,10 @@ export default function KannonkoApplyForm() {
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">⛩️</span>
             <p>{t.rich('noticeOfuda', { b: chunks => <strong>{chunks}</strong> })}</p>
+          </div>
+          <div className="flex gap-2 text-sm text-amber-700">
+            <span className="flex-shrink-0">🚚</span>
+            <p>{t.rich('noticeShipping', { b: chunks => <strong>{chunks}</strong> })}</p>
           </div>
           <div className="flex gap-2 text-sm text-amber-700">
             <span className="flex-shrink-0">💴</span>
@@ -216,6 +292,13 @@ export default function KannonkoApplyForm() {
           </div>
 
           <div className="border-t border-gray-200 pt-5">
+            <PaymentMethodBlock t={t} method={form.paymentMethod} onChange={m => setForm(f => ({ ...f, paymentMethod: m }))} />
+            {form.paymentMethod === 'cod' && (
+              <p className="text-xs text-gray-500 mt-2">{t('shippingRepNote')}</p>
+            )}
+          </div>
+
+          <div className="border-t border-gray-200 pt-5">
             <p className="text-sm font-medium text-navy mb-1">{t('repWishHeading')}</p>
             <p className="text-xs text-gray-400 mb-4">{t('repWishSub')}</p>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -245,12 +328,80 @@ export default function KannonkoApplyForm() {
                     )}
                     <input className="admin-input" placeholder={t('applicantAddressPlaceholder')} value={a.address} onChange={e => setApplicant(i, 'address', e.target.value)} />
                   </div>
+                  <div className="mb-3">
+                    <PaymentMethodBlock t={t} method={a.paymentMethod} onChange={m => setApplicant(i, 'paymentMethod', m)} />
+                    {a.paymentMethod === 'cod' && (
+                      <div className="mt-3">
+                        <label className="text-xs text-gray-500 block mb-1">{t('shipModeLabel')}</label>
+                        <div className="flex gap-2">
+                          <button type="button" onClick={() => setApplicant(i, 'shipMode', 'same')}
+                            className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'same' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                            {t('shipModeSame')}
+                          </button>
+                          <button type="button" onClick={() => setApplicant(i, 'shipMode', 'separate')}
+                            className={`flex-1 text-xs px-3 py-2 rounded-lg border transition-colors ${a.shipMode === 'separate' ? 'border-navy bg-navy/5 text-navy font-medium' : 'border-gray-200 text-gray-500 hover:border-navy/40'}`}>
+                            {t('shipModeSeparate')}
+                          </button>
+                        </div>
+                        {a.shipMode === 'separate' && (
+                          <p className="text-[11px] text-gray-400 mt-1">{t('shipModeSeparateHint')}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <WishSelect value={a.wish1} onChange={v => setApplicant(i, 'wish1', v)} placeholder={t('wishSelectPlaceholder')} />
                     <WishSelect value={a.wish2} onChange={v => setApplicant(i, 'wish2', v)} placeholder={t('wishSelectPlaceholder')} />
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-5">
+            <div className="bg-cream-alt rounded-lg p-4 text-sm space-y-2">
+              <p className="text-gray-600 flex justify-between">
+                <span>{t('repFeeRow')}（{form.paymentMethod === 'onsite' ? t('paymentOnsite') : t('paymentCod')}）</span>
+                <span>¥{KANNONKO_FEE.toLocaleString()}</span>
+              </p>
+              {activeApplicants.map(a => (
+                <p key={a.circled} className="text-gray-600 flex justify-between">
+                  <span>{a.circled} {a.name}（{a.paymentMethod === 'onsite' ? t('paymentOnsite') : t('paymentCod')}）</span>
+                  <span>¥{KANNONKO_FEE.toLocaleString()}</span>
+                </p>
+              ))}
+              {shippingFeeTotal > 0 && (
+                <div className="border-t border-white pt-2 space-y-1">
+                  {mainShipmentNeeded && (
+                    <p className="text-gray-500 text-xs flex justify-between">
+                      <span>{t('mainShipmentLabel')}</span>
+                      <span>¥{SHIPPING_FEE.toLocaleString()}</span>
+                    </p>
+                  )}
+                  {separateShipApplicants.map(a => (
+                    <p key={a.circled} className="text-gray-500 text-xs flex justify-between">
+                      <span>{t('separateShipmentLabel', { name: `${a.circled} ${a.name}` })}</span>
+                      <span>¥{SHIPPING_FEE.toLocaleString()}</span>
+                    </p>
+                  ))}
+                </div>
+              )}
+              <div className="border-t border-white pt-2 space-y-1">
+                <p className="text-gray-600 flex justify-between text-xs">
+                  <span>{t('subtotalLabel')}</span>
+                  <span>¥{feesTotal.toLocaleString()}</span>
+                </p>
+                {shippingFeeTotal > 0 && (
+                  <p className="text-gray-600 flex justify-between text-xs">
+                    <span>{t('shippingTotalLabel')}</span>
+                    <span>¥{shippingFeeTotal.toLocaleString()}</span>
+                  </p>
+                )}
+                <p className="text-gold font-medium text-base flex justify-between">
+                  <span>{t('grandTotalLabel')}</span>
+                  <span>¥{grandTotal.toLocaleString()}</span>
+                </p>
+              </div>
             </div>
           </div>
 

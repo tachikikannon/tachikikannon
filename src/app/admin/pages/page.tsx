@@ -925,19 +925,19 @@ const SECTIONS: Section[] = [
         defaultValue: J([
           { text: '事前のお申し込みが必要です。ご希望の方は申し込みフォームよりお申し込みください。' },
           { text: '動きやすい服装でお越しください。中禅寺湖周辺は天候が変わりやすいため、羽織るものをお持ちいただくことをお勧めします。' },
-          { text: '参加費はお一人様3,000円（お札代込み）です。お支払いは当日・現地払いのみとなります（事前振込不可）。' },
+          { text: '参加費はお一人様3,000円（お札代込み）です。お支払いは当日・現地払い、または代金引換（郵送、送料1,000円〜）からお選びいただけます。' },
           { text: '詳細・変更がある場合は当サイトにてお知らせいたします。' },
         ]),
         translatable: true,
         defaultValueEn: J([
           { text: 'Advance application is required. Please apply via the application form if you wish to attend.' },
           { text: 'Please wear comfortable, easy-to-move-in clothing. Weather around Lake Chuzenji can change quickly, so we recommend bringing something to layer on top.' },
-          { text: 'The participation fee is ¥3,000 per person (includes the ofuda talisman). Payment is accepted on the day, on-site only — advance bank transfer is not available.' },
+          { text: 'The participation fee is ¥3,000 per person (includes the ofuda talisman). You may pay on the day, on site, or choose cash on delivery (shipped, from ¥1,000 shipping).' },
           { text: 'Any details or changes will be announced on this website.' },
         ]),
       },
       { key: 'kannonko_cta_heading', label: 'CTA見出し', defaultValue: '御札のお申し込み', translatable: true },
-      { key: 'kannonko_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '参加費（お札代込み）はお一人様3,000円。\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地払いのみです。', translatable: true, defaultValueEn: 'The participation fee (including the ofuda talisman) is ¥3,000 per person.\nPlease apply in advance via the application form.\nPayment is accepted on the day, on-site only.' },
+      { key: 'kannonko_cta_text', label: 'CTA説明文（改行はそのまま反映されます）', multiline: true, defaultValue: '参加費（お札代込み）はお一人様3,000円。\n事前に申し込みフォームよりお申し込みください。\nお支払いは当日・現地払い、または代金引換（郵送）からお選びいただけます。', translatable: true, defaultValueEn: 'The participation fee (including the ofuda talisman) is ¥3,000 per person.\nPlease apply in advance via the application form.\nYou may pay on the day, on site, or choose cash on delivery (shipped).' },
     ],
   },
   {
