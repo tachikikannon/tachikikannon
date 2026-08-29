@@ -288,24 +288,29 @@ export default function ReservationCalendar({
         </tbody>
       </table>
 
-      {/* 坐禅：どの枠を選んでも常に表示する電話案内 */}
-      {showAlwaysPhoneNotice && (
-        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800">
-          <p>
-            {ALWAYS_PHONE_ONLY_MESSAGE}<br />
-            電話番号 {SAME_DAY_PHONE_NUMBER}
-          </p>
-        </div>
-      )}
-
-      {/* 当日枠クリック時の電話案内 */}
-      {showSameDayNotice && (
-        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm text-amber-800 flex items-start justify-between gap-3">
-          <p>
-            当日予約は、中禅寺立木観音に直接お問い合わせください。<br />
-            電話番号 {SAME_DAY_PHONE_NUMBER}
-          </p>
-          <button type="button" onClick={() => setShowSameDayNotice(false)} className="text-amber-500 hover:text-amber-700 shrink-0">✕</button>
+      {/* 坐禅・当日枠クリック時の電話案内（ポップアップ） */}
+      {(showAlwaysPhoneNotice || showSameDayNotice) && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          onClick={() => { setShowAlwaysPhoneNotice(false); setShowSameDayNotice(false) }}
+        >
+          <div
+            className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center"
+            onClick={e => e.stopPropagation()}
+          >
+            <p className="text-sm text-gray-700 leading-relaxed mb-6">
+              {showAlwaysPhoneNotice
+                ? <>{ALWAYS_PHONE_ONLY_MESSAGE}<br />電話番号 {SAME_DAY_PHONE_NUMBER}</>
+                : <>当日予約は、中禅寺立木観音に直接お問い合わせください。<br />電話番号 {SAME_DAY_PHONE_NUMBER}</>}
+            </p>
+            <button
+              type="button"
+              onClick={() => { setShowAlwaysPhoneNotice(false); setShowSameDayNotice(false) }}
+              className="btn-primary text-sm px-10 py-2"
+            >
+              はい
+            </button>
+          </div>
         </div>
       )}
 
