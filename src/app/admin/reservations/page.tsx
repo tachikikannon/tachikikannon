@@ -253,7 +253,12 @@ export default function AdminReservationsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-auto max-h-[calc(100svh-14rem)]">
+      {/* 縦方向は一覧専用の枠を作らず、ページ本体（admin/layout.tsxのmain、overflow-auto）の
+          スクロールにまかせる。以前はこの一覧自体にmax-h+overflow-autoで縦スクロール領域を
+          作っていたが、ページのスクロールと二重になり、特にスマホで「枠の中だけ変な動きで
+          スクロールする」ジャンプ感の原因になっていた。横方向だけこの div でスクロールさせ、
+          縦は下のsticky見出しがページ本体のスクロールに追従する形にする */}
+      <div className="bg-white rounded-xl shadow overflow-x-auto">
         <table className="table-fixed min-w-[1290px] text-sm">
             {/* 状態・日付・お名前の3列は横スクロール中も左側に固定し、
                 「どの予約を見ているか」を保ったまま電話番号・メールなど右側の列を確認できるようにする。
