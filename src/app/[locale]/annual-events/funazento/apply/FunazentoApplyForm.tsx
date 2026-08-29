@@ -20,8 +20,16 @@ const emptyApplicant = (): Applicant => ({ key: applicantKeySeq++, name: '', nam
 const SHIPPING_FEE = 1000
 
 function feeFor(participate: Participate, age: AgeCategory): number {
-  if (participate === 'no') return 4000
+  if (participate === 'no') return 3000
   return age === 'adult' ? 5000 : 4000
+}
+
+// 代表者様のご住所へまとめて発送する場合、送料は1〜5件で1,000円、
+// 6〜10件で2,000円のように5件ごとに1,000円ずつ加算される（実物のお札を
+// 1箱に入れられる件数の目安に対応）。個別発送は常に1件＝1,000円。
+function shippingFeeForCount(count: number): number {
+  if (count <= 0) return 0
+  return Math.ceil(count / 5) * SHIPPING_FEE
 }
 
 function WishSelect({ value, onChange, required, placeholder }: { value: string; onChange: (v: string) => void; required?: boolean; placeholder: string }) {
@@ -125,13 +133,16 @@ export default function FunazentoApplyForm({ content }: { content: Record<string
     .filter(a => a.name.trim())
   const feesTotal = repFee + activeApplicants.reduce((sum, a) => sum + feeFor(a.participate, a.ageCategory), 0)
 
-  // 当日不参加の方はお札を代引きで郵送するため、送り先1件につき送料がかかる（代表者住所へまとめる、または個別発送を選択）
+  // 当日不参加の方はお札を代引きで郵送するため、送り先1件につき送料がかかる（代表者住所へまとめる、または個別発送を選択）。
+  // まとめて発送する分は1〜5件ごとに1,000円（shippingFeeForCount参照）、個別発送は1件＝1,000円固定。
   const nonParticipantApplicants = activeApplicants.filter(a => a.participate === 'no')
   const sameShipApplicants = nonParticipantApplicants.filter(a => a.shipMode === 'same')
   const separateShipApplicants = nonParticipantApplicants.filter(a => a.shipMode === 'separate')
   const repNeedsShipping = form.participate === 'no'
-  const mainShipmentNeeded = repNeedsShipping || sameShipApplicants.length > 0
-  const shippingFeeTotal = (mainShipmentNeeded ? SHIPPING_FEE : 0) + separateShipApplicants.length * SHIPPING_FEE
+  const mainShipmentCount = (repNeedsShipping ? 1 : 0) + sameShipApplicants.length
+  const mainShipmentNeeded = mainShipmentCount > 0
+  const mainShipmentFee = shippingFeeForCount(mainShipmentCount)
+  const shippingFeeTotal = mainShipmentFee + separateShipApplicants.length * SHIPPING_FEE
   const grandTotal = feesTotal + shippingFeeTotal
 
   function goToConfirm(e: React.FormEvent) {
@@ -163,7 +174,7 @@ export default function FunazentoApplyForm({ content }: { content: Record<string
       .join('\n')
 
     const shippingLines = [
-      mainShipmentNeeded ? `代表者様ご住所へまとめて発送：¥${SHIPPING_FEE.toLocaleString()}` : '',
+      mainShipmentNeeded ? `代表者様ご住所へまとめて発送（${mainShipmentCount}件）：¥${mainShipmentFee.toLocaleString()}` : '',
       ...separateShipApplicants.map(a => `${a.circled} ${a.name}様へ個別発送：¥${SHIPPING_FEE.toLocaleString()}`),
     ].filter(Boolean)
 
@@ -233,7 +244,7 @@ export default function FunazentoApplyForm({ content }: { content: Record<string
     })
 
   const shippingRows: [string, string][] = [
-    ...(mainShipmentNeeded ? [[t('mainShipmentLabel'), `¥${SHIPPING_FEE.toLocaleString()}`] as [string, string]] : []),
+    ...(mainShipmentNeeded ? [[t('mainShipmentLabel', { count: mainShipmentCount }), `¥${mainShipmentFee.toLocaleString()}`] as [string, string]] : []),
     ...separateShipApplicants.map(a => [t('separateShipmentLabel', { name: `${a.circled} ${a.name}` }), `¥${SHIPPING_FEE.toLocaleString()}`] as [string, string]),
   ]
 
@@ -450,8 +461,8 @@ export default function FunazentoApplyForm({ content }: { content: Record<string
                 <div className="border-t border-white pt-2 space-y-1">
                   {mainShipmentNeeded && (
                     <p className="text-gray-500 text-xs flex justify-between">
-                      <span>{t('mainShipmentLabel')}</span>
-                      <span>¥{SHIPPING_FEE.toLocaleString()}</span>
+                      <span>{t('mainShipmentLabel', { count: mainShipmentCount })}</span>
+                      <span>¥{mainShipmentFee.toLocaleString()}</span>
                     </p>
                   )}
                   {separateShipApplicants.map(a => (
