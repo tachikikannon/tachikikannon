@@ -125,6 +125,53 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
     })
   }
 
+  // 選択範囲を [center]〜[/center] 等の行揃えマーカーで囲む（未選択なら開始・終了タグだけを
+  // カーソル位置に挿入し、その間にカーソルを置く）。renderNewsBody側がこの記法を解釈して
+  // text-alignスタイルに変換する（src/lib/newsBody.tsx参照）。
+  function wrapSelection(field: BodyField, ref: React.RefObject<HTMLTextAreaElement | null>, align: 'left' | 'center' | 'right') {
+    const el = ref.current
+    setEditing(v => {
+      if (!v) return v
+      const current = v[field] ?? ''
+      const openTag = `[${align}]`
+      const closeTag = `[/${align}]`
+      if (!el) return { ...v, [field]: current + openTag + closeTag }
+      const start = el.selectionStart ?? current.length
+      const end = el.selectionEnd ?? current.length
+      const selected = current.slice(start, end)
+      const inserted = `${openTag}${selected}${closeTag}`
+      const next = current.slice(0, start) + inserted + current.slice(end)
+      requestAnimationFrame(() => {
+        el.focus()
+        if (selected) {
+          el.setSelectionRange(start, start + inserted.length)
+        } else {
+          const pos = start + openTag.length
+          el.setSelectionRange(pos, pos)
+        }
+      })
+      return { ...v, [field]: next }
+    })
+  }
+
+  function alignButtons(field: BodyField, ref: React.RefObject<HTMLTextAreaElement | null>) {
+    const ALIGN_OPTIONS: { value: 'left' | 'center' | 'right'; label: string }[] = [
+      { value: 'left', label: '左揃え' },
+      { value: 'center', label: '中央揃え' },
+      { value: 'right', label: '右揃え' },
+    ]
+    return (
+      <div className="flex gap-1 mb-1">
+        {ALIGN_OPTIONS.map(({ value, label }) => (
+          <button key={value} type="button" onClick={() => wrapSelection(field, ref, value)}
+            className="text-xs border rounded px-2 py-1 text-gray-600 hover:bg-gray-50">
+            {label}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
   function triggerBodyImageUpload(field: BodyField) {
     insertTargetField.current = field
     bodyImageInputRef.current?.click()
@@ -279,7 +326,8 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
               </div>
               <div>
                 <label className="admin-label">本文 <span className="text-red-400">*</span></label>
-                <textarea ref={bodyRef} className="admin-input min-h-[240px] font-mono text-sm" placeholder="本文を入力してください。改行はそのまま反映されます。"
+                {alignButtons('body', bodyRef)}
+                <textarea ref={bodyRef} className="admin-input min-h-[240px] font-mono text-sm" placeholder="本文を入力してください。改行はそのまま反映されます。&#10;揃えたい範囲を選択してから「左揃え／中央揃え／右揃え」を押すと反映されます。"
                   value={editing.body ?? ''} onChange={e => setEditing({...editing, body: e.target.value})} />
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-xs text-gray-400">改行・空行やURLはそのまま表示・リンク化されます</p>
@@ -302,6 +350,7 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                 </div>
                 <div>
                   <label className="admin-label">本文（英語）</label>
+                  {alignButtons('body_en', bodyEnRef)}
                   <textarea ref={bodyEnRef} className="admin-input min-h-[180px] font-mono text-sm" value={editing.body_en ?? ''} onChange={e => setEditing({...editing, body_en: e.target.value})} />
                   <div className="flex justify-end mt-1">
                     <button type="button" onClick={() => triggerBodyImageUpload('body_en')} disabled={uploadingField === 'body_en'}
