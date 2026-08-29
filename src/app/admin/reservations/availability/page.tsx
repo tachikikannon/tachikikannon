@@ -154,9 +154,9 @@ export default function AvailabilityPage() {
         <button onClick={nextWeek} className="text-sm px-3 py-1.5 border border-gray-200 rounded-lg hover:border-navy transition-colors">次の1週間 →</button>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4 items-start">
+      <div>
         {/* グリッド */}
-        <div className="lg:col-span-2 overflow-x-auto bg-white rounded-xl shadow p-3">
+        <div className="overflow-x-auto bg-white rounded-xl shadow p-3">
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr>
@@ -232,94 +232,103 @@ export default function AvailabilityPage() {
             <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-sm bg-gray-100" /> 休止(日) ＝ 予約不可日の設定（別画面）</span>
           </div>
         </div>
-
-        {/* 編集パネル */}
-        <div className="bg-white rounded-xl shadow p-5 lg:sticky lg:top-4">
-          {!selected ? (
-            <p className="text-sm text-gray-400 text-center py-8">左のマスをクリックして編集</p>
-          ) : selectedBlocked ? (
-            <div className="text-sm text-gray-500">
-              <p className="font-medium text-navy mb-2">{selected.date} {selected.slot}</p>
-              <p>この日は「予約不可日」として終日休止に設定されています。時間帯単位の設定は解除されません。個別に戻すには予約不可日の設定を見直してください。</p>
-            </div>
-          ) : (
-            <div>
-              <p className="font-medium text-navy mb-1">{selected.date} {selected.slot}</p>
-              <p className="text-xs text-gray-500 mb-4">
-                現在の予約：{selectedCounts?.groups}組 / {selectedCounts?.people}名
-                （デフォルト定員：{capacity?.max_groups}組・{capacity?.max_people}名）
-              </p>
-
-              <label className="flex items-center gap-2 mb-4 text-sm">
-                <input type="checkbox" checked={form.is_closed}
-                  onChange={e => setForm(f => ({ ...f, is_closed: e.target.checked }))}
-                  disabled={!canEdit} />
-                この時間帯だけ受付を停止する
-              </label>
-
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div>
-                  <label className="admin-label">組数上限（空欄＝デフォルト）</label>
-                  <input type="number" min={0} className="admin-input" placeholder={String(capacity?.max_groups ?? '')}
-                    value={form.max_groups} disabled={!canEdit || form.is_closed}
-                    onChange={e => setForm(f => ({ ...f, max_groups: e.target.value }))} />
-                </div>
-                <div>
-                  <label className="admin-label">人数上限（空欄＝デフォルト）</label>
-                  <input type="number" min={0} className="admin-input" placeholder={String(capacity?.max_people ?? '')}
-                    value={form.max_people} disabled={!canEdit || form.is_closed}
-                    onChange={e => setForm(f => ({ ...f, max_people: e.target.value }))} />
-                </div>
-              </div>
-
-              {(form.max_groups === '0' || form.max_people === '0') && (
-                <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded p-2 mb-4">
-                  ⚠️ 上限を「0」にすると、予約の有無に関わらずこの枠は常に予約不可になります。この時間帯だけ受付を止めたい場合は、上の「受付を停止する」にチェックし、上限欄は空欄のままにしてください。
-                </p>
-              )}
-
-              <div className="mb-4 pt-3 border-t border-gray-100">
-                <p className="text-sm mb-2">指定枠数を確保する（電話予約・社内利用などのために空けておく）</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="admin-label">確保する組数</label>
-                    <input type="number" min={0} className="admin-input" placeholder="0"
-                      value={form.reserved_groups} disabled={!canEdit || form.is_closed}
-                      onChange={e => setForm(f => ({ ...f, reserved_groups: e.target.value }))} />
-                  </div>
-                  <div>
-                    <label className="admin-label">確保する人数</label>
-                    <input type="number" min={0} className="admin-input" placeholder="0"
-                      value={form.reserved_people} disabled={!canEdit || form.is_closed}
-                      onChange={e => setForm(f => ({ ...f, reserved_people: e.target.value }))} />
-                  </div>
-                </div>
-                <p className="text-xs text-gray-400 mt-1">定員からこの人数・組数を差し引いた分だけ、一般のお客様が予約できます。</p>
-              </div>
-
-              <div className="mb-5">
-                <label className="admin-label">メモ（任意・内部用）</label>
-                <input className="admin-input" placeholder="例：住職不在のため"
-                  value={form.note} disabled={!canEdit}
-                  onChange={e => setForm(f => ({ ...f, note: e.target.value }))} />
-              </div>
-
-              <div className="flex items-center gap-3 flex-wrap">
-                <button onClick={save} disabled={!canEdit || saving} className="btn-primary text-sm px-5 py-2 disabled:opacity-40">
-                  {saving ? '保存中...' : '保存'}
-                </button>
-                {selectedOverride && (
-                  <button onClick={resetToDefault} disabled={!canEdit || saving} className="text-red-500 text-xs hover:underline disabled:opacity-40">
-                    個別設定を削除してデフォルトに戻す
-                  </button>
-                )}
-                <button onClick={() => setSelected(null)} className="text-gray-400 text-xs hover:underline ml-auto">閉じる</button>
-              </div>
-              {!canEdit && <p className="text-[11px] text-gray-400 mt-3">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
-            </div>
-          )}
-        </div>
       </div>
+
+      {/* 編集ポップアップ。対象のマスをクリックすると開く */}
+      {selected && (
+        <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-black/50 overflow-y-auto"
+          onClick={() => setSelected(null)}>
+          <div className="bg-white rounded-xl shadow-xl p-5 w-full max-w-lg my-8 sm:my-0 max-h-[85vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}>
+            {selectedBlocked ? (
+              <div className="text-sm text-gray-500">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="font-medium text-navy">{selected.date} {selected.slot}</p>
+                  <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+                </div>
+                <p>この日は「予約不可日」として終日休止に設定されています。時間帯単位の設定は解除されません。個別に戻すには予約不可日の設定を見直してください。</p>
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="font-medium text-navy">{selected.date} {selected.slot}</p>
+                  <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
+                </div>
+                <p className="text-xs text-gray-500 mb-4">
+                  現在の予約：{selectedCounts?.groups}組 / {selectedCounts?.people}名
+                  （デフォルト定員：{capacity?.max_groups}組・{capacity?.max_people}名）
+                </p>
+
+                <label className="flex items-center gap-2 mb-4 text-sm">
+                  <input type="checkbox" checked={form.is_closed}
+                    onChange={e => setForm(f => ({ ...f, is_closed: e.target.checked }))}
+                    disabled={!canEdit} />
+                  この時間帯だけ受付を停止する
+                </label>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div>
+                    <label className="admin-label">組数上限（空欄＝デフォルト）</label>
+                    <input type="number" min={0} className="admin-input" placeholder={String(capacity?.max_groups ?? '')}
+                      value={form.max_groups} disabled={!canEdit || form.is_closed}
+                      onChange={e => setForm(f => ({ ...f, max_groups: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label className="admin-label">人数上限（空欄＝デフォルト）</label>
+                    <input type="number" min={0} className="admin-input" placeholder={String(capacity?.max_people ?? '')}
+                      value={form.max_people} disabled={!canEdit || form.is_closed}
+                      onChange={e => setForm(f => ({ ...f, max_people: e.target.value }))} />
+                  </div>
+                </div>
+
+                {(form.max_groups === '0' || form.max_people === '0') && (
+                  <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded p-2 mb-4">
+                    ⚠️ 上限を「0」にすると、予約の有無に関わらずこの枠は常に予約不可になります。この時間帯だけ受付を止めたい場合は、上の「受付を停止する」にチェックし、上限欄は空欄のままにしてください。
+                  </p>
+                )}
+
+                <div className="mb-4 pt-3 border-t border-gray-100">
+                  <p className="text-sm mb-2">指定枠数を確保する（電話予約・社内利用などのために空けておく）</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="admin-label">確保する組数</label>
+                      <input type="number" min={0} className="admin-input" placeholder="0"
+                        value={form.reserved_groups} disabled={!canEdit || form.is_closed}
+                        onChange={e => setForm(f => ({ ...f, reserved_groups: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className="admin-label">確保する人数</label>
+                      <input type="number" min={0} className="admin-input" placeholder="0"
+                        value={form.reserved_people} disabled={!canEdit || form.is_closed}
+                        onChange={e => setForm(f => ({ ...f, reserved_people: e.target.value }))} />
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">定員からこの人数・組数を差し引いた分だけ、一般のお客様が予約できます。</p>
+                </div>
+
+                <div className="mb-5">
+                  <label className="admin-label">メモ（任意・内部用）</label>
+                  <input className="admin-input" placeholder="例：住職不在のため"
+                    value={form.note} disabled={!canEdit}
+                    onChange={e => setForm(f => ({ ...f, note: e.target.value }))} />
+                </div>
+
+                <div className="flex items-center gap-3 flex-wrap">
+                  <button onClick={save} disabled={!canEdit || saving} className="btn-primary text-sm px-5 py-2 disabled:opacity-40">
+                    {saving ? '保存中...' : '保存'}
+                  </button>
+                  {selectedOverride && (
+                    <button onClick={resetToDefault} disabled={!canEdit || saving} className="text-red-500 text-xs hover:underline disabled:opacity-40">
+                      個別設定を削除してデフォルトに戻す
+                    </button>
+                  )}
+                </div>
+                {!canEdit && <p className="text-[11px] text-gray-400 mt-3">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
