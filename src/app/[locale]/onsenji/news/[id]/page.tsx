@@ -98,7 +98,7 @@ export default async function OnsenjiNewsDetailPage({
             </div>
 
             {/* タイトル */}
-            <h1 className="font-serif text-2xl md:text-3xl text-onsenji leading-relaxed mb-6">{title}</h1>
+            <h1 className="font-serif text-2xl md:text-3xl text-onsenji leading-relaxed mb-6 text-center">{title}</h1>
 
             {/* 概要 */}
             {excerpt && (

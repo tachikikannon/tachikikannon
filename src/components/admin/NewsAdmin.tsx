@@ -245,7 +245,7 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                 <span>{new Date().toLocaleDateString('ja-JP')}</span>
                 <span className={`rounded px-2 py-0.5 ${categoryColor(categories, editing.category ?? '')}`}>{editing.category}</span>
               </div>
-              <h3 className={`text-xl font-serif ${accentText}`}>{editing.title || '（タイトルなし）'}</h3>
+              <h3 className={`text-xl font-serif text-center ${accentText}`}>{editing.title || '（タイトルなし）'}</h3>
               {editing.excerpt && <p className={`text-sm text-gray-500 border-l-4 ${accentBorder} pl-4`}>{editing.excerpt}</p>}
               <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
                 {editing.body ? renderNewsBody(editing.body) : '（本文なし）'}
