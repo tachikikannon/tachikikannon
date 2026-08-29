@@ -258,7 +258,7 @@ export default function AdminReservationsPage() {
           作っていたが、ページのスクロールと二重になり、特にスマホで「枠の中だけ変な動きで
           スクロールする」ジャンプ感の原因になっていた。横方向だけこの div でスクロールさせ、
           縦は下のsticky見出しがページ本体のスクロールに追従する形にする */}
-      <div className="bg-white rounded-xl shadow overflow-x-auto">
+      <div className="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
         <table className="w-full text-sm">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
@@ -315,6 +315,46 @@ export default function AdminReservationsPage() {
             </tbody>
           </table>
         </div>
+
+      {/* スマホ用カード一覧。表だと横スクロールが必要でどれがどの予約か分かりづらいため、
+          状態・日付・種別・区分・お名前を上段にまとめて表示し、横スクロールなしで
+          そのまま下にスクロールして次の予約を確認できるようにする */}
+      <div className="md:hidden bg-white rounded-xl shadow divide-y divide-gray-100">
+        {filtered.map(r => (
+          <div key={r.id} onClick={() => openDetail(r)} className="p-4 active:bg-blue-50 cursor-pointer">
+            <div className="flex items-center gap-2 flex-wrap mb-1.5">
+              <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+              <span className="text-xs text-gray-500 whitespace-nowrap">
+                {new Date(r.date).toLocaleDateString('ja-JP')} {r.time_slot}
+              </span>
+            </div>
+            <div className="flex items-center gap-1 flex-wrap mb-1.5 text-xs">
+              <span className="text-navy font-medium">{TYPE_LABELS[r.type]}</span>
+              <span className="text-gray-400">・{categoryName(r.category_id)}</span>
+            </div>
+            <p className="font-medium text-sm mb-2">{r.name}</p>
+            <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-500">
+              <div>{r.phone || '—'}</div>
+              <div className="truncate">{r.email || '—'}</div>
+              <div>担当：{adminName(r.assigned_admin_id)}</div>
+              <div className="whitespace-nowrap">{r.updated_at ? new Date(r.updated_at).toLocaleString('ja-JP') : '—'}</div>
+            </dl>
+            <div className="flex gap-3 mt-2 text-[11px]">
+              <span className={r.auto_reply_sent ? 'text-green-700' : 'text-gray-300'}>
+                自動返信{r.auto_reply_sent ? '済み' : '未'}
+              </span>
+              <span className={r.confirmation_email_sent ? 'text-green-700' : 'text-gray-300'}>
+                確定メール{r.confirmation_email_sent ? '済み' : '未'}
+              </span>
+            </div>
+          </div>
+        ))}
+        {filtered.length === 0 && (
+          <p className="px-4 py-8 text-center text-gray-400 text-sm">
+            {(searchQuery || typeFilter || categoryFilter || dateFrom || dateTo) ? '検索条件に一致する予約がありません' : '予約がありません'}
+          </p>
+        )}
+      </div>
 
       {/* 詳細 */}
       {detail && (
