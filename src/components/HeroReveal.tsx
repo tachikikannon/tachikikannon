@@ -471,14 +471,19 @@ export default function HeroReveal({
             // 合わせて確保される（JSでの高さ計測が不要になる）
             <div
               ref={gridRef}
-              className="grid items-center"
+              className="grid grid-cols-1 items-center w-full"
               // justify-items-centerで「重なり合う幅の異なるアイテムをそれぞれ
               // 独立して中央揃え」する方式は、一部のSafari/WebKit環境で正しく
               // 機能せず、幅の狭いコマ（1行だけのコマ）が幅の広いコマ（2列ペア）
               // の位置に引きずられて中央からズレる不具合が確認された。
               // 各コマをgrid-areaの列幅いっぱいに広げ（デフォルトのstretch）、
               // コマ側でflex justify-centerして個別に中央揃えする、より確実な
-              // 方式に変更した
+              // 方式に変更した。
+              // さらに、列幅自体を中身（各コマの幅）から自動計算させると、
+              // 縦横比が極端な筆文字ロゴ（幅が高さの1/4程度しかない）で、
+              // 列幅の再計算のタイミングによってロゴが左右にわずかにズレて
+              // 見える不具合が報告されたため、grid-cols-1 + w-fullで列幅を
+              // 親要素の幅に固定し、中身のサイズに一切依存しないようにした
             >
               {frames.map((frameLineIdxs, fi) => {
                 const active = step === fi
