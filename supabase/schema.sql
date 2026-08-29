@@ -363,3 +363,26 @@ create trigger trg_reservations_activity_log
 create trigger trg_contacts_activity_log
   after update on contacts
   for each row execute function log_admin_activity();
+
+-- 削除時は行が消えて後から参照できなくなるため、old_value に行全体のスナップショットを残す
+-- （編集ログのように差分だけでなく、削除された予約/お問い合わせが何だったか分かるようにする）
+create or replace function log_admin_activity_delete()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into admin_activity_logs (actor_id, action, target_table, target_id, old_value, new_value)
+  values (auth.uid(), 'delete', TG_TABLE_NAME, old.id, to_jsonb(old), null);
+  return old;
+end;
+$$;
+
+create trigger trg_reservations_activity_log_delete
+  after delete on reservations
+  for each row execute function log_admin_activity_delete();
+
+create trigger trg_contacts_activity_log_delete
+  after delete on contacts
+  for each row execute function log_admin_activity_delete();

@@ -15,11 +15,13 @@ const ACTION_LABELS: Record<string, string> = {
   status_change: 'ステータス変更',
   assign: '担当者変更',
   edit: '編集',
+  delete: '削除',
 }
 const ACTION_COLORS: Record<string, string> = {
   status_change: 'bg-blue-100 text-blue-700',
   assign: 'bg-purple-100 text-purple-700',
   edit: 'bg-amber-100 text-amber-700',
+  delete: 'bg-red-100 text-red-700',
 }
 const RESERVATION_STATUS_LABELS: Record<string, string> = {
   unconfirmed: '未確認', pending: '未確認', provisional: '仮予約', in_progress: '対応中',
@@ -51,7 +53,7 @@ export default function AdminActivityLogsPage() {
   const [loadingLogs, setLoadingLogs] = useState(true)
 
   const [targetFilter, setTargetFilter] = useState<'all' | TargetTable>('all')
-  const [actionFilter, setActionFilter] = useState<'all' | 'status_change' | 'assign' | 'edit'>('all')
+  const [actionFilter, setActionFilter] = useState<'all' | 'status_change' | 'assign' | 'edit' | 'delete'>('all')
   const [actorFilter, setActorFilter] = useState('')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
@@ -106,6 +108,19 @@ export default function AdminActivityLogsPage() {
   const categoryName = (id: string | null) => categories.find(c => c.id === id)?.name ?? '区分なし'
 
   function targetLabel(log: AdminActivityLog) {
+    if (log.action === 'delete') {
+      const snap = log.old_value as Record<string, unknown> | null
+      if (!snap) return '（削除されたデータの記録がありません）'
+      if (log.target_table === 'reservations') {
+        const type = RESERVATION_TYPE_LABELS[snap.type as string] ?? snap.type
+        const date = snap.date ? new Date(snap.date as string).toLocaleDateString('ja-JP') : ''
+        return `${type}／${date}／${snap.name} 様（削除済み）`
+      }
+      if (log.target_table === 'contacts') {
+        return `${snap.subject}（${snap.name} 様・削除済み）`
+      }
+      return '（削除済み）'
+    }
     if (log.target_table === 'reservations') {
       const r = reservations[log.target_id ?? '']
       if (!r) return '（予約情報が見つかりません。削除済みの可能性があります）'
@@ -135,7 +150,7 @@ export default function AdminActivityLogsPage() {
       const oldS = (log.old_value as { status?: string } | null)?.status
       const newS = (log.new_value as { status?: string } | null)?.status
       return (
-        <p className="text-sm">
+        <p className="text-xs text-gray-500">
           {oldS ? (labels[oldS] ?? oldS) : '—'} <span className="text-gray-400">→</span> {newS ? (labels[newS] ?? newS) : '—'}
         </p>
       )
@@ -144,18 +159,36 @@ export default function AdminActivityLogsPage() {
       const oldA = (log.old_value as { assigned_admin_id?: string | null } | null)?.assigned_admin_id ?? null
       const newA = (log.new_value as { assigned_admin_id?: string | null } | null)?.assigned_admin_id ?? null
       return (
-        <p className="text-sm">
+        <p className="text-xs text-gray-500">
           {oldA ? actorName(oldA) : '未割当'} <span className="text-gray-400">→</span> {newA ? actorName(newA) : '未割当'}
         </p>
+      )
+    }
+    if (log.action === 'delete') {
+      const snap = (log.old_value ?? {}) as Record<string, unknown>
+      const keys = log.target_table === 'reservations'
+        ? ['time_slot', 'email', 'phone', 'party_size', 'notes', 'category_id']
+        : ['email', 'message']
+      const rows = keys.filter(k => snap[k] !== undefined && snap[k] !== null && snap[k] !== '')
+      if (rows.length === 0) return null
+      return (
+        <ul className="text-xs text-gray-500 space-y-0.5">
+          {rows.map(key => (
+            <li key={key}>
+              <span className="text-gray-400">{FIELD_LABELS[key] ?? key}：</span>
+              {formatValue(log.target_table, key, snap[key])}
+            </li>
+          ))}
+        </ul>
       )
     }
     const keys = Object.keys(log.new_value ?? {})
     if (keys.length === 0) return null
     return (
-      <ul className="text-sm space-y-1">
+      <ul className="text-xs text-gray-500 space-y-0.5">
         {keys.map(key => (
           <li key={key}>
-            <span className="text-gray-500">{FIELD_LABELS[key] ?? key}：</span>
+            <span className="text-gray-400">{FIELD_LABELS[key] ?? key}：</span>
             {formatValue(log.target_table, key, (log.old_value as Record<string, unknown> | null)?.[key])}
             <span className="text-gray-400 mx-1">→</span>
             {formatValue(log.target_table, key, (log.new_value as Record<string, unknown> | null)?.[key])}
@@ -199,6 +232,7 @@ export default function AdminActivityLogsPage() {
             <option value="status_change">ステータス変更</option>
             <option value="assign">担当者変更</option>
             <option value="edit">編集</option>
+            <option value="delete">削除</option>
           </select>
         </div>
         <div>
@@ -240,7 +274,7 @@ export default function AdminActivityLogsPage() {
                   {new Date(log.created_at).toLocaleString('ja-JP')}
                 </span>
               </div>
-              <p className="text-xs text-gray-500 mb-2">{targetLabel(log)}</p>
+              <p className="text-base font-medium text-navy mb-1">{targetLabel(log)}</p>
               {renderDiff(log)}
             </li>
           ))}
