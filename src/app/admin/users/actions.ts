@@ -90,6 +90,57 @@ export async function updateAdminRole(targetId: string, role: AdminRole): Promis
   return { ok: true }
 }
 
+export async function resetAdminPassword(targetId: string, password: string): Promise<ActionResult> {
+  const auth = await requireSuperAdmin()
+  if (!auth.ok) return auth
+
+  const admin = createAdminClient()
+  const { error } = await admin.auth.admin.updateUserById(targetId, { password })
+  if (error) return { ok: false, error: error.message }
+
+  await admin.from('admin_activity_logs').insert({
+    actor_id: auth.userId,
+    action: 'admin_password_reset',
+    target_table: 'admin_profiles',
+    target_id: targetId,
+  })
+
+  return { ok: true }
+}
+
+export async function deleteAdminUser(targetId: string): Promise<ActionResult> {
+  const auth = await requireSuperAdmin()
+  if (!auth.ok) return auth
+
+  if (targetId === auth.userId) {
+    return { ok: false, error: '自分自身のアカウントは削除できません' }
+  }
+
+  const admin = createAdminClient()
+  const { data: before } = await admin.from('admin_profiles').select('email, role').eq('id', targetId).maybeSingle()
+
+  // auth.users削除 → admin_profilesはon delete cascadeで自動削除される。
+  // ただしreservations/contacts等のassigned_admin_idや、admin_activity_logsのactor_idから
+  // このIDが参照されたままだと外部キー制約で削除に失敗する（担当履歴が残っている場合など）。
+  const { error } = await admin.auth.admin.deleteUser(targetId)
+  if (error) {
+    return {
+      ok: false,
+      error: 'この管理者は予約やお問い合わせの担当履歴に残っているため削除できませんでした。先に担当を外すか、「停止する」で無効化してください。',
+    }
+  }
+
+  await admin.from('admin_activity_logs').insert({
+    actor_id: auth.userId,
+    action: 'admin_deleted',
+    target_table: 'admin_profiles',
+    target_id: targetId,
+    old_value: before ? { email: before.email, role: before.role } : null,
+  })
+
+  return { ok: true }
+}
+
 export async function setAdminActive(targetId: string, isActive: boolean): Promise<ActionResult> {
   const auth = await requireSuperAdmin()
   if (!auth.ok) return auth

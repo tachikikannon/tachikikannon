@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import { createAdminUser, updateAdminRole, setAdminActive } from './actions'
+import { createAdminUser, updateAdminRole, setAdminActive, resetAdminPassword, deleteAdminUser } from './actions'
 import type { AdminProfile, AdminRole } from '@/types'
 
 const ROLE_LABELS: Record<AdminRole, string> = {
@@ -22,6 +22,9 @@ export default function AdminUsersPage() {
   const [form, setForm] = useState({ email: '', password: '', name: '', role: 'admin' as AdminRole })
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
+  const [resetTarget, setResetTarget] = useState<AdminProfile | null>(null)
+  const [resetPassword, setResetPassword] = useState('')
+  const [resetError, setResetError] = useState('')
 
   async function load() {
     const { data } = await supabase.from('admin_profiles').select('*').order('created_at')
@@ -55,6 +58,28 @@ export default function AdminUsersPage() {
     setBusy(false)
     if (!result.ok) { setMessage(result.error); return }
     load()
+  }
+
+  async function handleDelete(id: string, label: string) {
+    if (!confirm(`「${label}」を削除しますか？元に戻せません。`)) return
+    setBusy(true)
+    const result = await deleteAdminUser(id)
+    setBusy(false)
+    if (!result.ok) { setMessage(result.error); return }
+    setMessage('')
+    load()
+  }
+
+  async function handleResetPassword() {
+    if (!resetTarget) return
+    if (resetPassword.length < 6) { setResetError('6文字以上で入力してください'); return }
+    setBusy(true)
+    const result = await resetAdminPassword(resetTarget.id, resetPassword)
+    setBusy(false)
+    if (!result.ok) { setResetError(result.error); return }
+    setResetTarget(null)
+    setResetPassword('')
+    setResetError('')
   }
 
   if (meLoading) return <div className="p-8 text-sm text-gray-400">読み込み中...</div>
@@ -140,12 +165,24 @@ export default function AdminUsersPage() {
                     {u.is_active ? '有効' : '停止中'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-3 text-right whitespace-nowrap">
+                  <button
+                    disabled={busy}
+                    onClick={() => { setResetTarget(u); setResetPassword(''); setResetError('') }}
+                    className="text-xs text-navy hover:underline disabled:opacity-30 disabled:no-underline mr-3">
+                    パスワード再設定
+                  </button>
                   <button
                     disabled={busy || u.id === me?.id}
                     onClick={() => handleToggleActive(u.id, !u.is_active)}
-                    className="text-xs text-navy hover:underline disabled:opacity-30 disabled:no-underline">
+                    className="text-xs text-navy hover:underline disabled:opacity-30 disabled:no-underline mr-3">
                     {u.is_active ? '停止する' : '再開する'}
+                  </button>
+                  <button
+                    disabled={busy || u.id === me?.id}
+                    onClick={() => handleDelete(u.id, u.name || u.email)}
+                    className="text-xs text-red-500 hover:underline disabled:opacity-30 disabled:no-underline">
+                    削除
                   </button>
                 </td>
               </tr>
@@ -154,6 +191,27 @@ export default function AdminUsersPage() {
           </tbody>
         </table>
       </div>
+
+      {resetTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          onClick={() => setResetTarget(null)}
+        >
+          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6" onClick={e => e.stopPropagation()}>
+            <h2 className="font-medium text-navy mb-1">パスワード再設定</h2>
+            <p className="text-xs text-gray-500 mb-4">{resetTarget.name || resetTarget.email} の新しいパスワードを設定します。</p>
+            <input type="password" required minLength={6} autoFocus className="admin-input mb-2" placeholder="新しいパスワード（6文字以上）"
+              value={resetPassword} onChange={e => setResetPassword(e.target.value)} />
+            {resetError && <p className="text-red-600 text-xs mb-2">{resetError}</p>}
+            <div className="flex justify-end gap-3 mt-3">
+              <button onClick={() => setResetTarget(null)} className="text-sm text-gray-400 hover:text-gray-600">キャンセル</button>
+              <button onClick={handleResetPassword} disabled={busy} className="btn-primary text-sm px-5 py-2 disabled:opacity-50">
+                {busy ? '設定中...' : '再設定する'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
