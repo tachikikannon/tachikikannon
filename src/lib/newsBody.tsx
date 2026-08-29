@@ -75,15 +75,27 @@ function renderInline(body: string, keyPrefix: string): ReactNode[] {
 }
 
 // 本文文字列を、行揃え指定（[center]〜[/center]等）・画像・URLリンクが並ぶReactノード配列に変換する。
+//
+// [align]〜[/align]はブロック要素（<div>）として描画するため、それ自体で改行を1つ
+// 「無料で」伴う。そのため、隣接する明示的な改行文字（本文中の\n）をそのまま一緒に
+// 描画すると、ブロックの改行＋本来の改行文字とで空白行が二重にカウントされ、
+// 書いた覚えのない余白が広がって見えてしまう（1行ずつ[align]で囲んだ差出人ブロック等
+// で顕著）。[align]ブロックの直前・直後に隣接する改行を1つだけ吸収することで、
+// 「[align]行が連続する場合は詰まって見え、\n\nの空行は1行分の空白として見える」
+// という、プレーンテキストのまま書いた場合と同じ見た目になるようにしている。
 export function renderNewsBody(body: string): ReactNode[] {
   const nodes: ReactNode[] = []
   let lastIndex = 0
   let key = 0
+  let afterAlignBlock = false
   ALIGN_BLOCK.lastIndex = 0
   let match: RegExpExecArray | null
   while ((match = ALIGN_BLOCK.exec(body))) {
-    if (match.index > lastIndex) {
-      nodes.push(...renderInline(body.slice(lastIndex, match.index), `p${key}`))
+    let plain = body.slice(lastIndex, match.index)
+    if (afterAlignBlock && plain.startsWith('\n')) plain = plain.slice(1)
+    if (plain.endsWith('\n')) plain = plain.slice(0, -1)
+    if (plain) {
+      nodes.push(...renderInline(plain, `p${key}`))
       key++
     }
     const [full, align, inner] = match
@@ -94,9 +106,12 @@ export function renderNewsBody(body: string): ReactNode[] {
     )
     key++
     lastIndex = match.index + full.length
+    afterAlignBlock = true
   }
-  if (lastIndex < body.length) {
-    nodes.push(...renderInline(body.slice(lastIndex), `p${key}`))
+  let rest = body.slice(lastIndex)
+  if (afterAlignBlock && rest.startsWith('\n')) rest = rest.slice(1)
+  if (rest) {
+    nodes.push(...renderInline(rest, `p${key}`))
   }
   return nodes
 }
