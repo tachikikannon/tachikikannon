@@ -253,7 +253,7 @@ export default function AdminReservationsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-auto max-h-[calc(100vh-14rem)]">
+      <div className="bg-white rounded-xl shadow overflow-auto max-h-[calc(100svh-14rem)]">
         <table className="w-full text-sm">
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
