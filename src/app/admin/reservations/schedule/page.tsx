@@ -291,8 +291,7 @@ export default function AdminReservationSchedulePage() {
 
       {/* 選択した日の一覧・詳細 */}
       {selectedDate && (
-        <div className="grid lg:grid-cols-3 gap-4 items-start">
-          <div className="lg:col-span-2 bg-white rounded-xl shadow overflow-hidden">
+        <div className="bg-white rounded-xl shadow overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between">
               <h2 className="font-medium text-navy text-sm">{selectedDateLabel}　（{dayList.length}件）</h2>
               <button onClick={() => setSelectedDate(null)} className="text-gray-400 hover:text-gray-600 text-lg">✕</button>
@@ -334,10 +333,14 @@ export default function AdminReservationSchedulePage() {
               </tbody>
             </table>
             </div>
-          </div>
+        </div>
+      )}
 
-          {detail && (
-            <div className="bg-white rounded-xl shadow p-5 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
+      {detail && (
+        <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-black/50 overflow-y-auto"
+          onClick={() => openDetail(null)}>
+          <div className="bg-white rounded-xl shadow-xl p-5 w-full max-w-2xl my-8 sm:my-0 max-h-[85vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-medium text-navy">予約詳細</h2>
                 <div className="flex items-center gap-3">
@@ -519,8 +522,7 @@ export default function AdminReservationSchedulePage() {
                   ? <p className="text-sm text-green-700">✉️ お客様に送信済みです</p>
                   : <p className="text-sm text-gray-400">未送信（「予約確定」にすると自動送信されます）</p>}
               </div>
-            </div>
-          )}
+          </div>
         </div>
       )}
 
