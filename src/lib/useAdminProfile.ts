@@ -23,7 +23,7 @@ export function useAdminProfile() {
   }, [])
 
   const isSuperAdmin = profile?.role === 'super_admin'
-  const canEditReservations = profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'reservation_admin'
+  const canEditReservations = profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'reservation_admin' || profile?.role === 'reservation_search_admin'
   const canEditContacts = profile?.role === 'admin' || profile?.role === 'super_admin' || profile?.role === 'contact_admin'
 
   return { profile, loading, canEditReservations, canEditContacts, isSuperAdmin }
