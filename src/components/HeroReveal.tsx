@@ -65,6 +65,10 @@ interface HeroRevealProps {
 }
 
 const EASE = 'cubic-bezier(0,0,0.2,1)'
+// 見出しの1文字ずつが浮かび上がる際の初期位置（下にどれだけずれているか）と傾き。
+// 寺紋の真上でこの動きが起きるため、大きすぎると寺紋自体が上下に動いて見えるという
+// 指摘があり、浮かび上がる雰囲気は残しつつ移動量を弱めた（元は22px / -55deg）
+const CHAR_ENTER_TRANSFORM = 'translateY(8px) rotateX(-20deg)'
 // Header.tsxのヘッダーはfixed・高さ64px(h-16)で本文の上に重なる。verticalHeading時、
 // 見出し中央配置の計算がこれを考慮していないと、文字数の多い行（特に横幅が広く
 // フォントが大きくなるデスクトップ）でheader下に文字の先頭が隠れてしまうため、
@@ -302,7 +306,7 @@ export default function HeroReveal({
             className="inline-block"
             style={{
               opacity: active ? 1 : 0,
-              transform: active ? 'translateY(0) rotateX(0deg)' : 'translateY(22px) rotateX(-55deg)',
+              transform: active ? 'translateY(0) rotateX(0deg)' : CHAR_ENTER_TRANSFORM,
               color: imageActive ? lightColor : darkColor,
               textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
               transitionProperty: 'opacity, transform, color',
@@ -624,7 +628,7 @@ export default function HeroReveal({
                           className="inline-block"
                           style={{
                             opacity: textActive ? 1 : 0,
-                            transform: textActive ? 'translateY(0) rotateX(0deg)' : 'translateY(22px) rotateX(-55deg)',
+                            transform: textActive ? 'translateY(0) rotateX(0deg)' : CHAR_ENTER_TRANSFORM,
                             color: imageActive ? lightColor : darkColor,
                             textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
                             transitionProperty: 'opacity, transform, color',
