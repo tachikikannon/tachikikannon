@@ -254,39 +254,42 @@ export default function AdminReservationsPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow overflow-auto max-h-[calc(100svh-14rem)]">
-        <table className="w-full text-sm">
+        <table className="table-fixed min-w-[1290px] text-sm">
+            {/* 状態・日付・お名前の3列は横スクロール中も左側に固定し、
+                「どの予約を見ているか」を保ったまま電話番号・メールなど右側の列を確認できるようにする。
+                固定するにはtable-fixedで各列の幅を確定させ、その幅からleftの位置(0/110px/200px)を逆算している */}
             <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">状態</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">日付</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">種別</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">区分</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">お名前</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">電話番号</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">メール</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">担当者</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">自動返信</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">確定メール</th>
-                <th className="text-left px-4 py-3 text-xs text-gray-500">更新日時</th>
+                <th className="sticky left-0 z-20 bg-gray-50 text-left px-4 py-3 text-xs text-gray-500 w-[110px]">状態</th>
+                <th className="sticky left-[110px] z-20 bg-gray-50 text-left px-4 py-3 text-xs text-gray-500 w-[90px]">日付</th>
+                <th className="sticky left-[200px] z-20 bg-gray-50 border-r border-gray-200 text-left px-4 py-3 text-xs text-gray-500 w-[130px]">お名前</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500 w-[90px]">種別</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500 w-[130px]">区分</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500 w-[120px]">電話番号</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500 w-[180px]">メール</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500 w-[90px]">担当者</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500 w-[100px]">自動返信</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500 w-[100px]">確定メール</th>
+                <th className="text-left px-4 py-3 text-xs text-gray-500 w-[150px]">更新日時</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map(r => (
                 <tr key={r.id} onClick={() => openDetail(r)}
-                  className="hover:bg-blue-50 cursor-pointer">
-                  <td className="px-4 py-3">
+                  className="group hover:bg-blue-50 cursor-pointer">
+                  <td className="sticky left-0 z-10 bg-white group-hover:bg-blue-50 px-4 py-3">
                     <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
                   </td>
-                  <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+                  <td className="sticky left-[110px] z-10 bg-white group-hover:bg-blue-50 px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
                     {new Date(r.date).toLocaleDateString('ja-JP')}<br/>
                     <span className="text-gray-400">{r.time_slot}</span>
                   </td>
+                  <td className="sticky left-[200px] z-10 bg-white group-hover:bg-blue-50 border-r border-gray-200 px-4 py-3 font-medium truncate">{r.name}</td>
                   <td className="px-4 py-3 text-xs whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
-                  <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{categoryName(r.category_id)}</td>
-                  <td className="px-4 py-3 font-medium whitespace-nowrap">{r.name}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500 truncate">{categoryName(r.category_id)}</td>
                   <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{r.phone || '—'}</td>
-                  <td className="px-4 py-3 text-xs text-gray-500 max-w-[180px] truncate">{r.email || '—'}</td>
-                  <td className="px-4 py-3 text-xs text-gray-500">{adminName(r.assigned_admin_id)}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500 truncate">{r.email || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500 truncate">{adminName(r.assigned_admin_id)}</td>
                   <td className="px-4 py-3 text-xs whitespace-nowrap">
                     {r.auto_reply_sent
                       ? <span className="text-green-700">✉️ 送信済み</span>
