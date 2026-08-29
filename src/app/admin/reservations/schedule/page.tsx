@@ -163,7 +163,7 @@ export default function AdminReservationSchedulePage() {
     load()
     if (detail?.id === id) setDetail(d => d ? { ...d, status } : d)
 
-    if (status === 'confirmed' && target) {
+    if (status === 'confirmed' && target && target.email) {
       setMailNotice('確定メールを送信中…')
       fetch('/api/notify/reservation-confirmed', {
         method: 'POST',

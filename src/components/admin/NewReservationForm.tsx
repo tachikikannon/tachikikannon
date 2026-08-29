@@ -51,7 +51,6 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
   const [createSaving, setCreateSaving] = useState(false)
   const [ritsWarning, setRitsWarning] = useState<string | null>(null)
   const [justAdded, setJustAdded] = useState<{ date: string; time_slot: string; name: string } | null>(null)
-  const [mailNotice, setMailNotice] = useState<string | null>(null)
 
   async function load() {
     const { data: categoryData } = await supabase.from('reservation_categories').select('*').order('sort_order')
@@ -92,34 +91,14 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
     }
     setCreateSaving(true)
     setCreateError(null)
-    setMailNotice(null)
-    const id = crypto.randomUUID()
     const { error } = await supabase.from('reservations')
-      .insert({ ...newRes, category_id: newRes.category_id || null, id })
+      .insert({ ...newRes, category_id: newRes.category_id || null, id: crypto.randomUUID() })
     setCreateSaving(false)
     if (error) { setCreateError('登録に失敗しました：' + error.message); return }
     setJustAdded({ date: newRes.date, time_slot: newRes.time_slot, name: newRes.name })
     onCreated?.({ date: newRes.date, time_slot: newRes.time_slot, name: newRes.name })
-
-    // ステータスを最初から「予約確定」で登録した場合、既存予約を確定に変更する操作と
-    // 同様に確定メールを送る（登録後にステータスを変更する場合はそちら側の処理で送信済み）。
-    if (newRes.status === 'confirmed' && newRes.email) {
-      setMailNotice('確定メールを送信中…')
-      fetch('/api/notify/reservation-confirmed', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newRes.name, email: newRes.email, type: newRes.type,
-          date: newRes.date, time_slot: newRes.time_slot, party_size: newRes.party_size,
-        }),
-      })
-        .then(res => res.json())
-        .then(async data => {
-          setMailNotice(data.ok ? '確定メールを送信しました' : '確定メールの送信に失敗しました')
-          if (data.ok) await supabase.from('reservations').update({ confirmation_email_sent: true }).eq('id', id)
-        })
-        .catch(err => { console.error('confirm mail failed:', err); setMailNotice('確定メールの送信に失敗しました') })
-    }
+    // 管理画面からの手入力（電話予約等）は確定メールを送らない
+    // （お客様がWeb予約後に職員がステータスを確定に変える場合のみ送信＝updateStatus側の処理）
 
     // 種別・区分・日付は続けやすいよう保持し、時間とお客様情報だけリセットして次の登録に備える
     setNewRes(f => ({ ...defaults, type: f.type, category_id: f.category_id, date: f.date }))
@@ -191,27 +170,10 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
         <span className="text-sm text-gray-500 ml-2">名</span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div>
-          <label className="admin-label">お名前</label>
-          <input className="admin-input" value={newRes.name}
-            onChange={e => setNewRes(f => ({ ...f, name: e.target.value }))} />
-        </div>
-        <div>
-          <label className="admin-label">フリガナ</label>
-          <input className="admin-input" value={newRes.name_kana}
-            onChange={e => setNewRes(f => ({ ...f, name_kana: e.target.value }))} />
-        </div>
-      </div>
       <div className="mb-4">
-        <label className="admin-label">メールアドレス</label>
-        <input type="email" className="admin-input" value={newRes.email}
-          onChange={e => setNewRes(f => ({ ...f, email: e.target.value }))} />
-      </div>
-      <div className="mb-4">
-        <label className="admin-label">電話番号</label>
-        <input type="tel" className="admin-input" value={newRes.phone}
-          onChange={e => setNewRes(f => ({ ...f, phone: e.target.value }))} />
+        <label className="admin-label">お名前</label>
+        <input className="admin-input" value={newRes.name}
+          onChange={e => setNewRes(f => ({ ...f, name: e.target.value }))} />
       </div>
       <div className="mb-4">
         <label className="admin-label">備考（任意）</label>
@@ -238,7 +200,6 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
       {justAdded && (
         <p className="text-green-700 bg-green-50 border border-green-200 rounded-lg text-sm p-3 mb-3">
           ✓ {justAdded.date} {justAdded.time_slot} に{justAdded.name ? `「${justAdded.name}」様の` : ''}予約を登録しました。続けて別の予約を登録できます。
-          {mailNotice && <span className="block text-xs text-green-600 mt-1">✉️ {mailNotice}</span>}
         </p>
       )}
 
