@@ -125,9 +125,10 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
     })
   }
 
-  // 選択範囲を [center]〜[/center] 等の行揃えマーカーで囲む（未選択なら開始・終了タグだけを
-  // カーソル位置に挿入し、その間にカーソルを置く）。renderNewsBody側がこの記法を解釈して
-  // text-alignスタイルに変換する（src/lib/newsBody.tsx参照）。
+  // 選択範囲を [center]〜[/center] 等の行揃えマーカーで囲む。範囲を選択せずカーソルを
+  // 置いただけの場合は、Wordのようにカーソルがある「行」全体を自動的に対象にする
+  // （行が空なら開始・終了タグだけをカーソル位置に挿入し、その間にカーソルを置く）。
+  // renderNewsBody側がこの記法を解釈してtext-alignスタイルに変換する（src/lib/newsBody.tsx参照）。
   function wrapSelection(field: BodyField, ref: React.RefObject<HTMLTextAreaElement | null>, align: 'left' | 'center' | 'right') {
     const el = ref.current
     setEditing(v => {
@@ -136,8 +137,14 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
       const openTag = `[${align}]`
       const closeTag = `[/${align}]`
       if (!el) return { ...v, [field]: current + openTag + closeTag }
-      const start = el.selectionStart ?? current.length
-      const end = el.selectionEnd ?? current.length
+      let start = el.selectionStart ?? current.length
+      let end = el.selectionEnd ?? current.length
+      if (start === end) {
+        const lineStart = current.lastIndexOf('\n', start - 1) + 1
+        const lineEndIdx = current.indexOf('\n', start)
+        const lineEnd = lineEndIdx === -1 ? current.length : lineEndIdx
+        if (lineEnd > lineStart) { start = lineStart; end = lineEnd }
+      }
       const selected = current.slice(start, end)
       const inserted = `${openTag}${selected}${closeTag}`
       const next = current.slice(0, start) + inserted + current.slice(end)
@@ -327,7 +334,7 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
               <div>
                 <label className="admin-label">本文 <span className="text-red-400">*</span></label>
                 {alignButtons('body', bodyRef)}
-                <textarea ref={bodyRef} className="admin-input min-h-[240px] font-mono text-sm" placeholder="本文を入力してください。改行はそのまま反映されます。&#10;揃えたい範囲を選択してから「左揃え／中央揃え／右揃え」を押すと反映されます。"
+                <textarea ref={bodyRef} className="admin-input min-h-[240px] font-mono text-sm" placeholder="本文を入力してください。改行はそのまま反映されます。&#10;行にカーソルを置いて「左揃え／中央揃え／右揃え」を押すとその行に反映されます（範囲選択も可）。"
                   value={editing.body ?? ''} onChange={e => setEditing({...editing, body: e.target.value})} />
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-xs text-gray-400">改行・空行やURLはそのまま表示・リンク化されます</p>
