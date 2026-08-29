@@ -29,7 +29,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-navy flex items-center justify-center px-4">
+    <div className="min-h-[100svh] bg-navy flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="text-white font-serif text-2xl tracking-widest">管理画面</h1>

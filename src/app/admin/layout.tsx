@@ -118,7 +118,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (pathname === '/admin/login') return <>{children}</>
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    // スマホでは min-h-screen（100vh）だと、アドレスバーの表示/非表示で
+    // ビューポート高さが変わるたびに本体（body）ごとスクロール可能になり、
+    // 画面全体が上下にバウンドして見える不具合があった。svhで高さを固定し
+    // overflow-hiddenで本体自体はスクロールさせず、中身（<main>）だけを
+    // スクロール領域にすることで、ヘッダー・サイドバーが常に画面に固定されて見えるようにした
+    <div className="h-[100svh] flex bg-gray-100 overflow-hidden">
       {/* モバイル用ヘッダー（ハンバーガーメニュー） */}
       <div className="md:hidden fixed top-0 inset-x-0 z-30 flex items-center justify-between bg-navy text-white px-4 py-3 print:hidden">
         <p className="font-serif text-sm">中禅寺 立木観音 管理画面</p>
