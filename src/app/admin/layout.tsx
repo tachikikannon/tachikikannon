@@ -99,6 +99,7 @@ const navItems: NavItem[] = [
   { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️', group: 'サイト管理' },
   { href: '/admin/images',        label: '画像管理',         icon: '🖼️', group: 'サイト管理' },
   { href: '/admin/users',         label: '管理者管理',       icon: '👤', group: 'サイト管理' },
+  { href: '/admin/activity-logs', label: '編集履歴',         icon: '🕓', group: 'サイト管理' },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
