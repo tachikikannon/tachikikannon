@@ -15,6 +15,11 @@ type EditForm = {
 const TYPE_LABELS: Record<string, string> = {
   prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅'
 }
+// サイドバーの各体験ページと同じ絵文字（src/app/admin/layout.tsxのnavItems参照）。
+// スマホのカード一覧で種別をひと目で見分けられるようにする
+const TYPE_ICONS: Record<string, string> = {
+  prayer: '🙏', shakyou: '✍️', shabutu: '🖌️', jyuzu: '📿', zazen: '🧘',
+}
 const STATUS_LABELS: Record<ReservationStatus, string> = {
   unconfirmed: '未確認',
   pending: '未確認',
@@ -32,6 +37,16 @@ const STATUS_COLORS: Record<ReservationStatus, string> = {
   confirmed: 'bg-green-100 text-green-700',
   completed: 'bg-gray-200 text-gray-600',
   cancelled: 'bg-gray-100 text-gray-500',
+}
+// スマホのカード一覧だけで使う、状態を表す左ボーダーの色（バッジと同系色）
+const STATUS_BORDER_COLORS: Record<ReservationStatus, string> = {
+  unconfirmed: 'border-yellow-400',
+  pending: 'border-yellow-400',
+  provisional: 'border-purple-400',
+  in_progress: 'border-blue-400',
+  confirmed: 'border-green-400',
+  completed: 'border-gray-300',
+  cancelled: 'border-gray-300',
 }
 const FILTERS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_progress', 'confirmed', 'completed', 'cancelled']
 const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_progress', 'confirmed', 'completed', 'cancelled']
@@ -318,26 +333,31 @@ export default function AdminReservationsPage() {
 
       {/* スマホ用カード一覧。表だと横スクロールが必要でどれがどの予約か分かりづらいため、
           状態・日付・種別・区分・お名前を上段にまとめて表示し、横スクロールなしで
-          そのまま下にスクロールして次の予約を確認できるようにする */}
-      <div className="md:hidden bg-white rounded-xl shadow divide-y divide-gray-100">
+          そのまま下にスクロールして次の予約を確認できるようにする。
+          1件ずつ独立したカードにして状態の色を左ボーダーに出すことで、
+          スクロール中でも状態がひと目でわかるようにしている */}
+      <div className="md:hidden space-y-2.5">
         {filtered.map(r => (
-          <div key={r.id} onClick={() => openDetail(r)} className="p-4 active:bg-blue-50 cursor-pointer">
+          <div key={r.id} onClick={() => openDetail(r)}
+            className={`bg-white rounded-xl shadow-sm border-l-4 ${STATUS_BORDER_COLORS[r.status]} p-4 active:bg-blue-50 cursor-pointer`}>
             <div className="flex items-center gap-2 flex-wrap mb-1.5">
               <span className={`badge ${STATUS_COLORS[r.status]}`}>{STATUS_LABELS[r.status]}</span>
               <span className="text-xs text-gray-500 whitespace-nowrap">
-                {new Date(r.date).toLocaleDateString('ja-JP')} {r.time_slot}
+                {new Date(r.date).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' })} {r.time_slot}
               </span>
             </div>
             <div className="flex items-center gap-1 flex-wrap mb-1.5 text-xs">
-              <span className="text-navy font-medium">{TYPE_LABELS[r.type]}</span>
+              <span className="text-navy font-medium">{TYPE_ICONS[r.type]} {TYPE_LABELS[r.type]}</span>
               <span className="text-gray-400">・{categoryName(r.category_id)}</span>
             </div>
-            <p className="font-medium text-sm mb-2">{r.name}</p>
+            <p className="font-semibold text-base text-navy mb-2">
+              {r.name}<span className="text-xs font-normal text-gray-400 ml-1">様</span>
+            </p>
             <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-500">
-              <div>{r.phone || '—'}</div>
-              <div className="truncate">{r.email || '—'}</div>
-              <div>担当：{adminName(r.assigned_admin_id)}</div>
-              <div className="whitespace-nowrap">{r.updated_at ? new Date(r.updated_at).toLocaleString('ja-JP') : '—'}</div>
+              <div className="truncate">📞 {r.phone || '—'}</div>
+              <div className="truncate">✉️ {r.email || '—'}</div>
+              <div>👤 {adminName(r.assigned_admin_id)}</div>
+              <div className="whitespace-nowrap">🕓 {r.updated_at ? new Date(r.updated_at).toLocaleString('ja-JP') : '—'}</div>
             </dl>
             <div className="flex gap-3 mt-2 text-[11px]">
               <span className={r.auto_reply_sent ? 'text-green-700' : 'text-gray-300'}>
@@ -350,7 +370,7 @@ export default function AdminReservationsPage() {
           </div>
         ))}
         {filtered.length === 0 && (
-          <p className="px-4 py-8 text-center text-gray-400 text-sm">
+          <p className="bg-white rounded-xl shadow-sm px-4 py-8 text-center text-gray-400 text-sm">
             {(searchQuery || typeFilter || categoryFilter || dateFrom || dateTo) ? '検索条件に一致する予約がありません' : '予約がありません'}
           </p>
         )}
