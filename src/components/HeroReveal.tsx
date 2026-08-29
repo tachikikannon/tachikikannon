@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 
 // 白背景の見出し演出が完全に終わって写真が現れたか（imageActive）を、
 // background（HeroMediaCycle等）側からuseContextで読めるようにする。
@@ -8,6 +8,11 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 // Providerの外（他ページ等）で読んだ場合はtrue＝常時稼働として振る舞う
 export const HeroRevealedContext = createContext(true)
 export const useHeroRevealed = () => useContext(HeroRevealedContext)
+
+// SSR時はuseLayoutEffectが「サーバーでは何もしない」という警告を出すため、
+// クライアントでのみuseLayoutEffect（ペイント前に同期実行）を使い、
+// サーバーではuseEffectにフォールバックする定番パターン
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 interface HeroRevealProps {
   eyebrow: string
@@ -203,7 +208,12 @@ export default function HeroReveal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [verticalHeading, hasLogoStep, vLogoStartMs, verticalImageAtMs, frames.length])
 
-  useEffect(() => {
+  // 高さ・位置の測定はuseIsomorphicLayoutEffect（クライアントではuseLayoutEffect）で行い、
+  // ブラウザが実際に描画する前に補正後の値を確定させる。useEffectだと「初期値(0/null)で
+  // 1回描画→測定→補正後の値で再描画」がペイントを挟んで起きてしまい、初回読み込み時
+  // （特にフォント読み込みが遅い時）に寺紋・見出しが一瞬ずれた位置に見えてから正しい
+  // 位置にジャンプする「残像」のような不具合の原因になっていた
+  useIsomorphicLayoutEffect(() => {
     // 見出しグループ・下部グループは共にposition:absoluteなので、通常フローと
     // 違ってどちらもセクション自身の高さに寄与しない。そのままだとmin-h-100vh
     // が床のまま動かず、見出しを画像中央に固定しつつ下部グループ(温泉寺は
@@ -234,7 +244,10 @@ export default function HeroReveal({
     return () => ro.disconnect()
   }, [verticalHeading])
 
-  useEffect(() => {
+  // こちらもuseIsomorphicLayoutEffect化（理由は上のminHeightPx測定と同じ）。ここで求める
+  // gridShiftPx/logoExtraPxは見出し自体のtransformに直結するため、ペイントを
+  // 挟んで値が0→補正後にジャンプすると、まさに寺紋・見出しがずれて見える原因になる
+  useIsomorphicLayoutEffect(() => {
     // crestTargetCharFracが指定されている場合、寺紋は常に見出しエリアの正確な
     // 中央に固定されている前提で、縦書きの各コマ（1行だけのコマも含む）は
     // gridShiftPxによってその中央に自然に重なるようにし、ロゴ画像だけは
