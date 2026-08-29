@@ -102,6 +102,9 @@ create table if not exists admin_activity_logs (
   created_at   timestamptz not null default now()
 );
 
+-- 編集履歴画面は target_table で絞り込んだ上で created_at 降順に読むため
+create index if not exists idx_admin_activity_logs_target_created on admin_activity_logs(target_table, created_at desc);
+
 -- ログイン中ユーザーのロールを返すヘルパー（RLSから参照。テーブルオーナー実行のため再帰しない）
 create or replace function current_admin_role()
 returns text
