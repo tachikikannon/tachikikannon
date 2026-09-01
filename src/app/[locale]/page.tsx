@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import RecordsCarousel from '@/components/RecordsCarousel'
 import ChuzenjiGallery from '@/components/ChuzenjiGallery'
+import EventBanners from '@/components/EventBanners'
 import YouTubeAutoplay from '@/components/YouTubeAutoplay'
 import HeroReveal from '@/components/HeroReveal'
 import HeroMediaCycle from '@/components/HeroMediaCycle'
@@ -51,6 +52,10 @@ const DEFAULT_SERVICE_CARDS = [
 const DEFAULT_SERVICE_CARDS_EN = [
   { title: 'Goshuin Stamps',    text: "Receive Chuzenji's own goshuin stamp, either hand-written or pre-inscribed.", info: 'From ¥500' },
   { title: 'Amulets & Mail Order', text: 'Omamori charms, ofuda tablets, and other items are available online or by cash-on-delivery order.', info: 'Choose online shop or cash-on-delivery' },
+]
+const DEFAULT_EVENT_BANNERS = [
+  { image: '/images/yakansanpai.png', href: '/news/13adf0b9-5fe7-4c32-9c5a-0850883cc0d4',
+    caption_ja: '夜間参拝', caption_en: 'Night Visiting Event', published: true },
 ]
 const DEFAULT_GALLERY_SLIDES = [
   { src: '/images/chuzenji/common/godaido.jpg', alt: '五大堂', month: '',
@@ -102,6 +107,9 @@ const DEFAULT_CONTENT: Record<string, string> = {
   top_service_cards:    JSON.stringify(DEFAULT_SERVICE_CARDS),
   top_service_cards_en: JSON.stringify(DEFAULT_SERVICE_CARDS_EN),
   top_gallery_slides:   JSON.stringify(DEFAULT_GALLERY_SLIDES),
+  top_heading_events_banner:    'イベント情報',
+  top_heading_events_banner_en: 'Event Information',
+  top_event_banners:    JSON.stringify(DEFAULT_EVENT_BANNERS),
   hero_bg_image: '/images/chuzenji/common/main2.png',
   hero_bg_video: '/videos/chuzenji/hero-1.mp4',
   hero_bg_video_2: '/videos/chuzenji/hero-2.mp4',
@@ -177,6 +185,7 @@ export default async function HomePage({
   const accessBus = getLocalizedContent(content, 'access_bus', loc)
   const headingSns = getLocalizedContent(content, 'top_sns_heading', loc)
   const headingNews = getLocalizedContent(content, 'top_heading_news', loc)
+  const headingEventsBanner = getLocalizedContent(content, 'top_heading_events_banner', loc)
   const headingAbout = getLocalizedContent(content, 'top_heading_about', loc)
   const headingEvents = getLocalizedContent(content, 'top_heading_events', loc)
   const headingService = getLocalizedContent(content, 'top_heading_service', loc)
@@ -184,6 +193,18 @@ export default async function HomePage({
   const headingAccess = getLocalizedContent(content, 'top_heading_access', loc)
   const headingExperience = getLocalizedContent(content, 'top_heading_experience', loc)
   const headingGallery = getLocalizedContent(content, 'top_heading_gallery', loc)
+
+  // 管理画面「イベント情報」（/admin/chuzenji/events-banner）で編集可能。
+  // 項目ごとにpublishedを外すと、削除せずにそのバナーだけ非表示にできる。
+  const eventBannersRaw = pj<typeof DEFAULT_EVENT_BANNERS>(
+    content['top_event_banners'], DEFAULT_EVENT_BANNERS
+  )
+  const eventBanners = eventBannersRaw
+    .filter(b => b.published !== false)
+    .map(b => ({
+      image: b.image, href: b.href,
+      caption: loc === 'en' ? (b.caption_en || b.caption_ja) : b.caption_ja,
+    }))
 
   // 管理画面「中禅寺ギャラリー」（/admin/chuzenji/gallery）で編集可能。
   // 日英でsrcが分かれないよう、1つのJSONにcaption_ja/caption_enを両方持たせている。
@@ -248,6 +269,17 @@ export default async function HomePage({
             </div>
           </div>
         </section>
+
+        {/* イベント情報（期間限定のお知らせバナー。管理画面で項目ごとに公開/非公開を切り替え可能） */}
+        {eventBanners.length > 0 && (
+          <section className="py-12 bg-white">
+            <div className="max-w-3xl mx-auto px-4">
+              <h2 className="section-title">{headingEventsBanner}</h2>
+              <div className="section-divider" />
+              <EventBanners banners={eventBanners} />
+            </div>
+          </section>
+        )}
 
         {/* お知らせ */}
         <section className="py-16 bg-cream-alt">

@@ -36,6 +36,12 @@ const FIELDS: { section: string; fields: Field[] }[] = [
     ],
   },
   {
+    section: 'イベント情報',
+    fields: [
+      { key: 'top_heading_events_banner', label: 'セクション見出し', hint: 'バナーの写真・リンク先・公開/非公開は「イベント情報」（/admin/chuzenji/events-banner）から編集してください。', defaultValue: 'イベント情報', translatable: true },
+    ],
+  },
+  {
     section: 'お知らせ・SNS',
     fields: [
       { key: 'top_sns_heading',  label: 'SNSバナーの見出し', defaultValue: '公式SNSでも最新情報を発信中', translatable: true },

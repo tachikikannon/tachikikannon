@@ -742,6 +742,7 @@ const SECTIONS: Section[] = [
       { key: 'hero_en', label: '英語サブタイトル', hint: '背景の写真・動画は「トップページ編集」（/admin/top-page）からアップロードしてください。', defaultValue: 'Nikkozan Chuzenji Temple' },
       { key: 'hero_title', label: 'キャッチコピー（改行可・Enterで改行）', multiline: true, defaultValue: '中禅寺湖畔に佇む\n祈りと巡礼の寺', translatable: true },
       { key: 'top_sns_heading', label: 'SNSバナーの見出し', defaultValue: '公式SNSでも最新情報を発信中', translatable: true },
+      { key: 'top_heading_events_banner', label: '「イベント情報」見出し', hint: 'バナーの写真・リンク先・公開/非公開は「イベント情報」（/admin/chuzenji/events-banner）から編集してください。', defaultValue: 'イベント情報', translatable: true },
       { key: 'top_heading_news', label: '「お知らせ」見出し', defaultValue: 'お知らせ', translatable: true },
       { key: 'top_heading_about', label: '「立木観音について」見出し', defaultValue: '立木観音について', translatable: true },
       {
