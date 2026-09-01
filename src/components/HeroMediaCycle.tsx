@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { Link } from '@/i18n/navigation'
 import { useHeroRevealed } from '@/components/HeroReveal'
 
 interface HeroMediaCycleProps {
@@ -15,19 +14,9 @@ interface HeroMediaCycleProps {
   videoSrc3?: string
   /** 静止画を表示する時間（ミリ秒）。この時間が経つと動画に切り替わる */
   imageDurationMs?: number
-  /**
-   * イベント告知用の1枚（例: 夜間参拝）。指定すると最初の静止画の直後に挿入され、
-   * クリックするとeventHrefに遷移する（他のフェーズはクリック不可のまま）。
-   * イベント終了後はこのpropとeventHref/eventAltを渡すのをやめれば元の並びに戻る。
-   */
-  eventImageSrc?: string
-  eventImageAlt?: string
-  eventHref?: string
-  /** イベント写真を表示する時間（ミリ秒） */
-  eventDurationMs?: number
 }
 
-type MediaPhase = 'image' | 'event' | 'video1' | 'video2' | 'video3'
+type MediaPhase = 'image' | 'video1' | 'video2' | 'video3'
 
 // トップページのヒーロー背景を「静止画→動画1→動画2→動画3→静止画…」と自動で切り替える。
 // 各動画はあらかじめ表示したい長さぴったりに書き出してあるので、再生が終わる
@@ -35,7 +24,6 @@ type MediaPhase = 'image' | 'event' | 'video1' | 'video2' | 'video3'
 // そこで打ち切って静止画に戻る（例: 3本目が無ければ2本目の後は静止画に戻る）。
 export default function HeroMediaCycle({
   imageSrc, imageAlt, videoSrc, videoSrc2, videoSrc3, imageDurationMs = 5000,
-  eventImageSrc, eventImageAlt, eventHref, eventDurationMs = 4000,
 }: HeroMediaCycleProps) {
   const [phase, setPhase] = useState<MediaPhase>('image')
   const video1Ref = useRef<HTMLVideoElement>(null)
@@ -47,18 +35,10 @@ export default function HeroMediaCycle({
   const revealed = useHeroRevealed()
 
   useEffect(() => {
-    if (!revealed || phase !== 'image') return
-    const next = eventImageSrc ? 'event' : videoSrc ? 'video1' : null
-    if (!next) return
-    const t = setTimeout(() => setPhase(next), imageDurationMs)
+    if (!revealed || !videoSrc || phase !== 'image') return
+    const t = setTimeout(() => setPhase('video1'), imageDurationMs)
     return () => clearTimeout(t)
-  }, [revealed, videoSrc, eventImageSrc, phase, imageDurationMs])
-
-  useEffect(() => {
-    if (phase !== 'event') return
-    const t = setTimeout(() => setPhase(videoSrc ? 'video1' : 'image'), eventDurationMs)
-    return () => clearTimeout(t)
-  }, [phase, videoSrc, eventDurationMs])
+  }, [revealed, videoSrc, phase, imageDurationMs])
 
   const restartPan = (v: HTMLVideoElement) => {
     // スマホ用のパン演出（hero-video-pan、globals.css）を毎回の再生開始時に
@@ -100,16 +80,6 @@ export default function HeroMediaCycle({
         style={{ opacity: phase === 'image' ? 1 : 0 }}
         priority
       />
-      {eventImageSrc && (
-        <Link
-          href={eventHref ?? '#'}
-          aria-label={eventImageAlt}
-          className="absolute inset-0 transition-opacity duration-[1200ms] ease-out"
-          style={{ opacity: phase === 'event' ? 1 : 0, pointerEvents: phase === 'event' ? 'auto' : 'none' }}
-        >
-          <Image src={eventImageSrc} alt={eventImageAlt ?? ''} fill className="object-cover" />
-        </Link>
-      )}
       {videoSrc && (
         <video
           ref={video1Ref}
