@@ -63,6 +63,8 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_onsen_status_enabled: 'true',
   onsenji_onsen_status_open_label: 'ただいま入浴いただけます',
   onsenji_onsen_status_open_label_en: 'The hot spring is available for bathing.',
+  onsenji_onsen_status_reception_closed_label: '本日の入浴の受付は終了しました',
+  onsenji_onsen_status_reception_closed_label_en: 'Reception for today’s bathing has closed.',
   onsenji_onsen_status_closed_time_label: '本日の入浴は終了しました',
   onsenji_onsen_status_closed_time_label_en: 'The hot spring is not available for bathing.',
   onsenji_onsen_status_open_time: '09:00',
@@ -165,13 +167,16 @@ export default async function OnsenjPage({
   const heroSub = getLocalizedContent(c, 'onsenji_hero_sub', loc).split('\n').map(l => l.trim()).filter(Boolean).join('\n')
   const onsenStatusEnabled = c['onsenji_onsen_status_enabled'] !== 'false'
   const onsenStatusOpenLabel = getLocalizedContent(c, 'onsenji_onsen_status_open_label', loc)
+  const onsenStatusReceptionClosedLabel = getLocalizedContent(c, 'onsenji_onsen_status_reception_closed_label', loc)
   const onsenStatusClosedTimeLabel = getLocalizedContent(c, 'onsenji_onsen_status_closed_time_label', loc)
   const closureEvents = pj<ClosureEvent[]>(getLocalizedContent(c, 'onsenji_onsen_closure_events', loc), [])
   const todayISO = jstDateISO()
   const todaysClosure = closureEvents.find(e => e.date === todayISO)
   const onsenOpenTime = c['onsenji_onsen_status_open_time'] || '09:00'
   const onsenCloseTime = c['onsenji_onsen_status_close_time'] || '16:00'
-  const onsenWithinHours = jstMinutesNow() >= hmToMinutes(onsenOpenTime) && jstMinutesNow() < hmToMinutes(onsenCloseTime)
+  const nowMinutes = jstMinutesNow()
+  const onsenWithinHours = nowMinutes >= hmToMinutes(onsenOpenTime) && nowMinutes < hmToMinutes(onsenCloseTime)
+  const onsenReceptionClosed = onsenWithinHours && nowMinutes >= hmToMinutes(onsenCloseTime) - 60
   const onsenStatusHours = loc === 'en'
     ? `Bathing available ${to12h(onsenOpenTime)}–${to12h(onsenCloseTime)}`
     : `${onsenOpenTime}〜${onsenCloseTime}まで入浴可`
@@ -256,6 +261,22 @@ export default async function OnsenjPage({
                     </span>
                     <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
                       {onsenStatusClosedTimeLabel}
+                    </p>
+                  </div>
+                  <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
+                  {onsenStatusNote && (
+                    <p className="text-[11px] md:text-xs text-gray-400 mt-0.5">{onsenStatusNote}</p>
+                  )}
+                </div>
+              ) : onsenReceptionClosed ? (
+                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-8 py-5 rounded-2xl shadow-xl">
+                  <div className="flex items-center gap-2.5">
+                    <span className="relative flex h-3 w-3 flex-shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500" />
+                    </span>
+                    <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
+                      {onsenStatusReceptionClosedLabel}
                     </p>
                   </div>
                   <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
