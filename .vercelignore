@@ -1,0 +1,3 @@
+# 動画などGitHubの容量上限(100MB)を超える可能性のある元素材（ローカルには残す）
+# .gitignoreと同じ意図。vercel deployでのローカル手動デプロイ時にもアップロード対象から除外する
+public/images/chuzenji/wedding/archive-video-images/*.mp4
