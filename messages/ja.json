@@ -186,7 +186,9 @@
     "confirmSubmit": "この内容で予約する",
     "goToConfirm": "確認画面へ",
     "doneTitle": "ご予約を受け付けました",
-    "doneText": "後ほどお寺よりご連絡いたします。確認まで数日お待ちいただく場合がございます。"
+    "doneText": "後ほどお寺よりご連絡いたします。確認まで数日お待ちいただく場合がございます。",
+    "gomaNoticeText": "護摩祈願は受付がありますので、予約時間の10分前に大黒天堂にお越しください。",
+    "gomaNoticeButton": "はい"
   },
   "reservationCalendar": {
     "prevWeek": "← 前の1週間",

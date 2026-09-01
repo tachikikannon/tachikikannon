@@ -50,6 +50,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
   const [purpose, setPurpose] = useState('gokigan')
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<'idle'|'loading'|'error'>('idle')
+  const [showGomaNotice, setShowGomaNotice] = useState(false)
 
   function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
@@ -60,6 +61,20 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
   function backToInput() {
     setStep('input')
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // 護摩祈願のみ、最終送信前に受付時間の注意事項をポップアップで確認してもらう
+  function handleConfirmClick() {
+    if (form.type === 'prayer') {
+      setShowGomaNotice(true)
+      return
+    }
+    handleSubmit()
+  }
+
+  function acknowledgeGomaNotice() {
+    setShowGomaNotice(false)
+    handleSubmit()
   }
 
   async function handleSubmit() {
@@ -245,7 +260,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
                 className="flex-1 border border-navy text-navy rounded-full py-3 text-sm hover:bg-navy/5 transition-colors disabled:opacity-50">
                 {t('backButton')}
               </button>
-              <button type="button" onClick={handleSubmit} disabled={status === 'loading'}
+              <button type="button" onClick={handleConfirmClick} disabled={status === 'loading'}
                 className="flex-1 btn-primary text-center disabled:opacity-50">
                 {status === 'loading' ? t('submitting') : t('confirmSubmit')}
               </button>
@@ -253,6 +268,31 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
             <p className="text-xs text-gray-400 text-center">
               {t('submitNote')}
             </p>
+          </div>
+        )}
+
+        {/* 護摩祈願のみ：送信前の受付時間案内ポップアップ */}
+        {showGomaNotice && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            onClick={() => setShowGomaNotice(false)}
+          >
+            <div
+              className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center"
+              onClick={e => e.stopPropagation()}
+            >
+              <p className="text-sm text-gray-700 leading-relaxed mb-6">
+                {t('gomaNoticeText')}
+              </p>
+              <button
+                type="button"
+                onClick={acknowledgeGomaNotice}
+                disabled={status === 'loading'}
+                className="btn-primary text-sm px-10 py-2 disabled:opacity-50"
+              >
+                {status === 'loading' ? t('submitting') : t('gomaNoticeButton')}
+              </button>
+            </div>
           </div>
         )}
       </div>

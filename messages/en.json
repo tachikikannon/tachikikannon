@@ -186,7 +186,9 @@
     "confirmSubmit": "Confirm Reservation",
     "goToConfirm": "Review & Confirm",
     "doneTitle": "Your Reservation Has Been Received",
-    "doneText": "The temple will contact you shortly. Confirmation may take a few days."
+    "doneText": "The temple will contact you shortly. Confirmation may take a few days.",
+    "gomaNoticeText": "Prayer services (Goma Kito) require check-in, so please arrive at Daikokuten-do Hall 10 minutes before your reservation time.",
+    "gomaNoticeButton": "Yes"
   },
   "reservationCalendar": {
     "prevWeek": "← Previous Week",
