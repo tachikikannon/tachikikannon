@@ -29,11 +29,11 @@ export default function EventBanners({ banners }: { banners: EventBanner[] }) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
           <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
-            <p className="font-serif text-base sm:text-xl text-white tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+            <p className="font-serif text-lg sm:text-2xl text-white tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
               {banner.caption}
             </p>
             {banner.subcaption && (
-              <p className="text-xs sm:text-sm text-gold-light mt-1.5" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+              <p className="text-sm sm:text-base text-gold-light mt-1.5" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
                 {banner.subcaption}
               </p>
             )}

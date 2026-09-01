@@ -82,7 +82,7 @@ export default async function NewsPage({
                 const title = pickLocalized(loc, item.title, item.title_en)
                 return (
                   <Link key={item.id} href={`/news/${item.id}`}
-                    className="flex items-stretch hover:bg-cream-alt transition-colors group">
+                    className="flex items-stretch hover:bg-navy/5 transition-colors group">
                     <div className="w-20 flex-shrink-0 relative bg-navy">
                       <Image src={item.cover_url || '/images/chuzenji/common/jimon-navy.png'} alt={title} fill className="object-cover" />
                     </div>

@@ -117,7 +117,7 @@ export default async function NewsDetailPage({
               <div className="bg-white rounded-xl shadow-sm overflow-hidden divide-y divide-gray-100">
                 {related.map(r => (
                   <Link key={r.id} href={`/news/${r.id}`}
-                    className="flex items-center justify-between px-5 py-3 hover:bg-cream-alt transition-colors group">
+                    className="flex items-center justify-between px-5 py-3 hover:bg-navy/5 transition-colors group">
                     <span className="text-sm text-navy group-hover:text-gold transition-colors">{pickLocalized(loc, r.title, r.title_en)}</span>
                     <time className="text-xs text-gray-400 flex-shrink-0 ml-4">
                       {new Date(r.published_at ?? r.created_at).toLocaleDateString(dateLocale)}
