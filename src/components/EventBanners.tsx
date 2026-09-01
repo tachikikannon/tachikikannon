@@ -4,6 +4,7 @@ interface EventBanner {
   image: string
   href: string
   caption: string
+  subcaption?: string
 }
 
 // トップページ「お知らせ」の上に表示する、期間限定のお知らせバナー一覧。
@@ -24,13 +25,18 @@ export default function EventBanners({ banners }: { banners: EventBanner[] }) {
           <img
             src={banner.image}
             alt={banner.caption}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
-          <div className="relative h-full flex items-center justify-center text-center px-6">
-            <p className="font-serif text-lg sm:text-2xl text-white tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+          <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
+            <p className="font-serif text-base sm:text-xl text-white tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
               {banner.caption}
             </p>
+            {banner.subcaption && (
+              <p className="text-xs sm:text-sm text-gold-light mt-1.5" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+                {banner.subcaption}
+              </p>
+            )}
           </div>
         </Link>
       ))}

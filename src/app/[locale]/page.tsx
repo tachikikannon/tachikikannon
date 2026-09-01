@@ -54,8 +54,10 @@ const DEFAULT_SERVICE_CARDS_EN = [
   { title: 'Amulets & Mail Order', text: 'Omamori charms, ofuda tablets, and other items are available online or by cash-on-delivery order.', info: 'Choose online shop or cash-on-delivery' },
 ]
 const DEFAULT_EVENT_BANNERS = [
-  { image: '/images/yakansanpai.png', href: '/news/13adf0b9-5fe7-4c32-9c5a-0850883cc0d4',
-    caption_ja: '夜間参拝', caption_en: 'Night Visiting Event', published: true },
+  { image: '/images/yakansanpai.jpeg', href: '/news/13adf0b9-5fe7-4c32-9c5a-0850883cc0d4',
+    caption_ja: '2026年中禅寺立木観音夜間参拝', caption_en: '2026 Nikkozan Chuzenji Tachiki Kannon Night Visiting',
+    subcaption_ja: '2026年9月18日～22日開催', subcaption_en: 'Held September 18–22, 2026',
+    published: true },
 ]
 const DEFAULT_GALLERY_SLIDES = [
   { src: '/images/chuzenji/common/godaido.jpg', alt: '五大堂', month: '',
@@ -204,6 +206,7 @@ export default async function HomePage({
     .map(b => ({
       image: b.image, href: b.href,
       caption: loc === 'en' ? (b.caption_en || b.caption_ja) : b.caption_ja,
+      subcaption: loc === 'en' ? (b.subcaption_en || b.subcaption_ja) : b.subcaption_ja,
     }))
 
   // 管理画面「中禅寺ギャラリー」（/admin/chuzenji/gallery）で編集可能。

@@ -2,13 +2,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 
-type Banner = { image: string; href: string; caption_ja: string; caption_en: string; published: boolean }
+type Banner = {
+  image: string; href: string
+  caption_ja: string; caption_en: string
+  subcaption_ja: string; subcaption_en: string
+  published: boolean
+}
 
 const CONTENT_KEY = 'top_event_banners'
 
 const DEFAULT_BANNERS: Banner[] = [
-  { image: '/images/yakansanpai.png', href: '/news/13adf0b9-5fe7-4c32-9c5a-0850883cc0d4',
-    caption_ja: '夜間参拝', caption_en: 'Night Visiting Event', published: true },
+  { image: '/images/yakansanpai.jpeg', href: '/news/13adf0b9-5fe7-4c32-9c5a-0850883cc0d4',
+    caption_ja: '2026年中禅寺立木観音夜間参拝', caption_en: '2026 Nikkozan Chuzenji Tachiki Kannon Night Visiting',
+    subcaption_ja: '2026年9月18日～22日開催', subcaption_en: 'Held September 18–22, 2026',
+    published: true },
 ]
 
 export default function AdminChuzenjiEventsBanner() {
@@ -65,7 +72,7 @@ export default function AdminChuzenjiEventsBanner() {
     if (!file) return
     setUploadingIndex(-1)
     const url = await uploadFile(file)
-    if (url) setBanners(b => [...b, { image: url, href: '', caption_ja: '', caption_en: '', published: true }])
+    if (url) setBanners(b => [...b, { image: url, href: '', caption_ja: '', caption_en: '', subcaption_ja: '', subcaption_en: '', published: true }])
     setUploadingIndex(null)
     if (addFileRef.current) addFileRef.current.value = ''
   }
@@ -163,12 +170,22 @@ export default function AdminChuzenjiEventsBanner() {
               </div>
               <div className="grid sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs text-gray-500 block mb-0.5">画像上の文字（日本語）</label>
+                  <label className="text-xs text-gray-500 block mb-0.5">見出し（日本語）</label>
                   <input type="text" className="admin-input text-sm" value={banner.caption_ja} onChange={e => update(i, 'caption_ja', e.target.value)} />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 block mb-0.5">画像上の文字（英語）</label>
+                  <label className="text-xs text-gray-500 block mb-0.5">見出し（英語）</label>
                   <input type="text" className="admin-input text-sm" value={banner.caption_en} onChange={e => update(i, 'caption_en', e.target.value)} />
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-gray-500 block mb-0.5">見出し下の小さい文字（日本語・開催日程など）</label>
+                  <input type="text" className="admin-input text-sm" value={banner.subcaption_ja} onChange={e => update(i, 'subcaption_ja', e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 block mb-0.5">見出し下の小さい文字（英語）</label>
+                  <input type="text" className="admin-input text-sm" value={banner.subcaption_en} onChange={e => update(i, 'subcaption_en', e.target.value)} />
                 </div>
               </div>
             </div>
