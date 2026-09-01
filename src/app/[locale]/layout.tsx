@@ -13,8 +13,6 @@ export const metadata: Metadata = {
     locale: 'ja_JP',
     type: 'website',
   },
-  // 中禅寺・温泉寺とも検索エンジンの結果に表示しない
-  robots: { index: false, follow: false },
 }
 
 export function generateStaticParams() {
