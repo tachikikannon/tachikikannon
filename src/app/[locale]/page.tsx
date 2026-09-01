@@ -217,7 +217,14 @@ export default async function HomePage({
           eyebrowDarkColor="#c8a96e"
           eyebrowLightColor="#c8a96e"
           background={
-            <HeroMediaCycle imageSrc={heroBgImage} imageAlt="中禅寺 立木観音" videoSrc={heroBgVideo} videoSrc2={heroBgVideo2} videoSrc3={heroBgVideo3} />
+            <HeroMediaCycle
+              imageSrc={heroBgImage} imageAlt="中禅寺 立木観音"
+              videoSrc={heroBgVideo} videoSrc2={heroBgVideo2} videoSrc3={heroBgVideo3}
+              // 夜間参拝イベント告知（一時的）。イベント終了後はこの3行を削除すれば元の並びに戻る。
+              eventImageSrc="/images/yakansanpai.png"
+              eventImageAlt={loc === 'en' ? 'Night Visiting Event' : '夜間参拝'}
+              eventHref="/news/13adf0b9-5fe7-4c32-9c5a-0850883cc0d4"
+            />
           }
         >
           <div className="hero-pop-buttons flex flex-wrap gap-3 justify-center">

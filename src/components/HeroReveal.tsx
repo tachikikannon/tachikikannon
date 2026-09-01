@@ -347,8 +347,9 @@ export default function HeroReveal({
             写真の下に地色を敷いてから重ねる */}
         <div className="absolute inset-0" style={{ backgroundColor: darkColor }} />
         <HeroRevealedContext.Provider value={imageActive}>{background}</HeroRevealedContext.Provider>
-        {/* 文字を読みやすくするための薄いオーバーレイ（濃すぎない程度） */}
-        <div className="absolute inset-0" style={{ backgroundColor: darkColor, opacity: 0.22 }} />
+        {/* 文字を読みやすくするための薄いオーバーレイ（濃すぎない程度）。
+            装飾のみなので、下の背景（HeroMediaCycle等）へのクリックを妨げないようpointer-events-none */}
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: darkColor, opacity: 0.22 }} />
       </div>
 
       {/* メインコピー・サブコピーは常にセクション全体（画像）の上下中央に配置する。
@@ -365,7 +366,11 @@ export default function HeroReveal({
           高さに関係なく見出しが常に画面の同じ位置に来るようにした */}
       <div
         ref={outerWrapperRef}
-        className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 ${verticalHeading ? '' : 'inset-y-0'}`}
+        // このラッパー自体は見出しテキスト分の高さしか使わないが、絶対配置で
+        // セクションほぼ全体を占めるため、pointer-events-noneにして背景
+        // （HeroMediaCycle等）へのクリックを妨げないようにする。実際にクリック
+        // 可能な要素（下のchildren/midContentラッパー）側だけ個別にautoへ戻す
+        className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none ${verticalHeading ? '' : 'inset-y-0'}`}
         style={verticalHeading
           ? {
               top: `${FIXED_HEADER_PX}px`,
@@ -601,13 +606,13 @@ export default function HeroReveal({
                     従来どおり下部グループ（画像下端付近）に表示するため、
                     縦書きモードのときだけここに出す */}
                 {midContent && (
-                  <div className="mt-4" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}>
+                  <div className="mt-4 pointer-events-auto" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}>
                     {midContent}
                   </div>
                 )}
                 {children && (
                   <div
-                    className={`mt-6 ${staggerChildren ? '' : 'transition-opacity ease-out'}`}
+                    className={`mt-6 pointer-events-auto ${staggerChildren ? '' : 'transition-opacity ease-out'}`}
                     data-active={imageActive}
                     style={{
                       opacity: staggerChildren ? 1 : (imageActive ? 1 : 0),
