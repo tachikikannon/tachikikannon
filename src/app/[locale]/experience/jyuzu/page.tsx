@@ -114,7 +114,6 @@ const DEFAULT_WOOD_SWATCHES: Swatch[] = [
   { name: '梅', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ume.png', desc: '「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
   { name: 'つげ', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tsuge.png', desc: '緻密で丈夫な木質が特徴で、印材にも使われる縁起の良い木材です。' },
   { name: '緑壇', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ryokutan.png', desc: '爽やかな緑色が特徴で、癒やしと安らぎをもたらすとされています。' },
-  { name: '鉄刀木', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tagayasan.png', desc: '硬く丈夫な木質で知られ、魔除け・厄除けのご利益があるとされます。' },
   { name: 'シャム柿', image: '/images/chuzenji/experience/jyuzu/swatches/wood-shamugaki.png', desc: '縞模様が美しい銘木で、独特の風合いを楽しめる木材です。' },
   { name: '鉄刀木（ツヤ有）', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tagayasan-tsuya.png', desc: '艶やかに仕上げられた鉄刀木の珠。硬く丈夫な木質で、魔除け・厄除けのご利益があるとされます。' },
   { name: '梅（ツヤ有）', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ume-tsuya.png', desc: '艶やかに仕上げられた梅の珠。「梅は百花の魁」といわれ、開運・厄除けの木として親しまれています。' },
@@ -129,7 +128,6 @@ const DEFAULT_WOOD_SWATCHES_EN: Swatch[] = [
   { name: 'Plum Wood', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ume.png', desc: 'Known as "the first of a hundred flowers," cherished as a tree of good fortune and warding off misfortune.' },
   { name: 'Boxwood', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tsuge.png', desc: 'A fine, durable wood also used for seals — an auspicious material.' },
   { name: 'Green Ebony', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ryokutan.png', desc: 'Known for its refreshing green color, said to bring healing and peace.' },
-  { name: 'Tagayasan', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tagayasan.png', desc: 'A hard, durable wood said to ward off evil and misfortune.' },
   { name: 'Siamese Ebony', image: '/images/chuzenji/experience/jyuzu/swatches/wood-shamugaki.png', desc: 'A prized wood with beautiful striped grain and a distinctive texture.' },
   { name: 'Tagayasan (Polished)', image: '/images/chuzenji/experience/jyuzu/swatches/wood-tagayasan-tsuya.png', desc: 'Polished tagayasan beads — a hard, durable wood said to ward off evil and misfortune.' },
   { name: 'Plum Wood (Polished)', image: '/images/chuzenji/experience/jyuzu/swatches/wood-ume-tsuya.png', desc: 'Polished plum wood beads — "the first of a hundred flowers," a tree of good fortune and warding off misfortune.' },
@@ -197,9 +195,9 @@ const DEFAULTS: Record<string, string> = {
   jyuzu_materials_en: JSON.stringify(DEFAULT_MATERIALS_EN),
   jyuzu_notes: JSON.stringify(DEFAULT_NOTES),
   jyuzu_notes_en: JSON.stringify(DEFAULT_NOTES_EN),
-  jyuzu_stones: JSON.stringify(DEFAULT_STONE_SWATCHES.map(({ name, desc }) => ({ name, desc }))),
+  jyuzu_stones: JSON.stringify(DEFAULT_STONE_SWATCHES),
   jyuzu_stones_en: JSON.stringify(DEFAULT_STONE_SWATCHES_EN.map(({ name, desc }) => ({ name, desc }))),
-  jyuzu_woods: JSON.stringify(DEFAULT_WOOD_SWATCHES.map(({ name, desc }) => ({ name, desc }))),
+  jyuzu_woods: JSON.stringify(DEFAULT_WOOD_SWATCHES),
   jyuzu_woods_en: JSON.stringify(DEFAULT_WOOD_SWATCHES_EN.map(({ name, desc }) => ({ name, desc }))),
 }
 
@@ -240,10 +238,16 @@ export default async function JyuzuPage({
   const notes     = pj<typeof DEFAULT_NOTES>(g('jyuzu_notes'), DEFAULT_NOTES)
   const stonesDefault = loc === 'en' ? DEFAULT_STONE_SWATCHES_EN : DEFAULT_STONE_SWATCHES
   const woodsDefault  = loc === 'en' ? DEFAULT_WOOD_SWATCHES_EN : DEFAULT_WOOD_SWATCHES
-  const stonesRaw = pj<{ name: string; desc: string }[]>(g('jyuzu_stones'), stonesDefault)
-  const woodsRaw  = pj<{ name: string; desc: string }[]>(g('jyuzu_woods'), woodsDefault)
-  const stones = stonesRaw.map((s, i) => ({ image: stonesDefault[i]?.image ?? stonesDefault[0].image, ...s }))
-  const woods  = woodsRaw.map((s, i) => ({ image: woodsDefault[i]?.image ?? woodsDefault[0].image, ...s }))
+  const stonesRaw = pj<{ name: string; desc: string; image?: string }[]>(g('jyuzu_stones'), stonesDefault)
+  const woodsRaw  = pj<{ name: string; desc: string; image?: string }[]>(g('jyuzu_woods'), woodsDefault)
+  // 写真は各項目のimageフィールドを直接使う（並び順・追加削除しても対応する項目の写真がずれない）。
+  // 英語版の一覧には写真を別途登録させない運用のため、無ければ日本語版（jyuzu_stones/jyuzu_woods）の
+  // 同じ位置の写真にフォールバックする。
+  const stonesJa = pj<{ name: string; desc: string; image?: string }[]>(content['jyuzu_stones'], DEFAULT_STONE_SWATCHES)
+  const woodsJa  = pj<{ name: string; desc: string; image?: string }[]>(content['jyuzu_woods'], DEFAULT_WOOD_SWATCHES)
+  const FALLBACK_SWATCH_IMAGE = '/images/chuzenji/experience/jyuzu/jyuzu.png'
+  const stones = stonesRaw.map((s, i) => ({ ...s, image: s.image || stonesJa[i]?.image || FALLBACK_SWATCH_IMAGE }))
+  const woods  = woodsRaw.map((s, i) => ({ ...s, image: s.image || woodsJa[i]?.image || FALLBACK_SWATCH_IMAGE }))
   const instagramUrls = pj<{ url: string }[]>(g('jyuzu_instagram_urls'), [])
     .map(({ url }) => url?.trim())
     .filter((url): url is string => !!url)

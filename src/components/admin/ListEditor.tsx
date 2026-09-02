@@ -1,6 +1,8 @@
 'use client'
+import { useRef, useState } from 'react'
+import { createClient } from '@/lib/supabase'
 
-export type ListField = { key: string; label: string; multiline?: boolean; images?: boolean }
+export type ListField = { key: string; label: string; multiline?: boolean; images?: boolean; image?: boolean }
 
 type Props = {
   value: string
@@ -10,9 +12,46 @@ type Props = {
 }
 
 export default function ListEditor({ value, fields, onChange, addLabel = '項目を追加' }: Props) {
+  const supabase = createClient()
+  const [uploadingKey, setUploadingKey] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const uploadTarget = useRef<{ index: number; key: string } | null>(null)
+
   const items: Record<string, string>[] = (() => {
     try { return JSON.parse(value) } catch { return [] }
   })()
+
+  async function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    const target = uploadTarget.current
+    if (!file || !target) return
+    setUploadError(null)
+    setUploadingKey(`${target.index}-${target.key}`)
+    const ext = file.name.split('.').pop()
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const { error } = await supabase.storage.from('temple-images').upload(path, file)
+    if (error) {
+      setUploadError(error.message)
+    } else {
+      const { data: { publicUrl } } = supabase.storage.from('temple-images').getPublicUrl(path)
+      await supabase.from('media').insert({
+        filename: file.name, storage_path: path, public_url: publicUrl,
+        size_bytes: file.size, mime_type: file.type,
+      })
+      update(target.index, target.key, publicUrl)
+    }
+    setUploadingKey(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  function triggerUpload(index: number, key: string) {
+    uploadTarget.current = { index, key }
+    if (fileInputRef.current) {
+      fileInputRef.current.accept = 'image/*'
+      fileInputRef.current.click()
+    }
+  }
 
   function update(i: number, key: string, val: string) {
     const updated = items.map((item, idx) => idx === i ? { ...item, [key]: val } : item)
@@ -38,6 +77,10 @@ export default function ListEditor({ value, fields, onChange, addLabel = '項目
 
   return (
     <div className="space-y-2">
+      {uploadError && (
+        <p className="text-red-600 text-xs bg-red-50 border border-red-200 rounded p-2">{uploadError}</p>
+      )}
+      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelected} />
       {items.map((item, i) => (
         <div key={i} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
           <div className="flex justify-between items-center mb-2">
@@ -49,10 +92,25 @@ export default function ListEditor({ value, fields, onChange, addLabel = '項目
             </div>
           </div>
           <div className="space-y-2">
-            {fields.map(({ key, label, multiline, images }) => (
+            {fields.map(({ key, label, multiline, images, image }) => (
               <div key={key}>
                 <label className="text-xs text-gray-500 block mb-0.5">{label}</label>
-                {images ? (
+                {image ? (
+                  <div className="flex items-center gap-3">
+                    {item[key] && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={item[key]} alt="" className="w-12 h-12 rounded-full object-cover border border-gray-200 flex-shrink-0" />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => triggerUpload(i, key)}
+                      disabled={uploadingKey === `${i}-${key}`}
+                      className="text-xs text-navy border border-navy rounded px-3 py-1.5 hover:bg-navy hover:text-white transition-colors disabled:opacity-50"
+                    >
+                      {uploadingKey === `${i}-${key}` ? 'アップロード中...' : item[key] ? '写真を変更' : '写真をアップロード'}
+                    </button>
+                  </div>
+                ) : images ? (
                   <>
                     <textarea
                       className="admin-input min-h-[70px] text-sm"
