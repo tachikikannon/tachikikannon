@@ -14,6 +14,26 @@ export const useHeroRevealed = () => useContext(HeroRevealedContext)
 // サーバーではuseEffectにフォールバックする定番パターン
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
+// タブがバックグラウンドの間（他アプリ・他タブ切り替え中に読み込みが進んだ場合など）に
+// マウントされると、setTimeoutはブラウザ側でスロットリングされ、フォアグラウンドに戻った
+// 瞬間に溜まっていた分がまとめて発火してしまう。その結果、本来1文字ずつ間隔をあけて
+// 出るはずの見出しが、復帰した瞬間に一気にガタガタと出そろって見える不具合になる。
+// これを防ぐため、実際に見える状態になるまでタイマー開始そのものを遅らせる。
+function runWhenVisible(fn: () => void): () => void {
+  if (typeof document === 'undefined' || document.visibilityState !== 'hidden') {
+    fn()
+    return () => {}
+  }
+  const onVisible = () => {
+    if (document.visibilityState !== 'hidden') {
+      document.removeEventListener('visibilitychange', onVisible)
+      fn()
+    }
+  }
+  document.addEventListener('visibilitychange', onVisible)
+  return () => document.removeEventListener('visibilitychange', onVisible)
+}
+
 interface HeroRevealProps {
   eyebrow: string
   heading: string
@@ -188,9 +208,13 @@ export default function HeroReveal({
       setHorizontalImageActive(true)
       return
     }
-    const t1 = setTimeout(() => setPhase('text'), TEXT_START_MS)
-    const t2 = setTimeout(() => setHorizontalImageActive(true), horizontalImageAtMs)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
+    let t1: ReturnType<typeof setTimeout> | undefined
+    let t2: ReturnType<typeof setTimeout> | undefined
+    const cancelWait = runWhenVisible(() => {
+      t1 = setTimeout(() => setPhase('text'), TEXT_START_MS)
+      t2 = setTimeout(() => setHorizontalImageActive(true), horizontalImageAtMs)
+    })
+    return () => { cancelWait(); if (t1) clearTimeout(t1); if (t2) clearTimeout(t2) }
   }, [verticalHeading, horizontalImageAtMs])
 
   useEffect(() => {
@@ -201,10 +225,12 @@ export default function HeroReveal({
       return
     }
     const timers: ReturnType<typeof setTimeout>[] = []
-    vLineStartTimes.forEach((t, i) => timers.push(setTimeout(() => setStep(i), t)))
-    if (hasLogoStep) timers.push(setTimeout(() => setStep(frames.length), vLogoStartMs))
-    timers.push(setTimeout(() => setVerticalImageActive(true), verticalImageAtMs))
-    return () => { timers.forEach(clearTimeout) }
+    const cancelWait = runWhenVisible(() => {
+      vLineStartTimes.forEach((t, i) => timers.push(setTimeout(() => setStep(i), t)))
+      if (hasLogoStep) timers.push(setTimeout(() => setStep(frames.length), vLogoStartMs))
+      timers.push(setTimeout(() => setVerticalImageActive(true), verticalImageAtMs))
+    })
+    return () => { cancelWait(); timers.forEach(clearTimeout) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [verticalHeading, hasLogoStep, vLogoStartMs, verticalImageAtMs, frames.length])
 
