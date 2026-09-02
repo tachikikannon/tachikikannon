@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
@@ -47,7 +47,7 @@ async function getContent() {
   const keys = [...Object.keys(DEFAULTS), 'onsenji_faq_items', 'onsenji_faq_items_en'].join(',')
   try {
     const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 60 },
     })
     if (!res.ok) return { c: DEFAULTS, faqs: DEFAULT_FAQS, faqsEn: DEFAULT_FAQS_EN }
     const rows: { key: string; value: string }[] = await res.json()

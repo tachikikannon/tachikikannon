@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
@@ -19,7 +19,7 @@ async function getLendablePhotos(): Promise<Media[]> {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   try {
     const res = await fetch(`${url}/rest/v1/media?is_lendable=eq.true&site=eq.onsenji&select=*&order=created_at.desc`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 60 },
     })
     if (!res.ok) return []
     return await res.json()

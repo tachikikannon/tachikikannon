@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -134,7 +134,7 @@ export default async function HomePage({
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   const siteContentRes = await fetch(`${supabaseUrl}/rest/v1/site_content?select=key,value`, {
     headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` },
-    cache: 'no-store',
+    next: { revalidate: 60 },
   })
   const siteContentRows: { key: string; value: string }[] = siteContentRes.ok ? await siteContentRes.json() : []
   const content: Record<string, string> = { ...DEFAULT_CONTENT }

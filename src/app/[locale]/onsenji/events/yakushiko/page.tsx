@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
@@ -85,7 +85,7 @@ async function getContent() {
   try {
     const keys = Object.keys(DEFAULTS).join(',')
     const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys})&select=key,value`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` }, cache: 'no-store',
+      headers: { apikey: key, Authorization: `Bearer ${key}` }, next: { revalidate: 60 },
     })
     if (!res.ok) return DEFAULTS
     const rows: { key: string; value: string }[] = await res.json()
