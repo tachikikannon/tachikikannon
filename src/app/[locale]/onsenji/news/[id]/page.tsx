@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
-import { createServerClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
 import { renderNewsBody } from '@/lib/newsBody'
 import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
@@ -15,7 +15,7 @@ import type { News } from '@/types'
 export async function generateMetadata({ params }: { params: Promise<{ id: string; locale: string }> }): Promise<Metadata> {
   const { id, locale } = await params
   const loc = locale as Locale
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   const { data } = await supabase.from('news').select('*').eq('id', id).eq('site', 'onsenji').single()
   const t = await getTranslations({ locale, namespace: 'onsenjiNews' })
   const title = data ? pickLocalized(loc, data.title, data.title_en) : null
@@ -35,7 +35,7 @@ export default async function OnsenjiNewsDetailPage({
   const t = await getTranslations('onsenjiNews')
   const tDetail = await getTranslations('onsenjiNewsDetail')
   const tc = await getTranslations('common')
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
 
   const { data: item } = await supabase
     .from('news')

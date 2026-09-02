@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
-import { createServerClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
 import { renderNewsBody } from '@/lib/newsBody'
 import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
@@ -15,7 +15,7 @@ import type { News } from '@/types'
 export async function generateMetadata({ params }: { params: Promise<{ id: string; locale: string }> }): Promise<Metadata> {
   const { id, locale } = await params
   const loc = locale as Locale
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   const { data } = await supabase.from('news').select('*').eq('id', id).single()
   const t = await getTranslations({ locale, namespace: 'news' })
   return {
@@ -34,7 +34,7 @@ export default async function NewsDetailPage({
   const t = await getTranslations('news')
   const tDetail = await getTranslations('newsDetail')
   const tc = await getTranslations('common')
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
 
   const { data: item } = await supabase
     .from('news')

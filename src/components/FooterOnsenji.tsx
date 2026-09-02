@@ -4,9 +4,11 @@ async function getSiteSettings() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   try {
+    // Footerは全ページで読み込まれるため、no-storeのままだとページビューのたびに
+    // Supabaseへ問い合わせが発生する（2026-09-02のCached Egress超過の一因）
     const res = await fetch(`${url}/rest/v1/site_content?key=in.(onsenji_address,onsenji_tel,onsenji_fax)&select=key,value`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
-      cache: 'no-store',
+      next: { revalidate: 60 },
     })
     if (!res.ok) return {}
     const rows: { key: string; value: string }[] = await res.json()

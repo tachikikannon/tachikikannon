@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
-import { createServerClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 
@@ -20,7 +20,7 @@ function pj<T>(s: string | undefined | null, fallback: T): T {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
   const { slug, locale } = await params
   const loc = locale as Locale
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   const { data } = await supabase.from('minor_events').select('*').eq('slug', slug).eq('site', 'onsenji').single()
   const t = await getTranslations({ locale, namespace: 'onsenjiMinorEvent' })
   return { title: data ? pickLocalized(loc, data.title, data.title_en) : t('fallbackTitle') }
@@ -31,7 +31,7 @@ export default async function OnsenjMinorEventDetailPage({ params }: { params: P
   const loc = locale as Locale
   const t = await getTranslations('onsenjiMinorEvent')
   const tc = await getTranslations('common')
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   const { data: ev } = await supabase
     .from('minor_events')
     .select('*')

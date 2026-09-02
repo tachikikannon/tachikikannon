@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { createServerClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -16,7 +16,7 @@ export default async function EventsPage() {
   const tc = await getTranslations('common')
   const MONTHS = t('months').split(',')
   const WEEKDAYS = t('weekdays').split(',')
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   const { data: events } = await supabase
     .from('events')
     .select('*')

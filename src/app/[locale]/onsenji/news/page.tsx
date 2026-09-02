@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
-import { createServerClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
 import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
@@ -28,7 +28,7 @@ export default async function OnsenjiNewsPage({
   const { category } = await searchParams
   const t = await getTranslations('onsenjiNews')
   const tc = await getTranslations('common')
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   let query = supabase
     .from('news')
     .select('*')

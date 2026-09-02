@@ -5,14 +5,14 @@ import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ZoomableImage from '@/components/ZoomableImage'
-import { createServerClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { pickLocalized } from '@/lib/site-content'
 import type { Locale } from '@/i18n/routing'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; locale: string }> }): Promise<Metadata> {
   const { slug, locale } = await params
   const loc = locale as Locale
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   const { data } = await supabase.from('posts').select('*').eq('slug', slug).single()
   const t = await getTranslations({ locale, namespace: 'blog' })
   return { title: data ? pickLocalized(loc, data.title, data.title_en) : t('title') }
@@ -28,7 +28,7 @@ export default async function BlogDetailPage({
   const t = await getTranslations('blog')
   const tc = await getTranslations('common')
   const dateLocale = loc === 'en' ? 'en-US' : 'ja-JP'
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   const { data: post } = await supabase
     .from('posts')
     .select('*')

@@ -1,5 +1,10 @@
 import type { MetadataRoute } from 'next'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
+
+// クローラーが繰り返し取得するため、cookies()を使う管理用クライアントで
+// 毎回Supabaseに問い合わせないようにする（キャッシュされない読み取りクライアントの
+// 使用はCached Egress超過の一因だった）。1時間おきの再生成で十分
+export const revalidate = 3600
 
 const BASE_URL = process.env.SITE_URL || 'https://tachikikannon.vercel.app'
 const LOCALES = ['ja', 'en'] as const
@@ -36,7 +41,7 @@ function withAlternates(path: string) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createPublicSupabaseClient()
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_PATHS.flatMap(withAlternates)
 

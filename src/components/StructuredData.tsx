@@ -6,7 +6,7 @@ async function getSiteSettings(keys: string[]) {
   try {
     const res = await fetch(`${url}/rest/v1/site_content?key=in.(${keys.join(',')})&select=key,value`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
-      cache: 'no-store',
+      next: { revalidate: 60 },
     })
     if (!res.ok) return {}
     const rows: { key: string; value: string }[] = await res.json()

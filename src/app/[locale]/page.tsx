@@ -11,7 +11,7 @@ import YouTubeAutoplay from '@/components/YouTubeAutoplay'
 import HeroReveal from '@/components/HeroReveal'
 import HeroMediaCycle from '@/components/HeroMediaCycle'
 import { ChuzenjiStructuredData } from '@/components/StructuredData'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
@@ -128,7 +128,7 @@ export default async function HomePage({
   const { locale } = await params
   const loc = locale as Locale
   const t = await getTranslations('home')
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createPublicSupabaseClient()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!

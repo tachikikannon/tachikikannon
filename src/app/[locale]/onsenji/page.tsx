@@ -9,7 +9,7 @@ import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
 import HeroReveal from '@/components/HeroReveal'
 import { OnsenjiStructuredData } from '@/components/StructuredData'
-import { createServerClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
 import type { Locale } from '@/i18n/routing'
@@ -195,7 +195,7 @@ export default async function OnsenjPage({
   const accessCar = getLocalizedContent(c, 'onsenji_access_car', loc)
   const accessBus = getLocalizedContent(c, 'onsenji_access_bus', loc)
 
-  const supabase = await createServerClient()
+  const supabase = await createPublicSupabaseClient()
   const { data: newsList } = await supabase
     .from('news')
     .select('*')
