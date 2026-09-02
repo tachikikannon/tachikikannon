@@ -14,8 +14,7 @@ const FIELDS = [
   { key: 'zazen_target', label: '対象', defaultValue: '小学生以上（小学生は保護者同伴）', translatable: true },
   { key: 'zazen_capacity', label: '人数', defaultValue: '2〜10名', translatable: true },
   { key: 'zazen_place',  label: '受付場所', defaultValue: '本堂 体験受付窓口', translatable: true, defaultValueEn: 'Main Hall Experience Counter' },
-  { key: 'zazen_hours_peak', label: '受付時間（4月〜10月）', defaultValue: '4月〜10月：13:00〜14:00', translatable: true, defaultValueEn: 'April–October: 1:00 PM–2:00 PM' },
-  { key: 'zazen_hours_shoulder', label: '受付時間（3月・11月）', defaultValue: '3月・11月：13:00〜14:00', translatable: true, defaultValueEn: 'March & November: 1:00 PM–2:00 PM' },
+  { key: 'zazen_hours_peak', label: '受付時間（3月〜11月）', defaultValue: '3月〜11月：13:00〜14:00', translatable: true, defaultValueEn: 'March–November: 1:00 PM–2:00 PM' },
   { key: 'zazen_hours_winter', label: '受付時間（12月〜2月）', defaultValue: '12月〜2月：13:00', translatable: true, defaultValueEn: 'December–February: 1:00 PM' },
   { key: 'zazen_heading_flow', label: '「体験の流れ」見出し', defaultValue: '体験の流れ', translatable: true },
   {

@@ -60,10 +60,8 @@ const DEFAULTS: Record<string, string> = {
   zazen_capacity_en: '2–10 people',
   zazen_place: '本堂 体験受付窓口',
   zazen_place_en: 'Main Hall Experience Counter',
-  zazen_hours_peak: '4月〜10月：13:00〜14:00',
-  zazen_hours_peak_en: 'April–October: 1:00 PM–2:00 PM',
-  zazen_hours_shoulder: '3月・11月：13:00〜14:00',
-  zazen_hours_shoulder_en: 'March & November: 1:00 PM–2:00 PM',
+  zazen_hours_peak: '3月〜11月：13:00〜14:00',
+  zazen_hours_peak_en: 'March–November: 1:00 PM–2:00 PM',
   zazen_hours_winter: '12月〜2月：13:00',
   zazen_hours_winter_en: 'December–February: 1:00 PM',
   zazen_heading_flow: '体験の流れ',
@@ -156,7 +154,7 @@ export default async function ZazenPage({
                     [t('tableTarget'), g('zazen_target')],
                     [t('tableCapacity'), g('zazen_capacity')],
                     [t('tablePlace'), g('zazen_place')],
-                    [t('tableHours'), `${g('zazen_hours_peak')}\n${g('zazen_hours_shoulder')}\n${g('zazen_hours_winter')}`],
+                    [t('tableHours'), `${g('zazen_hours_peak')}\n${g('zazen_hours_winter')}`],
                   ].map(([k, v]) => (
                     <tr key={k} className="border border-gray-200">
                       <th className="bg-navy text-white text-left px-4 py-3 w-32 text-sm font-medium whitespace-nowrap align-top">{k}</th>
