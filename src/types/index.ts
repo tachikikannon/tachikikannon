@@ -283,6 +283,8 @@ export interface Application {
   child_count: string | null
   student_count: string | null
   school_or_company: string | null
+  // 「諸堂貸出・貸切申請」専用。'貸出' または '貸切'
+  venue_use_type: string | null
 }
 
 export const MEDIA_CATEGORIES = [
