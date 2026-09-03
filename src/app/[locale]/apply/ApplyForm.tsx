@@ -22,7 +22,6 @@ const EMPTY_FORM = {
   attendee_count: '', duration_minutes: '', request_notes: '',
   visit_date: '', group_name: '', course_number: '',
   adult_count: '', child_count: '', student_count: '', school_or_company: '',
-  venue_use_type: '',
   message: '',
 }
 
@@ -43,7 +42,7 @@ export default function ApplyForm() {
     'テレビ・雑誌撮影申請': t('categoryPress'),
     '団体予約申請': t('categoryGroupReservation'),
     '減免申請': t('categoryFeeReduction'),
-    '諸堂貸出・貸切申請': t('categoryVenueRental'),
+    '諸堂使用申請': t('categoryVenueRental'),
     'その他': t('categoryOther'),
   }
   const MEDIA_CATEGORY_LABELS: Record<string, string> = {
@@ -73,11 +72,10 @@ export default function ApplyForm() {
   const [attachmentError, setAttachmentError] = useState('')
   const [photoMedia, setPhotoMedia] = useState<Media[]>([])
 
-  // メディア情報（撮影内容・取材形式・希望日時等）は「テレビ・雑誌撮影申請」の内容。
-  // ただし料金表（撮影料金の黄色い枠）だけは「諸堂貸出・貸切申請」側に表示する
-  // （貸切の場合の参拝時間外料金として）
+  // メディア情報（撮影内容・取材形式を除く・希望日時等）は「テレビ・雑誌撮影申請」の内容。
+  // ただし料金表（使用料の黄色い枠）だけは「諸堂使用申請」側に表示する
   const isTvMagazine = form.category === 'テレビ・雑誌撮影申請'
-  const isVenueRental = form.category === '諸堂貸出・貸切申請'
+  const isVenueRental = form.category === '諸堂使用申請'
   const isGroupReservation = form.category === '団体予約申請'
   const isFeeReduction = form.category === '減免申請'
 
@@ -125,7 +123,6 @@ export default function ApplyForm() {
     if (form.email !== form.email_confirm) { setFormError(t('emailMismatchError')); return }
     if ((isTvMagazine || isVenueRental) && form.media_categories.length === 0) { setFormError(t('mediaCategoryRequired')); return }
     if (isTvMagazine && form.interview_formats.length === 0) { setFormError(t('interviewFormatRequired')); return }
-    if (isVenueRental && !form.venue_use_type) { setFormError(t('venueUseTypeRequired')); return }
     setFormError('')
     setStep('confirm')
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -193,9 +190,6 @@ export default function ApplyForm() {
     ...(form.attendee_count ? [[t('attendeeCountLabel'), `${form.attendee_count}${t('attendeeCountSuffix')}`] as [string, string]] : []),
     ...(form.duration_minutes ? [[t('durationLabel'), `${form.duration_minutes}${t('durationSuffix')}`] as [string, string]] : []),
     ...(form.request_notes ? [[t('requestNotesLabel'), form.request_notes] as [string, string]] : []),
-  ] : []
-  const venueRentalRows: [string, string][] = isVenueRental ? [
-    [t('venueUseTypeLabel'), form.venue_use_type === '貸切' ? t('venueUseTypeExclusive') : t('venueUseTypeRental')],
   ] : []
   const groupFeeRows: [string, string][] = (isGroupReservation || isFeeReduction) ? [
     [t('visitDateLabel'), form.visit_date],
@@ -362,20 +356,7 @@ export default function ApplyForm() {
                   <p>{t('filmingFeeAfternoon')}</p>
                   <p>{t('filmingFeeFullDay')}</p>
                   <p>{t('filmingFeeOutside')}</p>
-                </div>
-                <div>
-                  <label className="admin-label">{t('venueUseTypeLabel')}</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {(['貸出', '貸切'] as const).map(v => (
-                      <label key={v} className={`border rounded-lg p-3 cursor-pointer transition-colors
-                        ${form.venue_use_type === v ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
-                        <input type="radio" name="venue_use_type" value={v} className="sr-only"
-                          checked={form.venue_use_type === v}
-                          onChange={() => update('venue_use_type', v)} />
-                        <p className="font-medium text-navy text-sm">{v === '貸出' ? t('venueUseTypeRental') : t('venueUseTypeExclusive')}</p>
-                      </label>
-                    ))}
-                  </div>
+                  <p className="pt-1">{t('filmingFeeExclusiveNote')}</p>
                 </div>
               </div>
             )}
@@ -409,7 +390,7 @@ export default function ApplyForm() {
                 </div>
 
                 {/* 取材形式（撮影・インタビュー等）は撮影取材固有の内容のため、
-                    諸堂貸出・貸切申請では表示しない */}
+                    諸堂使用申請では表示しない */}
                 {isTvMagazine && (
                   <>
                     <h2 className="font-serif text-navy text-lg pt-2">{t('sectionInterviewHeading')}</h2>
@@ -503,7 +484,7 @@ export default function ApplyForm() {
             <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
             <p className="text-sm text-gray-500">{t('confirmNote')}</p>
             <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
-              {[...confirmRows, ...venueRentalRows, ...mediaRows, ...groupFeeRows, ...(form.message ? [[isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]] : [])].map(([label, value]) => (
+              {[...confirmRows, ...mediaRows, ...groupFeeRows, ...(form.message ? [[isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]] : [])].map(([label, value]) => (
                 <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
                   <dt className="text-gray-500">{label}</dt>
                   <dd className="whitespace-pre-wrap">{value}</dd>

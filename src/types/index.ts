@@ -231,7 +231,7 @@ export const APPLICATION_CATEGORIES = [
   '減免申請',
   '写真使用・貸出し許可申請',
   'テレビ・雑誌撮影申請',
-  '諸堂貸出・貸切申請',
+  '諸堂使用申請',
   'その他',
 ] as const
 export type ApplicationCategory = typeof APPLICATION_CATEGORIES[number]
@@ -283,8 +283,6 @@ export interface Application {
   child_count: string | null
   student_count: string | null
   school_or_company: string | null
-  // 「諸堂貸出・貸切申請」専用。'貸出' または '貸切'
-  venue_use_type: string | null
 }
 
 export const MEDIA_CATEGORIES = [
