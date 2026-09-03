@@ -435,6 +435,13 @@ export default function ApplyForm() {
 
             {isVenueRental && (
               <div className="space-y-5 border-t border-gray-200 pt-6">
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700 space-y-1">
+                  <p className="font-medium text-amber-800 mb-1">{t('filmingFeeHeading')}</p>
+                  <p>{t('filmingFeeMorning')}</p>
+                  <p>{t('filmingFeeAfternoon')}</p>
+                  <p>{t('filmingFeeFullDay')}</p>
+                  <p>{t('filmingFeeOutside')}</p>
+                </div>
                 <div>
                   <label className="admin-label">{t('venueUseTypeLabel')}</label>
                   <div className="grid grid-cols-2 gap-2">
@@ -449,12 +456,6 @@ export default function ApplyForm() {
                     ))}
                   </div>
                 </div>
-                {/* 貸切の場合のみ、参拝時間外の料金を案内する（貸出の場合は不要） */}
-                {form.venue_use_type === '貸切' && (
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700">
-                    <p>{t('venueExclusiveFeeNote')}</p>
-                  </div>
-                )}
               </div>
             )}
 
