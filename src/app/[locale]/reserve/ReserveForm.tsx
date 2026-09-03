@@ -29,6 +29,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
 
   const PURPOSES: { value: string; label: string }[] = [
     { value: 'gokigan',      label: t('purposeGokigan') },
+    { value: 'newcar',       label: t('purposeNewCar') },
     { value: 'anzan',        label: t('purposeAnzan') },
     { value: 'shichigosan',  label: t('purposeShichigosan') },
     { value: 'other',        label: t('purposeOther') },
@@ -83,14 +84,18 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
     // anonロールにはreservationsのSELECT権限が無くinsert後にDB生成IDを
     // 取得できないため、この方式でIDを先に確定させてinsert/通知の両方に使う。
     const id = crypto.randomUUID()
-    // 護摩祈願の場合、御祈願の内容（御祈願／護摩祈願／安産祈願／七五三祈願／その他）を
-    // 備考欄の先頭に付記して送信する。DBにpurpose専用カラムが無いための対応。
+    // 護摩祈願の場合、御祈願の内容（御祈願／新車祈祷／安産祈願／七五三祈願／その他）を
+    // 備考欄の先頭に付記して送信する（メール本文で担当者がひと目でわかるように）。
+    // goma_purposeカラムにも同じ内容を保存し、管理画面・カレンダーの表示に使う。
     const purposeLabel = PURPOSES.find(p => p.value === purpose)?.label
     const notes = form.type === 'prayer' && purposeLabel
       ? `【${purposeLabel}】${form.notes ? '\n' + form.notes : ''}`
       : form.notes
     // フリガナ欄を表示していない場合（日本語以外）はDBのNOT NULL制約を満たすため氏名をそのまま入れる。
-    const submission = { ...form, notes, name_kana: showNameKana ? form.name_kana : form.name }
+    const submission = {
+      ...form, notes, name_kana: showNameKana ? form.name_kana : form.name,
+      goma_purpose: form.type === 'prayer' ? purpose : null,
+    }
     const { data: defaultCategory } = await supabase
       .from('reservation_categories').select('id').eq('is_default', true).maybeSingle()
     const { error } = await supabase.from('reservations')

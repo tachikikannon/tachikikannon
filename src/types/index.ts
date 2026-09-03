@@ -87,6 +87,8 @@ export interface MinorEvent {
 
 export type ReservationType = 'prayer' | 'shakyou' | 'shabutu' | 'jyuzu' | 'zazen'
 export type ReservationStatus = 'unconfirmed' | 'in_progress' | 'confirmed' | 'completed' | 'cancelled' | 'pending' | 'provisional'
+// 護摩祈願（type='prayer'）の内容。それ以外のtypeでは常にnull
+export type GomaPurpose = 'gokigan' | 'newcar' | 'anzan' | 'shichigosan' | 'other'
 
 export interface ReservationCategory {
   id: string
@@ -124,6 +126,7 @@ export interface Reservation {
   status: ReservationStatus
   locale: string
   category_id: string | null
+  goma_purpose: string | null
   assigned_admin_id: string | null
   updated_by: string | null
   confirmation_email_sent: boolean

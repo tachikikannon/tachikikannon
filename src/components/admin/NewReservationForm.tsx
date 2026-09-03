@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import AdminSlotPicker from '@/components/admin/AdminSlotPicker'
+import { GOMA_PURPOSE_OPTIONS } from '@/lib/reservationSlots'
 import type { ReservationCategory, ReservationStatus, ReservationType } from '@/types'
 
 const TYPES: { value: ReservationType; label: string }[] = [
@@ -44,6 +45,7 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
     name: '', name_kana: '', email: '', phone: '',
     party_size: 1, notes: '', status: 'confirmed' as ReservationStatus,
     category_id: '' as string,
+    goma_purpose: 'gokigan' as string,
   }
   const [categories, setCategories] = useState<ReservationCategory[]>([])
   const [newRes, setNewRes] = useState(defaults)
@@ -92,7 +94,12 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
     setCreateSaving(true)
     setCreateError(null)
     const { error } = await supabase.from('reservations')
-      .insert({ ...newRes, category_id: newRes.category_id || null, id: crypto.randomUUID() })
+      .insert({
+        ...newRes,
+        category_id: newRes.category_id || null,
+        goma_purpose: newRes.type === 'prayer' ? newRes.goma_purpose : null,
+        id: crypto.randomUUID(),
+      })
     setCreateSaving(false)
     if (error) { setCreateError('登録に失敗しました：' + error.message); return }
     setJustAdded({ date: newRes.date, time_slot: newRes.time_slot, name: newRes.name })
@@ -101,7 +108,7 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
     // （お客様がWeb予約後に職員がステータスを確定に変える場合のみ送信＝updateStatus側の処理）
 
     // 種別・区分・日付は続けやすいよう保持し、時間とお客様情報だけリセットして次の登録に備える
-    setNewRes(f => ({ ...defaults, type: f.type, category_id: f.category_id, date: f.date }))
+    setNewRes(f => ({ ...defaults, type: f.type, category_id: f.category_id, date: f.date, goma_purpose: f.goma_purpose }))
   }
 
   return (
@@ -126,6 +133,23 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
           ))}
         </div>
       </div>
+
+      {newRes.type === 'prayer' && (
+        <div className="mb-4">
+          <label className="admin-label">護摩祈願の内容</label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {GOMA_PURPOSE_OPTIONS.map(p => (
+              <label key={p.value} className={`border rounded-lg p-2.5 cursor-pointer text-sm transition-colors
+                ${newRes.goma_purpose === p.value ? 'border-navy bg-navy/5 font-medium' : 'border-gray-200 hover:border-navy/40'}`}>
+                <input type="radio" name="new-goma-purpose" value={p.value} className="sr-only"
+                  checked={newRes.goma_purpose === p.value}
+                  onChange={() => setNewRes(f => ({ ...f, goma_purpose: p.value }))} />
+                {p.label}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mb-4">
         <label className="admin-label">区分</label>

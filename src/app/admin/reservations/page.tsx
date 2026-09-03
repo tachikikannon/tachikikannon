@@ -4,12 +4,12 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import { getTimeSlots } from '@/lib/reservationSlots'
+import { getTimeSlots, reservationTypeLabel, GOMA_PURPOSE_OPTIONS } from '@/lib/reservationSlots'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus } from '@/types'
 
 type EditForm = {
   date: string; time_slot: string; name: string; name_kana: string
-  email: string; phone: string; party_size: number; notes: string
+  email: string; phone: string; party_size: number; notes: string; goma_purpose: string
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -95,6 +95,7 @@ export default function AdminReservationsPage() {
     setEditForm({
       date: detail.date, time_slot: detail.time_slot, name: detail.name, name_kana: detail.name_kana,
       email: detail.email, phone: detail.phone, party_size: detail.party_size, notes: detail.notes ?? '',
+      goma_purpose: detail.goma_purpose ?? 'gokigan',
     })
     setIsEditing(true)
   }
@@ -116,6 +117,7 @@ export default function AdminReservationsPage() {
       phone: editForm.phone,
       party_size: editForm.party_size,
       notes: editForm.notes || null,
+      goma_purpose: detail.type === 'prayer' ? editForm.goma_purpose : null,
     }).eq('id', detail.id)
     setSaving(false)
     if (error) { alert('保存に失敗しました：' + error.message); return }
@@ -301,7 +303,7 @@ export default function AdminReservationsPage() {
                     {new Date(r.date).toLocaleDateString('ja-JP')}<br/>
                     <span className="text-gray-400">{r.time_slot}</span>
                   </td>
-                  <td className="px-4 py-3 text-xs whitespace-nowrap">{TYPE_LABELS[r.type]}</td>
+                  <td className="px-4 py-3 text-xs whitespace-nowrap">{reservationTypeLabel(r.type, r.goma_purpose)}</td>
                   <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{categoryName(r.category_id)}</td>
                   <td className="px-4 py-3 font-medium whitespace-nowrap">{r.name}</td>
                   <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{r.phone || '—'}</td>
@@ -347,7 +349,7 @@ export default function AdminReservationsPage() {
               </span>
             </div>
             <div className="flex items-center gap-1 flex-wrap mb-1.5 text-xs">
-              <span className="text-navy font-medium">{TYPE_ICONS[r.type]} {TYPE_LABELS[r.type]}</span>
+              <span className="text-navy font-medium">{TYPE_ICONS[r.type]} {reservationTypeLabel(r.type, r.goma_purpose)}</span>
               <span className="text-gray-400">・{categoryName(r.category_id)}</span>
             </div>
             <p className="font-semibold text-base text-navy mb-2">
@@ -393,11 +395,23 @@ export default function AdminReservationsPage() {
             <dl className="space-y-3 text-sm">
               <div className="grid grid-cols-[6rem_1fr] gap-2">
                 <dt className="text-gray-500 text-xs pt-0.5">種別</dt>
-                <dd className="break-all">{TYPE_LABELS[detail.type]}</dd>
+                <dd className="break-all">{reservationTypeLabel(detail.type, detail.goma_purpose)}</dd>
               </div>
 
               {isEditing && editForm ? (
                 <>
+                  {detail.type === 'prayer' && (
+                    <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
+                      <dt className="text-gray-500 text-xs">護摩の内容</dt>
+                      <dd>
+                        <select className="admin-input w-full"
+                          value={editForm.goma_purpose}
+                          onChange={e => setEditForm(f => f && { ...f, goma_purpose: e.target.value })}>
+                          {GOMA_PURPOSE_OPTIONS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
+                        </select>
+                      </dd>
+                    </div>
+                  )}
                   <div className="grid grid-cols-[6rem_1fr] gap-2 items-center">
                     <dt className="text-gray-500 text-xs">日付</dt>
                     <dd>
