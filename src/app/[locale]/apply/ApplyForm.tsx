@@ -123,7 +123,7 @@ export default function ApplyForm() {
   function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
     if (form.email !== form.email_confirm) { setFormError(t('emailMismatchError')); return }
-    if (isTvMagazine && form.media_categories.length === 0) { setFormError(t('mediaCategoryRequired')); return }
+    if ((isTvMagazine || isVenueRental) && form.media_categories.length === 0) { setFormError(t('mediaCategoryRequired')); return }
     if (isTvMagazine && form.interview_formats.length === 0) { setFormError(t('interviewFormatRequired')); return }
     if (isVenueRental && !form.venue_use_type) { setFormError(t('venueUseTypeRequired')); return }
     setFormError('')
@@ -180,15 +180,16 @@ export default function ApplyForm() {
     ...(form.fax ? [[t('faxLabel'), form.fax] as [string, string]] : []),
     ...(form.attachment_filename ? [[t('attachmentLabel'), form.attachment_filename] as [string, string]] : []),
   ]
-  const mediaRows: [string, string][] = isTvMagazine ? [
+  const preferredDateLabel = (n: 1 | 2 | 3) => t((isVenueRental ? `venuePreferredDateLabel${n}` : `preferredDateLabel${n}`) as 'preferredDateLabel1')
+  const mediaRows: [string, string][] = (isTvMagazine || isVenueRental) ? [
     [t('mediaCategoryLabel'), form.media_categories.map(c => MEDIA_CATEGORY_LABELS[c] ?? c).join('、')],
     [t('mediaNameLabel'), form.media_name],
     [t('mediaContentLabel'), form.media_content],
     ...(form.publish_date ? [[t('publishDateLabel'), form.publish_date] as [string, string]] : []),
-    [t('interviewFormatLabel'), form.interview_formats.map(f => INTERVIEW_FORMAT_LABELS[f] ?? f).join('、')],
-    [t('preferredDateLabel1'), `${form.preferred_date_1} ${form.preferred_time_1}`],
-    ...(form.preferred_date_2 ? [[t('preferredDateLabel2'), `${form.preferred_date_2} ${form.preferred_time_2}`] as [string, string]] : []),
-    ...(form.preferred_date_3 ? [[t('preferredDateLabel3'), `${form.preferred_date_3} ${form.preferred_time_3}`] as [string, string]] : []),
+    ...(isTvMagazine ? [[t('interviewFormatLabel'), form.interview_formats.map(f => INTERVIEW_FORMAT_LABELS[f] ?? f).join('、')] as [string, string]] : []),
+    [preferredDateLabel(1), `${form.preferred_date_1} ${form.preferred_time_1}`],
+    ...(form.preferred_date_2 ? [[preferredDateLabel(2), `${form.preferred_date_2} ${form.preferred_time_2}`] as [string, string]] : []),
+    ...(form.preferred_date_3 ? [[preferredDateLabel(3), `${form.preferred_date_3} ${form.preferred_time_3}`] as [string, string]] : []),
     ...(form.attendee_count ? [[t('attendeeCountLabel'), `${form.attendee_count}${t('attendeeCountSuffix')}`] as [string, string]] : []),
     ...(form.duration_minutes ? [[t('durationLabel'), `${form.duration_minutes}${t('durationSuffix')}`] as [string, string]] : []),
     ...(form.request_notes ? [[t('requestNotesLabel'), form.request_notes] as [string, string]] : []),
@@ -353,7 +354,33 @@ export default function ApplyForm() {
               </div>
             )}
 
-            {isTvMagazine && (
+            {isVenueRental && (
+              <div className="space-y-5 border-t border-gray-200 pt-6">
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700 space-y-1">
+                  <p className="font-medium text-amber-800 mb-1">{t('filmingFeeHeading')}</p>
+                  <p>{t('filmingFeeMorning')}</p>
+                  <p>{t('filmingFeeAfternoon')}</p>
+                  <p>{t('filmingFeeFullDay')}</p>
+                  <p>{t('filmingFeeOutside')}</p>
+                </div>
+                <div>
+                  <label className="admin-label">{t('venueUseTypeLabel')}</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(['貸出', '貸切'] as const).map(v => (
+                      <label key={v} className={`border rounded-lg p-3 cursor-pointer transition-colors
+                        ${form.venue_use_type === v ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
+                        <input type="radio" name="venue_use_type" value={v} className="sr-only"
+                          checked={form.venue_use_type === v}
+                          onChange={() => update('venue_use_type', v)} />
+                        <p className="font-medium text-navy text-sm">{v === '貸出' ? t('venueUseTypeRental') : t('venueUseTypeExclusive')}</p>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {(isTvMagazine || isVenueRental) && (
               <div className="space-y-5 border-t border-gray-200 pt-6">
                 <h2 className="font-serif text-navy text-lg">{t('sectionMediaHeading')}</h2>
                 <div>
@@ -381,23 +408,31 @@ export default function ApplyForm() {
                   <input className="admin-input" value={form.publish_date} onChange={e => update('publish_date', e.target.value)} />
                 </div>
 
-                <h2 className="font-serif text-navy text-lg pt-2">{t('sectionInterviewHeading')}</h2>
-                <div>
-                  <label className="admin-label">{t('interviewFormatLabel')}</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {INTERVIEW_FORMATS.map(f => (
-                      <label key={f} className="flex items-center gap-2 text-sm text-gray-700">
-                        <input type="checkbox" checked={form.interview_formats.includes(f)}
-                          onChange={() => update('interview_formats', toggleValue(form.interview_formats, f))} />
-                        {INTERVIEW_FORMAT_LABELS[f]}
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                {/* 取材形式（撮影・インタビュー等）は撮影取材固有の内容のため、
+                    諸堂貸出・貸切申請では表示しない */}
+                {isTvMagazine && (
+                  <>
+                    <h2 className="font-serif text-navy text-lg pt-2">{t('sectionInterviewHeading')}</h2>
+                    <div>
+                      <label className="admin-label">{t('interviewFormatLabel')}</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {INTERVIEW_FORMATS.map(f => (
+                          <label key={f} className="flex items-center gap-2 text-sm text-gray-700">
+                            <input type="checkbox" checked={form.interview_formats.includes(f)}
+                              onChange={() => update('interview_formats', toggleValue(form.interview_formats, f))} />
+                            {INTERVIEW_FORMAT_LABELS[f]}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
                 {([1, 2, 3] as const).map(n => (
                   <div key={n} className="grid grid-cols-[1fr_8rem] gap-2 items-end">
                     <div>
-                      <label className="admin-label">{t(`preferredDateLabel${n}` as 'preferredDateLabel1')}</label>
+                      <label className="admin-label">
+                        {t((isVenueRental ? `venuePreferredDateLabel${n}` : `preferredDateLabel${n}`) as 'preferredDateLabel1')}
+                      </label>
                       <input type="date" required={n === 1} className="admin-input"
                         value={form[`preferred_date_${n}` as 'preferred_date_1']}
                         onChange={e => update(`preferred_date_${n}` as 'preferred_date_1', e.target.value)} />
@@ -429,32 +464,6 @@ export default function ApplyForm() {
                 <div>
                   <label className="admin-label">{t('requestNotesLabel')}</label>
                   <textarea className="admin-input min-h-[100px]" value={form.request_notes} onChange={e => update('request_notes', e.target.value)} />
-                </div>
-              </div>
-            )}
-
-            {isVenueRental && (
-              <div className="space-y-5 border-t border-gray-200 pt-6">
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700 space-y-1">
-                  <p className="font-medium text-amber-800 mb-1">{t('filmingFeeHeading')}</p>
-                  <p>{t('filmingFeeMorning')}</p>
-                  <p>{t('filmingFeeAfternoon')}</p>
-                  <p>{t('filmingFeeFullDay')}</p>
-                  <p>{t('filmingFeeOutside')}</p>
-                </div>
-                <div>
-                  <label className="admin-label">{t('venueUseTypeLabel')}</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {(['貸出', '貸切'] as const).map(v => (
-                      <label key={v} className={`border rounded-lg p-3 cursor-pointer transition-colors
-                        ${form.venue_use_type === v ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
-                        <input type="radio" name="venue_use_type" value={v} className="sr-only"
-                          checked={form.venue_use_type === v}
-                          onChange={() => update('venue_use_type', v)} />
-                        <p className="font-medium text-navy text-sm">{v === '貸出' ? t('venueUseTypeRental') : t('venueUseTypeExclusive')}</p>
-                      </label>
-                    ))}
-                  </div>
                 </div>
               </div>
             )}
@@ -494,7 +503,7 @@ export default function ApplyForm() {
             <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
             <p className="text-sm text-gray-500">{t('confirmNote')}</p>
             <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
-              {[...confirmRows, ...mediaRows, ...venueRentalRows, ...groupFeeRows, ...(form.message ? [[isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]] : [])].map(([label, value]) => (
+              {[...confirmRows, ...venueRentalRows, ...mediaRows, ...groupFeeRows, ...(form.message ? [[isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]] : [])].map(([label, value]) => (
                 <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
                   <dt className="text-gray-500">{label}</dt>
                   <dd className="whitespace-pre-wrap">{value}</dd>
