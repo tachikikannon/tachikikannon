@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase'
 import type { ReservationType } from '@/types'
 
 const RESERVATION_TYPES: ReservationType[] = ['prayer', 'shakyou', 'shabutu', 'jyuzu', 'zazen']
+const PURPOSE_VALUES = ['gokigan', 'newcar', 'anzan', 'shichigosan', 'other']
 
 export default function ReserveForm({ fees }: { fees: Record<ReservationType, string> }) {
   const supabase = createClient()
@@ -18,6 +19,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
   // フリガナは日本語話者向けの慣習で、外国語話者には該当しないため日本語以外では欄自体を出さない。
   const showNameKana = locale === 'ja'
   const initialType = searchParams.get('type') ?? ''
+  const initialPurpose = searchParams.get('purpose') ?? ''
 
   const TYPES: { value: ReservationType; label: string; price: string }[] = [
     { value: 'prayer',   label: t('typePrayer'),  price: fees.prayer },
@@ -48,7 +50,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialType])
-  const [purpose, setPurpose] = useState('gokigan')
+  const [purpose, setPurpose] = useState(PURPOSE_VALUES.includes(initialPurpose) ? initialPurpose : 'gokigan')
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<'idle'|'loading'|'error'>('idle')
   const [showGomaNotice, setShowGomaNotice] = useState(false)

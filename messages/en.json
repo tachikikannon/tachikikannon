@@ -1123,7 +1123,12 @@
     "contactCta": "Contact Us",
     "mailCta": "Apply by Mail",
     "weddingCta": "Learn About Buddhist Wedding Ceremonies",
-    "weddingTeaser": "A vow exchanged before the Buddha"
+    "weddingTeaser": "A vow exchanged before the Buddha",
+    "jumpGoma": "Goma Fire Prayer",
+    "jumpWedding": "Buddhist Wedding",
+    "jumpNewCar": "New Car Blessing",
+    "jumpBirth": "Safe Childbirth Prayer",
+    "jump753": "Shichi-Go-San"
   },
   "prayerWedding": {
     "title": "Buddhist Wedding Ceremony",

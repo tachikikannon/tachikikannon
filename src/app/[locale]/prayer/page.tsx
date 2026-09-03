@@ -132,12 +132,32 @@ export default async function PrayerPage({
           </div>
         </section>
         <div className="max-w-3xl mx-auto px-4 py-12 space-y-14">
-          <section>
+          {/* 各御祈願（護摩祈願・仏前式・新車祈願・安産祈願・七五三祈願）へのジャンプボタン。
+              以前は申し込み導線がページ最下部の1箇所にまとまっており、どの御祈願を
+              申し込みたいかによらず同じ場所までスクロールする必要があった。
+              各項目に直接ジャンプできるようにし、それぞれの項目内に個別の
+              ご予約ボタンを設置する */}
+          <nav className="-mt-2 flex flex-wrap gap-2 justify-center">
+            {[
+              ['#goma', t('jumpGoma')],
+              ['#wedding', t('jumpWedding')],
+              ['#newcar', t('jumpNewCar')],
+              ['#birth', t('jumpBirth')],
+              ['#753', t('jump753')],
+            ].map(([href, label]) => (
+              <a key={href} href={href}
+                className="text-xs px-4 py-2 rounded-full border border-navy/30 text-navy hover:bg-navy hover:text-white transition-colors whitespace-nowrap">
+                {label}
+              </a>
+            ))}
+          </nav>
+          <section id="goma">
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('prayer_heading_about')}</h2>
             <div className="mt-4 rounded-xl overflow-hidden shadow-sm">
               <img src="/images/chuzenji/prayer/goma.png" alt="御護摩" className="w-full h-auto" />
             </div>
             <div className="mt-4 bg-white rounded-xl p-6 shadow-sm border-l-4 border-gold leading-relaxed text-gray-700">{g('prayer_about')}</div>
+            <Link href="/reserve?type=prayer&purpose=gokigan" className="btn-gold inline-block mt-4">{t('reserveCta')}</Link>
           </section>
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('prayer_heading_hours')}</h2>
@@ -193,7 +213,7 @@ export default async function PrayerPage({
               </Link>
             </div>
           </section>
-          <section>
+          <section id="wedding">
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{t('weddingCta')}</h2>
             <Link href="/prayer/wedding" className="group block mt-4 rounded-xl overflow-hidden shadow-sm border-l-4 border-gold relative h-48">
               <img src="/images/chuzenji/wedding/kekkonnsiki-card.png" alt={t('weddingCta')} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -208,7 +228,7 @@ export default async function PrayerPage({
           <section>
             <h2 className="text-xl font-serif text-navy mb-1 pl-3 border-l-4 border-gold">{g('prayer_heading_others')}</h2>
             <div className="mt-4 space-y-4">
-              <div className="bg-white rounded-xl p-5 shadow-sm">
+              <div id="newcar" className="bg-white rounded-xl p-5 shadow-sm">
                 <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">{g('prayer_car_title')}</h3>
                 <p className="text-xs text-gray-500 mb-3">{g('prayer_car_desc')}</p>
                 <table className="w-full text-sm border-collapse mb-2">
@@ -219,9 +239,10 @@ export default async function PrayerPage({
                     </tr>
                   </tbody>
                 </table>
-                <p className="text-xs text-gray-400">{g('prayer_car_note')}</p>
+                <p className="text-xs text-gray-400 mb-3">{g('prayer_car_note')}</p>
+                <Link href="/reserve?type=prayer&purpose=newcar" className="btn-gold inline-block text-sm">{t('reserveCta')}</Link>
               </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm">
+              <div id="birth" className="bg-white rounded-xl p-5 shadow-sm">
                 <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">{g('prayer_birth_title')}</h3>
                 <table className="w-full text-sm border-collapse mb-2">
                   <tbody>
@@ -231,9 +252,10 @@ export default async function PrayerPage({
                     </tr>
                   </tbody>
                 </table>
-                <p className="text-xs text-gray-400">{g('prayer_birth_note')}</p>
+                <p className="text-xs text-gray-400 mb-3">{g('prayer_birth_note')}</p>
+                <Link href="/reserve?type=prayer&purpose=anzan" className="btn-gold inline-block text-sm">{t('reserveCta')}</Link>
               </div>
-              <div className="bg-white rounded-xl p-5 shadow-sm">
+              <div id="753" className="bg-white rounded-xl p-5 shadow-sm">
                 <h3 className="font-medium text-navy pl-3 border-l-3 border-gold mb-2">{g('prayer_753_title')}</h3>
                 <table className="w-full text-sm border-collapse mb-2">
                   <tbody>
@@ -243,7 +265,8 @@ export default async function PrayerPage({
                     </tr>
                   </tbody>
                 </table>
-                <p className="text-xs text-gray-400">{g('prayer_753_note')}</p>
+                <p className="text-xs text-gray-400 mb-3">{g('prayer_753_note')}</p>
+                <Link href="/reserve?type=prayer&purpose=shichigosan" className="btn-gold inline-block text-sm">{t('reserveCta')}</Link>
               </div>
             </div>
           </section>

@@ -12,7 +12,7 @@ type EditForm = {
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅'
+  prayer: '祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅'
 }
 const TYPE_TAG_COLORS: Record<string, string> = {
   prayer: 'bg-red-100 text-red-700',

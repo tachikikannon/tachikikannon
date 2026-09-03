@@ -1,27 +1,26 @@
 import type { GomaPurpose, ReservationType } from '@/types'
 
-// 護摩祈願（type='prayer'）の内容の選択肢。予約フォーム（公開・管理画面）で共通して使う。
+// 護摩祈願（type='prayer'。公開ページでは「御祈願」表記）の内容の選択肢。
+// 管理画面の予約フォームで使う（公開フォームはi18n経由の別リストを持つ）
 export const GOMA_PURPOSE_OPTIONS: { value: GomaPurpose; label: string }[] = [
-  { value: 'gokigan',     label: '御祈願' },
-  { value: 'newcar',      label: '新車祈祷' },
+  { value: 'gokigan',     label: '護摩' },
+  { value: 'newcar',      label: '新車祈願' },
   { value: 'anzan',       label: '安産祈願' },
   { value: 'shichigosan', label: '七五三祈願' },
   { value: 'other',       label: 'その他' },
 ]
 
 const RESERVATION_TYPE_LABELS: Record<ReservationType, string> = {
-  prayer: '護摩', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅',
+  prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅',
 }
-// 「御祈願」（内容の指定なし・デフォルト）は素の「護摩」のまま、それ以外の内容は
-// 「護摩（新車）」のように短縮した内容を括弧で添える。管理画面のカレンダー・一覧で
-// 一目でどの護摩祈願かわかるようにするための表示専用ラベル
-const GOMA_PURPOSE_SHORT_LABELS: Partial<Record<GomaPurpose, string>> = {
-  newcar: '新車', anzan: '安産', shichigosan: '七五三', other: 'その他',
+// カレンダー・予約一覧の表示専用ラベル。内容ごとに完結したラベルを直接返す
+// （内容の指定が無い・「護摩」（デフォルト）の場合は「護摩祈願」を使う）
+const GOMA_PURPOSE_DISPLAY_LABELS: Record<GomaPurpose, string> = {
+  gokigan: '護摩祈願', newcar: '新車祈願', anzan: '安産祈願', shichigosan: '七五三祈願', other: 'その他祈願',
 }
 export function reservationTypeLabel(type: ReservationType, gomaPurpose?: string | null): string {
-  if (type === 'prayer' && gomaPurpose) {
-    const short = GOMA_PURPOSE_SHORT_LABELS[gomaPurpose as GomaPurpose]
-    if (short) return `護摩（${short}）`
+  if (type === 'prayer') {
+    return GOMA_PURPOSE_DISPLAY_LABELS[(gomaPurpose || 'gokigan') as GomaPurpose] ?? RESERVATION_TYPE_LABELS.prayer
   }
   return RESERVATION_TYPE_LABELS[type] ?? type
 }

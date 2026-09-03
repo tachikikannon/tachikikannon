@@ -31,7 +31,7 @@ const CONTACT_STATUS_LABELS: Record<string, string> = {
   unread: '未読', checking: '対応中', replied: '返信済み', completed: '完了',
 }
 const RESERVATION_TYPE_LABELS: Record<string, string> = {
-  prayer: '護摩祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅',
+  prayer: '祈願', shakyou: '写経', shabutu: '写仏', jyuzu: '数珠づくり', zazen: '坐禅',
 }
 const FIELD_LABELS: Record<string, string> = {
   date: '予約日', time_slot: '時間帯', name: 'お名前', name_kana: 'フリガナ',

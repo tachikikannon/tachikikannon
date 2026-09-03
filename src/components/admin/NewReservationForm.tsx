@@ -7,7 +7,7 @@ import { GOMA_PURPOSE_OPTIONS } from '@/lib/reservationSlots'
 import type { ReservationCategory, ReservationStatus, ReservationType } from '@/types'
 
 const TYPES: { value: ReservationType; label: string }[] = [
-  { value: 'prayer',  label: '護摩祈願' },
+  { value: 'prayer',  label: '祈願' },
   { value: 'shakyou', label: '写経' },
   { value: 'shabutu', label: '写仏' },
   { value: 'jyuzu',   label: '数珠づくり' },
@@ -136,7 +136,7 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
 
       {newRes.type === 'prayer' && (
         <div className="mb-4">
-          <label className="admin-label">護摩祈願の内容</label>
+          <label className="admin-label">護摩の内容</label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {GOMA_PURPOSE_OPTIONS.map(p => (
               <label key={p.value} className={`border rounded-lg p-2.5 cursor-pointer text-sm transition-colors
