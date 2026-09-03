@@ -403,16 +403,15 @@ export default function HeroReveal({
         // （HeroMediaCycle等）へのクリックを妨げないようにする。実際にクリック
         // 可能な要素（下のchildren/midContentラッパー）側だけ個別にautoへ戻す
         //
-        // heightにtransitionをかけているのは、寺紋（背後で中央固定表示されている
-        // crestSrc）がheadingAreaMinHeightPx確定直後に一瞬ジャンプして見える
-        // 不具合の対策。useIsomorphicLayoutEffectで初回ペイント前の値は正しく
-        // 出せているが、実機の動画で「マウント直後に一度だけ高さが変わり、
-        // 寺紋の中央位置がその分だけ縦にスナップする」瞬間が実測で確認された
-        // （PC・スマホ両方で発生、iOS固有の不具合ではない）。原因（CTAボタンの
-        // 折り返し等、初回計測後に見出しエリアの実高さが変わりうる要因）を
-        // 個別に潰すのではなく、高さの変化そのものを滑らかにすることでどの原因でも
-        // 「寺紋が動く」ようには見えなくする防御的な対策
-        className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none ${verticalHeading ? 'transition-[height] duration-300 ease-out' : 'inset-y-0'}`}
+        // 寺紋（背後で中央固定表示されているcrestSrc）が、マウントから1〜1.5秒後
+        // （見出し1行目の文字が浮かび上がっている最中）に一度だけ縦方向にスナップ
+        // して見える不具合が実機の動画（PC・スマホ両方、iOS固有ではない）で
+        // 複数回確認されている。heightにtransition（300ms）を付けて様子を見たが、
+        // むしろ瞬時のスナップより300msのスライドの方が目に付きやすくなった
+        // だけだったため撤去。原因（見出し1行目のテキストの実測高さが初回計測後に
+        // もう一段階変わる何か）はまだ特定できていないが、瞬間的なスナップの方が
+        // 気づかれにくいという前提でtransitionなし（即時反映）に戻した
+        className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none ${verticalHeading ? '' : 'inset-y-0'}`}
         style={verticalHeading
           ? {
               top: `${FIXED_HEADER_PX}px`,
