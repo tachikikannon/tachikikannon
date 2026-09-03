@@ -227,10 +227,11 @@ export interface Media {
 }
 
 export const APPLICATION_CATEGORIES = [
-  '写真使用・貸出し許可申請',
-  '撮影・取材申請',
   '団体予約申請',
   '減免申請',
+  '写真使用・貸出し許可申請',
+  'テレビ・雑誌撮影申請',
+  '諸堂貸出・貸切申請',
   'その他',
 ] as const
 export type ApplicationCategory = typeof APPLICATION_CATEGORIES[number]

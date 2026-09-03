@@ -39,9 +39,10 @@ export default function ApplyForm() {
 
   const CATEGORY_LABELS: Record<string, string> = {
     '写真使用・貸出し許可申請': t('categoryPhoto'),
-    '撮影・取材申請': t('categoryPress'),
+    'テレビ・雑誌撮影申請': t('categoryPress'),
     '団体予約申請': t('categoryGroupReservation'),
     '減免申請': t('categoryFeeReduction'),
+    '諸堂貸出・貸切申請': t('categoryVenueRental'),
     'その他': t('categoryOther'),
   }
   const MEDIA_CATEGORY_LABELS: Record<string, string> = {
@@ -71,7 +72,12 @@ export default function ApplyForm() {
   const [attachmentError, setAttachmentError] = useState('')
   const [photoMedia, setPhotoMedia] = useState<Media[]>([])
 
-  const isPress = form.category === '撮影・取材申請'
+  // メディア情報（撮影内容・取材形式・希望日時等）は、以前は「撮影・取材申請」
+  // （現「テレビ・雑誌撮影申請」）の内容だったが、諸堂の貸切・独占使用が絡む
+  // 撮影・取材はここで詳細を確認する必要があるため「諸堂貸出・貸切申請」側に
+  // 移した。「テレビ・雑誌撮影申請」は他の申請と同じ基本項目のみのシンプルな
+  // フォームになる
+  const isVenueRental = form.category === '諸堂貸出・貸切申請'
   const isGroupReservation = form.category === '団体予約申請'
   const isFeeReduction = form.category === '減免申請'
 
@@ -117,8 +123,8 @@ export default function ApplyForm() {
   function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
     if (form.email !== form.email_confirm) { setFormError(t('emailMismatchError')); return }
-    if (isPress && form.media_categories.length === 0) { setFormError(t('mediaCategoryRequired')); return }
-    if (isPress && form.interview_formats.length === 0) { setFormError(t('interviewFormatRequired')); return }
+    if (isVenueRental && form.media_categories.length === 0) { setFormError(t('mediaCategoryRequired')); return }
+    if (isVenueRental && form.interview_formats.length === 0) { setFormError(t('interviewFormatRequired')); return }
     setFormError('')
     setStep('confirm')
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -173,7 +179,7 @@ export default function ApplyForm() {
     ...(form.fax ? [[t('faxLabel'), form.fax] as [string, string]] : []),
     ...(form.attachment_filename ? [[t('attachmentLabel'), form.attachment_filename] as [string, string]] : []),
   ]
-  const mediaRows: [string, string][] = isPress ? [
+  const mediaRows: [string, string][] = isVenueRental ? [
     [t('mediaCategoryLabel'), form.media_categories.map(c => MEDIA_CATEGORY_LABELS[c] ?? c).join('、')],
     [t('mediaNameLabel'), form.media_name],
     [t('mediaContentLabel'), form.media_content],
@@ -343,7 +349,7 @@ export default function ApplyForm() {
               </div>
             )}
 
-            {isPress && (
+            {isVenueRental && (
               <div className="space-y-5 border-t border-gray-200 pt-6">
                 <h2 className="font-serif text-navy text-lg">{t('sectionMediaHeading')}</h2>
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700 space-y-1">

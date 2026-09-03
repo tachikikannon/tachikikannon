@@ -53,7 +53,8 @@ export default async function Footer() {
                 ['団体予約', '団体予約申請'],
                 ['減免申請', '減免申請'],
                 ['写真貸出', '写真使用・貸出し許可申請'],
-                ['撮影取材', '撮影・取材申請'],
+                ['テレビ・雑誌撮影', 'テレビ・雑誌撮影申請'],
+                ['諸堂貸出・貸切', '諸堂貸出・貸切申請'],
               ].map(([l, category], i, arr) => (
                 <li key={category} className="flex items-center">
                   <Link href={`/apply?category=${encodeURIComponent(category)}`} className="hover:text-gold transition-colors">{l}</Link>
