@@ -151,6 +151,13 @@ export default function HeroReveal({
   const [gridShiftPx, setGridShiftPx] = useState(0)
   const [logoExtraPx, setLogoExtraPx] = useState(0)
   const [minHeightPx, setMinHeightPx] = useState<number | null>(null)
+  // ResizeObserverの初回コールバックは仕様上「次のペイント前」に非同期で届くため、
+  // マウント直後のuseIsomorphicLayoutEffectによる同期測定と食い違うことが実機で
+  // 稀に確認された（食い違った場合だけ、寺紋が一瞬別の位置に描画されてから
+  // もう一段階動いて見える。フォント・画像の読み込みとは無関係の描画タイミングの
+  // レースで、毎回は起きない）。この食い違いが解消されるはずのタイミングまで
+  // 見出しエリア全体をvisibility:hiddenにしておき、確定してから一度で表示する
+  const [layoutSettled, setLayoutSettled] = useState(false)
   // 見出しエリア（寺紋・見出し）専用の最小高さ。下部グループの高さ（bottomH）を
   // 含めない＝下部コンテンツがお寺によって違う高さでも、見出しエリアの中央配置は
   // 影響を受けない（詳しくはheadingAreaWrapperの説明を参照）
@@ -267,7 +274,11 @@ export default function HeroReveal({
     const ro = new ResizeObserver(update)
     ro.observe(headingEl)
     ro.observe(bottomEl)
-    return () => ro.disconnect()
+    // rAFを2回挟むことで、ResizeObserverの初回コールバックが（仕様通り）
+    // 次のペイント前に届いているはずのタイミングまで待ってから表示に切り替える
+    let raf2 = 0
+    const raf1 = requestAnimationFrame(() => { raf2 = requestAnimationFrame(() => setLayoutSettled(true)) })
+    return () => { ro.disconnect(); cancelAnimationFrame(raf1); cancelAnimationFrame(raf2) }
   }, [verticalHeading])
 
   // こちらもuseIsomorphicLayoutEffect化（理由は上のminHeightPx測定と同じ）。ここで求める
@@ -403,18 +414,25 @@ export default function HeroReveal({
         // （HeroMediaCycle等）へのクリックを妨げないようにする。実際にクリック
         // 可能な要素（下のchildren/midContentラッパー）側だけ個別にautoへ戻す
         //
-        // 寺紋（背後で中央固定表示されているcrestSrc）が、マウントから1〜1.5秒後
-        // （見出し1行目の文字が浮かび上がっている最中）に一度だけ縦方向にスナップ
-        // して見える不具合が実機の動画（PC・スマホ両方、iOS固有ではない）で
-        // 複数回確認されている。heightにtransition（300ms）を付けて様子を見たが、
-        // むしろ瞬時のスナップより300msのスライドの方が目に付きやすくなった
-        // だけだったため撤去。原因（見出し1行目のテキストの実測高さが初回計測後に
-        // もう一段階変わる何か）はまだ特定できていないが、瞬間的なスナップの方が
-        // 気づかれにくいという前提でtransitionなし（即時反映）に戻した
+        // 寺紋（背後で中央固定表示されているcrestSrc）が、マウント直後に一度だけ
+        // 縦方向にスナップして見える不具合が実機の動画（PC・スマホ両方、iOS固有
+        // ではない）で複数回確認されている。同じ端末・同じキャッシュ状態で
+        // リロードを繰り返しても発生する時としない時があることをネイティブ画面
+        // 録画で確認済みで、フォント・画像の読み込みとは無関係の、ResizeObserver
+        // の初回コールバック（仕様上「次のペイント前」に非同期で届く）と直後の
+        // useIsomorphicLayoutEffectによる同期測定が食い違うことがある、という
+        // 描画タイミングのレースだと考えられる（heightにtransitionを付けて
+        // 様子を見たこともあったが、瞬時のスナップより目立つ結果になり撤去済み）。
+        // レース自体を確実に防ぐのは難しいため、代わりにlayoutSettledがtrueに
+        // なる（＝ResizeObserverの初回コールバックが届いているはずのrAF2回後）
+        // までこのブロック全体をvisibility:hiddenにし、食い違いが解消した状態で
+        // 一度だけ表示する。遅延はマウントから数十ms（見出し1文字目が浮かび
+        // 上がり始める250ms後より十分前）なので体感できるほどの遅れにはならない
         className={`absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none ${verticalHeading ? '' : 'inset-y-0'}`}
         style={verticalHeading
           ? {
               top: `${FIXED_HEADER_PX}px`,
+              visibility: layoutSettled ? undefined : 'hidden',
               height: headingAreaMinHeightPx
                 ? `max(calc(100svh - ${FIXED_HEADER_PX}px), ${headingAreaMinHeightPx}px)`
                 : undefined,
