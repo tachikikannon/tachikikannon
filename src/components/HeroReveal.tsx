@@ -368,6 +368,12 @@ export default function HeroReveal({
       className={`relative flex flex-col overflow-hidden bg-white ${className ?? ''}`}
       style={minHeightPx ? { minHeight: `max(100svh, ${minHeightPx}px)` } : undefined}
     >
+      {/* 寺紋はCSSのmask-imageとして参照しているため、<img>と違いブラウザの
+          プリロードスキャナーが早期に見つけてくれず、実際の取得開始が遅れがちで
+          ある（白背景フェーズで最初に見えるはずの寺紋が、読み込み中は一瞬
+          抜けて見える一因）。最優先で取得されるようpreloadしておく。
+          （Next.js/React 19はbody内のlinkタグを自動的にheadへhoistする） */}
+      {crestSrc && <link rel="preload" as="image" href={crestSrc} fetchPriority="high" />}
       <div className="absolute inset-0 transition-opacity duration-[1400ms] ease-out" style={{ opacity: imageActive ? 1 : 0 }}>
         {/* 白背景の上に半透明の写真をそのまま重ねると色が薄く見えてしまうため、
             写真の下に地色を敷いてから重ねる */}
@@ -475,6 +481,9 @@ export default function HeroReveal({
               <img
                 src={stampSrc}
                 alt=""
+                // 表示は演出の後半（数秒後）なので、白背景フェーズ最初の
+                // 寺紋・見出し文字の読み込みと競合しないよう優先度を下げる
+                fetchPriority="low"
                 className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] object-contain"
                 style={{
                   opacity: stampActive ? 1 : 0,
@@ -585,6 +594,9 @@ export default function HeroReveal({
                       ref={logoImgRef}
                       src={subheadingLogoSrc}
                       alt={subheadingLogoAlt ?? ''}
+                      // 表示は演出の後半（数秒後）なので、白背景フェーズ最初の
+                      // 寺紋・見出し文字の読み込みと競合しないよう優先度を下げる
+                      fetchPriority="low"
                       className="h-[52svh] sm:h-[60svh] md:h-[66svh] max-h-[680px] w-auto object-contain"
                       style={{
                         // logoExtraPxで、寺紋の中心に対して対象の一文字（crestTargetCharFrac）
