@@ -15,6 +15,8 @@
 1. https://supabase.com でアカウント作成
 2. 「New project」でプロジェクトを作成（名前例：`temple-cms`）
 3. **SQL Editor** を開き、`supabase/schema.sql` の内容をすべて貼り付けて実行
+   - `supabase/migration_*.sql` は個別に実行する必要はありません（`schema.sql` に統合済み・過去の記録として残しているだけです）
+   - ただし `capacity_settings` テーブルだけは元々Supabase Dashboardの画面から直接作成されたものなので、`schema.sql` の定義はコードの利用実態から推定した内容です。実行後、本番の管理画面「定員設定」で値を入れ直してください
 4. **Authentication > Users > Add user** で最初の管理者アカウントを作成
    - Email と Password を設定（これが管理画面ログイン情報になります）
 5. 同じく **SQL Editor** で、作成したユーザーを最初の super_admin として登録：
