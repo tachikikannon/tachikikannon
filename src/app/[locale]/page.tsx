@@ -1,5 +1,6 @@
 export const revalidate = 60
 
+import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
@@ -119,6 +120,21 @@ const DEFAULT_CONTENT: Record<string, string> = {
 }
 
 function pj<T>(s: string, fallback: T): T { try { return JSON.parse(s) } catch { return fallback } }
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const path = locale === 'ja' ? '/' : `/${locale}`
+  return {
+    alternates: {
+      canonical: path,
+      languages: { ja: '/', en: '/en' },
+    },
+  }
+}
 
 export default async function HomePage({
   params,

@@ -15,8 +15,20 @@ import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } 
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
-export const metadata: Metadata = {
-  title: { absolute: '日光山温泉寺 【公式】｜中禅寺湖畔の温泉と祈りの霊場' },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const path = locale === 'ja' ? '/onsenji' : `/${locale}/onsenji`
+  return {
+    title: { absolute: '日光山温泉寺 【公式】｜中禅寺湖畔の温泉と祈りの霊場' },
+    alternates: {
+      canonical: path,
+      languages: { ja: '/onsenji', en: '/en/onsenji' },
+    },
+  }
 }
 
 const DEFAULT_ABOUT_CARDS = [
