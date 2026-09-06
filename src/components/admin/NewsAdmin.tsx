@@ -7,6 +7,9 @@ import type { News, NewsSite } from '@/types'
 
 type BodyField = 'body' | 'body_en'
 
+// temple-imagesバケットのfile_size_limit（supabase/migration_temple_images_size_limit.sql）と揃えておく
+const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024
+
 export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { site: NewsSite; siteLabel: string; accent?: 'chuzenji' | 'onsenji' }) {
   const supabase = createClient()
   const [list, setList] = useState<News[]>([])
@@ -215,6 +218,7 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
     e.target.value = ''
     if (!file) return
     if (file.type !== 'application/pdf') { setAttachmentError('PDFファイルを選択してください'); return }
+    if (file.size > MAX_ATTACHMENT_BYTES) { setAttachmentError(`ファイルサイズが大きすぎます（上限20MB。このファイルは${(file.size / 1024 / 1024).toFixed(1)}MB）`); return }
     setAttachmentError(null)
     setUploadingAttachment(true)
     const ext = file.name.split('.').pop() || 'pdf'
