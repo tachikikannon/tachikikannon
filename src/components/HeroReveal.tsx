@@ -43,6 +43,10 @@ interface HeroRevealProps {
   /** 白背景フェーズの間に表示する寺号の筆文字ロゴ画像。
       verticalHeadingがfalseなら見出しの下に小見出し代わりに、trueなら見出し各行のあとの最後の1コマとして表示する */
   subheadingLogoSrc?: string
+  /** 写真フェーズでh1のすぐ下に表示する正式名称のキャプション（例:「日光山中禅寺 立木観音」）。
+      verticalHeading時のみ使用。白背景の演出（筆文字ロゴのコマ等）には影響しない、
+      検索エンジン向けに正式名称をh1近くのテキストとして持たせるための追加表示 */
+  photoCaption?: string
   subheadingLogoAlt?: string
   /** verticalHeading時、subheadingLogoSrc（筆文字ロゴ）が現れるコマで、
       寺紋（crestSrc）とまったく同じ位置・サイズに表示する朱印画像
@@ -133,7 +137,7 @@ const V_FINAL_HOLD_MS = 3000     // ロゴが出たあと、写真に切り替�
 // 神社本庁公式サイトの「白背景から文字が一文字ずつ浮かび上がり、
 // 静止画が現れる」演出をトップページのヒーローに適用したもの。
 export default function HeroReveal({
-  eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, stampSrc,
+  eyebrow, heading, subheading, subheadingLogoSrc, subheadingLogoAlt, stampSrc, photoCaption,
   verticalHeading = false, midContent, crestSrc,
   crestTargetCharFrac, secondLineOffsetEm, pairFirstTwoLines,
   darkColor, lightColor, eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
@@ -666,6 +670,17 @@ export default function HeroReveal({
                     <span key={li} className="block whitespace-nowrap">{line}</span>
                   ))}
                 </h1>
+                {/* 正式名称のキャプション。検索エンジンがh1本文だけでは拾いにくい
+                    寺号（例:「立木観音」）をテキストとして持たせるための表示で、
+                    白背景の演出（筆文字ロゴのコマ等）には触れない */}
+                {photoCaption && (
+                  <p
+                    className="font-serif tracking-[0.15em] mt-2"
+                    style={{ fontSize: 'clamp(13px, 8px + 0.9vw, 16px)', color: eyebrowLightColor, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
+                  >
+                    {photoCaption}
+                  </p>
+                )}
                 {/* サブキャッチコピー（温泉寺の補足文など）・children（入浴ステータスや
                     ボタン等）は見出しのすぐ下にまとめて表示する。横書きモードでは
                     従来どおり下部グループ（画像下端付近）に表示するため、
