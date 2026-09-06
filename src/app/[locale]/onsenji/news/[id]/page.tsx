@@ -109,6 +109,18 @@ export default async function OnsenjiNewsDetailPage({
             <div className="prose prose-sm max-w-none text-gray-700 leading-[2] whitespace-pre-wrap">
               {renderNewsBody(body)}
             </div>
+
+            {/* 添付PDF */}
+            {news.attachment_url && (
+              <a
+                href={news.attachment_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 flex items-center justify-center gap-2 border border-[#7ec8a4] text-onsenji rounded-lg px-5 py-3 text-sm hover:bg-[#7ec8a4]/10 transition-colors"
+              >
+                📎 {tDetail('downloadAttachment')}
+              </a>
+            )}
           </div>
 
           {/* 関連記事 */}

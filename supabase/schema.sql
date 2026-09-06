@@ -17,6 +17,8 @@ create table if not exists news (
   cover_url   text,
   category    text not null default 'お知らせ',
   site        text not null default 'chuzenji' check (site in ('chuzenji','onsenji')),
+  attachment_url      text,
+  attachment_filename text,
   is_published boolean not null default false,
   published_at timestamptz,
   created_at  timestamptz not null default now(),
@@ -27,6 +29,8 @@ create table if not exists news (
 alter table news add column if not exists excerpt   text;
 alter table news add column if not exists cover_url text;
 alter table news add column if not exists site      text not null default 'chuzenji' check (site in ('chuzenji','onsenji'));
+alter table news add column if not exists attachment_url      text;
+alter table news add column if not exists attachment_filename text;
 create index if not exists idx_news_site on news(site);
 
 -- ブログ

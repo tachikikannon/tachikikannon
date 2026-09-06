@@ -14,6 +14,8 @@ export interface News {
   cover_url: string | null
   category: NewsCategory
   site: NewsSite
+  attachment_url?: string | null
+  attachment_filename?: string | null
   is_published: boolean
   published_at: string | null
   created_at: string

@@ -117,7 +117,8 @@
   },
   "newsDetail": {
     "relatedHeading": "More in This Category",
-    "backToNews": "← Back to News"
+    "backToNews": "← Back to News",
+    "downloadAttachment": "Download flyer (PDF)"
   },
   "codOrder": {
     "title": "Cash on Delivery Order",
@@ -758,7 +759,8 @@
   },
   "onsenjiNewsDetail": {
     "relatedHeading": "More in This Category",
-    "backToNews": "← Back to News"
+    "backToNews": "← Back to News",
+    "downloadAttachment": "Download flyer (PDF)"
   },
   "onsenjiMinorEvent": {
     "fallbackTitle": "Annual Events",

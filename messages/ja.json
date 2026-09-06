@@ -117,7 +117,8 @@
   },
   "newsDetail": {
     "relatedHeading": "同じカテゴリのお知らせ",
-    "backToNews": "← お知らせ一覧に戻る"
+    "backToNews": "← お知らせ一覧に戻る",
+    "downloadAttachment": "チラシをダウンロード（PDF）"
   },
   "codOrder": {
     "title": "代金引換でのお申し込み",
@@ -758,7 +759,8 @@
   },
   "onsenjiNewsDetail": {
     "relatedHeading": "同じカテゴリのお知らせ",
-    "backToNews": "← お知らせ一覧に戻る"
+    "backToNews": "← お知らせ一覧に戻る",
+    "downloadAttachment": "チラシをダウンロード（PDF）"
   },
   "onsenjiMinorEvent": {
     "fallbackTitle": "年間行事",

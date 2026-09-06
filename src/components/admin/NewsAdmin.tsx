@@ -15,6 +15,8 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
   const [preview, setPreview] = useState(false)
   const [uploadingField, setUploadingField] = useState<BodyField | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [uploadingAttachment, setUploadingAttachment] = useState(false)
+  const [attachmentError, setAttachmentError] = useState<string | null>(null)
   const bodyImageInputRef = useRef<HTMLInputElement>(null)
   const bodyRef = useRef<HTMLTextAreaElement>(null)
   const bodyEnRef = useRef<HTMLTextAreaElement>(null)
@@ -208,6 +210,30 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
     setUploadingField(null)
   }
 
+  async function handleAttachmentSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    if (file.type !== 'application/pdf') { setAttachmentError('PDFファイルを選択してください'); return }
+    setAttachmentError(null)
+    setUploadingAttachment(true)
+    const ext = file.name.split('.').pop() || 'pdf'
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const { error } = await supabase.storage.from('temple-images').upload(path, file, { contentType: file.type })
+    if (error) {
+      setAttachmentError(error.message)
+      setUploadingAttachment(false)
+      return
+    }
+    const { data: { publicUrl } } = supabase.storage.from('temple-images').getPublicUrl(path)
+    setEditing(v => v ? { ...v, attachment_url: publicUrl, attachment_filename: file.name } : v)
+    setUploadingAttachment(false)
+  }
+
+  function removeAttachment() {
+    setEditing(v => v ? { ...v, attachment_url: '', attachment_filename: '' } : v)
+  }
+
   return (
     <div className="p-8 max-w-5xl">
       <input ref={bodyImageInputRef} type="file" accept="image/*" className="hidden" onChange={handleBodyImageSelected} />
@@ -325,6 +351,21 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
                 <label className="admin-label">カバー画像URL <span className="text-gray-400 font-normal text-xs">（画像管理からコピー）</span></label>
                 <input className="admin-input" placeholder="https://..."
                   value={editing.cover_url ?? ''} onChange={e => setEditing({...editing, cover_url: e.target.value})} />
+              </div>
+              <div>
+                <label className="admin-label">添付PDF <span className="text-gray-400 font-normal text-xs">（チラシ等。記事ページにダウンロードリンクが表示されます）</span></label>
+                {attachmentError && <p className="text-red-600 text-xs mb-1">{attachmentError}</p>}
+                {editing.attachment_url ? (
+                  <div className="flex items-center gap-3 text-sm bg-cream-alt rounded px-3 py-2">
+                    <span className="flex-1 truncate">📎 {editing.attachment_filename || 'PDF'}</span>
+                    <a href={editing.attachment_url} target="_blank" rel="noopener noreferrer" className="text-xs text-navy underline flex-shrink-0">確認</a>
+                    <button type="button" onClick={removeAttachment} className="text-xs text-red-500 hover:underline flex-shrink-0">削除</button>
+                  </div>
+                ) : (
+                  <input type="file" accept="application/pdf" onChange={handleAttachmentSelected} disabled={uploadingAttachment}
+                    className="text-sm" />
+                )}
+                {uploadingAttachment && <p className="text-xs text-gray-400 mt-1">アップロード中...</p>}
               </div>
               <div>
                 <label className="admin-label">概要文 <span className="text-gray-400 font-normal text-xs">（一覧ページに表示）</span></label>

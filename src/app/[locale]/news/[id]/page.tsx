@@ -108,6 +108,18 @@ export default async function NewsDetailPage({
             <div className="prose prose-sm max-w-none text-gray-700 leading-[2] whitespace-pre-wrap">
               {renderNewsBody(body)}
             </div>
+
+            {/* 添付PDF */}
+            {news.attachment_url && (
+              <a
+                href={news.attachment_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 flex items-center justify-center gap-2 border border-gold text-navy rounded-lg px-5 py-3 text-sm hover:bg-gold/10 transition-colors"
+              >
+                📎 {tDetail('downloadAttachment')}
+              </a>
+            )}
           </div>
 
           {/* 関連記事 */}
