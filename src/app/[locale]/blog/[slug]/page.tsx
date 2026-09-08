@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
@@ -15,7 +16,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const supabase = await createPublicSupabaseClient()
   const { data } = await supabase.from('posts').select('*').eq('slug', slug).single()
   const t = await getTranslations({ locale, namespace: 'blog' })
-  return { title: data ? pickLocalized(loc, data.title, data.title_en) : t('title') }
+  return {
+    title: data ? pickLocalized(loc, data.title, data.title_en) : t('title'),
+    alternates: buildAlternates(locale, `/blog/${slug}`),
+  }
 }
 
 export default async function BlogDetailPage({

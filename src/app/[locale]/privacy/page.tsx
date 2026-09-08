@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
@@ -7,7 +8,10 @@ import Footer from '@/components/Footer'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'privacy' })
-  return { title: t('title') }
+  return {
+    title: t('title'),
+    alternates: buildAlternates(locale, '/privacy'),
+  }
 }
 
 export default async function PrivacyPage() {

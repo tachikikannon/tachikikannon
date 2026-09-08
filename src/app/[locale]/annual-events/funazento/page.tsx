@@ -1,6 +1,7 @@
 export const revalidate = 60
 
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
@@ -15,6 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: `${t('title')}（8月4日）`,
     description: '毎年8月4日開催。日光開山 勝道上人の霊跡を船で巡拝する伝統行事「船禅頂（ふなぜんじょう）」のご案内。事前申し込み必要。',
+    alternates: buildAlternates(locale, '/annual-events/funazento'),
   }
 }
 

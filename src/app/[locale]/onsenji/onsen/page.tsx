@@ -1,6 +1,7 @@
 export const revalidate = 60
 
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
@@ -15,6 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: `${t('title')}`,
     description: '令和8年4月開湯。含硫黄泉の完全かけ流し。日光山温泉寺の薬師の湯をご案内します。',
+    alternates: buildAlternates(locale, '/onsenji/onsen'),
   }
 }
 

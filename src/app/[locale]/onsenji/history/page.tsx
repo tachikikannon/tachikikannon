@@ -1,6 +1,7 @@
 export const revalidate = 60
 
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
@@ -12,7 +13,10 @@ import type { Locale } from '@/i18n/routing'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiHistory' })
-  return { title: `${t('title')}` }
+  return {
+    title: `${t('title')}`,
+    alternates: buildAlternates(locale, '/onsenji/history'),
+  }
 }
 
 const DEFAULT_TIMELINE = [

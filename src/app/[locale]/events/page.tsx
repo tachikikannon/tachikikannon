@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
@@ -8,7 +9,10 @@ import { createPublicSupabaseClient } from '@/lib/supabase-server'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'events' })
-  return { title: t('title') }
+  return {
+    title: t('title'),
+    alternates: buildAlternates(locale, '/events'),
+  }
 }
 
 export default async function EventsPage() {

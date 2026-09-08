@@ -1,6 +1,7 @@
 export const revalidate = 60
 
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
@@ -15,6 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: `${t('title')}（1月1日）`,
     description: '毎年1月1日開催。新しい年の始まりに一年の無病息災・家内安全・開運招福を祈願する特別護摩祈祷。事前申し込み必要、最大5名まで同時申込可。',
+    alternates: buildAlternates(locale, '/annual-events/shogatsu'),
   }
 }
 

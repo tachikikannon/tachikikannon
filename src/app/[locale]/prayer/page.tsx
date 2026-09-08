@@ -1,6 +1,7 @@
 export const revalidate = 60
 
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
@@ -12,7 +13,10 @@ import type { Locale } from '@/i18n/routing'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'prayer' })
-  return { title: t('title') }
+  return {
+    title: t('title'),
+    alternates: buildAlternates(locale, '/prayer'),
+  }
 }
 
 const DEFAULT_FEES = [

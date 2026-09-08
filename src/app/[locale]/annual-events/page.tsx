@@ -1,6 +1,7 @@
 export const revalidate = 60
 
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
@@ -16,6 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t('title'),
     description: '日光山中禅寺 立木観音の年間行事。6月18日 観音講・大護摩供・地蔵流し、8月4日 船禅頂（ふなぜんじょう）。',
+    alternates: buildAlternates(locale, '/annual-events'),
   }
 }
 

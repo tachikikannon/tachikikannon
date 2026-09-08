@@ -1,6 +1,7 @@
 export const revalidate = 60
 
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'
@@ -36,8 +37,12 @@ async function getContent(): Promise<Record<string, string>> {
   } catch { return DEFAULTS }
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return { title: DEFAULTS.jyuzu_heading_instagram }
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    title: DEFAULTS.jyuzu_heading_instagram,
+    alternates: buildAlternates(locale, '/experience/jyuzu/gallery'),
+  }
 }
 
 export default async function JyuzuGalleryPage({

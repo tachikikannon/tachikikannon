@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
@@ -23,7 +24,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const supabase = await createPublicSupabaseClient()
   const { data } = await supabase.from('minor_events').select('*').eq('slug', slug).eq('site', 'chuzenji').single()
   const t = await getTranslations({ locale, namespace: 'minorEvent' })
-  return { title: data ? pickLocalized(loc, data.title, data.title_en) : t('fallbackTitle') }
+  return {
+    title: data ? pickLocalized(loc, data.title, data.title_en) : t('fallbackTitle'),
+    alternates: buildAlternates(locale, `/annual-events/m/${slug}`),
+  }
 }
 
 export default async function MinorEventDetailPage({ params }: { params: Promise<{ slug: string; locale: string }> }) {

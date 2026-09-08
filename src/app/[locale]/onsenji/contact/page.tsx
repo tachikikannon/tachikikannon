@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
@@ -10,7 +11,10 @@ import OnsenjiContactForm from './OnsenjiContactForm'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'onsenjiContact' })
-  return { title: `${t('title')}` }
+  return {
+    title: `${t('title')}`,
+    alternates: buildAlternates(locale, '/onsenji/contact'),
+  }
 }
 
 export default async function OnsenjContactPage() {
