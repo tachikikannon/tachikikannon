@@ -201,6 +201,9 @@ export default async function HomePage({
   const accessAddress = getLocalizedContent(content, 'access_address', loc)
   const accessCar = getLocalizedContent(content, 'access_car', loc)
   const accessBus = getLocalizedContent(content, 'access_bus', loc)
+  const busTimetableUrl = loc === 'en'
+    ? 'https://www.tobu-bus.com/pc/assets/pdf/nikko_timetable_summer_en.pdf?20260408'
+    : 'https://www.tobu-bus.com/pc/assets/pdf/nikko_timetable_summer.pdf?20260408'
   const headingSns = getLocalizedContent(content, 'top_sns_heading', loc)
   const headingNews = getLocalizedContent(content, 'top_heading_news', loc)
   const headingEventsBanner = getLocalizedContent(content, 'top_heading_events_banner', loc)
@@ -530,11 +533,17 @@ export default async function HomePage({
                 {[
                   { icon:'📍', title: t('accessAddressLabel'), body: accessAddress },
                   { icon:'🚗', title: t('accessCarLabel'), body: accessCar },
-                  { icon:'🚌', title: t('accessBusLabel'), body: accessBus },
-                ].map(({ icon, title, body }) => (
+                  { icon:'🚌', title: t('accessBusLabel'), body: accessBus, href: busTimetableUrl, linkLabel: t('accessBusTimetableLink') },
+                ].map(({ icon, title, body, href, linkLabel }) => (
                   <div key={title}>
                     <p className="font-medium text-navy text-sm mb-1">{icon} {title}</p>
                     <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-line">{body}</p>
+                    {href && (
+                      <a href={href} target="_blank" rel="noopener"
+                        className="inline-block mt-1.5 text-xs text-navy underline decoration-gold underline-offset-2 hover:text-gold">
+                        {linkLabel}
+                      </a>
+                    )}
                   </div>
                 ))}
               </div>

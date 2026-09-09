@@ -37,7 +37,8 @@
     "newsMore": "View All Announcements →",
     "accessAddressLabel": "Address",
     "accessCarLabel": "By Car",
-    "accessBusLabel": "By Train / Bus"
+    "accessBusLabel": "By Train / Bus",
+    "accessBusTimetableLink": "Tobu Bus Timetable (PDF)"
   },
   "onsenjiAbout": {
     "title": "Visiting",
@@ -1097,7 +1098,8 @@
     "galleryHeading": "Chuzenji Gallery",
     "accessAddressLabel": "Address",
     "accessCarLabel": "By Car",
-    "accessBusLabel": "By Train / Bus"
+    "accessBusLabel": "By Train / Bus",
+    "accessBusTimetableLink": "Tobu Bus Timetable (PDF)"
   },
   "about": {
     "title": "Visiting Guide",

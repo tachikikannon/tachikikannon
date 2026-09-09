@@ -37,7 +37,8 @@
     "newsMore": "お知らせ一覧を見る →",
     "accessAddressLabel": "住所",
     "accessCarLabel": "車でのアクセス",
-    "accessBusLabel": "電車・バスでのアクセス"
+    "accessBusLabel": "電車・バスでのアクセス",
+    "accessBusTimetableLink": "東武バス時刻表（PDF）"
   },
   "onsenjiAbout": {
     "title": "拝観案内",
@@ -1097,7 +1098,8 @@
     "galleryHeading": "中禅寺ギャラリー",
     "accessAddressLabel": "住所",
     "accessCarLabel": "車でのアクセス",
-    "accessBusLabel": "電車・バスでのアクセス"
+    "accessBusLabel": "電車・バスでのアクセス",
+    "accessBusTimetableLink": "東武バス時刻表（PDF）"
   },
   "about": {
     "title": "拝観案内",

@@ -206,6 +206,9 @@ export default async function OnsenjPage({
   const accessAddress = getLocalizedContent(c, 'onsenji_access_address', loc)
   const accessCar = getLocalizedContent(c, 'onsenji_access_car', loc)
   const accessBus = getLocalizedContent(c, 'onsenji_access_bus', loc)
+  const busTimetableUrl = loc === 'en'
+    ? 'https://www.tobu-bus.com/pc/assets/pdf/nikko_timetable_summer_en.pdf?20260408'
+    : 'https://www.tobu-bus.com/pc/assets/pdf/nikko_timetable_summer.pdf?20260408'
 
   const supabase = await createPublicSupabaseClient()
   const { data: newsList } = await supabase
@@ -491,11 +494,17 @@ export default async function OnsenjPage({
                 {[
                   { icon: '📍', title: t('accessAddressLabel'), body: accessAddress },
                   { icon: '🚗', title: t('accessCarLabel'), body: accessCar },
-                  { icon: '🚌', title: t('accessBusLabel'), body: accessBus },
-                ].map(({ icon, title, body }) => (
+                  { icon: '🚌', title: t('accessBusLabel'), body: accessBus, href: busTimetableUrl, linkLabel: t('accessBusTimetableLink') },
+                ].map(({ icon, title, body, href, linkLabel }) => (
                   <div key={title}>
                     <p className="font-medium text-onsenji text-sm mb-1">{icon} {title}</p>
                     <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-line">{body}</p>
+                    {href && (
+                      <a href={href} target="_blank" rel="noopener"
+                        className="inline-block mt-1.5 text-xs text-onsenji underline decoration-[#7ec8a4] underline-offset-2 hover:opacity-70">
+                        {linkLabel}
+                      </a>
+                    )}
                   </div>
                 ))}
               </div>
