@@ -18,6 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const t = await getTranslations({ locale, namespace: 'blog' })
   return {
     title: data ? pickLocalized(loc, data.title, data.title_en) : t('title'),
+    description: data ? (pickLocalized(loc, data.excerpt ?? '', data.excerpt_en) || undefined) : undefined,
     alternates: buildAlternates(locale, `/blog/${slug}`),
   }
 }

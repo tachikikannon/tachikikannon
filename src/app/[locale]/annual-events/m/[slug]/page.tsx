@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const t = await getTranslations({ locale, namespace: 'minorEvent' })
   return {
     title: data ? pickLocalized(loc, data.title, data.title_en) : t('fallbackTitle'),
+    description: data ? (pickLocalized(loc, data.desc_text ?? '', data.desc_text_en) || undefined) : undefined,
     alternates: buildAlternates(locale, `/annual-events/m/${slug}`),
   }
 }
