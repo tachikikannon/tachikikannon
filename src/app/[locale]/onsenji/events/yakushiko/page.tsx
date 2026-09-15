@@ -16,7 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const dateSuffix = locale === 'en' ? ' (August 8)' : '（8月8日）'
   return {
     title: `${t('title')}${dateSuffix}`,
-    description: '毎年8月8日開催。湯の湖畔にて山伏による採灯大護摩供を厳修。温泉寺最大の法要のご案内。',
+    description: locale === 'en'
+      ? "Held every August 8th on the shore of Lake Yunoko. Yamabushi mountain ascetics perform the Saito Goma fire ritual — Onsenji's largest annual ceremony."
+      : '毎年8月8日開催。湯の湖畔にて山伏による採灯大護摩供を厳修。温泉寺最大の法要のご案内。',
     alternates: buildAlternates(locale, '/onsenji/events/yakushiko'),
   }
 }

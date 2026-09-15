@@ -15,7 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiSetsubun' })
   return {
     title: `${t('title')}`,
-    description: '毎年1月下旬開催。新年の邪気を払い福を招く節分大祭のご案内。豆まき・護摩供。日程は年によって異なります。',
+    description: locale === 'en'
+      ? 'Held in late January each year. The Setsubun Grand Festival wards off misfortune and welcomes good luck for the new year, with bean-throwing and a Goma fire ritual. Dates vary by year.'
+      : '毎年1月下旬開催。新年の邪気を払い福を招く節分大祭のご案内。豆まき・護摩供。日程は年によって異なります。',
     alternates: buildAlternates(locale, '/onsenji/events/setsubun'),
   }
 }

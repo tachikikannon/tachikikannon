@@ -9,6 +9,6 @@ export function buildAlternates(locale: string, jaPath: string): Metadata['alter
   const enPath = jaPath === '/' ? '/en' : `/en${jaPath}`
   return {
     canonical: locale === 'ja' ? jaPath : enPath,
-    languages: { ja: jaPath, en: enPath },
+    languages: { ja: jaPath, en: enPath, 'x-default': jaPath },
   }
 }

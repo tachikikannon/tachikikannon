@@ -16,7 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'annualEvents' })
   return {
     title: t('title'),
-    description: '日光山中禅寺 立木観音の年間行事。6月18日 観音講・大護摩供・地蔵流し、8月4日 船禅頂（ふなぜんじょう）。',
+    description: locale === 'en'
+      ? 'Annual events at Nikkozan Chuzenji Tachiki Kannon: Kannon-ko, Grand Goma Ritual & Jizo-nagashi on June 18, and Funazenjyo (Boat Zen Pilgrimage) on August 4.'
+      : '日光山中禅寺 立木観音の年間行事。6月18日 観音講・大護摩供・地蔵流し、8月4日 船禅頂（ふなぜんじょう）。',
     alternates: buildAlternates(locale, '/annual-events'),
   }
 }

@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { GoogleAnalytics } from '@next/third-parties/google'
+import { getLocale } from 'next-intl/server'
 
 export const metadata: Metadata = {
   verification: {
@@ -9,9 +10,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale()
   return (
-    <html lang="ja">
+    <html lang={locale}>
       <body>
         {children}
         <Analytics />

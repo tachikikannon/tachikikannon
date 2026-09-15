@@ -14,8 +14,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'funazento' })
   return {
-    title: `${t('title')}（8月4日）`,
-    description: '毎年8月4日開催。日光開山 勝道上人の霊跡を船で巡拝する伝統行事「船禅頂（ふなぜんじょう）」のご案内。事前申し込み必要。',
+    title: locale === 'en' ? `${t('title')} (August 4)` : `${t('title')}（8月4日）`,
+    description: locale === 'en'
+      ? 'Held every August 4th. Funazenjyo (Boat Zen Pilgrimage) is a traditional boat pilgrimage to the sacred sites of Shodo Shonin, founder of Nikko. Advance application required.'
+      : '毎年8月4日開催。日光開山 勝道上人の霊跡を船で巡拝する伝統行事「船禅頂（ふなぜんじょう）」のご案内。事前申し込み必要。',
     alternates: buildAlternates(locale, '/annual-events/funazento'),
   }
 }

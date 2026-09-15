@@ -14,8 +14,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'shogatsu' })
   return {
-    title: `${t('title')}（1月1日）`,
-    description: '毎年1月1日開催。新しい年の始まりに一年の無病息災・家内安全・開運招福を祈願する特別護摩祈祷。事前申し込み必要、最大5名まで同時申込可。',
+    title: locale === 'en' ? `${t('title')} (January 1)` : `${t('title')}（1月1日）`,
+    description: locale === 'en'
+      ? 'Held every January 1st. A special Goma fire ritual praying for good health, family safety, and good fortune in the new year. Advance application required, up to 5 people per application.'
+      : '毎年1月1日開催。新しい年の始まりに一年の無病息災・家内安全・開運招福を祈願する特別護摩祈祷。事前申し込み必要、最大5名まで同時申込可。',
     alternates: buildAlternates(locale, '/annual-events/shogatsu'),
   }
 }

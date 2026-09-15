@@ -22,11 +22,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   const path = locale === 'ja' ? '/onsenji' : `/${locale}/onsenji`
+  // title.absolute で明示しないと、このページに固有のタイトルが無いため
+  // 中禅寺側の [locale]/layout.tsx のテンプレートに巻き込まれて
+  // 「...温泉寺 | ...中禅寺...」のように二重連結されてしまう
   return {
-    title: { absolute: '日光山温泉寺 【公式】｜中禅寺湖畔の温泉と祈りの霊場' },
+    title: {
+      absolute: locale === 'en'
+        ? 'Nikkozan Onsenji Temple (Official Site) | Hot Spring & Prayer on Lake Chuzenji'
+        : '日光山温泉寺 【公式】｜中禅寺湖畔の温泉と祈りの霊場',
+    },
     alternates: {
       canonical: path,
-      languages: { ja: '/onsenji', en: '/en/onsenji' },
+      languages: { ja: '/onsenji', en: '/en/onsenji', 'x-default': '/onsenji' },
     },
   }
 }

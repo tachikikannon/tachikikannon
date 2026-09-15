@@ -16,7 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiEvents' })
   return {
     title: `${t('title')}`,
-    description: '日光山温泉寺の年間行事・法要のご案内。8月8日 薬師講大祭・採灯大護摩供、1月下旬 節分大祭。',
+    description: locale === 'en'
+      ? 'Annual events and ceremonies at Nikkozan Onsenji Temple: the Yakushiko Grand Festival & Saito Goma Fire Ritual on August 8, and the Setsubun Grand Festival in late January.'
+      : '日光山温泉寺の年間行事・法要のご案内。8月8日 薬師講大祭・採灯大護摩供、1月下旬 節分大祭。',
     alternates: buildAlternates(locale, '/onsenji/events'),
   }
 }

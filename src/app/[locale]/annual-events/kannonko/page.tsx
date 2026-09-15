@@ -14,8 +14,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'kannonko' })
   return {
-    title: `${t('title')}（6月18日）`,
-    description: '毎年6月18日開催。観音講・大護摩供・地蔵流しのご案内。午前10時より執り行います。',
+    title: locale === 'en' ? `${t('title')} (June 18)` : `${t('title')}（6月18日）`,
+    description: locale === 'en'
+      ? 'Held every June 18th. Kannon-ko, the Grand Goma Ritual, and Jizo-nagashi. Begins at 10:00 AM.'
+      : '毎年6月18日開催。観音講・大護摩供・地蔵流しのご案内。午前10時より執り行います。',
     alternates: buildAlternates(locale, '/annual-events/kannonko'),
   }
 }

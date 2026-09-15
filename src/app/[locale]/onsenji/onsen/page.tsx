@@ -15,7 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiOnsen' })
   return {
     title: `${t('title')}`,
-    description: '令和8年4月開湯。含硫黄泉の完全かけ流し。日光山温泉寺の薬師の湯をご案内します。',
+    description: locale === 'en'
+      ? 'Opened in April 2026. Fully sourced, sulfur-rich hot spring water. Introducing Yakushi-no-Yu, the hot spring at Nikkozan Onsenji Temple.'
+      : '令和8年4月開湯。含硫黄泉の完全かけ流し。日光山温泉寺の薬師の湯をご案内します。',
     alternates: buildAlternates(locale, '/onsenji/onsen'),
   }
 }
