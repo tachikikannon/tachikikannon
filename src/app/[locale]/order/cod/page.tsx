@@ -10,6 +10,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'codOrder' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Order omamori charms, ofuda tablets, and other items by cash-on-delivery. Please submit the required information through this form.'
+      : 'お守り・お札などの授与品を代金引換にてお申し込みいただけるページです。必要事項をご入力のうえ送信してください。',
     alternates: buildAlternates(locale, '/order/cod'),
   }
 }

@@ -13,6 +13,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'prayerCodApply' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Apply for a prayer service with cash-on-delivery payment. Please fill in the required information on this form.'
+      : '御祈願のお申し込みを代金引換にて承っております。フォームに必要事項をご入力のうえお申し込みください。',
     alternates: buildAlternates(locale, '/prayer/mail-apply/cod'),
   }
 }

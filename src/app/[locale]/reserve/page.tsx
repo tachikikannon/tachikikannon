@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'reserve' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Reserve an experience — sutra-copying, image-tracing, jyuzu-making — or a prayer service. Choose your preferred date, time, and content online.'
+      : '写経・写仏・数珠づくりなどの体験や御祈願のご予約はこちらから。ご希望の日時・内容を選んでオンラインでお申し込みいただけます。',
     alternates: buildAlternates(locale, '/reserve'),
   }
 }

@@ -15,6 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'prayer' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Prayer services at Chuzenji, including the Tachiki Kannon Goma fire ritual, new car safety prayers, safe childbirth prayers, and Shichi-Go-San. Reservations and applications available here.'
+      : '立木観音護摩祈祷をはじめ、新車祈願・安産祈願・七五三祈願など各種御祈願を承っております。ご予約・お申し込みはこちらから。',
     alternates: buildAlternates(locale, '/prayer'),
   }
 }

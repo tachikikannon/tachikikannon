@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'grounds' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'A guide to the highlights and worship route around the grounds of Nikkozan Chuzenji, including the Sanmon Gate, Kannon Hall, bell tower, Hashiri-Daikokuten Hall, Aizen Hall, and Enmei-sui spring.'
+      : '山門・観音堂・鐘楼・波之利大黒天堂・愛染堂・延命水など、日光山中禅寺の境内各所の見どころと参拝順路をご案内します。',
     alternates: buildAlternates(locale, '/grounds'),
   }
 }

@@ -40,7 +40,10 @@ async function getContent(): Promise<Record<string, string>> {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   return {
-    title: DEFAULTS.jyuzu_heading_instagram,
+    title: locale === 'en' ? DEFAULTS.jyuzu_heading_instagram_en : DEFAULTS.jyuzu_heading_instagram,
+    description: locale === 'en'
+      ? 'A gallery of the natural stones available for the jyuzu-making experience and photos of beads made by past participants — a helpful reference when choosing your stones.'
+      : '数珠づくり体験でお選びいただける天然石の一覧と、実際に参加者が作られた数珠の写真ギャラリーです。石選びの参考にご覧ください。',
     alternates: buildAlternates(locale, '/experience/jyuzu/gallery'),
   }
 }

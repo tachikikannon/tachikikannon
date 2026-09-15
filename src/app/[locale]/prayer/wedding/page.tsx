@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'prayerWedding' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? "A Buddhist wedding ceremony exchanging vows before the Buddha. Nikkozan Chuzenji's solemn main hall hosts a ceremony just for the two of you."
+      : 'み仏の御前で永遠の愛を誓う仏前式。日光山中禅寺の荘厳な本堂で、お二人だけの特別な結婚式を執り行います。',
     alternates: buildAlternates(locale, '/prayer/wedding'),
   }
 }

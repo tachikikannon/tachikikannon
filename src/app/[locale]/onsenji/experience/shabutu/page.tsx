@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiShabutu' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'Trace the image of Yakushi Nyorai. ¥1,000, approx. 30–60 minutes. Includes a special goshuin stamp. Enjoy the hot spring at Yumoto afterward.'
+      : '薬師瑠璃光如来のお姿を写す写仏体験。1,000円・約30〜60分。体験後は特別御朱印を授与いたします。湯元の温泉とあわせてお楽しみください。',
     alternates: buildAlternates(locale, '/onsenji/experience/shabutu'),
   }
 }

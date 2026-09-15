@@ -15,6 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'goshuin' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? "Receive Chuzenji's own goshuin stamp at the goshuin counter. ¥500 each. Special goshuin stamps are also available with the sutra-copying and image-tracing experiences."
+      : '中禅寺ならではの御朱印を御朱印所にてお受けいただけます。御朱印代は各500円。写経・写仏体験とセットの特別御朱印もご用意しています。',
     alternates: buildAlternates(locale, '/goshuin'),
   }
 }

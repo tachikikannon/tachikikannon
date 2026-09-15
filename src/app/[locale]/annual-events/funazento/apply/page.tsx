@@ -11,7 +11,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'funazento' })
   return {
-    title: `${t('title')} 申し込み`,
+    title: locale === 'en' ? `${t('title')} Application` : `${t('title')} 申し込み`,
+    description: locale === 'en'
+      ? 'Application form to join Funazenjyo (August 4). Please enter your party size and contact information.'
+      : '船禅頂（8月4日開催）の参加お申し込みフォームです。ご人数・ご連絡先をご入力のうえお申し込みください。',
     alternates: buildAlternates(locale, '/annual-events/funazento/apply'),
   }
 }

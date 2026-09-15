@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'shakyou' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Copy sutras by hand in this sutra-copying experience. ¥1,000 (includes a special goshuin stamp). A moment to quiet the mind at Nikkozan Chuzenji.'
+      : 'お経を一文字ずつ丁寧に書き写す写経体験。1,000円（特別御朱印込み）。日光山中禅寺の境内で心を整えるひとときをお過ごしいただけます。',
     alternates: buildAlternates(locale, '/experience/shakyou'),
   }
 }

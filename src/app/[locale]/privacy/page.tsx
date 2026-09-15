@@ -10,6 +10,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'privacy' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'The privacy policy describing how Nikkozan Chuzenji Tachiki Kannon handles personal information.'
+      : '日光山中禅寺 立木観音における個人情報の取り扱いについて定めたプライバシーポリシーです。',
     alternates: buildAlternates(locale, '/privacy'),
   }
 }

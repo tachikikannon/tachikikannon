@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiGrounds' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'A guide to the highlights and worship route around Nikkozan Onsenji Temple, including the Yakushi Hall and the Yakushi-no-Yu hot spring, on the quiet shore of Lake Yunoko.'
+      : '薬師堂・薬師の湯など、日光山温泉寺の境内各所の見どころと参拝順路をご案内します。湯元湖畔の静かな霊場をお楽しみください。',
     alternates: buildAlternates(locale, '/onsenji/grounds'),
   }
 }

@@ -11,7 +11,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'kannonko' })
   return {
-    title: `${t('title')} 申し込み`,
+    title: locale === 'en' ? `${t('title')} Application` : `${t('title')} 申し込み`,
+    description: locale === 'en'
+      ? 'Application form to join Kannon-ko and the Grand Goma Ritual (June 18). Please fill in the required information.'
+      : '観音講・大護摩供（6月18日開催）の参加お申し込みフォームです。必要事項をご入力のうえ送信してください。',
     alternates: buildAlternates(locale, '/annual-events/kannonko/apply'),
   }
 }

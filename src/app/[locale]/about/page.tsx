@@ -15,6 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'about' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Visiting hours, admission fees, and parking information for Nikkozan Chuzenji Tachiki Kannon. Adults ¥500, children ¥200. Hours vary by season, so please check before your visit.'
+      : '日光山中禅寺 立木観音の拝観時間・拝観料・駐車場をご案内します。拝観料は大人500円・子供200円。季節により拝観時間が異なりますので、お出かけ前にご確認ください。',
     alternates: buildAlternates(locale, '/about'),
   }
 }

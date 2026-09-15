@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'news' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'The latest news from Nikkozan Chuzenji Tachiki Kannon, including schedule changes and important visiting information.'
+      : '日光山中禅寺 立木観音からの最新のお知らせを一覧でご覧いただけます。行事の日程変更や拝観に関する重要な情報を掲載しています。',
     alternates: buildAlternates(locale, '/news'),
   }
 }

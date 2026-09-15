@@ -15,6 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiHistory' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'The story of the Yumoto hot spring, said to have been discovered by Priest Shodo who opened Nikko, and the origins of Nikkozan Onsenji Temple, dedicated to Yakushi Nyorai.'
+      : '日光を開山した勝道上人が発見したと伝わる湯元温泉と、薬師瑠璃光如来をお祀りする日光山温泉寺の由緒をご紹介します。',
     alternates: buildAlternates(locale, '/onsenji/history'),
   }
 }

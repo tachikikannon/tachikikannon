@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'blog' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'A blog sharing the seasonal scenery, everyday moments, and behind-the-scenes stories of Nikkozan Chuzenji Tachiki Kannon.'
+      : '日光山中禅寺 立木観音の四季の風景や境内の様子、行事の裏側などを紹介するブログです。参拝の参考にぜひご覧ください。',
     alternates: buildAlternates(locale, '/blog'),
   }
 }

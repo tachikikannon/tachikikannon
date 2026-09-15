@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'photos' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'A collection of photos of Nikkozan Chuzenji Tachiki Kannon available for press and promotional use. Please contact us in advance before use.'
+      : '報道・広報等でご利用いただける日光山中禅寺 立木観音の写真素材一覧です。ご利用の際は事前にお問い合わせください。',
     alternates: buildAlternates(locale, '/photos'),
   }
 }

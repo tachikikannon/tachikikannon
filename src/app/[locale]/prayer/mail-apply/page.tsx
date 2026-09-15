@@ -12,6 +12,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'prayerMailApply' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Apply for a prayer service by mail. Please fill in the required information; your ofuda and omamori will be sent together with your prayer.'
+      : '御祈願を郵送にてお申し込みいただくためのページです。必要事項をご記入のうえ、お札・お守りとあわせてお送りします。',
     alternates: buildAlternates(locale, '/prayer/mail-apply'),
   }
 }

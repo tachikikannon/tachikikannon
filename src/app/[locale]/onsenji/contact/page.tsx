@@ -13,6 +13,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiContact' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'For inquiries other than visiting, goshuin, or experience reservations, please contact Nikkozan Onsenji Temple using this form or by phone.'
+      : '拝観・御朱印・体験のご予約以外のお問い合わせはこちらのフォームまたはお電話にて承っております。日光山温泉寺までお気軽にご連絡ください。',
     alternates: buildAlternates(locale, '/onsenji/contact'),
   }
 }

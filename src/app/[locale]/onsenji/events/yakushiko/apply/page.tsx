@@ -10,6 +10,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiYakushikoApply' })
   return {
     title: `${t('formTitle')}`,
+    description: locale === 'en'
+      ? 'Application form for the Yakushiko Grand Festival & Saito Goma Fire Ritual (August 8). Please fill in the required information.'
+      : '薬師講大祭・採灯大護摩供（8月8日開催）のお申し込みフォームです。ご希望の内容をご入力のうえ送信してください。',
     alternates: buildAlternates(locale, '/onsenji/events/yakushiko/apply'),
   }
 }

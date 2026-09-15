@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiNews' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'The latest news from Nikkozan Onsenji Temple, including important information about visiting and the hot spring.'
+      : '日光山温泉寺からの最新のお知らせを一覧でご覧いただけます。拝観・温泉に関する重要な情報を掲載しています。',
     alternates: buildAlternates(locale, '/onsenji/news'),
   }
 }

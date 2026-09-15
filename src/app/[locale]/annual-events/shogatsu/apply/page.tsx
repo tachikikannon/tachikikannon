@@ -12,7 +12,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'shogatsu' })
   return {
-    title: `${t('title')} 申し込み`,
+    title: locale === 'en' ? `${t('title')} Application` : `${t('title')} 申し込み`,
+    description: locale === 'en'
+      ? "Application form for the New Year's Day Special Goma Prayer Ritual (January 1). Up to 5 people per application."
+      : '正月元旦特別護摩祈祷（1月1日開催）のお申し込みフォームです。最大5名まで同時にお申し込みいただけます。',
     alternates: buildAlternates(locale, '/annual-events/shogatsu/apply'),
   }
 }

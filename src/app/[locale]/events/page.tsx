@@ -11,6 +11,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'events' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'A calendar of annual events and announcements at Nikkozan Chuzenji Tachiki Kannon, including Kannon-ko and Funazenjyo.'
+      : '日光山中禅寺 立木観音で行われる年間行事やお知らせをまとめたカレンダーです。観音講・船禅頂など季節の行事日程をご確認いただけます。',
     alternates: buildAlternates(locale, '/events'),
   }
 }

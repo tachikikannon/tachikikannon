@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiFaq' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'Frequently asked questions about visiting, goshuin, the hot spring, and experiences at Nikkozan Onsenji Temple.'
+      : '拝観・御朱印・温泉・体験など、日光山温泉寺についてよくいただくご質問と回答をまとめました。',
     alternates: buildAlternates(locale, '/onsenji/faq'),
   }
 }

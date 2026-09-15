@@ -15,6 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'history' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? "The story of Chuzenji's founding by Priest Shodo, who opened Nikko, and the origins of its principal image, Tachiki Kannon, carved from a living katsura tree."
+      : '日光を開山した勝道上人による中禅寺開創の由緒と、桂の立木に彫られた本尊 立木観音にまつわる縁起をご紹介します。',
     alternates: buildAlternates(locale, '/history'),
   }
 }

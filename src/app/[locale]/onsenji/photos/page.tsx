@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiPhotos' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'A collection of photos of Nikkozan Onsenji Temple available for press and promotional use. Please contact us in advance before use.'
+      : '報道・広報等でご利用いただける日光山温泉寺の写真素材一覧です。ご利用の際は事前にお問い合わせください。',
     alternates: buildAlternates(locale, '/onsenji/photos'),
   }
 }

@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'faq' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Frequently asked questions about visiting, prayer services, experiences, and access at Nikkozan Chuzenji Tachiki Kannon.'
+      : '拝観・御祈願・体験・アクセスなど、日光山中禅寺 立木観音についてよくいただくご質問と回答をまとめました。',
     alternates: buildAlternates(locale, '/faq'),
   }
 }

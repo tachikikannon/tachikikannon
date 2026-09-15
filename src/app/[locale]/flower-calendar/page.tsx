@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'flowerCalendar' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'A seasonal flower calendar showcasing the blooms around the temple grounds on the shore of Lake Chuzenji — a helpful guide for planning your visit.'
+      : '中禅寺湖畔の境内を彩る、四季折々の花の見頃をご紹介する花ごよみです。参拝の時期を選ぶ際の参考にご覧ください。',
     alternates: buildAlternates(locale, '/flower-calendar'),
   }
 }

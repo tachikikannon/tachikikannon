@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'zazen' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'A seated meditation experience guided by a priest. ¥2,000. Reservations are by phone only.'
+      : '僧侶の指導のもと静かに坐り、心を調える坐禅体験。2,000円。お電話でのご予約制となっております。',
     alternates: buildAlternates(locale, '/experience/zazen'),
   }
 }

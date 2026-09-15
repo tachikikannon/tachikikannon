@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiShakyou' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'Copy sutras by hand. ¥1,000, approx. 15 minutes, held daily. Includes a special goshuin stamp. A quiet, peaceful experience.'
+      : 'お経を書き写す写経体験。1,000円・約15分・毎日実施。体験後は特別御朱印を授与いたします。心静かなひとときをお過ごしください。',
     alternates: buildAlternates(locale, '/onsenji/experience/shakyou'),
   }
 }

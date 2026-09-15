@@ -17,6 +17,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'jyuzu' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Create your own prayer beads by choosing your favorite natural stones, with gentle guidance from a priest. From ¥2,000. A memorable keepsake of your visit to Lake Chuzenji.'
+      : 'お好みの天然石を選んで作る、自分だけの数珠づくり体験。2,000円〜、僧侶がやさしく手ほどきします。中禅寺参拝の記念にどうぞ。',
     alternates: buildAlternates(locale, '/experience/jyuzu'),
   }
 }

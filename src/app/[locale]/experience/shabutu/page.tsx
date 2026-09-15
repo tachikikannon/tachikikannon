@@ -16,6 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'shabutu' })
   return {
     title: t('title'),
+    description: locale === 'en'
+      ? 'Trace the image of Yakushi Nyorai in this quiet Buddhist image-tracing experience. ¥1,000 (includes a special goshuin stamp). Spend a peaceful moment on the shores of Lake Chuzenji.'
+      : '薬師瑠璃光如来のお姿を心静かに写しとる写仏体験。1,000円（特別御朱印込み）。中禅寺湖畔の境内で穏やかなひとときをお過ごしください。',
     alternates: buildAlternates(locale, '/experience/shabutu'),
   }
 }

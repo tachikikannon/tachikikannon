@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'onsenjiAbout' })
   return {
     title: `${t('title')}`,
+    description: locale === 'en'
+      ? 'Visiting hours, admission fees, and access information for Nikkozan Onsenji Temple. 2559 Yumoto, Nikko, Tochigi. Enjoy the Yakushi-no-Yu hot spring during your visit.'
+      : '日光山温泉寺の拝観時間・拝観料・アクセスをご案内します。栃木県日光市湯元2559。薬師の湯とあわせてお楽しみください。',
     alternates: buildAlternates(locale, '/onsenji/about'),
   }
 }
