@@ -232,7 +232,7 @@ export default async function OnsenjPage({
 
   return (
     <>
-      <OnsenjiStructuredData />
+      <OnsenjiStructuredData locale={loc} />
       <HeaderOnsenji />
       <main>
         {/* ヒーロー */}

@@ -239,7 +239,7 @@ export default async function HomePage({
 
   return (
     <>
-      <ChuzenjiStructuredData />
+      <ChuzenjiStructuredData locale={loc} />
       <Header />
       <main>
         {/* ヒーロー */}
