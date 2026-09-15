@@ -167,13 +167,18 @@ export default async function HomePage({
   const experienceCards = experienceCardsAll.slice(1)
   const serviceCards    = pj<typeof DEFAULT_SERVICE_CARDS>(getLocalizedContent(content, 'top_service_cards', loc), DEFAULT_SERVICE_CARDS)
 
-  const { data: newsList } = await supabase
+  let newsQuery = supabase
     .from('news')
     .select('*')
     .eq('is_published', true)
     .eq('site', 'chuzenji')
     .order('published_at', { ascending: false })
     .limit(5)
+  // 英語ページでは英語訳が未入力のお知らせを表示しない（日本語だけが混ざるのを防ぐため）
+  if (loc === 'en') {
+    newsQuery = newsQuery.not('title_en', 'is', null).neq('title_en', '')
+  }
+  const { data: newsList } = await newsQuery
 
   const newsCategories = parseNewsCategories(content[newsCategoriesKey('chuzenji')])
 

@@ -46,6 +46,10 @@ export default async function NewsPage({
   if (category) {
     query = query.eq('category', category)
   }
+  // 英語ページでは英語訳が未入力のお知らせを表示しない（日本語だけが混ざるのを防ぐため）
+  if (loc === 'en') {
+    query = query.not('title_en', 'is', null).neq('title_en', '')
+  }
 
   const { data: items } = await query
   const news = (items ?? []) as News[]

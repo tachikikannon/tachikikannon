@@ -218,13 +218,18 @@ export default async function OnsenjPage({
     : 'https://www.tobu-bus.com/pc/assets/pdf/nikko_timetable_summer.pdf?20260408'
 
   const supabase = await createPublicSupabaseClient()
-  const { data: newsList } = await supabase
+  let newsQuery = supabase
     .from('news')
     .select('*')
     .eq('is_published', true)
     .eq('site', 'onsenji')
     .order('published_at', { ascending: false })
     .limit(5)
+  // 英語ページでは英語訳が未入力のお知らせを表示しない（日本語だけが混ざるのを防ぐため）
+  if (loc === 'en') {
+    newsQuery = newsQuery.not('title_en', 'is', null).neq('title_en', '')
+  }
+  const { data: newsList } = await newsQuery
 
   const { data: newsCategoriesRow } = await supabase.from('site_content').select('value').eq('key', newsCategoriesKey('onsenji')).maybeSingle()
   const newsCategories = parseNewsCategories(newsCategoriesRow?.value)
