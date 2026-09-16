@@ -40,21 +40,39 @@ export default function OnsenjiContactForm() {
     setStep('done')
   }
 
+  const confirmRows: [string, string][] = [
+    [t('nameLabel'), form.name],
+    ...(showNameKana ? [[t('nameKanaLabel'), form.nameKana] as [string, string]] : []),
+    [t('emailLabel'), form.email],
+    [t('messageLabel'), form.message],
+  ]
+
   if (step === 'done') return (
-    <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
-      <p className="text-5xl mb-4">✉️</p>
-      <h2 className="font-serif text-xl text-onsenji mb-2">{t('doneTitle')}</h2>
-      <p className="text-gray-600 text-sm leading-relaxed">{t('doneText')}</p>
+    <div className="bg-white rounded-2xl shadow-sm p-8">
+      <div className="text-center mb-6">
+        <p className="text-5xl mb-4">✉️</p>
+        <h2 className="font-serif text-xl text-onsenji mb-2">{t('doneTitle')}</h2>
+        <p className="text-gray-600 text-sm leading-relaxed">{t('doneText')}</p>
+      </div>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-serif text-onsenji text-base">{t('doneSummaryHeading')}</h3>
+        <button type="button" onClick={() => window.print()}
+          className="print:hidden text-xs px-4 py-2 border border-onsenji text-onsenji rounded-full hover:bg-onsenji hover:text-white transition-colors">
+          🖨 {t('printButton')}
+        </button>
+      </div>
+      <dl className="border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
+        {confirmRows.map(([label, value]) => (
+          <div key={label} className="grid grid-cols-[6rem_1fr] gap-3 px-4 py-3">
+            <dt className="text-gray-500">{label}</dt>
+            <dd className="whitespace-pre-wrap">{value}</dd>
+          </div>
+        ))}
+      </dl>
     </div>
   )
 
   if (step === 'confirm') {
-    const confirmRows: [string, string][] = [
-      [t('nameLabel'), form.name],
-      ...(showNameKana ? [[t('nameKanaLabel'), form.nameKana] as [string, string]] : []),
-      [t('emailLabel'), form.email],
-      [t('messageLabel'), form.message],
-    ]
     return (
       <div className="bg-white rounded-2xl shadow-sm p-8 space-y-6">
         <h2 className="font-serif text-xl text-onsenji">{t('confirmHeading')}</h2>

@@ -227,6 +227,8 @@
     "phoneHours": "During visiting hours",
     "doneTitle": "Your Request Has Been Received",
     "doneText": "We will reply within 3–5 business days. Thank you for your patience.",
+    "doneSummaryHeading": "Your Submission",
+    "printButton": "Print / Save as PDF",
     "categoryPhoto": "Photo Usage / Loan Permission Request",
     "categoryPress": "TV & Magazine Filming Request",
     "categoryGroupReservation": "Group Reservation Request",
@@ -333,7 +335,9 @@
     "phoneContactTitle": "Contact by Phone",
     "phoneHours": "During visiting hours",
     "doneTitle": "Your Message Has Been Received",
-    "doneText": "We will reply within 3–5 business days. Thank you for your patience."
+    "doneText": "We will reply within 3–5 business days. Thank you for your patience.",
+    "doneSummaryHeading": "Your Submission",
+    "printButton": "Print / Save as PDF"
   },
   "events": {
     "title": "Events Calendar",
@@ -962,6 +966,8 @@
     "phoneContactHours": "During visiting hours",
     "doneTitle": "Your Request Has Been Received",
     "doneText": "We will reply within 3–5 business days. Thank you for your patience.",
+    "doneSummaryHeading": "Your Submission",
+    "printButton": "Print / Save as PDF",
     "categoryPhoto": "Photo Usage / Loan Permission Request",
     "categoryPress": "Photography / Interview Request",
     "categoryGroupReservation": "Group Reservation Request",
@@ -1060,6 +1066,8 @@
     "goToConfirm": "Review & Confirm",
     "doneTitle": "Your inquiry has been received",
     "doneText": "We will reply within 3-5 business days. Thank you for your patience.",
+    "doneSummaryHeading": "Your Submission",
+    "printButton": "Print / Save as PDF",
     "phonePrefix": "By phone: ",
     "phoneSuffix": " (during visiting hours)"
   },

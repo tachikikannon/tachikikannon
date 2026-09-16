@@ -227,6 +227,8 @@
     "phoneHours": "受付時間：拝観時間内",
     "doneTitle": "申請を受け付けました",
     "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。",
+    "doneSummaryHeading": "送信内容の控え",
+    "printButton": "印刷・PDFで保存",
     "categoryPhoto": "写真使用・貸出し許可申請",
     "categoryPress": "テレビ・雑誌撮影申請",
     "categoryGroupReservation": "団体予約申請",
@@ -333,7 +335,9 @@
     "phoneContactTitle": "お電話でのお問い合わせ",
     "phoneHours": "受付時間：拝観時間内",
     "doneTitle": "お問い合わせを受け付けました",
-    "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。"
+    "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。",
+    "doneSummaryHeading": "送信内容の控え",
+    "printButton": "印刷・PDFで保存"
   },
   "events": {
     "title": "行事カレンダー",
@@ -962,6 +966,8 @@
     "phoneContactHours": "受付時間：拝観時間内",
     "doneTitle": "申請を受け付けました",
     "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。",
+    "doneSummaryHeading": "送信内容の控え",
+    "printButton": "印刷・PDFで保存",
     "categoryPhoto": "写真使用・貸出し許可申請",
     "categoryPress": "撮影・取材申請",
     "categoryGroupReservation": "団体予約申請",
@@ -1060,6 +1066,8 @@
     "goToConfirm": "確認画面へ",
     "doneTitle": "お問い合わせを受け付けました",
     "doneText": "通常3〜5営業日以内にご返信いたします。しばらくお待ちください。",
+    "doneSummaryHeading": "送信内容の控え",
+    "printButton": "印刷・PDFで保存",
     "phonePrefix": "お電話でのお問い合わせ：",
     "phoneSuffix": "（受付時間：拝観時間内）"
   },

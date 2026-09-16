@@ -151,18 +151,6 @@ export default function ApplyForm() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  if (step === 'done') return (
-    <main className="min-h-screen pt-24 flex items-center justify-center px-4">
-      <div className="text-center max-w-sm">
-        <p className="text-5xl mb-4">📝</p>
-        <h1 className="text-2xl font-serif text-navy mb-3">{t('doneTitle')}</h1>
-        <p className="text-gray-600 text-sm leading-relaxed">
-          {t('doneText')}
-        </p>
-      </div>
-    </main>
-  )
-
   const confirmRows: [string, string][] = [
     [t('categoryLabel'), CATEGORY_LABELS[form.category] ?? form.category],
     ...(form.photo_ref ? [[t('photoRefLabel'), `${photoMedia.length || form.photo_ref.split(',').filter(Boolean).length}${t('photoCountUnit')}`] as [string, string]] : []),
@@ -200,6 +188,34 @@ export default function ApplyForm() {
     ...(isGroupReservation && form.child_count ? [[t('childCountLabel'), `${form.child_count}${t('attendeeCountSuffix')}`] as [string, string]] : []),
     ...(isFeeReduction && form.student_count ? [[t('studentCountLabel'), `${form.student_count}${t('attendeeCountSuffix')}`] as [string, string]] : []),
   ] : []
+  const allRows: [string, string][] = [...confirmRows, ...mediaRows, ...groupFeeRows, ...(form.message ? [[isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]] : [])]
+
+  if (step === 'done') return (
+    <main className="min-h-screen pt-24 pb-16 px-4">
+      <div className="max-w-lg mx-auto">
+        <div className="text-center mb-8">
+          <p className="text-5xl mb-4">📝</p>
+          <h1 className="text-2xl font-serif text-navy mb-3">{t('doneTitle')}</h1>
+          <p className="text-gray-600 text-sm leading-relaxed">{t('doneText')}</p>
+        </div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-serif text-navy text-base">{t('doneSummaryHeading')}</h2>
+          <button type="button" onClick={() => window.print()}
+            className="print:hidden text-xs px-4 py-2 border border-navy text-navy rounded-full hover:bg-navy hover:text-white transition-colors">
+            🖨 {t('printButton')}
+          </button>
+        </div>
+        <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
+          {allRows.map(([label, value]) => (
+            <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
+              <dt className="text-gray-500">{label}</dt>
+              <dd className="whitespace-pre-wrap">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </main>
+  )
 
   return (
     <main className="pt-24 pb-16 px-4">
@@ -484,7 +500,7 @@ export default function ApplyForm() {
             <h2 className="font-serif text-navy text-xl">{t('confirmHeading')}</h2>
             <p className="text-sm text-gray-500">{t('confirmNote')}</p>
             <dl className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-sm">
-              {[...confirmRows, ...mediaRows, ...groupFeeRows, ...(form.message ? [[isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]] : [])].map(([label, value]) => (
+              {allRows.map(([label, value]) => (
                 <div key={label} className="grid grid-cols-[8rem_1fr] gap-3 px-4 py-3">
                   <dt className="text-gray-500">{label}</dt>
                   <dd className="whitespace-pre-wrap">{value}</dd>
