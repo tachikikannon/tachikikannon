@@ -40,7 +40,9 @@ export async function POST(req: Request) {
     const info = TEMPLE_INFO[(temple as Temple) === 'onsenji' ? 'onsenji' : 'chuzenji']
     const toEmail = process.env.NOTIFY_EMAIL!
     const adminUrl = `${process.env.SITE_URL ?? ''}/admin/contacts`
-    const receivedAt = new Date().toLocaleString('ja-JP')
+    // タイムゾーンを明示しないとVercelのサーバーはUTCで動作するため、
+    // 日本時間より9時間早い時刻がLINE通知に表示されてしまう
+    const receivedAt = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
 
     // メール通知とLINEグループ通知は並行して実行し、どちらかが失敗しても
     // 問い合わせ登録そのものは成功として扱う（LINE失敗はログのみ）。

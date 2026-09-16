@@ -19,7 +19,9 @@ export async function POST(req: Request) {
     } = body
     const toEmail = process.env.NOTIFY_EMAIL!
     const adminUrl = `${process.env.SITE_URL ?? ''}/admin/applications`
-    const receivedAt = new Date().toLocaleString('ja-JP')
+    // タイムゾーンを明示しないとVercelのサーバーはUTCで動作するため、
+    // 日本時間より9時間早い時刻がLINE通知に表示されてしまう
+    const receivedAt = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })
 
     const extraRows: [string, string][] = [
       company_name && ['会社名・団体名', company_name],
