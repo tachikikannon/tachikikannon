@@ -124,7 +124,7 @@ export default function AdminApplicationsPage() {
               <h2 className="font-medium text-navy text-lg">{selected.category}</h2>
               <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg print:hidden">✕</button>
             </div>
-            <dl className="grid grid-cols-[5rem_1fr] gap-x-3 gap-y-2 text-sm mb-5">
+            <dl className="grid grid-cols-[5rem_1fr] gap-x-3 gap-y-2 text-sm mb-5 [&>dd]:min-w-0 [&>dd]:break-words">
               <dt className="text-gray-500 text-xs">お名前</dt><dd>{selected.name}</dd>
               <dt className="text-gray-500 text-xs">メール</dt>
               <dd><a href={`mailto:${selected.email}`} className="text-navy underline">{selected.email}</a></dd>
@@ -166,7 +166,7 @@ export default function AdminApplicationsPage() {
               <dt className="text-gray-500 text-xs">更新日時</dt>
               <dd className="text-xs text-gray-500">{selected.updated_at ? new Date(selected.updated_at).toLocaleString('ja-JP') : '—'}</dd>
             </dl>
-            <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap mb-4 print:bg-white print:p-0">
+            <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap break-words mb-4 print:bg-white print:p-0">
               {selected.message}
             </div>
 

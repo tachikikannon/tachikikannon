@@ -117,15 +117,15 @@ export default function AdminContactsPage() {
               <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg print:hidden">✕</button>
             </div>
             <dl className="grid grid-cols-[5rem_1fr] gap-x-3 gap-y-2 text-sm mb-5">
-              <dt className="text-gray-500 text-xs">お名前</dt><dd>{selected.name}</dd>
+              <dt className="text-gray-500 text-xs">お名前</dt><dd className="break-words min-w-0">{selected.name}</dd>
               <dt className="text-gray-500 text-xs">メール</dt>
-              <dd><a href={`mailto:${selected.email}`} className="text-navy underline print:no-underline print:text-black">{selected.email}</a></dd>
+              <dd className="break-words min-w-0"><a href={`mailto:${selected.email}`} className="text-navy underline print:no-underline print:text-black">{selected.email}</a></dd>
               <dt className="text-gray-500 text-xs">受信日</dt>
               <dd className="text-xs text-gray-500">{new Date(selected.created_at).toLocaleString('ja-JP')}</dd>
               <dt className="text-gray-500 text-xs">更新日時</dt>
               <dd className="text-xs text-gray-500">{selected.updated_at ? new Date(selected.updated_at).toLocaleString('ja-JP') : '—'}</dd>
             </dl>
-            <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap mb-4 print:bg-white print:p-0">
+            <div className="bg-gray-50 rounded p-4 text-sm leading-relaxed whitespace-pre-wrap break-words mb-4 print:bg-white print:p-0">
               {selected.message}
             </div>
 

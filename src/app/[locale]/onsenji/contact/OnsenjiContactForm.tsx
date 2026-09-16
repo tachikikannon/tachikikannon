@@ -65,7 +65,7 @@ export default function OnsenjiContactForm() {
         {confirmRows.map(([label, value]) => (
           <div key={label} className="grid grid-cols-[6rem_1fr] gap-3 px-4 py-3">
             <dt className="text-gray-500">{label}</dt>
-            <dd className="whitespace-pre-wrap">{value}</dd>
+            <dd className="whitespace-pre-wrap break-words min-w-0">{value}</dd>
           </div>
         ))}
       </dl>
@@ -81,7 +81,7 @@ export default function OnsenjiContactForm() {
           {confirmRows.map(([label, value]) => (
             <div key={label} className="grid grid-cols-[6rem_1fr] gap-3 px-4 py-3">
               <dt className="text-gray-500">{label}</dt>
-              <dd className="whitespace-pre-wrap">{value}</dd>
+              <dd className="whitespace-pre-wrap break-words min-w-0">{value}</dd>
             </div>
           ))}
         </dl>
