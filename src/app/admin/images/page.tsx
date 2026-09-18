@@ -75,6 +75,23 @@ export default function AdminImagesPage() {
     setTimeout(() => setCopied(null), 2000)
   }
 
+  async function downloadImage(item: Media) {
+    try {
+      const res = await fetch(item.public_url)
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = item.filename
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch {
+      alert('ダウンロードに失敗しました。')
+    }
+  }
+
   const filtered = filterSite === 'all' ? list : list.filter(m => m.site === filterSite)
 
   return (
@@ -122,6 +139,10 @@ export default function AdminImagesPage() {
                 <button onClick={() => copyUrl(item.public_url)}
                   className="bg-white text-navy text-xs px-2 py-1 rounded font-medium hover:bg-gold">
                   {copied === item.public_url ? 'コピー済み!' : 'URLコピー'}
+                </button>
+                <button onClick={() => downloadImage(item)}
+                  className="bg-white text-navy text-xs px-2 py-1 rounded font-medium hover:bg-gold">
+                  DL
                 </button>
               </div>
             </div>
