@@ -1,6 +1,6 @@
 import type { Locale } from '@/i18n/routing'
 
-const SITE_URL = 'https://tachikikannon.vercel.app'
+const SITE_URL = process.env.SITE_URL || 'https://tachikikannon.vercel.app'
 
 const SAME_AS = [
   'https://www.instagram.com/tachikikannon/',

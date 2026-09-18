@@ -28,7 +28,7 @@ export async function generateMetadata({
   const { locale } = await params
   const m = locale === 'en' ? SITE_META.en : SITE_META.ja
   return {
-    metadataBase: new URL('https://tachikikannon.vercel.app'),
+    metadataBase: new URL(process.env.SITE_URL || 'https://tachikikannon.vercel.app'),
     title: m.title,
     description: m.description,
     openGraph: {
