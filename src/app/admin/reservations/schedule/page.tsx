@@ -1,8 +1,9 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import { getTimeSlots, nowInJST, reservationTypeLabel, GOMA_PURPOSE_OPTIONS } from '@/lib/reservationSlots'
+import { updateReservationStatus } from '@/lib/reservationStatus'
 import NewReservationForm from '@/components/admin/NewReservationForm'
 import type { AdminProfile, Reservation, ReservationCategory, ReservationStatus } from '@/types'
 
@@ -80,19 +81,26 @@ export default function AdminReservationSchedulePage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [detail, setDetail] = useState<Reservation | null>(null)
   const [mailNotice, setMailNotice] = useState<string | null>(null)
+  const [statusError, setStatusError] = useState<string | null>(null)
   const [pendingStatus, setPendingStatus] = useState<ReservationStatus | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [editForm, setEditForm] = useState<EditForm | null>(null)
   const [saving, setSaving] = useState(false)
+  const loadSeq = useRef(0)
+  const statusSaving = useRef(false)
 
   const weeks = useMemo(() => getMonthMatrix(year, month), [year, month])
   const monthLabel = new Date(year, month, 1).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })
 
   async function load() {
+    const seq = ++loadSeq.current
     const first = dstr(new Date(Date.UTC(year, month, 1)))
     const last = dstr(new Date(Date.UTC(year, month + 1, 0)))
-    const { data } = await supabase.from('reservations').select('*').gte('date', first).lte('date', last)
-    setList(data ?? [])
+    const { data, error } = await supabase.from('reservations').select('*').gte('date', first).lte('date', last)
+    // 後から始めた読み込み（月の切り替え等）がある場合は、古い結果で一覧を上書きしない
+    if (seq !== loadSeq.current) return
+    // 読み込みに失敗したときは、一覧を空にせず直前の表示を残す
+    if (!error) setList(data ?? [])
     const { data: adminData } = await supabase.from('admin_profiles').select('*').eq('is_active', true)
     setAdmins(adminData ?? [])
     const { data: categoryData } = await supabase.from('reservation_categories').select('*').order('sort_order')
@@ -118,6 +126,7 @@ export default function AdminReservationSchedulePage() {
     setDetail(r)
     setPendingStatus(null)
     setMailNotice(null)
+    setStatusError(null)
     setIsEditing(false)
     setEditForm(null)
   }
@@ -160,8 +169,19 @@ export default function AdminReservationSchedulePage() {
   }
 
   async function updateStatus(id: string, status: ReservationStatus) {
+    if (statusSaving.current) return // 二重タップによる二重送信を防ぐ
+    statusSaving.current = true
+    setStatusError(null)
+    setMailNotice(null)
     const target = list.find(r => r.id === id)
-    await supabase.from('reservations').update({ status }).eq('id', id)
+    const result = await updateReservationStatus(supabase, id, status)
+    statusSaving.current = false
+    if (!result.ok) {
+      // 保存に失敗したときは確定メールを送らない（メールだけ送られて状態が変わらない状態を防ぐ）
+      console.error('reservation status update failed:', result.message)
+      setStatusError(`ステータスを変更できませんでした（${result.message}）。もう一度お試しください。メールは送信していません。`)
+      return
+    }
     load()
     if (detail?.id === id) setDetail(d => d ? { ...d, status } : d)
 
@@ -179,7 +199,8 @@ export default function AdminReservationSchedulePage() {
         .then(async data => {
           setMailNotice(data.ok ? '確定メールを送信しました' : '確定メールの送信に失敗しました')
           if (data.ok) {
-            await supabase.from('reservations').update({ confirmation_email_sent: true }).eq('id', id)
+            const { error: flagError } = await supabase.from('reservations').update({ confirmation_email_sent: true }).eq('id', id)
+            if (flagError) setMailNotice('確定メールは送信しましたが、送信済みの記録に失敗しました')
             load()
             if (detail?.id === id) setDetail(d => d ? { ...d, confirmation_email_sent: true } : d)
           }
@@ -527,6 +548,7 @@ export default function AdminReservationSchedulePage() {
                   </div>
                 )}
                 {!canEdit && <p className="text-[11px] text-gray-400 mt-2">閲覧のみのアカウントです。変更は管理者にご依頼ください。</p>}
+                {statusError && <p className="text-xs text-red-600 mt-2 font-medium">⚠ {statusError}</p>}
                 {mailNotice && <p className="text-[11px] text-gray-500 mt-2">✉️ {mailNotice}</p>}
               </div>
 
