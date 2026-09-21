@@ -105,8 +105,8 @@ export default function OnsenjiApplyForm() {
     const path = `${crypto.randomUUID()}.${ext}`
     const { error } = await supabase.storage.from('application-attachments').upload(path, file, { contentType: file.type })
     if (error) { setAttachmentError(`${t('attachmentErrorUpload')}${error.message ? ` (${error.message})` : ''}`); setUploading(false); return }
-    const { data: { publicUrl } } = supabase.storage.from('application-attachments').getPublicUrl(path)
-    setForm(f => ({ ...f, attachment_url: publicUrl, attachment_filename: file.name }))
+    // バケットは非公開のため公開URLは保存せず、パスだけを保存する（管理画面が期限付きリンクで開く）
+    setForm(f => ({ ...f, attachment_url: path, attachment_filename: file.name }))
     setUploading(false)
   }
 

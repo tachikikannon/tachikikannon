@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
+import { APPLICATION_ATTACHMENT_BUCKET, ATTACHMENT_LINK_TTL_SECONDS, attachmentPath } from '@/lib/applicationAttachment'
 import type { AdminProfile, Application, ApplicationStatus, Media } from '@/types'
 
 const STATUS_LABELS: Record<ApplicationStatus, string> = {
@@ -26,6 +27,8 @@ export default function AdminApplicationsPage() {
   const [selected, setSelected] = useState<Application | null>(null)
   const [pendingStatus, setPendingStatus] = useState<ApplicationStatus | null>(null)
   const [photoMedia, setPhotoMedia] = useState<Media[]>([])
+  // 添付PDFは非公開バケットにあるため、詳細を開くたびに期限付きリンクを発行する
+  const [attachmentLink, setAttachmentLink] = useState<{ url: string | null; failed: boolean }>({ url: null, failed: false })
 
   async function load() {
     const { data } = await supabase.from('applications').select('*').order('created_at', { ascending: false })
@@ -43,6 +46,20 @@ export default function AdminApplicationsPage() {
     supabase.from('media').select('*').in('id', ids)
       .then(({ data }) => setPhotoMedia((data ?? []) as Media[]))
   }, [selected?.photo_ref])
+
+  useEffect(() => {
+    setAttachmentLink({ url: null, failed: false })
+    const value = selected?.attachment_url
+    if (!value) return
+    let cancelled = false
+    supabase.storage.from(APPLICATION_ATTACHMENT_BUCKET)
+      .createSignedUrl(attachmentPath(value), ATTACHMENT_LINK_TTL_SECONDS)
+      .then(({ data, error }) => {
+        if (cancelled) return
+        setAttachmentLink(error || !data ? { url: null, failed: true } : { url: data.signedUrl, failed: false })
+      })
+    return () => { cancelled = true }
+  }, [selected?.id, selected?.attachment_url])
 
   function openDetail(a: Application | null) {
     setSelected(a)
@@ -139,9 +156,17 @@ export default function AdminApplicationsPage() {
               {selected.fax && (<><dt className="text-gray-500 text-xs">FAX番号</dt><dd>{selected.fax}</dd></>)}
               {selected.attachment_url && (
                 <><dt className="text-gray-500 text-xs">添付ファイル</dt>
-                <dd><a href={selected.attachment_url} target="_blank" rel="noopener" className="text-navy underline">
-                  📎 {selected.attachment_filename || 'ファイルを開く'}
-                </a></dd></>
+                <dd>
+                  {attachmentLink.url ? (
+                    <a href={attachmentLink.url} target="_blank" rel="noopener" className="text-navy underline">
+                      📎 {selected.attachment_filename || 'ファイルを開く'}
+                    </a>
+                  ) : attachmentLink.failed ? (
+                    <span className="text-red-600 text-xs">添付ファイルを開けませんでした（{selected.attachment_filename || 'PDF'}）。時間をおいて再度お試しください。</span>
+                  ) : (
+                    <span className="text-gray-400 text-xs">📎 {selected.attachment_filename || 'ファイル'}（読み込み中…）</span>
+                  )}
+                </dd></>
               )}
               {selected.photo_ref && (
                 <>

@@ -4,6 +4,9 @@ import { sendLinePush } from '@/lib/line'
 import { sendGmail } from '@/lib/gmail'
 import { markAutoReplySent } from '@/lib/notifyStatus'
 
+const escapeHtml = (s: string) =>
+  String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
+
 export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
@@ -30,7 +33,8 @@ export async function POST(req: Request) {
       (address || address_detail) && ['ご住所', [address, address_detail].filter(Boolean).join(' ')],
       mobile && ['携帯電話', mobile],
       fax && ['FAX番号', fax],
-      attachment_url && ['添付ファイル', `<a href="${attachment_url}">${attachment_filename || 'ファイルを開く'}</a>`],
+      // 添付PDFは非公開バケットにあるため、メールにはリンクを載せない（管理画面で開く）
+      attachment_url && ['添付ファイル', `${escapeHtml(attachment_filename || 'PDF')}（管理画面で確認してください）`],
       media_categories?.length && ['メディアカテゴリ', media_categories.join('、')],
       media_name && ['メディア名・番組名', media_name],
       media_content && ['掲載・企画内容', media_content],

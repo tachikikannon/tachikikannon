@@ -555,10 +555,12 @@ create policy "admin delete images"
   using (bucket_id = 'temple-images');
 
 -- 申請フォームからのPDF添付用バケット（匿名ユーザーがアップロードできる必要があるため、
--- temple-images（管理者専用）とは別バケットにする）
+-- temple-images（管理者専用）とは別バケットにする）。
+-- 非公開: 申請者はアップロードだけ可能で、一覧・ダウンロードは管理者のみ（管理画面が期限付きリンクで開く）。
+-- 既存DBは migration_application_attachments_private.sql で同じ状態にする。
 insert into storage.buckets (id, name, public)
-values ('application-attachments', 'application-attachments', true)
-on conflict (id) do update set public = true;
+values ('application-attachments', 'application-attachments', false)
+on conflict (id) do update set public = false;
 
 drop policy if exists "public upload application attachments" on storage.objects;
 create policy "public upload application attachments"
@@ -566,9 +568,14 @@ create policy "public upload application attachments"
   with check (bucket_id = 'application-attachments');
 
 drop policy if exists "public read application attachments" on storage.objects;
-create policy "public read application attachments"
+drop policy if exists "admin read application attachments" on storage.objects;
+create policy "admin read application attachments"
   on storage.objects for select
-  using (bucket_id = 'application-attachments');
+  to authenticated
+  using (
+    bucket_id = 'application-attachments'
+    and public.current_admin_role() in ('super_admin','admin','viewer')
+  );
 
 -- ============================================================
 -- トリガー: 更新日時/更新者の自動記録、ステータス・担当者変更の活動ログ記録
