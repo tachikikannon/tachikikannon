@@ -193,6 +193,7 @@ export default function AdminReservationSchedulePage() {
         body: JSON.stringify({
           name: target.name, email: target.email, type: target.type,
           date: target.date, time_slot: target.time_slot, party_size: target.party_size,
+          locale: target.locale, // 英語で予約したお客様に英語の確定メールを送るために必要
         }),
       })
         .then(res => res.json())
