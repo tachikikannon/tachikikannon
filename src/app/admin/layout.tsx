@@ -133,11 +133,27 @@ function sortByOrder<T>(list: T[], keyOf: (t: T) => string, order: string[] | un
   return list.map((t, i) => ({ t, i })).sort((a, b) => rank(a.t) - rank(b.t) || a.i - b.i).map(x => x.t)
 }
 
+// 項目はカテゴリーをまたいで移動できるので、保存済みの order.items に載っている
+// カテゴリーへ入れる。保存後に追加された項目だけは本来のカテゴリーの末尾に並ぶ。
+// ロールによる表示の絞り込みは item.group（本来のカテゴリー）で判定するため、
+// 見た目のカテゴリーを移しても権限には影響しない
 function applyOrder(order: NavOrder | null): NavSection[] {
   const sections = defaultSections()
   if (!order) return sections
-  return sortByOrder(sections, s => s.group, order.groups)
-    .map(s => ({ ...s, items: sortByOrder(s.items, i => i.href, order.items[s.group]) }))
+  const byHref = new Map(navItems.map(i => [i.href, i]))
+  const placed = new Set<string>()
+  const result = sortByOrder(sections, s => s.group, order.groups).map(s => {
+    const items = (order.items[s.group] ?? [])
+      .map(href => byHref.get(href))
+      .filter((i): i is NavItem => !!i && !placed.has(i.href))
+    items.forEach(i => placed.add(i.href))
+    return { group: s.group, items }
+  })
+  navItems.forEach(item => {
+    if (placed.has(item.href)) return
+    result.find(s => s.group === (item.group ?? ''))?.items.push(item)
+  })
+  return result
 }
 
 function loadNavOrder(): NavOrder | null {
@@ -184,8 +200,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   function moveGroup(index: number, delta: number) {
     updateOrder(moveInArray(sections, index, delta))
   }
+  // カテゴリーの端にある項目をさらに上下へ動かすと、隣のカテゴリーへ移る
+  // （上へ→前のカテゴリーの末尾、下へ→次のカテゴリーの先頭）
   function moveItem(sectionIndex: number, itemIndex: number, delta: number) {
-    updateOrder(sections.map((s, i) => i === sectionIndex ? { ...s, items: moveInArray(s.items, itemIndex, delta) } : s))
+    const section = sections[sectionIndex]
+    const to = itemIndex + delta
+    if (to >= 0 && to < section.items.length) {
+      updateOrder(sections.map((s, i) => i === sectionIndex ? { ...s, items: moveInArray(s.items, itemIndex, delta) } : s))
+      return
+    }
+    const targetIndex = sectionIndex + delta
+    if (targetIndex < 0 || targetIndex >= sections.length) return
+    const item = section.items[itemIndex]
+    updateOrder(sections.map((s, i) => {
+      if (i === sectionIndex) return { ...s, items: s.items.filter((_, j) => j !== itemIndex) }
+      if (i === targetIndex) return { ...s, items: delta < 0 ? [...s.items, item] : [item, ...s.items] }
+      return s
+    }))
   }
   function resetOrder() {
     if (!confirm('メニューの並び順を初期状態に戻しますか？')) return
@@ -234,41 +265,49 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {(() => {
             const rendered: React.ReactNode[] = []
             const arrowClass = 'w-6 h-6 flex items-center justify-center rounded text-[10px] text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent'
-            const arrows = (index: number, length: number, onMove: (delta: number) => void, label: string) => (
+            const arrows = (upDisabled: boolean, downDisabled: boolean, onMove: (delta: number) => void, label: string) => (
               <span className="ml-auto flex gap-0.5 flex-shrink-0">
-                <button type="button" aria-label={`${label}を上へ`} disabled={index === 0} onClick={() => onMove(-1)} className={arrowClass}>▲</button>
-                <button type="button" aria-label={`${label}を下へ`} disabled={index === length - 1} onClick={() => onMove(1)} className={arrowClass}>▼</button>
+                <button type="button" aria-label={`${label}を上へ`} disabled={upDisabled} onClick={() => onMove(-1)} className={arrowClass}>▲</button>
+                <button type="button" aria-label={`${label}を下へ`} disabled={downDisabled} onClick={() => onMove(1)} className={arrowClass}>▼</button>
               </span>
             )
             let renderedAny = false
             sections.forEach((section, sectionIndex) => {
               const { group } = section
               const items = section.items.filter(item => isNavItemVisible(item, profile?.role))
-              if (items.length === 0) return
+              // 並び替え中は空のカテゴリーも見出しを出し、項目を戻せるようにする
+              if (items.length === 0 && !reorderMode) return
               const isOnsenji = isOnsenjiGroup(group)
+              const groupArrows = () => arrows(sectionIndex === 0, sectionIndex === sections.length - 1, d => moveGroup(sectionIndex, d), group || '基本')
               if (group) {
                 rendered.push(
                   <div key={`group-${group}`} className={`flex items-center px-5 pt-4 pb-1 text-[10px] tracking-widest font-medium ${isOnsenji ? 'text-[#7ec8a4]' : 'text-gold/70'}`}>
                     <span>── {group}</span>
-                    {reorderMode && arrows(sectionIndex, sections.length, d => moveGroup(sectionIndex, d), group)}
+                    {reorderMode && groupArrows()}
                   </div>
                 )
               } else if (renderedAny || reorderMode) {
                 rendered.push(
                   <div key="group-top" className="flex items-center px-5 pt-3 pb-1 text-[10px] tracking-widest font-medium text-gold/70">
                     {reorderMode ? <span>── 基本</span> : <span className="flex-1 border-t border-white/10" />}
-                    {reorderMode && arrows(sectionIndex, sections.length, d => moveGroup(sectionIndex, d), '基本')}
+                    {reorderMode && groupArrows()}
                   </div>
                 )
               }
               renderedAny = true
+              if (reorderMode && items.length === 0) {
+                rendered.push(<p key={`empty-${group}`} className="pl-5 py-1 text-[11px] text-white/30">（項目なし）</p>)
+              }
               items.forEach(({ href, label, icon }, itemIndex) => {
                 if (reorderMode) {
                   rendered.push(
                     <div key={href} className="flex items-center gap-3 pl-5 pr-3 py-1.5 text-sm text-white/80">
                       <span>{icon}</span>
                       <span className="truncate">{label}</span>
-                      {arrows(itemIndex, items.length, d => moveItem(sectionIndex, itemIndex, d), label)}
+                      {arrows(
+                        sectionIndex === 0 && itemIndex === 0,
+                        sectionIndex === sections.length - 1 && itemIndex === items.length - 1,
+                        d => moveItem(sectionIndex, itemIndex, d), label)}
                     </div>
                   )
                   return
