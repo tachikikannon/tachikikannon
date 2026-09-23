@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
@@ -19,95 +19,179 @@ const CONTACT_GROUP = 'お問い合わせ'
 // ここでの絞り込みは表示（UX）のみで、実際の編集可否は Supabase の RLS が決める
 // （src/lib/useAdminProfile.ts のコメント参照）。ただし reservation_search_admin
 // だけは src/middleware.ts 側でも同じ許可リストにより直接URLアクセスを禁止している。
-function getVisibleNavItems(role: AdminRole | undefined): NavItem[] {
+function isNavItemVisible(item: NavItem, role: AdminRole | undefined): boolean {
   switch (role) {
     case 'reservation_search_admin':
-      return navItems.filter(item => RESERVATION_ADMIN_ALLOWED_PATHS.includes(item.href))
+      return RESERVATION_ADMIN_ALLOWED_PATHS.includes(item.href)
     case 'reservation_admin':
-      return navItems.filter(item => item.group === RESERVATION_GROUP)
+      return item.group === RESERVATION_GROUP
     case 'contact_admin':
-      return navItems.filter(item => item.group === CONTACT_GROUP)
+      return item.group === CONTACT_GROUP
     case 'admin':
     case 'viewer':
-      return navItems.filter(item => item.group === RESERVATION_GROUP || item.group === CONTACT_GROUP)
+      return item.group === RESERVATION_GROUP || item.group === CONTACT_GROUP
     default:
       // super_admin、またはロール未取得（読み込み中）はフィルタしない
-      return navItems
+      return true
   }
 }
+
+const CHUZENJI_EVENTS_GROUP = '立木観音 行事・法要'
+const CHUZENJI_PAGES_GROUP = '立木観音 ページ編集'
+const ONSENJI_EVENTS_GROUP = '温泉寺 行事・法要'
+const ONSENJI_PAGES_GROUP = '温泉寺 ページ編集'
+const isOnsenjiGroup = (group: string | undefined) => group?.startsWith('温泉寺') ?? false
 
 const navItems: NavItem[] = [
   { href: '/admin',               label: 'ダッシュボード',   icon: '🏠' },
   { href: '/admin/news',          label: 'お知らせ（立木観音）', icon: '📢' },
   { href: '/admin/blog',          label: 'ブログ',           icon: '✏️' },
   // ── 予約・体験 ──
-  { href: '/admin/reservations',  label: '予約検索',         icon: '📋', group: '予約・体験' },
-  { href: '/admin/reservations/schedule', label: '予約スケジュール', icon: '🗓️', group: '予約・体験' },
-  { href: '/admin/reservations/availability', label: '空き状況の詳細設定', icon: '🕒', group: '予約・体験' },
-  { href: '/admin/reservations/categories', label: '予約区分の管理', icon: '🏷️', group: '予約・体験' },
-  { href: '/admin/blocked-dates', label: '予約不可日',       icon: '🚫', group: '予約・体験' },
-  { href: '/admin/capacity',      label: '定員設定',         icon: '👥', group: '予約・体験' },
-  // ── 授与品 ──
-  { href: '/admin/cod-orders',    label: '代金引換の申込',   icon: '📦', group: '授与品' },
-  // ── 通信販売設定 ──
-  { href: '/admin/mail-order/weights',  label: '商品重量設定',   icon: '⚖️', group: '通信販売設定' },
-  { href: '/admin/mail-order/shipping', label: '送料テーブル設定', icon: '🚚', group: '通信販売設定' },
-  // ── 行事 ──
-  { href: '/admin/events',        label: '行事カレンダー',   icon: '📅', group: '行事' },
+  { href: '/admin/reservations',  label: '予約検索',         icon: '📋', group: RESERVATION_GROUP },
+  { href: '/admin/reservations/schedule', label: '予約スケジュール', icon: '🗓️', group: RESERVATION_GROUP },
+  { href: '/admin/reservations/availability', label: '空き状況の詳細設定', icon: '🕒', group: RESERVATION_GROUP },
+  { href: '/admin/reservations/categories', label: '予約区分の管理', icon: '🏷️', group: RESERVATION_GROUP },
+  { href: '/admin/blocked-dates', label: '予約不可日',       icon: '🚫', group: RESERVATION_GROUP },
+  { href: '/admin/capacity',      label: '定員設定',         icon: '👥', group: RESERVATION_GROUP },
   // ── お問い合わせ ──
-  { href: '/admin/contacts',      label: 'お問い合わせ',     icon: '✉️', group: 'お問い合わせ' },
-  { href: '/admin/applications',  label: '申請管理',         icon: '📝', group: 'お問い合わせ' },
-  // ── 立木観音 ──
-  { href: '/admin/top-page',              label: 'トップページ',   icon: '🏠', group: '立木観音' },
-  { href: '/admin/chuzenji/history',      label: '歴史',           icon: '📜', group: '立木観音' },
-  { href: '/admin/chuzenji/grounds',      label: '境内のご案内',   icon: '🗺️', group: '立木観音' },
-  { href: '/admin/chuzenji/flower-calendar', label: '花ごよみ',    icon: '🌸', group: '立木観音' },
-  { href: '/admin/chuzenji/about',        label: '拝観案内',       icon: '🎫', group: '立木観音' },
-  { href: '/admin/chuzenji/prayer',       label: '御祈願',         icon: '🙏', group: '立木観音' },
-  { href: '/admin/chuzenji/prayer-wedding', label: '仏前式（結婚式）', icon: '💐', group: '立木観音' },
-  { href: '/admin/chuzenji/gallery',        label: '中禅寺ギャラリー', icon: '🖼️', group: '立木観音' },
-  { href: '/admin/chuzenji/events-banner',  label: 'イベント情報',   icon: '📣', group: '立木観音' },
-  { href: '/admin/chuzenji/goshuin',      label: '御朱印',         icon: '📮', group: '立木観音' },
-  { href: '/admin/chuzenji/shakyou',      label: '写経体験',       icon: '✍️', group: '立木観音' },
-  { href: '/admin/chuzenji/shabutu',      label: '写仏体験',       icon: '🖌️', group: '立木観音' },
-  { href: '/admin/chuzenji/jyuzu',             label: '数珠づくり',       icon: '📿', group: '立木観音' },
-  { href: '/admin/chuzenji/jyuzu-gallery',     label: '数珠作り体験ギャラリー', icon: '📷', group: '立木観音' },
-  { href: '/admin/chuzenji/zazen',             label: '坐禅体験',         icon: '🧘', group: '立木観音' },
-  { href: '/admin/faq',                        label: 'FAQ',              icon: '❓', group: '立木観音' },
-  { href: '/admin/chuzenji/events/annual',     label: '年間行事一覧',     icon: '📅', group: '立木観音' },
-  { href: '/admin/chuzenji/events/kannonko',   label: '観音講（6/18）',   icon: '🎋', group: '立木観音' },
-  { href: '/admin/chuzenji/events/funazento',  label: '船禅頂（8/4）',    icon: '⛵', group: '立木観音' },
-  { href: '/admin/chuzenji/events/shogatsu',   label: '正月元旦特別護摩祈願（1/1）', icon: '🎍', group: '立木観音' },
-  { href: '/admin/chuzenji/events/minor',      label: '立木法要',   icon: '📌', group: '立木観音' },
-  // ── 温泉寺 ──
-  { href: '/admin/onsenji/top',           label: 'トップページ',   icon: '🏠', group: '温泉寺' },
-  { href: '/admin/onsenji/news',          label: 'お知らせ管理',   icon: '📢', group: '温泉寺' },
-  { href: '/admin/onsenji/history',       label: '歴史',           icon: '📜', group: '温泉寺' },
-  { href: '/admin/onsenji/grounds',       label: '境内のご案内',   icon: '🗺️', group: '温泉寺' },
-  { href: '/admin/onsenji/about',         label: '拝観案内',       icon: '🎫', group: '温泉寺' },
-  { href: '/admin/onsenji/goshuin',       label: '御朱印',         icon: '📮', group: '温泉寺' },
-  { href: '/admin/onsenji/onsen',         label: '温泉のご案内',   icon: '♨️', group: '温泉寺' },
-  { href: '/admin/onsenji/onsen-status',  label: '温泉設定',       icon: '🚦', group: '温泉寺' },
-  { href: '/admin/onsenji/faq',           label: 'FAQ',            icon: '❓', group: '温泉寺' },
-  { href: '/admin/onsenji/shakyou',       label: '写経体験',       icon: '✍️', group: '温泉寺' },
-  { href: '/admin/onsenji/shabutu',       label: '写仏体験',       icon: '🖌️', group: '温泉寺' },
-  { href: '/admin/onsenji/events/annual',      label: '年間行事一覧',     icon: '📅', group: '温泉寺' },
-  { href: '/admin/onsenji/events/yakushiko',   label: '薬師講大祭（8/8）', icon: '🔥', group: '温泉寺' },
-  { href: '/admin/onsenji/events/setsubun',    label: '節分大祭（1月）',   icon: '🫘', group: '温泉寺' },
-  { href: '/admin/onsenji/events/minor',       label: '温泉寺法要',   icon: '📌', group: '温泉寺' },
+  { href: '/admin/contacts',      label: 'お問い合わせ',     icon: '✉️', group: CONTACT_GROUP },
+  { href: '/admin/applications',  label: '申請管理',         icon: '📝', group: CONTACT_GROUP },
+  // ── 授与品・通信販売 ──
+  { href: '/admin/cod-orders',    label: '代金引換の申込',   icon: '📦', group: '授与品・通信販売' },
+  { href: '/admin/mail-order/weights',  label: '商品重量設定',   icon: '⚖️', group: '授与品・通信販売' },
+  { href: '/admin/mail-order/shipping', label: '送料テーブル設定', icon: '🚚', group: '授与品・通信販売' },
+  // ── 立木観音 行事・法要 ──
+  { href: '/admin/chuzenji/events-banner',     label: 'イベント情報',     icon: '📣', group: CHUZENJI_EVENTS_GROUP },
+  { href: '/admin/chuzenji/events/annual',     label: '年間行事一覧',     icon: '📅', group: CHUZENJI_EVENTS_GROUP },
+  { href: '/admin/chuzenji/events/kannonko',   label: '観音講（6/18）',   icon: '🎋', group: CHUZENJI_EVENTS_GROUP },
+  { href: '/admin/chuzenji/events/funazento',  label: '船禅頂（8/4）',    icon: '⛵', group: CHUZENJI_EVENTS_GROUP },
+  { href: '/admin/chuzenji/events/shogatsu',   label: '正月元旦特別護摩祈願（1/1）', icon: '🎍', group: CHUZENJI_EVENTS_GROUP },
+  { href: '/admin/chuzenji/events/minor',      label: '立木法要',         icon: '📌', group: CHUZENJI_EVENTS_GROUP },
+  { href: '/admin/events',                     label: '行事カレンダー',   icon: '🗓️', group: CHUZENJI_EVENTS_GROUP },
+  // ── 立木観音 ページ編集 ──
+  { href: '/admin/top-page',              label: 'トップページ',   icon: '🏠', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/history',      label: '歴史',           icon: '📜', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/grounds',      label: '境内のご案内',   icon: '🗺️', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/flower-calendar', label: '花ごよみ',    icon: '🌸', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/about',        label: '拝観案内',       icon: '🎫', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/prayer',       label: '御祈願',         icon: '🙏', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/shakyou',      label: '写経体験',       icon: '✍️', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/shabutu',      label: '写仏体験',       icon: '🖌️', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/jyuzu',        label: '数珠づくり',     icon: '📿', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/zazen',        label: '坐禅体験',       icon: '🧘', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/goshuin',      label: '御朱印',         icon: '📮', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/chuzenji/prayer-wedding', label: '仏前式（結婚式）', icon: '💐', group: CHUZENJI_PAGES_GROUP },
+  { href: '/admin/faq',                   label: 'FAQ',            icon: '❓', group: CHUZENJI_PAGES_GROUP },
+  // ── 温泉寺 行事・法要 ──
+  { href: '/admin/onsenji/events/annual',      label: '年間行事一覧',     icon: '📅', group: ONSENJI_EVENTS_GROUP },
+  { href: '/admin/onsenji/events/yakushiko',   label: '薬師講大祭（8/8）', icon: '🔥', group: ONSENJI_EVENTS_GROUP },
+  { href: '/admin/onsenji/events/setsubun',    label: '節分大祭（1月）',   icon: '🫘', group: ONSENJI_EVENTS_GROUP },
+  { href: '/admin/onsenji/events/minor',       label: '温泉寺法要',       icon: '📌', group: ONSENJI_EVENTS_GROUP },
+  // ── 温泉寺 ページ編集 ──
+  { href: '/admin/onsenji/top',           label: 'トップページ',   icon: '🏠', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/news',          label: 'お知らせ管理',   icon: '📢', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/history',       label: '歴史',           icon: '📜', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/grounds',       label: '境内のご案内',   icon: '🗺️', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/about',         label: '拝観案内',       icon: '🎫', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/goshuin',       label: '御朱印',         icon: '📮', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/onsen',         label: '温泉のご案内',   icon: '♨️', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/onsen-status',  label: '温泉設定',       icon: '🚦', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/shakyou',       label: '写経体験',       icon: '✍️', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/shabutu',       label: '写仏体験',       icon: '🖌️', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/faq',           label: 'FAQ',            icon: '❓', group: ONSENJI_PAGES_GROUP },
   // ── サイト管理 ──
   { href: '/admin/settings',      label: 'サイト設定',       icon: '⚙️', group: 'サイト管理' },
   { href: '/admin/images',        label: '画像管理',         icon: '🖼️', group: 'サイト管理' },
+  { href: '/admin/chuzenji/gallery',       label: '中禅寺ギャラリー', icon: '🖼️', group: 'サイト管理' },
+  { href: '/admin/chuzenji/jyuzu-gallery', label: '数珠作り体験ギャラリー', icon: '📷', group: 'サイト管理' },
   { href: '/admin/users',         label: '管理者管理',       icon: '👤', group: 'サイト管理' },
   { href: '/admin/activity-logs', label: '編集履歴',         icon: '🕓', group: 'サイト管理' },
 ]
+
+// ── サイドバーの並び替え（端末ごとに localStorage へ保存） ──
+// グループの順番と、各グループ内の項目の順番を別々に持つ。
+// グループなしの先頭項目（ダッシュボード等）はキー '' のグループとして扱う
+type NavSection = { group: string; items: NavItem[] }
+type NavOrder = { groups: string[]; items: Record<string, string[]> }
+const NAV_ORDER_KEY = 'admin-nav-order-v1'
+
+function defaultSections(): NavSection[] {
+  const sections: NavSection[] = []
+  navItems.forEach(item => {
+    const group = item.group ?? ''
+    const last = sections[sections.length - 1]
+    if (last && last.group === group) last.items.push(item)
+    else sections.push({ group, items: [item] })
+  })
+  return sections
+}
+
+// 保存済みの順番を当てはめる。保存後に追加された項目・グループは既定の位置（末尾）に並ぶ
+function sortByOrder<T>(list: T[], keyOf: (t: T) => string, order: string[] | undefined): T[] {
+  if (!order) return list
+  const rank = (t: T) => { const i = order.indexOf(keyOf(t)); return i === -1 ? order.length : i }
+  return list.map((t, i) => ({ t, i })).sort((a, b) => rank(a.t) - rank(b.t) || a.i - b.i).map(x => x.t)
+}
+
+function applyOrder(order: NavOrder | null): NavSection[] {
+  const sections = defaultSections()
+  if (!order) return sections
+  return sortByOrder(sections, s => s.group, order.groups)
+    .map(s => ({ ...s, items: sortByOrder(s.items, i => i.href, order.items[s.group]) }))
+}
+
+function loadNavOrder(): NavOrder | null {
+  try {
+    const raw = localStorage.getItem(NAV_ORDER_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch { return null }
+}
+
+function saveNavOrder(order: NavOrder | null) {
+  try {
+    if (order) localStorage.setItem(NAV_ORDER_KEY, JSON.stringify(order))
+    else localStorage.removeItem(NAV_ORDER_KEY)
+  } catch { /* 保存できない環境では並び替えはその場限りになる */ }
+}
+
+function moveInArray<T>(arr: T[], index: number, delta: number): T[] {
+  const to = index + delta
+  if (to < 0 || to >= arr.length) return arr
+  const next = [...arr]
+  ;[next[index], next[to]] = [next[to], next[index]]
+  return next
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
   const { profile } = useAdminProfile()
-  const visibleNavItems = getVisibleNavItems(profile?.role)
+  const [navOrder, setNavOrder] = useState<NavOrder | null>(null)
+  const [reorderMode, setReorderMode] = useState(false)
+  // localStorage はサーバー描画時に読めないため、表示後に読み込む
+  useEffect(() => { setNavOrder(loadNavOrder()) }, [])
+  const sections = applyOrder(navOrder)
+
+  function updateOrder(next: NavSection[]) {
+    const order: NavOrder = {
+      groups: next.map(s => s.group),
+      items: Object.fromEntries(next.map(s => [s.group, s.items.map(i => i.href)])),
+    }
+    setNavOrder(order)
+    saveNavOrder(order)
+  }
+  function moveGroup(index: number, delta: number) {
+    updateOrder(moveInArray(sections, index, delta))
+  }
+  function moveItem(sectionIndex: number, itemIndex: number, delta: number) {
+    updateOrder(sections.map((s, i) => i === sectionIndex ? { ...s, items: moveInArray(s.items, itemIndex, delta) } : s))
+  }
+  function resetOrder() {
+    if (!confirm('メニューの並び順を初期状態に戻しますか？')) return
+    setNavOrder(null)
+    saveNavOrder(null)
+  }
 
   async function handleLogout() {
     const supabase = createClient()
@@ -149,43 +233,80 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 py-4 overflow-y-auto">
           {(() => {
             const rendered: React.ReactNode[] = []
-            let lastGroup: string | undefined = undefined
-            visibleNavItems.forEach(({ href, label, icon, group }) => {
-              if (group !== lastGroup) {
-                if (group) {
-                  const isOnsenji = group === '温泉寺'
+            const arrowClass = 'w-6 h-6 flex items-center justify-center rounded text-[10px] text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:hover:bg-transparent'
+            const arrows = (index: number, length: number, onMove: (delta: number) => void, label: string) => (
+              <span className="ml-auto flex gap-0.5 flex-shrink-0">
+                <button type="button" aria-label={`${label}を上へ`} disabled={index === 0} onClick={() => onMove(-1)} className={arrowClass}>▲</button>
+                <button type="button" aria-label={`${label}を下へ`} disabled={index === length - 1} onClick={() => onMove(1)} className={arrowClass}>▼</button>
+              </span>
+            )
+            let renderedAny = false
+            sections.forEach((section, sectionIndex) => {
+              const { group } = section
+              const items = section.items.filter(item => isNavItemVisible(item, profile?.role))
+              if (items.length === 0) return
+              const isOnsenji = isOnsenjiGroup(group)
+              if (group) {
+                rendered.push(
+                  <div key={`group-${group}`} className={`flex items-center px-5 pt-4 pb-1 text-[10px] tracking-widest font-medium ${isOnsenji ? 'text-[#7ec8a4]' : 'text-gold/70'}`}>
+                    <span>── {group}</span>
+                    {reorderMode && arrows(sectionIndex, sections.length, d => moveGroup(sectionIndex, d), group)}
+                  </div>
+                )
+              } else if (renderedAny || reorderMode) {
+                rendered.push(
+                  <div key="group-top" className="flex items-center px-5 pt-3 pb-1 text-[10px] tracking-widest font-medium text-gold/70">
+                    {reorderMode ? <span>── 基本</span> : <span className="flex-1 border-t border-white/10" />}
+                    {reorderMode && arrows(sectionIndex, sections.length, d => moveGroup(sectionIndex, d), '基本')}
+                  </div>
+                )
+              }
+              renderedAny = true
+              items.forEach(({ href, label, icon }, itemIndex) => {
+                if (reorderMode) {
                   rendered.push(
-                    <div key={`group-${group}`} className={`px-5 pt-4 pb-1 text-[10px] tracking-widest font-medium ${isOnsenji ? 'text-[#7ec8a4]' : 'text-gold/70'}`}>
-                      ── {group}
+                    <div key={href} className="flex items-center gap-3 pl-5 pr-3 py-1.5 text-sm text-white/80">
+                      <span>{icon}</span>
+                      <span className="truncate">{label}</span>
+                      {arrows(itemIndex, items.length, d => moveItem(sectionIndex, itemIndex, d), label)}
                     </div>
                   )
-                } else if (lastGroup) {
-                  rendered.push(<div key={`sep-${href}`} className="mx-5 my-2 border-t border-white/10" />)
+                  return
                 }
-                lastGroup = group
-              }
-              // このhrefより下の階層に、専用のナビ項目を持つ子ページがある場合
-              // （例：/admin/reservations に対する /admin/reservations/schedule）は、
-              // 完全一致のときだけ選択中として扱う。そうしないと子ページを開いた
-              // ときに親のリンクまで選択中に見えてしまう（例：予約スケジュールを
-              // 開いても予約管理が同時にハイライトされる不具合）。
-              const hasChildRoute = navItems.some(item => item.href !== href && item.href.startsWith(`${href}/`))
-              const isActive = hasChildRoute ? pathname === href : pathname.startsWith(href)
-              rendered.push(
-                <Link key={href} href={href} onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-3 px-5 py-2.5 text-sm transition-colors
-                    ${isActive
-                      ? group === '温泉寺' ? 'bg-white/10 text-[#7ec8a4]' : 'bg-white/10 text-gold'
-                      : 'text-white/70 hover:text-white hover:bg-white/5'}`}>
-                  <span>{icon}</span>
-                  <span>{label}</span>
-                </Link>
-              )
+                // このhrefより下の階層に、専用のナビ項目を持つ子ページがある場合
+                // （例：/admin/reservations に対する /admin/reservations/schedule）は、
+                // 完全一致のときだけ選択中として扱う。そうしないと子ページを開いた
+                // ときに親のリンクまで選択中に見えてしまう（例：予約スケジュールを
+                // 開いても予約管理が同時にハイライトされる不具合）。
+                const hasChildRoute = navItems.some(item => item.href !== href && item.href.startsWith(`${href}/`))
+                const isActive = hasChildRoute ? pathname === href : pathname.startsWith(href)
+                rendered.push(
+                  <Link key={href} href={href} onClick={() => setMenuOpen(false)}
+                    className={`flex items-center gap-3 px-5 py-2.5 text-sm transition-colors
+                      ${isActive
+                        ? isOnsenji ? 'bg-white/10 text-[#7ec8a4]' : 'bg-white/10 text-gold'
+                        : 'text-white/70 hover:text-white hover:bg-white/5'}`}>
+                    <span>{icon}</span>
+                    <span>{label}</span>
+                  </Link>
+                )
+              })
             })
             return rendered
           })()}
         </nav>
-        <div className="p-4 border-t border-white/10">
+        {/* 並び替えは全項目が見える super_admin だけ（他ロールは表示項目が少なく、
+            非表示の項目と入れ替わって動かないように見えるため） */}
+        {profile?.role === 'super_admin' && <div className="px-4 pt-3 border-t border-white/10 flex items-center gap-3 text-xs">
+          <button onClick={() => setReorderMode(m => !m)}
+            className={`px-2 py-1.5 rounded transition-colors ${reorderMode ? 'bg-gold text-navy font-medium' : 'text-white/50 hover:text-white'}`}>
+            {reorderMode ? '✓ 並び替えを終了' : '↕ メニューの並び替え'}
+          </button>
+          {reorderMode && navOrder && (
+            <button onClick={resetOrder} className="text-white/50 hover:text-white underline">初期状態に戻す</button>
+          )}
+        </div>}
+        <div className={`p-4 ${profile?.role === 'super_admin' ? 'pt-1' : 'border-t border-white/10'}`}>
           <button onClick={handleLogout}
             className="w-full text-left text-white/50 hover:text-white text-xs px-2 py-2 transition-colors">
             🚪 ログアウト

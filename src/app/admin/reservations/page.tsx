@@ -49,8 +49,36 @@ const STATUS_BORDER_COLORS: Record<ReservationStatus, string> = {
   completed: 'border-gray-300',
   cancelled: 'border-gray-300',
 }
-const FILTERS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_progress', 'confirmed', 'completed', 'cancelled']
-const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'provisional', 'in_progress', 'confirmed', 'completed', 'cancelled']
+// 一覧上部の検索タブ。「予約確定」「仮予約」は本日以降の予約だけ、
+// 「過去の予約」は本日より前の日付の予約（ステータス問わず）を表示する
+type FilterKey = 'unread' | 'confirmed' | 'provisional' | 'past' | 'all'
+const FILTERS: { key: FilterKey; label: string }[] = [
+  { key: 'unread', label: '未読' },
+  { key: 'confirmed', label: '予約確定' },
+  { key: 'provisional', label: '仮予約' },
+  { key: 'past', label: '過去の予約' },
+  { key: 'all', label: 'すべて' },
+]
+// 詳細画面で選べるステータス。対応中・完了は選択肢から外したが、
+// 既存の予約に残っている分はそのままラベル表示される
+const STATUS_OPTIONS: ReservationStatus[] = ['unconfirmed', 'provisional', 'confirmed', 'cancelled']
+
+// 管理画面を開いている端末（日本時間）での今日の日付を YYYY-MM-DD で返す
+function todayString() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function matchesFilter(r: Reservation, key: FilterKey, today: string, hidePast: boolean) {
+  const isPast = r.date < today
+  switch (key) {
+    case 'unread': return (r.status === 'unconfirmed' || r.status === 'pending') && !(hidePast && isPast)
+    case 'confirmed': return r.status === 'confirmed' && !isPast
+    case 'provisional': return r.status === 'provisional' && !isPast
+    case 'past': return isPast
+    case 'all': return !(hidePast && isPast)
+  }
+}
 
 export default function AdminReservationsPage() {
   const supabase = createClient()
@@ -60,7 +88,8 @@ export default function AdminReservationsPage() {
   const [admins, setAdmins] = useState<AdminProfile[]>([])
   const [categories, setCategories] = useState<ReservationCategory[]>([])
   const [detail, setDetail] = useState<Reservation | null>(null)
-  const [filter, setFilter] = useState<string>('all')
+  const [filter, setFilter] = useState<FilterKey>('unread')
+  const [hidePast, setHidePast] = useState(false)
   const [typeFilter, setTypeFilter] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const [dateFrom, setDateFrom] = useState('')
@@ -203,7 +232,10 @@ export default function AdminReservationsPage() {
   const adminName = (id: string | null) => admins.find(a => a.id === id)?.name || '未割当'
   const categoryName = (id: string | null) => categories.find(c => c.id === id)?.name || '区分なし'
 
-  const byStatus = filter === 'all' ? list : list.filter(r => r.status === filter || (filter === 'unconfirmed' && r.status === 'pending'))
+  const today = todayString()
+  const byStatus = list.filter(r => matchesFilter(r, filter, today, hidePast))
+  // 「過去の日付を除外」は未読・すべてのタブでだけ効く（他のタブは日付の範囲が決まっている）
+  const hidePastApplicable = filter === 'unread' || filter === 'all'
   const byType = typeFilter === '' ? byStatus : byStatus.filter(r => r.type === typeFilter)
   const byCategory = categoryFilter === '' ? byType : byType.filter(r => (r.category_id ?? '') === categoryFilter)
   const byDate = (dateFrom === '' && dateTo === '') ? byCategory : byCategory.filter(r =>
@@ -224,20 +256,20 @@ export default function AdminReservationsPage() {
       </div>
 
       {/* フィルター */}
-      <div className="flex gap-2 mb-4 flex-wrap">
-        <button onClick={() => setFilter('all')}
-          className={`px-3 py-1 rounded text-xs font-medium transition-colors
-            ${filter === 'all' ? 'bg-navy text-white' : 'bg-white text-gray-600 border hover:bg-gray-50'}`}>
-          すべて<span className="ml-1">({list.length})</span>
-        </button>
+      <div className="flex gap-2 mb-4 flex-wrap items-center">
         {FILTERS.map(f => (
-          <button key={f} onClick={() => setFilter(f)}
+          <button key={f.key} onClick={() => setFilter(f.key)}
             className={`px-3 py-1 rounded text-xs font-medium transition-colors
-              ${filter === f ? 'bg-navy text-white' : 'bg-white text-gray-600 border hover:bg-gray-50'}`}>
-            {STATUS_LABELS[f]}
-            <span className="ml-1">({list.filter(r => r.status === f || (f === 'unconfirmed' && r.status === 'pending')).length})</span>
+              ${filter === f.key ? 'bg-navy text-white' : 'bg-white text-gray-600 border hover:bg-gray-50'}`}>
+            {f.label}
+            <span className="ml-1">({list.filter(r => matchesFilter(r, f.key, today, hidePast)).length})</span>
           </button>
         ))}
+        <label className={`flex items-center gap-1.5 text-xs ml-1 select-none ${hidePastApplicable ? 'text-gray-600 cursor-pointer' : 'text-gray-300'}`}>
+          <input type="checkbox" checked={hidePast} disabled={!hidePastApplicable}
+            onChange={e => setHidePast(e.target.checked)} />
+          過去の日付を除外
+        </label>
       </div>
 
       {/* 検索・絞り込み */}
@@ -347,7 +379,7 @@ export default function AdminReservationsPage() {
               ))}
               {filtered.length === 0 && (
                 <tr><td colSpan={11} className="px-4 py-8 text-center text-gray-400 text-sm">
-                  {(searchQuery || typeFilter || categoryFilter || dateFrom || dateTo) ? '検索条件に一致する予約がありません' : '予約がありません'}
+                  {(searchQuery || typeFilter || categoryFilter || dateFrom || dateTo || filter !== 'all' || hidePast) ? '検索条件に一致する予約がありません' : '予約がありません'}
                 </td></tr>
               )}
             </tbody>
@@ -394,7 +426,7 @@ export default function AdminReservationsPage() {
         ))}
         {filtered.length === 0 && (
           <p className="bg-white rounded-xl shadow-sm px-4 py-8 text-center text-gray-400 text-sm">
-            {(searchQuery || typeFilter || categoryFilter || dateFrom || dateTo) ? '検索条件に一致する予約がありません' : '予約がありません'}
+            {(searchQuery || typeFilter || categoryFilter || dateFrom || dateTo || filter !== 'all' || hidePast) ? '検索条件に一致する予約がありません' : '予約がありません'}
           </p>
         )}
       </div>
