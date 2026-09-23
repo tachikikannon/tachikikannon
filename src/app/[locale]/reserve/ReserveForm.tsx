@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import ReservationCalendar from '@/components/ReservationCalendar'
 import { createClient } from '@/lib/supabase'
+import { getSeason } from '@/lib/reservationSlots'
 import type { ReservationType } from '@/types'
 
 const RESERVATION_TYPES: ReservationType[] = ['prayer', 'shakyou', 'shabutu', 'jyuzu', 'zazen']
@@ -53,7 +54,8 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
   const [purpose, setPurpose] = useState(PURPOSE_VALUES.includes(initialPurpose) ? initialPurpose : 'gokigan')
   const [step, setStep] = useState<'input' | 'confirm' | 'done'>('input')
   const [status, setStatus] = useState<'idle'|'loading'|'error'>('idle')
-  const [showGomaNotice, setShowGomaNotice] = useState(false)
+  // 送信前に表示する注意事項ポップアップの本文（nullなら非表示）
+  const [noticeText, setNoticeText] = useState<string | null>(null)
 
   function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
@@ -66,17 +68,25 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // 護摩祈願のみ、最終送信前に受付時間の注意事項をポップアップで確認してもらう
+  // 護摩祈願・写経/写仏(午後)は、最終送信前に受付時間の注意事項をポップアップで確認してもらう
   function handleConfirmClick() {
     if (form.type === 'prayer') {
-      setShowGomaNotice(true)
+      setNoticeText(t('gomaNoticeText'))
+      return
+    }
+    if ((form.type === 'shakyou' || form.type === 'shabutu') && form.time_slot === '午後') {
+      // 最終受付時刻は季節で変わる（4〜10月16:00／3・11月15:00／12〜2月14:30）
+      const season = getSeason(Number(form.date.split('-')[1]))
+      const lastTime = season === 'peak' ? '16:00' : season === 'shoulder' ? '15:00' : '14:30'
+      const label = TYPES.find(ty => ty.value === form.type)?.label ?? ''
+      setNoticeText(t('shakyouPmNoticeText', { type: label, time: lastTime }))
       return
     }
     handleSubmit()
   }
 
-  function acknowledgeGomaNotice() {
-    setShowGomaNotice(false)
+  function acknowledgeNotice() {
+    setNoticeText(null)
     handleSubmit()
   }
 
@@ -278,22 +288,22 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
           </div>
         )}
 
-        {/* 護摩祈願のみ：送信前の受付時間案内ポップアップ */}
-        {showGomaNotice && (
+        {/* 護摩祈願・写経/写仏(午後)：送信前の受付時間案内ポップアップ */}
+        {noticeText && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-            onClick={() => setShowGomaNotice(false)}
+            onClick={() => setNoticeText(null)}
           >
             <div
               className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center"
               onClick={e => e.stopPropagation()}
             >
               <p className="text-sm text-gray-700 leading-relaxed mb-6">
-                {t('gomaNoticeText')}
+                {noticeText}
               </p>
               <button
                 type="button"
-                onClick={acknowledgeGomaNotice}
+                onClick={acknowledgeNotice}
                 disabled={status === 'loading'}
                 className="btn-primary text-sm px-10 py-2 disabled:opacity-50"
               >
