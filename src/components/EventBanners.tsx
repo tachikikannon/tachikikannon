@@ -1,4 +1,6 @@
+import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
+import { isOptimizableImage } from '@/lib/optimizableImage'
 
 interface EventBanner {
   image: string
@@ -21,12 +23,22 @@ export default function EventBanners({ banners }: { banners: EventBanner[] }) {
           href={banner.href}
           className="relative block h-28 sm:h-36 rounded-lg overflow-hidden shadow-sm group"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={banner.image}
-            alt={banner.caption}
-            className="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
-          />
+          {isOptimizableImage(banner.image) ? (
+            <Image
+              src={banner.image}
+              alt={banner.caption}
+              fill
+              sizes="(min-width: 1024px) 1024px, 100vw"
+              className="object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={banner.image}
+              alt={banner.caption}
+              className="absolute inset-0 w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent" />
           <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
             <p className="font-serif text-lg sm:text-2xl text-white tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>

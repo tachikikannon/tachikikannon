@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react'
+import Image from 'next/image'
+import { isOptimizableImage } from '@/lib/optimizableImage'
 
 // お知らせ本文中に埋め込む写真のマーカー記法。Markdownの画像記法（![alt](url)）を
 // そのまま流用し、本文はプレーンテキストのまま「本文に写真を挿入」ボタンで
@@ -62,9 +64,13 @@ function renderInline(body: string, keyPrefix: string): ReactNode[] {
       key++
     }
     const [full, alt, url] = match
-    nodes.push(
+    // 写真の縦横比は本文ごとにまちまちなので、width/heightは仮の値を渡し、
+    // 表示サイズはCSS（w-full h-auto）に任せて元画像の比率で表示させる
+    nodes.push(isOptimizableImage(url)
+      ? <Image key={`${keyPrefix}-i${key++}`} src={url} alt={alt} width={1200} height={800}
+          sizes="(min-width: 768px) 768px, 100vw" className="w-full h-auto rounded-lg my-4" />
       // eslint-disable-next-line @next/next/no-img-element
-      <img key={`${keyPrefix}-i${key++}`} src={url} alt={alt} className="w-full h-auto rounded-lg my-4" />
+      : <img key={`${keyPrefix}-i${key++}`} src={url} alt={alt} className="w-full h-auto rounded-lg my-4" />
     )
     lastIndex = match.index + full.length
   }
