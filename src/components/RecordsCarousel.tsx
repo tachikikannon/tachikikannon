@@ -1,5 +1,6 @@
 'use client'
 import { useRef } from 'react'
+import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import type { Post } from '@/types'
 
@@ -21,7 +22,7 @@ export default function RecordsCarousel({ posts, noImageLabel }: { posts: Post[]
             className="group card overflow-hidden flex-shrink-0 w-40 snap-start flex flex-col">
             <div className="relative h-28 bg-white overflow-hidden">
               {post.cover_url
-                ? <img src={post.cover_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                ? <Image src={post.cover_url} alt={post.title} fill sizes="160px" className="object-cover group-hover:scale-105 transition-transform duration-300" />
                 : <div className="flex items-center justify-center h-full text-gray-300 text-xs">{noImageLabel}</div>
               }
             </div>

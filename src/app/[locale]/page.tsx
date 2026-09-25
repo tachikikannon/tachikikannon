@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Image from 'next/image'
 import RecordsCarousel from '@/components/RecordsCarousel'
 import ChuzenjiGallery from '@/components/ChuzenjiGallery'
 import EventBanners from '@/components/EventBanners'
@@ -365,7 +366,7 @@ export default async function HomePage({
               ].map(({ img, href }, i, arr) => (
                 <a key={href} href={href}
                   className={`relative h-56 sm:h-64 rounded-lg overflow-hidden shadow-sm group block ${i === arr.length - 1 ? 'col-span-2 sm:col-span-1' : ''}`}>
-                  <img src={img} alt={aboutCards[i]?.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <Image src={img} alt={aboutCards[i]?.label ?? ''} fill sizes="(min-width: 1024px) 200px, (min-width: 640px) 33vw, 50vw" className="object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/15 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-3">
                     <p className="font-serif text-white font-medium text-sm leading-snug min-h-[2.6em] flex items-end group-hover:text-gold transition-colors">{aboutCards[i]?.label}</p>
