@@ -69,6 +69,7 @@ export default async function Footer() {
               <li><Link href="/onsenji" className="hover:text-gold transition-colors">日光山温泉寺</Link></li>
               <li><a href="https://www.rinnoji.or.jp/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">輪王寺 公式サイト</a></li>
               <li><a href="https://bandou.gr.jp/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">坂東三十三観音 公式サイト</a></li>
+              <li><a href="https://www.nikko-nsm.co.jp/" target="_blank" rel="noopener" className="hover:text-gold transition-colors">栃木県立日光自然博物館</a></li>
             </ul>
             <h4 className="text-gold text-xs tracking-widest mb-3">お問い合わせ</h4>
             <ul className="space-y-2 text-sm">
