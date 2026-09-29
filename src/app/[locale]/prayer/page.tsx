@@ -2,7 +2,7 @@ export const revalidate = 60
 
 import type { Metadata } from 'next'
 import { buildAlternates } from '@/lib/seo'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import Header from '@/components/Header'

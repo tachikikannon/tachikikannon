@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 import { isOptimizableImage } from '@/lib/optimizableImage'
 
 // お知らせ本文中に埋め込む写真のマーカー記法。Markdownの画像記法（![alt](url)）を

@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import { APPLICATION_ATTACHMENT_BUCKET, ATTACHMENT_LINK_TTL_SECONDS, attachmentPath } from '@/lib/applicationAttachment'

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
-import Image, { type ImageProps } from 'next/image'
+import { type ImageProps } from 'next/image'
+import Image from '@/components/SafeImage'
 
 function Lightbox({ onClose, width, height, fill, ...rest }: ImageProps & { onClose: () => void }) {
   useEffect(() => {

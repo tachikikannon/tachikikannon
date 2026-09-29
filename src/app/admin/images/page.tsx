@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 import { createClient } from '@/lib/supabase'
 import type { Media, MediaSite } from '@/types'
 

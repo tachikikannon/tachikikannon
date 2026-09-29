@@ -3,7 +3,7 @@ export const revalidate = 60
 import type { Metadata } from 'next'
 import { buildAlternates } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 import { Link } from '@/i18n/navigation'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'

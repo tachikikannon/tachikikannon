@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 
 type Swatch = { name: string; image: string; desc: string }
 

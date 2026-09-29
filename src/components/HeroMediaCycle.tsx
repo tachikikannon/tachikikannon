@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 import { useHeroRevealed } from '@/components/HeroReveal'
 
 interface HeroMediaCycleProps {

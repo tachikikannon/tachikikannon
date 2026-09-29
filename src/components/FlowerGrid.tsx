@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 
 type FlowerItem = { month: string; name: string; desc: string; images?: string; image?: string }
 

@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 
 type Slide = { src: string; alt: string; caption: string; month?: string }
 

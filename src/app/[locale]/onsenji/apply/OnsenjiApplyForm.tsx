@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
+import Image from '@/components/SafeImage'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
 import { APPLICATION_CATEGORIES, MEDIA_CATEGORIES, INTERVIEW_FORMATS, TIME_SLOTS, type Media } from '@/types'
