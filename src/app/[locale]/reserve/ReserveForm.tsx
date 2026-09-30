@@ -82,6 +82,11 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
       setNoticeText(t('shakyouPmNoticeText', { type: label, time: lastTime }))
       return
     }
+    // 数珠作り体験は遅刻時の連絡案内のみ表示する
+    if (form.type === 'jyuzu') {
+      setNoticeText('')
+      return
+    }
     handleSubmit()
   }
 
@@ -288,8 +293,8 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
           </div>
         )}
 
-        {/* 護摩祈願・写経/写仏(午後)：送信前の受付時間案内ポップアップ */}
-        {noticeText && (
+        {/* 護摩祈願・写経/写仏(午後)・数珠作り体験：送信前の案内ポップアップ */}
+        {noticeText !== null && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
             onClick={() => setNoticeText(null)}
@@ -298,9 +303,11 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
               className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center"
               onClick={e => e.stopPropagation()}
             >
-              <p className="text-sm text-gray-700 leading-relaxed mb-3">
-                {noticeText}
-              </p>
+              {noticeText && (
+                <p className="text-sm text-gray-700 leading-relaxed mb-3">
+                  {noticeText}
+                </p>
+              )}
               <p className="text-sm text-gray-700 leading-relaxed mb-6">
                 {t('lateNoticeText')}
               </p>
