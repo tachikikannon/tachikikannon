@@ -91,7 +91,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
       setNoticeText(t('confirmSubmitText'))
       return
     }
-    // それ以外の種類（写経/写仏の午前・数珠作り体験・坐禅など）も、遅刻時の連絡案内のみのポップアップで確認してもらう
+    // それ以外の種類（数珠作り体験など）は、遅刻時の連絡案内のみのポップアップで確認してもらう
     setNoticeText('')
   }
 
