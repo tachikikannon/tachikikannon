@@ -37,11 +37,8 @@ const SAME_DAY_PHONE_NUMBER = '0288-55-0013'
 // 坐禅は僧侶の都合で希望日時に対応できないことがあるため、Web予約自体を受け付けず、
 // どの日を選んでも常に電話でのご予約案内を表示する（管理画面からの登録は対象外）。
 const ALWAYS_PHONE_ONLY_TYPES: ReservationType[] = ['zazen']
-const ALWAYS_PHONE_ONLY_MESSAGES = [
-  '僧侶の都合により、ご希望の日時に対応できない場合がございますので、お電話にてご予約をお願いいたします。',
-  '坐禅は現金受付のみですので、ご注意ください。',
-  '予約時間に遅れる場合はご連絡をお願いいたします。',
-]
+// 案内文は messages/*.json の reservationCalendar.zazenPhoneNotice1〜3
+const ALWAYS_PHONE_ONLY_MESSAGE_KEYS = ['zazenPhoneNotice1', 'zazenPhoneNotice2', 'zazenPhoneNotice3'] as const
 
 interface Props {
   reservationType: ReservationType
@@ -305,18 +302,18 @@ export default function ReservationCalendar({
             {showAlwaysPhoneNotice ? (
               <div className="text-sm text-gray-700 leading-relaxed mb-6">
                 <ol className="text-left space-y-2 mb-3">
-                  {ALWAYS_PHONE_ONLY_MESSAGES.map((msg, i) => (
+                  {ALWAYS_PHONE_ONLY_MESSAGE_KEYS.map((key, i) => (
                     <li key={i} className="flex gap-1">
                       <span className="shrink-0">{'①②③④⑤'[i]}</span>
-                      <span>{msg}</span>
+                      <span>{t(key)}</span>
                     </li>
                   ))}
                 </ol>
-                <p>電話番号 {SAME_DAY_PHONE_NUMBER}</p>
+                <p>{t('phoneNumberLabel')} {SAME_DAY_PHONE_NUMBER}</p>
               </div>
             ) : (
               <p className="text-sm text-gray-700 leading-relaxed mb-6">
-                当日予約は、中禅寺立木観音に直接お問い合わせください。<br />電話番号 {SAME_DAY_PHONE_NUMBER}
+                {t('sameDayPhoneNotice')}<br />{t('phoneNumberLabel')} {SAME_DAY_PHONE_NUMBER}
               </p>
             )}
             <button
@@ -324,7 +321,7 @@ export default function ReservationCalendar({
               onClick={() => { setShowAlwaysPhoneNotice(false); setShowSameDayNotice(false) }}
               className="btn-primary text-sm px-10 py-2"
             >
-              はい
+              {t('ok')}
             </button>
           </div>
         </div>

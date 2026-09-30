@@ -86,6 +86,11 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
       setNoticeText(t('zazenNoticeText'))
       return
     }
+    // 写経/写仏(午前)は遅刻時の電話案内は不要のため、送信確認のみ
+    if (form.type === 'shakyou' || form.type === 'shabutu') {
+      setNoticeText(t('confirmSubmitText'))
+      return
+    }
     // それ以外の種類（写経/写仏の午前・数珠作り体験・坐禅など）も、遅刻時の連絡案内のみのポップアップで確認してもらう
     setNoticeText('')
   }
@@ -304,13 +309,15 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
               onClick={e => e.stopPropagation()}
             >
               {noticeText && (
-                <p className="text-sm text-gray-700 leading-relaxed mb-3">
+                <p className={`text-sm text-gray-700 leading-relaxed ${form.type === 'shakyou' || form.type === 'shabutu' ? 'mb-6' : 'mb-3'}`}>
                   {noticeText}
                 </p>
               )}
-              <p className="text-sm text-gray-700 leading-relaxed mb-6">
-                {t('lateNoticeText')}
-              </p>
+              {form.type !== 'shakyou' && form.type !== 'shabutu' && (
+                <p className="text-sm text-gray-700 leading-relaxed mb-6">
+                  {t('lateNoticeText')}
+                </p>
+              )}
               <button
                 type="button"
                 onClick={acknowledgeNotice}

@@ -192,9 +192,10 @@
     "doneText": "The temple will contact you shortly. Confirmation may take a few days.",
     "gomaNoticeText": "Prayer services (Goma Kito) require check-in, so please arrive at Daikokuten-do Hall 10 minutes before your reservation time.",
     "gomaNoticeButton": "Yes",
-    "shakyouPmNoticeText": "Please note that the last admission for the afternoon {type} session is {time}.",
+    "shakyouPmNoticeText": "The last admission for the afternoon {type} session is {time}, so please plan your arrival accordingly.",
     "lateNoticeText": "If you will be late for your start time, please call Chuzenji Tachiki Kannon directly.",
-    "zazenNoticeText": "Please note that payment at reception is cash only."
+    "zazenNoticeText": "Please note that payment at reception is cash only.",
+    "confirmSubmitText": "Your reservation will be submitted with these details. Is that OK?"
   },
   "reservationCalendar": {
     "prevWeek": "← Previous Week",
@@ -205,6 +206,12 @@
     "legendUnavailable": "Unavailable",
     "legendSelected": "Selected",
     "selectedPrefix": " selected",
+    "zazenPhoneNotice1": "Depending on the monks' schedule, we may not be able to accommodate your preferred date and time, so please make your reservation by phone.",
+    "zazenPhoneNotice2": "Please note that zazen fees are payable in cash only.",
+    "zazenPhoneNotice3": "If you will be late for your reservation time, please contact us.",
+    "sameDayPhoneNotice": "For same-day reservations, please contact Chuzenji Tachiki Kannon directly.",
+    "phoneNumberLabel": "Phone:",
+    "ok": "OK",
     "days": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   },
   "apply": {
