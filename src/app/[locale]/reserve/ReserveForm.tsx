@@ -298,8 +298,11 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
               className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center"
               onClick={e => e.stopPropagation()}
             >
-              <p className="text-sm text-gray-700 leading-relaxed mb-6">
+              <p className="text-sm text-gray-700 leading-relaxed mb-3">
                 {noticeText}
+              </p>
+              <p className="text-sm text-gray-700 leading-relaxed mb-6">
+                {t('lateNoticeText')}
               </p>
               <button
                 type="button"
