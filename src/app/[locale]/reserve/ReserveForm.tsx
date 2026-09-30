@@ -68,7 +68,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // 全種類で最終送信前にポップアップを表示し、「はい」で送信する。護摩祈願・写経/写仏(午後)は受付時間の注意事項も併記
+  // 全種類で最終送信前にポップアップを表示し、「はい」で送信する。護摩祈願・写経/写仏(午後)は受付時間、坐禅は現金のみの注意事項も併記
   function handleConfirmClick() {
     if (form.type === 'prayer') {
       setNoticeText(t('gomaNoticeText'))
@@ -80,6 +80,10 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
       const lastTime = season === 'peak' ? '16:00' : season === 'shoulder' ? '15:00' : '14:30'
       const label = TYPES.find(ty => ty.value === form.type)?.label ?? ''
       setNoticeText(t('shakyouPmNoticeText', { type: label, time: lastTime }))
+      return
+    }
+    if (form.type === 'zazen') {
+      setNoticeText(t('zazenNoticeText'))
       return
     }
     // それ以外の種類（写経/写仏の午前・数珠作り体験・坐禅など）も、遅刻時の連絡案内のみのポップアップで確認してもらう
