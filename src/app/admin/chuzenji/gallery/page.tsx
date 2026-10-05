@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import { compressImage } from '@/lib/compressImage'
 
 type Slide = { src: string; alt: string; month?: string; caption_ja: string; caption_en: string }
 
@@ -39,7 +40,8 @@ export default function AdminChuzenjiGallery() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function uploadFile(file: File): Promise<string | null> {
+  async function uploadFile(original: File): Promise<string | null> {
+    const file = await compressImage(original)
     setUploadError(null)
     const ext = file.name.split('.').pop()
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`

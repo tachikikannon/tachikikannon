@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import { compressImage } from '@/lib/compressImage'
 import { renderNewsBody } from '@/lib/newsBody'
 import { CATEGORY_COLOR_SWATCHES, DEFAULT_NEWS_CATEGORIES, categoryColor, newsCategoriesKey, parseNewsCategories, suggestUnusedColor, type NewsCategoryDef } from '@/lib/newsCategories'
 import type { News, NewsSite } from '@/types'
@@ -190,12 +191,13 @@ export default function NewsAdmin({ site, siteLabel, accent = 'chuzenji' }: { si
   }
 
   async function handleBodyImageSelected(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
+    const picked = e.target.files?.[0]
     e.target.value = ''
-    if (!file) return
+    if (!picked) return
     const field = insertTargetField.current
     setUploadError(null)
     setUploadingField(field)
+    const file = await compressImage(picked)
     const ext = file.name.split('.').pop()
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
     const { error } = await supabase.storage.from('temple-images').upload(path, file)

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase'
+import { compressImage } from '@/lib/compressImage'
 import { padListToDefault } from '@/lib/site-content'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
@@ -158,7 +159,8 @@ export default function TopPageEditor() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const uploadTargetKey = useRef<string | null>(null)
 
-  async function uploadFile(file: File): Promise<string | null> {
+  async function uploadFile(original: File): Promise<string | null> {
+    const file = await compressImage(original)
     setUploadError(null)
     const ext = file.name.split('.').pop()
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`

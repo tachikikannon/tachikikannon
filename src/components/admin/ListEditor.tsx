@@ -1,6 +1,7 @@
 'use client'
 import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import { compressImage } from '@/lib/compressImage'
 
 export type ListField = { key: string; label: string; multiline?: boolean; images?: boolean; image?: boolean }
 
@@ -23,11 +24,12 @@ export default function ListEditor({ value, fields, onChange, addLabel = '項目
   })()
 
   async function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
+    const picked = e.target.files?.[0]
     const target = uploadTarget.current
-    if (!file || !target) return
+    if (!picked || !target) return
     setUploadError(null)
     setUploadingKey(`${target.index}-${target.key}`)
+    const file = await compressImage(picked)
     const ext = file.name.split('.').pop()
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
     const { error } = await supabase.storage.from('temple-images').upload(path, file)

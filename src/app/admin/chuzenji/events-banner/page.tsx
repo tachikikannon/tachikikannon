@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import { compressImage } from '@/lib/compressImage'
 
 type Banner = {
   image: string; href: string
@@ -42,7 +43,8 @@ export default function AdminChuzenjiEventsBanner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function uploadFile(file: File): Promise<string | null> {
+  async function uploadFile(original: File): Promise<string | null> {
+    const file = await compressImage(original)
     setUploadError(null)
     const ext = file.name.split('.').pop()
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`

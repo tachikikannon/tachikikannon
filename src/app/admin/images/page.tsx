@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from '@/components/SafeImage'
 import { createClient } from '@/lib/supabase'
+import { compressImage } from '@/lib/compressImage'
 import type { Media, MediaSite } from '@/types'
 
 const SITE_LABELS: Record<MediaSite, string> = { chuzenji: '立木観音', onsenji: '温泉寺' }
@@ -28,7 +29,8 @@ export default function AdminImagesPage() {
     setUploading(true)
     setUploadError(null)
     const errors: string[] = []
-    for (const file of Array.from(files)) {
+    for (const picked of Array.from(files)) {
+      const file = await compressImage(picked)
       const ext = file.name.split('.').pop()
       const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
       const { error } = await supabase.storage.from('temple-images').upload(path, file)
