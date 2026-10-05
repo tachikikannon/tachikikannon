@@ -23,7 +23,8 @@ export default function PhotoSelector({ photos }: { photos: Media[] }) {
             <div key={item.id}
               className={`bg-white rounded-xl shadow-sm overflow-hidden border-2 transition-colors ${isSelected ? 'border-navy' : 'border-transparent'}`}>
               <div className="relative h-36">
-                <ZoomableImage src={item.public_url} alt={`貸出用写真 ${i + 1}`} fill className="object-cover" />
+                <ZoomableImage src={item.public_url} alt={`貸出用写真 ${i + 1}`} fill className="object-cover"
+                  sizes="(min-width: 768px) 256px, (min-width: 640px) 33vw, 50vw" />
               </div>
               <div className="p-3">
                 <p className="text-xs text-gray-600 mb-2">{t('photoLabel')} {i + 1}</p>

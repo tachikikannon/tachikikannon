@@ -24,7 +24,8 @@ export default function FlowerGrid({ items, monthLabel }: { items: FlowerItem[];
             onClick={() => setSelected(i)}
             className="relative aspect-square block group overflow-hidden"
           >
-            <Image src={item.photos[0]} alt={item.name} fill className="object-cover group-hover:opacity-90 transition-opacity" />
+            <Image src={item.photos[0]} alt={item.name} fill className="object-cover group-hover:opacity-90 transition-opacity"
+              sizes="(min-width: 768px) 245px, 33vw" />
             <span className="absolute top-1.5 right-1.5 bg-black/55 text-white text-[10px] px-1.5 py-0.5 rounded leading-none whitespace-nowrap">
               {item.month}
             </span>
@@ -45,7 +46,7 @@ export default function FlowerGrid({ items, monthLabel }: { items: FlowerItem[];
             >
               <div className="relative aspect-square bg-cream-alt">
                 {item.photos[0] && (
-                  <Image src={item.photos[0]} alt={item.name} fill className="object-cover" />
+                  <Image src={item.photos[0]} alt={item.name} fill className="object-cover" sizes="384px" />
                 )}
               </div>
               <div className="p-5">

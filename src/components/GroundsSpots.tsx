@@ -65,7 +65,7 @@ export default function GroundsSpots({ spots }: { spots: Spot[] }) {
             className="bg-white rounded-xl overflow-hidden shadow-sm text-left hover:shadow-md hover:-translate-y-1 transition-all cursor-zoom-in">
             {spot.image && (
               <div className="relative h-44">
-                <Image src={spot.image} alt={spot.name} fill className="object-cover" />
+                <Image src={spot.image} alt={spot.name} fill className="object-cover" sizes="(min-width: 768px) 230px, 50vw" />
               </div>
             )}
             <div className="p-3">
@@ -84,7 +84,7 @@ export default function GroundsSpots({ spots }: { spots: Spot[] }) {
             onClick={e => e.stopPropagation()}>
             {active.spot.image && (
               <div className="relative h-64 md:h-80">
-                <Image src={active.spot.image} alt={active.spot.name} fill className="object-cover" />
+                <Image src={active.spot.image} alt={active.spot.name} fill className="object-cover" sizes="(min-width: 512px) 512px, 100vw" />
               </div>
             )}
             <div className="p-6">

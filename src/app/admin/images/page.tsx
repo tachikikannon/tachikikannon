@@ -131,7 +131,8 @@ export default function AdminImagesPage() {
         {filtered.map(item => (
           <div key={item.id} className="bg-white rounded-xl shadow overflow-hidden group">
             <div className="relative h-32">
-              <Image src={item.public_url} alt={item.alt ?? item.filename} fill className="object-cover" />
+              <Image src={item.public_url} alt={item.alt ?? item.filename} fill className="object-cover"
+                sizes="(min-width: 1024px) 20vw, (min-width: 640px) 25vw, 50vw" />
               <span className={`absolute top-1.5 left-1.5 badge text-[10px] ${item.site === 'onsenji' ? 'bg-teal-100 text-teal-700' : 'bg-navy/10 text-navy'}`}>
                 {SITE_LABELS[item.site]}
               </span>

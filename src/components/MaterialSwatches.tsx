@@ -16,7 +16,7 @@ export default function MaterialSwatches({ title, swatches }: { title: string; s
             className="text-center group">
             <div className={`relative w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full overflow-hidden shadow-sm border-2 transition-colors
               ${active?.name === s.name ? 'border-gold' : 'border-white'} ring-1 ring-gray-200 group-hover:ring-gold`}>
-              <Image src={s.image} alt={s.name} fill className="object-cover" />
+              <Image src={s.image} alt={s.name} fill className="object-cover" sizes="64px" />
             </div>
             <p className="text-[10px] text-gray-500 mt-1 leading-tight">{s.name}</p>
           </button>
@@ -25,7 +25,7 @@ export default function MaterialSwatches({ title, swatches }: { title: string; s
       {active && (
         <div className="mt-4 bg-white rounded-xl p-4 shadow-sm flex gap-4 items-start">
           <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-gold">
-            <Image src={active.image} alt={active.name} fill className="object-cover" />
+            <Image src={active.image} alt={active.name} fill className="object-cover" sizes="64px" />
           </div>
           <div>
             <p className="font-serif text-navy font-medium mb-1">{active.name}</p>
