@@ -71,6 +71,7 @@ export default function ApplyForm() {
   const [uploading, setUploading] = useState(false)
   const [attachmentError, setAttachmentError] = useState('')
   const [photoMedia, setPhotoMedia] = useState<Media[]>([])
+  const [personalShoot, setPersonalShoot] = useState(false)
 
   // メディア情報（撮影内容・取材形式を除く・希望日時等）は「テレビ・雑誌撮影申請」の内容。
   // ただし料金表（使用料の黄色い枠）だけは「諸堂使用申請」側に表示する
@@ -78,6 +79,10 @@ export default function ApplyForm() {
   const isVenueRental = form.category === '諸堂使用申請'
   const isGroupReservation = form.category === '団体予約申請'
   const isFeeReduction = form.category === '減免申請'
+  // 諸堂使用申請で「個人撮影（メディア以外）」にチェックした場合はメディア情報を省略し、
+  // 使用目的を「申請内容の詳細」に書いてもらう。DB列は増やさず media_categories に「個人撮影」を入れて記録する
+  const isPersonalShoot = isVenueRental && personalShoot
+  const needsMediaInfo = isTvMagazine || (isVenueRental && !isPersonalShoot)
 
   useEffect(() => {
     const ids = form.photo_ref.split(',').map(s => s.trim()).filter(Boolean)
@@ -121,7 +126,8 @@ export default function ApplyForm() {
   function goToConfirm(e: React.FormEvent) {
     e.preventDefault()
     if (form.email !== form.email_confirm) { setFormError(t('emailMismatchError')); return }
-    if ((isTvMagazine || isVenueRental) && form.media_categories.length === 0) { setFormError(t('mediaCategoryRequired')); return }
+    if (needsMediaInfo && form.media_categories.length === 0) { setFormError(t('mediaCategoryRequired')); return }
+    if (isPersonalShoot && !form.message.trim()) { setFormError(t('personalPurposeRequired')); return }
     if (isTvMagazine && form.interview_formats.length === 0) { setFormError(t('interviewFormatRequired')); return }
     setFormError('')
     setStep('confirm')
@@ -137,8 +143,11 @@ export default function ApplyForm() {
     setSubmitting(true)
     setSubmitError(false)
     const id = crypto.randomUUID()
-    const { email_confirm, ...payload } = form
+    const { email_confirm, ...formPayload } = form
     void email_confirm
+    const payload = isPersonalShoot
+      ? { ...formPayload, media_categories: ['個人撮影'], media_name: '', media_content: '', publish_date: '' }
+      : formPayload
     const { error } = await supabase.from('applications').insert({ ...payload, id })
     if (error) { setSubmitError(true); setSubmitting(false); return }
     await fetch('/api/notify/application', {
@@ -167,10 +176,12 @@ export default function ApplyForm() {
   ]
   const preferredDateLabel = (n: 1 | 2 | 3) => t((isVenueRental ? `venuePreferredDateLabel${n}` : `preferredDateLabel${n}`) as 'preferredDateLabel1')
   const mediaRows: [string, string][] = (isTvMagazine || isVenueRental) ? [
-    [t('mediaCategoryLabel'), form.media_categories.map(c => MEDIA_CATEGORY_LABELS[c] ?? c).join('、')],
-    [t('mediaNameLabel'), form.media_name],
-    [t('mediaContentLabel'), form.media_content],
-    ...(form.publish_date ? [[t('publishDateLabel'), form.publish_date] as [string, string]] : []),
+    ...(isPersonalShoot ? [[t('usageTypeLabel'), t('personalShootOption')] as [string, string]] : [
+      [t('mediaCategoryLabel'), form.media_categories.map(c => MEDIA_CATEGORY_LABELS[c] ?? c).join('、')] as [string, string],
+      [t('mediaNameLabel'), form.media_name] as [string, string],
+      [t('mediaContentLabel'), form.media_content] as [string, string],
+      ...(form.publish_date ? [[t('publishDateLabel'), form.publish_date] as [string, string]] : []),
+    ]),
     ...(isTvMagazine ? [[t('interviewFormatLabel'), form.interview_formats.map(f => INTERVIEW_FORMAT_LABELS[f] ?? f).join('、')] as [string, string]] : []),
     [preferredDateLabel(1), `${form.preferred_date_1} ${form.preferred_time_1}`],
     ...(form.preferred_date_2 ? [[preferredDateLabel(2), `${form.preferred_date_2} ${form.preferred_time_2}`] as [string, string]] : []),
@@ -188,7 +199,8 @@ export default function ApplyForm() {
     ...(isGroupReservation && form.child_count ? [[t('childCountLabel'), `${form.child_count}${t('attendeeCountSuffix')}`] as [string, string]] : []),
     ...(isFeeReduction && form.student_count ? [[t('studentCountLabel'), `${form.student_count}${t('attendeeCountSuffix')}`] as [string, string]] : []),
   ] : []
-  const allRows: [string, string][] = [...confirmRows, ...mediaRows, ...groupFeeRows, ...(form.message ? [[isGroupReservation || isFeeReduction ? t('summaryLabel') : t('messageLabel'), form.message] as [string, string]] : [])]
+  const messageLabel = (isGroupReservation || isFeeReduction) ? t('summaryLabel') : isPersonalShoot ? t('personalShootMessageLabel') : t('messageLabel')
+  const allRows: [string, string][] = [...confirmRows, ...mediaRows, ...groupFeeRows, ...(form.message ? [[messageLabel, form.message] as [string, string]] : [])]
 
   if (step === 'done') return (
     <main className="min-h-screen pt-24 pb-16 px-4">
@@ -374,11 +386,19 @@ export default function ApplyForm() {
                   <p>{t('filmingFeeOutside')}</p>
                   <p className="pt-1">{t('filmingFeeExclusiveNote')}</p>
                 </div>
+                <div>
+                  <label className="flex items-center gap-2 text-sm text-gray-700">
+                    <input type="checkbox" checked={personalShoot} onChange={e => setPersonalShoot(e.target.checked)} />
+                    {t('personalShootOption')}
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1 ml-6">{t('personalShootNote')}</p>
+                </div>
               </div>
             )}
 
             {(isTvMagazine || isVenueRental) && (
               <div className="space-y-5 border-t border-gray-200 pt-6">
+                {!isPersonalShoot && (<>
                 <h2 className="font-serif text-navy text-lg">{t('sectionMediaHeading')}</h2>
                 <div>
                   <label className="admin-label">{t('mediaCategoryLabel')}</label>
@@ -404,6 +424,7 @@ export default function ApplyForm() {
                   <label className="admin-label">{t('publishDateLabel')}</label>
                   <input className="admin-input" value={form.publish_date} onChange={e => update('publish_date', e.target.value)} />
                 </div>
+                </>)}
 
                 {/* 取材形式（撮影・インタビュー等）は撮影取材固有の内容のため、
                     諸堂使用申請では表示しない */}
@@ -484,8 +505,9 @@ export default function ApplyForm() {
             </div>
 
             <div>
-              <label className="admin-label">{(isGroupReservation || isFeeReduction) ? t('summaryLabel') : t('messageLabel')}</label>
-              <textarea className="admin-input min-h-[150px]" placeholder={(isGroupReservation || isFeeReduction) ? '' : t('messagePlaceholder')}
+              <label className="admin-label">{messageLabel}</label>
+              {isPersonalShoot && <p className="text-xs text-gray-500 mb-2">{t('personalShootNote')}</p>}
+              <textarea required={isPersonalShoot} className="admin-input min-h-[150px]" placeholder={(isGroupReservation || isFeeReduction) ? '' : t('messagePlaceholder')}
                 value={form.message} onChange={e => update('message', e.target.value)} />
             </div>
             {formError && <p className="text-red-600 text-sm">{formError}</p>}
