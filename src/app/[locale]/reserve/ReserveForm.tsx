@@ -308,20 +308,16 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
               className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center"
               onClick={e => e.stopPropagation()}
             >
-              {noticeText && (
-                <p className="text-sm text-gray-700 leading-relaxed mb-3">
-                  {noticeText}
-                </p>
-              )}
-              {form.type !== 'shakyou' && form.type !== 'shabutu' && (
-                <p className="text-sm text-gray-700 leading-relaxed mb-3">
-                  {t('lateNoticeText')}
-                </p>
-              )}
-              {/* 全種類共通：無連絡で30分過ぎた場合の自動キャンセル案内 */}
-              <p className="text-sm text-gray-700 leading-relaxed mb-6">
-                {t('autoCancelNoticeText')}
-              </p>
+              <div className="space-y-3 mb-6 text-sm text-gray-700 leading-relaxed">
+                {noticeText && <p>{noticeText}</p>}
+                {form.type !== 'shakyou' && form.type !== 'shabutu' && (
+                  <p>{t('lateNoticeText')}</p>
+                )}
+                {/* 無連絡で30分過ぎた場合の自動キャンセル案内（写経・坐禅は不要） */}
+                {form.type !== 'shakyou' && form.type !== 'zazen' && (
+                  <p>{t('autoCancelNoticeText')}</p>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={acknowledgeNotice}
