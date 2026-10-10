@@ -313,8 +313,8 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
                 {form.type !== 'shakyou' && form.type !== 'shabutu' && (
                   <p>{t('lateNoticeText')}</p>
                 )}
-                {/* 無連絡で30分過ぎた場合の自動キャンセル案内（写経・坐禅は不要） */}
-                {form.type !== 'shakyou' && form.type !== 'zazen' && (
+                {/* 無連絡で30分過ぎた場合の自動キャンセル案内（写経・写仏は不要） */}
+                {form.type !== 'shakyou' && form.type !== 'shabutu' && (
                   <p>{t('autoCancelNoticeText')}</p>
                 )}
               </div>
