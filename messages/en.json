@@ -195,6 +195,7 @@
     "shakyouPmNoticeText": "The last admission for the afternoon {type} session is {time}, so please plan your arrival accordingly.",
     "lateNoticeText": "If you will be late for your start time, please call Chuzenji Tachiki Kannon directly.",
     "zazenNoticeText": "Please note that payment at reception is cash only.",
+    "autoCancelNoticeText": "Please note that if you arrive more than 30 minutes after your reservation time without contacting us, your reservation will be automatically canceled.",
     "confirmSubmitText": "Your reservation will be submitted with these details. Is that OK?"
   },
   "reservationCalendar": {
