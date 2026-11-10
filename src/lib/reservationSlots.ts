@@ -114,9 +114,13 @@ function halfHourSlots(startHour: number, endHour: number): string[] {
   return slots
 }
 
-export function getTimeSlots(type: ReservationType, month: number): string[] {
+// gomaPurpose: 護摩祈願（type='prayer'）の内容。新車祈願だけは受付時間が長く、
+// 9:00〜14:00まで30分刻みで受け付ける（それ以外の内容は9:00〜11:30）。
+// 枠・定員・前後バッファは護摩祈願全体で共通（同じ護摩祈願の予約として数える）。
+export function getTimeSlots(type: ReservationType, month: number, gomaPurpose?: string | null): string[] {
   const season = getSeason(month)
   if (type === 'prayer') {
+    if (gomaPurpose === 'newcar') return halfHourSlots(9, 14)
     return ['9:00', '9:30', '10:00', '10:30', '11:00', '11:30']
   }
   if (type === 'shakyou' || type === 'shabutu') {
@@ -131,4 +135,10 @@ export function getTimeSlots(type: ReservationType, month: number): string[] {
     return ['13:00', '14:00']
   }
   return []
+}
+
+// 内容を問わず、その種別で予約が入りうる全時間帯（空き状況の詳細設定など管理画面の一覧用）。
+// 護摩祈願は新車祈願の枠（9:00〜14:00）が他の内容の枠を包含するため、それを返す。
+export function getAllTimeSlots(type: ReservationType, month: number): string[] {
+  return getTimeSlots(type, month, type === 'prayer' ? 'newcar' : null)
 }

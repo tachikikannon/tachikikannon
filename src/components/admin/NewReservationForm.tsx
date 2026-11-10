@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
 import AdminSlotPicker from '@/components/admin/AdminSlotPicker'
-import { GOMA_PURPOSE_OPTIONS } from '@/lib/reservationSlots'
+import { GOMA_PURPOSE_OPTIONS, getTimeSlots } from '@/lib/reservationSlots'
 import type { ReservationCategory, ReservationStatus, ReservationType } from '@/types'
 
 const TYPES: { value: ReservationType; label: string }[] = [
@@ -143,7 +143,13 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
                 ${newRes.goma_purpose === p.value ? 'border-navy bg-navy/5 font-medium' : 'border-gray-200 hover:border-navy/40'}`}>
                 <input type="radio" name="new-goma-purpose" value={p.value} className="sr-only"
                   checked={newRes.goma_purpose === p.value}
-                  onChange={() => setNewRes(f => ({ ...f, goma_purpose: p.value }))} />
+                  onChange={() => setNewRes(f => {
+                    // 新車祈願（〜14:00）から他の内容（〜11:30）に切り替えたとき、選択中の時間が
+                    // その内容の枠に無ければ選択を解除する
+                    const month = f.date ? Number(f.date.split('-')[1]) : 0
+                    const keepTime = !f.time_slot || (month > 0 && getTimeSlots('prayer', month, p.value).includes(f.time_slot))
+                    return { ...f, goma_purpose: p.value, time_slot: keepTime ? f.time_slot : '' }
+                  })} />
                 {p.label}
               </label>
             ))}
@@ -174,6 +180,7 @@ export default function NewReservationForm({ initialDate, onCreated }: Props) {
         <label className="admin-label">日時</label>
         <AdminSlotPicker
           reservationType={newRes.type}
+          gomaPurpose={newRes.type === 'prayer' ? newRes.goma_purpose : null}
           selectedDate={newRes.date}
           selectedTime={newRes.time_slot}
           onSelectSlot={(date, time_slot) => setNewRes(f => ({ ...f, date, time_slot }))}

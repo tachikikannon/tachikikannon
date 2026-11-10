@@ -12,6 +12,8 @@ const DAY_LABELS = ['日', '月', '火', '水', '木', '金', '土']
 
 interface Props {
   reservationType: ReservationType
+  /** 護摩祈願の内容。新車祈願は受付時間帯が他の内容より長い（getTimeSlots参照） */
+  gomaPurpose?: string | null
   selectedDate: string
   selectedTime: string
   onSelectSlot: (date: string, time: string) => void
@@ -20,7 +22,7 @@ interface Props {
   initialDate?: string
 }
 
-export default function AdminSlotPicker({ reservationType, selectedDate, selectedTime, onSelectSlot, initialDate }: Props) {
+export default function AdminSlotPicker({ reservationType, gomaPurpose, selectedDate, selectedTime, onSelectSlot, initialDate }: Props) {
   const supabase = createClient()
   const today = nowInJST()
   today.setUTCHours(0, 0, 0, 0)
@@ -97,7 +99,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
   function nextWeek() { const d = new Date(weekStart); d.setUTCDate(d.getUTCDate() + 7); setWeekStart(d) }
   function goThisWeek() { setWeekStart(getMonday(today)) }
 
-  const slots = Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getUTCMonth() + 1))))
+  const slots = Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getUTCMonth() + 1, gomaPurpose))))
 
   async function closeSlot(date: string, slot: string) {
     setBusy(true)
@@ -177,7 +179,7 @@ export default function AdminSlotPicker({ reservationType, selectedDate, selecte
                 <td className="border border-gray-200 bg-gray-50 px-1 py-1.5 text-center text-gray-500 whitespace-nowrap">{slot}</td>
                 {weekDays.map(d => {
                   const dateStr = toDateStr(d)
-                  const validSlots = getTimeSlots(reservationType, d.getUTCMonth() + 1)
+                  const validSlots = getTimeSlots(reservationType, d.getUTCMonth() + 1, gomaPurpose)
                   if (!validSlots.includes(slot)) return <td key={dateStr} className="border border-gray-200 bg-gray-50" />
                   const blocked = isDateBlocked(dateStr)
                   const override = getOverride(dateStr, slot)

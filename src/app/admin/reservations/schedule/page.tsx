@@ -409,7 +409,7 @@ export default function AdminReservationSchedulePage() {
                           onChange={e => setEditForm(f => f && { ...f, time_slot: e.target.value })}>
                           {(() => {
                             const month = new Date(editForm.date + 'T00:00:00').getMonth() + 1
-                            const opts = getTimeSlots(detail.type, month)
+                            const opts = getTimeSlots(detail.type, month, detail.type === 'prayer' ? editForm.goma_purpose : null)
                             return (opts.includes(editForm.time_slot) ? opts : [editForm.time_slot, ...opts])
                               .map(s => <option key={s} value={s}>{s}</option>)
                           })()}

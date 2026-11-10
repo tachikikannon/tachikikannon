@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useAdminProfile } from '@/lib/useAdminProfile'
-import { getTimeSlots, blockedDateMatchesType, nowInJST, toDateStr, getMonday } from '@/lib/reservationSlots'
+import { getAllTimeSlots, blockedDateMatchesType, nowInJST, toDateStr, getMonday } from '@/lib/reservationSlots'
 import type { ReservationType, SlotOverride } from '@/types'
 
 const TYPES: { value: ReservationType; label: string }[] = [
@@ -121,7 +121,7 @@ export default function AvailabilityPage() {
   function nextWeek() { const d = new Date(weekStart); d.setUTCDate(d.getUTCDate() + 7); setWeekStart(d) }
   function goThisWeek() { setWeekStart(getMonday(today)) }
 
-  const slots = Array.from(new Set(weekDays.flatMap(d => getTimeSlots(type, d.getUTCMonth() + 1))))
+  const slots = Array.from(new Set(weekDays.flatMap(d => getAllTimeSlots(type, d.getUTCMonth() + 1))))
   const selectedOverride = selected ? getOverride(selected.date, selected.slot) : null
   const selectedCounts = selected ? getCounts(selected.date, selected.slot) : null
   const selectedBlocked = selected ? isDateBlocked(selected.date) : null
@@ -180,7 +180,7 @@ export default function AvailabilityPage() {
                   <td className="border border-gray-200 bg-gray-50 px-2 py-2 text-xs text-gray-500 text-center whitespace-nowrap">{slot}</td>
                   {weekDays.map(d => {
                     const dateStr = toDateStr(d)
-                    const validSlots = getTimeSlots(type, d.getUTCMonth() + 1)
+                    const validSlots = getAllTimeSlots(type, d.getUTCMonth() + 1)
                     if (!validSlots.includes(slot)) {
                       return <td key={dateStr} className="border border-gray-200 bg-gray-50" />
                     }

@@ -42,6 +42,8 @@ const ALWAYS_PHONE_ONLY_MESSAGE_KEYS = ['zazenPhoneNotice1', 'zazenPhoneNotice2'
 
 interface Props {
   reservationType: ReservationType
+  // 護摩祈願の内容。新車祈願は受付時間帯が他の内容より長い（getTimeSlots参照）
+  gomaPurpose?: string | null
   selectedDate: string
   selectedTime: string
   onSelectSlot: (date: string, time: string) => void
@@ -50,7 +52,7 @@ interface Props {
 }
 
 export default function ReservationCalendar({
-  reservationType, selectedDate, selectedTime, onSelectSlot, isAdmin = false
+  reservationType, gomaPurpose, selectedDate, selectedTime, onSelectSlot, isAdmin = false
 }: Props) {
   const supabase = createClient()
   const t = useTranslations('reservationCalendar')
@@ -229,7 +231,7 @@ export default function ReservationCalendar({
         </thead>
         <tbody>
           {/* 週内の全日付のスロットを合わせて行を決定 */}
-          {Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getUTCMonth() + 1)))).map(slot => (
+          {Array.from(new Set(weekDays.flatMap(d => getTimeSlots(reservationType, d.getUTCMonth() + 1, gomaPurpose)))).map(slot => (
             <tr key={slot}>
               <td className="border border-gray-200 bg-gray-50 px-2 py-2 text-xs text-gray-500 text-center whitespace-nowrap">
                 {slot}
@@ -250,7 +252,7 @@ export default function ReservationCalendar({
                 const override = getOverride(dateStr, slot)
                 const full = isSlotFull(dateStr, slot)
                 const isSelected = selectedDate === dateStr && selectedTime === slot
-                const validSlots = getTimeSlots(reservationType, d.getUTCMonth() + 1)
+                const validSlots = getTimeSlots(reservationType, d.getUTCMonth() + 1, gomaPurpose)
                 const unavailable = isPast || slotTimePassed || !!blocked || !!override?.is_closed || full || !validSlots.includes(slot)
                 const sameDayPhoneOnly = !isAdmin && isToday && SAME_DAY_PHONE_ONLY_TYPES.includes(reservationType)
                 const alwaysPhoneOnly = !isAdmin && ALWAYS_PHONE_ONLY_TYPES.includes(reservationType)

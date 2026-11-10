@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import ReservationCalendar from '@/components/ReservationCalendar'
 import { createClient } from '@/lib/supabase'
-import { getSeason } from '@/lib/reservationSlots'
+import { getSeason, getTimeSlots } from '@/lib/reservationSlots'
 import type { ReservationType } from '@/types'
 
 const RESERVATION_TYPES: ReservationType[] = ['prayer', 'shakyou', 'shabutu', 'jyuzu', 'zazen']
@@ -198,7 +198,17 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
                       ${purpose === p.value ? 'border-navy bg-navy/5' : 'border-gray-200 hover:border-navy/40'}`}>
                       <input type="radio" name="purpose" value={p.value} className="sr-only"
                         checked={purpose === p.value}
-                        onChange={() => setPurpose(p.value)} />
+                        onChange={() => {
+                          setPurpose(p.value)
+                          // 新車祈願（〜14:00）から他の内容（〜11:30）に切り替えたとき、選択中の
+                          // 時間がその内容では受け付けていない枠なら選択を解除する
+                          if (form.date && form.time_slot) {
+                            const month = Number(form.date.split('-')[1])
+                            if (!getTimeSlots('prayer', month, p.value).includes(form.time_slot)) {
+                              setForm(f => ({ ...f, date: '', time_slot: '' }))
+                            }
+                          }
+                        }} />
                       <p className="font-medium text-navy text-sm">{p.label}</p>
                     </label>
                   ))}
@@ -214,6 +224,7 @@ export default function ReserveForm({ fees }: { fees: Record<ReservationType, st
               <label className="admin-label">{t('dateLabel')}</label>
               <ReservationCalendar
                 reservationType={form.type}
+                gomaPurpose={form.type === 'prayer' ? purpose : null}
                 selectedDate={form.date}
                 selectedTime={form.time_slot}
                 onSelectSlot={(date, time) => setForm(f => ({ ...f, date, time_slot: time }))}
