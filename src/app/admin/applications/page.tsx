@@ -98,7 +98,7 @@ export default function AdminApplicationsPage() {
   const adminName = (id: string | null) => admins.find(a => a.id === id)?.name || '未割当'
 
   return (
-    <div className="p-8 print:p-0">
+    <div className="p-8 print:p-0 overflow-x-clip">
       <div className="print:hidden flex items-center justify-between mb-6">
         <h1 className="text-2xl font-serif text-navy">申請管理</h1>
         <span className="badge bg-red-100 text-red-700">
@@ -106,9 +106,12 @@ export default function AdminApplicationsPage() {
         </span>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-4 print:block items-start">
+      {/* 画面幅を超えて横にはみ出さないよう、列幅は minmax(0,1fr)（grid-cols-1/2）で固定し、
+          各列にも min-w-0 を付ける。付けないと詳細内の区切りのない長い文字列（URL・英数字・
+          メールアドレス等）の幅まで列が広がり、スマホ・PCとも画面全体が左右に動いてしまう */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 print:block items-start">
         {/* 一覧 */}
-        <div className="bg-white rounded-xl shadow overflow-y-auto lg:max-h-[calc(100vh-14rem)] print:hidden">
+        <div className="min-w-0 bg-white rounded-xl shadow overflow-y-auto lg:max-h-[calc(100vh-14rem)] print:hidden">
           <ul className="divide-y divide-gray-100">
             {list.map(a => (
               <li key={a.id} onClick={() => { openDetail(a); if(!a.is_read && canEdit) markRead(a.id) }}
@@ -136,9 +139,9 @@ export default function AdminApplicationsPage() {
 
         {/* 詳細 */}
         {selected && (
-          <div className="bg-white rounded-xl shadow p-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto print:shadow-none print:p-0 print:max-h-none print:overflow-visible">
+          <div className="min-w-0 [overflow-wrap:anywhere] bg-white rounded-xl shadow p-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto print:shadow-none print:p-0 print:max-h-none print:overflow-visible">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-medium text-navy text-lg">{selected.category}</h2>
+              <h2 className="font-medium text-navy text-lg min-w-0">{selected.category}</h2>
               <button onClick={() => openDetail(null)} className="text-gray-400 hover:text-gray-600 text-lg print:hidden">✕</button>
             </div>
             <dl className="grid grid-cols-[5rem_1fr] gap-x-3 gap-y-2 text-sm mb-5 [&>dd]:min-w-0 [&>dd]:break-words">
@@ -271,7 +274,7 @@ export default function AdminApplicationsPage() {
                 : <p className="text-sm text-gray-400">✉️ 未送信</p>}
             </div>
 
-            <div className="flex gap-3 print:hidden">
+            <div className="flex flex-wrap items-center gap-3 print:hidden">
               <a href={`mailto:${selected.email}?subject=Re: ${selected.category}`}
                 className="btn-primary text-sm px-4 py-2">返信する（メール）</a>
               <button onClick={() => window.print()} className="text-sm px-4 py-2 border border-navy text-navy rounded hover:bg-navy hover:text-white transition-colors">🖨 印刷</button>
