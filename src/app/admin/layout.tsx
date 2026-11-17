@@ -238,7 +238,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // 画面全体が上下にバウンドして見える不具合があった。svhで高さを固定し
     // overflow-hiddenで本体自体はスクロールさせず、中身（<main>）だけを
     // スクロール領域にすることで、ヘッダー・サイドバーが常に画面に固定されて見えるようにした
-    <div className="h-[100svh] flex bg-gray-100 overflow-hidden">
+    // 印刷時は高さ固定・スクロール領域を外し、詳細の中身が1ページ目で切れずに全部印刷されるようにする
+    <div className="h-[100svh] flex bg-gray-100 overflow-hidden print:h-auto print:block print:overflow-visible print:bg-white">
       {/* モバイル用ヘッダー（ハンバーガーメニュー） */}
       <div className="md:hidden fixed top-0 inset-x-0 z-30 flex items-center justify-between bg-navy text-white px-4 py-3 print:hidden">
         <p className="font-serif text-sm">中禅寺 立木観音 管理画面</p>
@@ -354,7 +355,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* メインコンテンツ */}
-      <main className="flex-1 overflow-auto pt-12 md:pt-0">
+      <main className="flex-1 overflow-auto pt-12 md:pt-0 print:overflow-visible print:pt-0">
         {children}
       </main>
     </div>
