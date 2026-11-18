@@ -132,6 +132,8 @@ export function getTimeSlots(type: ReservationType, month: number, gomaPurpose?:
     return halfHourSlots(9, 13)
   }
   if (type === 'zazen') {
+    // 3月〜11月は13:00・14:00の2回、12月〜2月は13:00の1回のみ
+    if (season === 'winter') return ['13:00']
     return ['13:00', '14:00']
   }
   return []
