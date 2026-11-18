@@ -127,9 +127,9 @@ export function getTimeSlots(type: ReservationType, month: number, gomaPurpose?:
     return ['午前', '午後']
   }
   if (type === 'jyuzu') {
-    if (season === 'peak')     return halfHourSlots(9, 15)
-    if (season === 'shoulder') return halfHourSlots(9, 14)
-    return halfHourSlots(9, 13)
+    // 4月〜10月は9:00〜15:00、11月〜3月は9:00〜14:00
+    if (season === 'peak') return halfHourSlots(9, 15)
+    return halfHourSlots(9, 14)
   }
   if (type === 'zazen') {
     // 3月〜11月は13:00・14:00の2回、12月〜2月は13:00の1回のみ
