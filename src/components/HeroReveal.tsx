@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { createContext, Fragment, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { setHeroIntroPlaying } from '@/lib/heroIntroStore'
 
 // 白背景の見出し演出が完全に終わって写真が現れたか（imageActive）を、
@@ -111,6 +111,8 @@ const CHAR_ENTER_TRANSFORM = 'translateY(8px) rotateX(-20deg)'
 // ヘッダーの実高さ(64px)だけでは足りず、eyebrow分の余裕を上乗せしている
 // （1440x800・9文字の行で実測し、余裕を持って収まる値に調整済み）
 const FIXED_HEADER_PX = 130
+// 横書きモードで、見出しの最終行と下部グループ（サブコピー等）の間に最低限確保する余白
+const H_MIN_GAP_PX = 24
 
 // 写真フェーズで見出し（h1）以下のブロックをまとめて下にずらす量。transformは
 // レイアウト上の高さ（offsetHeight）に影響しないため、この分をheadingContentRef
@@ -275,7 +277,13 @@ export default function HeroReveal({
       // セクションの最小高さに含めないと、見出し+ステータスカード+ボタン一式の実測高さが
       // 画面の高さに近い端末で、一番下のボタンがセクションのoverflow-hiddenによって
       // 見切れてしまう（温泉寺は入浴ステータスカードがある分、立木観音よりこの現象が起きやすい）。
-      setMinHeightPx(verticalHeading ? FIXED_HEADER_PX + PHOTO_PHASE_HEADING_SHIFT_PX + headingH : headingH + bottomH * 2)
+      // 横書きモードでは、見出しはliftPx、下部グループはliftPx+bottomLiftPxだけ持ち上がるため、
+      // 下部グループが見出しにbottomLiftPx分だけ近づく。この分と最低限の余白（H_MIN_GAP_PX）を
+      // 足しておかないと、スマホ幅で英語の見出しが折り返して高くなった時に、見出しの最終行と
+      // 下部グループ（温泉寺のサブコピー）が重なってしまう
+      setMinHeightPx(verticalHeading
+        ? FIXED_HEADER_PX + PHOTO_PHASE_HEADING_SHIFT_PX + headingH
+        : headingH + bottomH * 2 + (bottomLiftPx + H_MIN_GAP_PX) * 2)
       setHeadingAreaMinHeightPx(headingH)
     }
     update()
@@ -287,7 +295,7 @@ export default function HeroReveal({
     let raf2 = 0
     const raf1 = requestAnimationFrame(() => { raf2 = requestAnimationFrame(() => setLayoutSettled(true)) })
     return () => { ro.disconnect(); cancelAnimationFrame(raf1); cancelAnimationFrame(raf2) }
-  }, [verticalHeading])
+  }, [verticalHeading, bottomLiftPx])
 
   // こちらもuseIsomorphicLayoutEffect化（理由は上のminHeightPx測定と同じ）。ここで求める
   // gridShiftPx/logoExtraPxは見出し自体のtransformに直結するため、ペイントを
@@ -728,28 +736,43 @@ export default function HeroReveal({
                 {lines.map((line, li) => (
                   // line-heightやmarginは表示環境によって行間が揺れる問題があったため、
                   // flexのgapで行間を確保する（ブラウザ間・表示倍率で崩れにくい）
-                  <span key={li} className="block whitespace-nowrap">
-                    {Array.from(line).map((ch, ci) => {
-                      // text開始（textActiveがtrueになった瞬間）からの相対遅延
-                      const relDelayMs = charIndex++ * STAGGER_MS
-                      return (
-                        <span
-                          key={ci}
-                          className="inline-block"
-                          style={{
-                            opacity: textActive ? 1 : 0,
-                            transform: textActive ? 'translateY(0) rotateX(0deg)' : CHAR_ENTER_TRANSFORM,
-                            color: imageActive ? lightColor : darkColor,
-                            textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
-                            transitionProperty: 'opacity, transform, color',
-                            transitionDuration: `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`,
-                            transitionTimingFunction: EASE,
-                            transitionDelay: `${relDelayMs}ms, ${relDelayMs}ms, 0ms`,
-                          }}
-                        >
-                          {ch === ' ' ? ' ' : ch}
+                  //
+                  // 1文字ずつinline-blockにすると、文字間の半角スペースが幅0に潰れて単語がくっつき、
+                  // さらに改行位置も無くなる（行全体がwhitespace-nowrapだったこともあり、
+                  // 英語の見出しがスマホ幅で画面の左右にはみ出していた）。そのため単語ごとに
+                  // nowrapのまとまりにし、単語の間は通常のスペース（＝改行できる位置）で区切る
+                  <span key={li} className="block text-center">
+                    {line.split(' ').map((word, wi, words) => {
+                      const wordEl = (
+                        <span className="inline-block whitespace-nowrap">
+                          {Array.from(word).map((ch, ci) => {
+                            // text開始（textActiveがtrueになった瞬間）からの相対遅延
+                            const relDelayMs = charIndex++ * STAGGER_MS
+                            return (
+                              <span
+                                key={ci}
+                                className="inline-block"
+                                style={{
+                                  opacity: textActive ? 1 : 0,
+                                  transform: textActive ? 'translateY(0) rotateX(0deg)' : CHAR_ENTER_TRANSFORM,
+                                  color: imageActive ? lightColor : darkColor,
+                                  textShadow: imageActive ? '0 2px 14px rgba(0,0,0,0.5)' : 'none',
+                                  transitionProperty: 'opacity, transform, color',
+                                  transitionDuration: `${CHAR_DURATION_MS}ms, ${CHAR_DURATION_MS}ms, 700ms`,
+                                  transitionTimingFunction: EASE,
+                                  transitionDelay: `${relDelayMs}ms, ${relDelayMs}ms, 0ms`,
+                                }}
+                              >
+                                {ch}
+                              </span>
+                            )
+                          })}
                         </span>
                       )
+                      const isLast = wi === words.length - 1
+                      // スペースも1文字として数え、文字が浮かび上がるタイミング（charCount基準）を従来と揃える
+                      if (!isLast) charIndex++
+                      return <Fragment key={wi}>{wordEl}{isLast ? null : ' '}</Fragment>
                     })}
                   </span>
                 ))}

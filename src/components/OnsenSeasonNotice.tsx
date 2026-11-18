@@ -16,10 +16,10 @@ export default function OnsenSeasonNotice({
 }) {
   if (variant === 'hero') {
     return (
-      <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-8 py-5 rounded-2xl shadow-xl max-w-md text-center">
+      <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-5 sm:px-8 py-5 rounded-2xl shadow-xl max-w-md text-center">
         <div className="flex items-center gap-2.5">
           <span className="inline-flex rounded-full h-3 w-3 bg-[#5b7fa8] flex-shrink-0" />
-          <p className="text-lg md:text-2xl font-bold tracking-wide">{season.label}</p>
+          <p className="text-lg md:text-2xl font-bold tracking-wide break-keep">{season.label}</p>
         </div>
         {season.waitMessage && (
           <p className="text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-line">{season.waitMessage}</p>

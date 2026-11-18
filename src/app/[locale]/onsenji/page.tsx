@@ -324,13 +324,13 @@ export default async function OnsenjPage({
                   </p>
                 </div>
               ) : !onsenWithinHours ? (
-                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-8 py-5 rounded-2xl shadow-xl">
+                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-5 sm:px-8 py-5 rounded-2xl shadow-xl text-center">
                   <div className="flex items-center gap-2.5">
                     <span className="relative flex h-3 w-3 flex-shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#c0524a] opacity-75" />
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-[#c0524a]" />
                     </span>
-                    <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
+                    <p className="text-lg md:text-2xl font-bold tracking-wide break-keep text-center">
                       {onsenStatusClosedTimeLabel}
                     </p>
                   </div>
@@ -340,13 +340,13 @@ export default async function OnsenjPage({
                   )}
                 </div>
               ) : onsenReceptionClosed ? (
-                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-8 py-5 rounded-2xl shadow-xl">
+                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-gray-700 px-5 sm:px-8 py-5 rounded-2xl shadow-xl text-center">
                   <div className="flex items-center gap-2.5">
                     <span className="relative flex h-3 w-3 flex-shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500" />
                     </span>
-                    <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
+                    <p className="text-lg md:text-2xl font-bold tracking-wide break-keep text-center">
                       {onsenStatusReceptionClosedLabel}
                     </p>
                   </div>
@@ -356,13 +356,13 @@ export default async function OnsenjPage({
                   )}
                 </div>
               ) : (
-                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-onsenji px-8 py-5 rounded-2xl shadow-xl">
+                <div className="inline-flex flex-col items-center gap-1.5 bg-white text-onsenji px-5 sm:px-8 py-5 rounded-2xl shadow-xl text-center">
                   <div className="flex items-center gap-2.5">
                     <span className="relative flex h-3 w-3 flex-shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7ec8a4] opacity-75" />
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-[#3f8c68]" />
                     </span>
-                    <p className="text-lg md:text-2xl font-bold tracking-wide whitespace-nowrap">
+                    <p className="text-lg md:text-2xl font-bold tracking-wide break-keep text-center">
                       {todayLabel}　{onsenStatusOpenLabel}
                     </p>
                   </div>
