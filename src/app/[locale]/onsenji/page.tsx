@@ -144,6 +144,12 @@ function hmToMinutes(hm: string): number {
   const [h, m] = hm.split(':').map(n => Number(n) || 0)
   return h * 60 + m
 }
+// 入浴の最終受付は、入浴終了時刻の何分前か
+const RECEPTION_CUTOFF_MIN = 60
+function minutesToHm(min: number): string {
+  const m = ((min % 1440) + 1440) % 1440
+  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+}
 function to12h(hm: string): string {
   const [hStr, m] = hm.split(':')
   let h = Number(hStr) || 0
@@ -204,10 +210,13 @@ export default async function OnsenjPage({
   const onsenCloseTime = c['onsenji_onsen_status_close_time'] || '16:00'
   const nowMinutes = jstMinutesNow()
   const onsenWithinHours = nowMinutes >= hmToMinutes(onsenOpenTime) && nowMinutes < hmToMinutes(onsenCloseTime)
-  const onsenReceptionClosed = onsenWithinHours && nowMinutes >= hmToMinutes(onsenCloseTime) - 60
+  // 最終受付は入浴終了時刻の1時間前（受付終了間際の表示切替と、入浴時間の行の「最終受付」表示で共用）
+  const onsenLastEntryMinutes = hmToMinutes(onsenCloseTime) - RECEPTION_CUTOFF_MIN
+  const onsenLastEntryTime = minutesToHm(onsenLastEntryMinutes)
+  const onsenReceptionClosed = onsenWithinHours && nowMinutes >= onsenLastEntryMinutes
   const onsenStatusHours = loc === 'en'
-    ? `Bathing available ${to12h(onsenOpenTime)}–${to12h(onsenCloseTime)}`
-    : `${onsenOpenTime}〜${onsenCloseTime}まで入浴可`
+    ? `Bathing available ${to12h(onsenOpenTime)}–${to12h(onsenCloseTime)} (last entry ${to12h(onsenLastEntryTime)})`
+    : `${onsenOpenTime}〜${onsenCloseTime}まで入浴可(最終受付${onsenLastEntryTime})`
   const onsenStatusNote = getLocalizedContent(c, 'onsenji_onsen_status_note', loc)
   const todayLabel = loc === 'en'
     ? new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric' }).format(new Date())

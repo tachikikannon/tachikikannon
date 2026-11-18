@@ -235,7 +235,7 @@ const SECTIONS: Section[] = [
       { key: 'onsenji_onsen_status_reception_closed_label', label: '受付終了間際（終了1時間前〜終了時刻）の表示文言', defaultValue: '本日の入浴の受付は終了しました', translatable: true },
       { key: 'onsenji_onsen_status_closed_time_label', label: '時間外の表示文言', defaultValue: '本日の入浴は終了しました', translatable: true },
       { key: 'onsenji_onsen_status_open_time', label: '入浴開始時刻（24時間表記 例: 09:00。季節により変動するため随時更新してください）', defaultValue: '09:00' },
-      { key: 'onsenji_onsen_status_close_time', label: '入浴終了時刻（24時間表記 例: 16:00。終了1時間前になると自動で受付終了の表示文言に切り替わり、この時刻を過ぎると時間外の表示文言に切り替わります）', defaultValue: '16:00' },
+      { key: 'onsenji_onsen_status_close_time', label: '入浴終了時刻（24時間表記 例: 16:00。終了1時間前が最終受付となり、入浴時間の表示に「(最終受付15:00)」のように自動で表示されます。最終受付の時刻になると自動で受付終了の表示文言に切り替わり、この時刻を過ぎると時間外の表示文言に切り替わります）', defaultValue: '16:00' },
       { key: 'onsenji_onsen_status_note', label: '入浴時間の下に表示する補足文言', defaultValue: '※満員の場合は順番にご入浴いただきます', translatable: true },
       {
         key: 'onsenji_onsen_closure_events',
