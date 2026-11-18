@@ -6,7 +6,6 @@ import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
-import ZoomableImage from '@/components/ZoomableImage'
 import HeroReveal from '@/components/HeroReveal'
 import { OnsenjiStructuredData } from '@/components/StructuredData'
 import { createPublicSupabaseClient } from '@/lib/supabase-server'
@@ -270,7 +269,7 @@ export default async function OnsenjPage({
           eyebrowDarkColor="#1a4a3a"
           eyebrowLightColor="#7ec8a4"
           background={
-            <ZoomableImage src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill className="object-cover" priority />
+            <Image src="/images/onsenji/hero/onsenji-main.png" alt="温泉寺" fill sizes="100vw" className="object-cover" priority />
           }
           midContent={
             <p className="text-white text-sm md:text-base max-w-xl mx-auto leading-relaxed whitespace-pre-line">
