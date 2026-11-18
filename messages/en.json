@@ -1104,6 +1104,10 @@
     "quickAbout": "Hours & Admission Fee",
     "quickFaq": "FAQ"
   },
+  "onsenSeason": {
+    "openDate": "Scheduled reopening: {date}",
+    "openDateTbd": "Reopening date: to be announced"
+  },
   "home": {
     "ctaAbout": "Visit Information",
     "ctaPrayer": "View Prayer Services",

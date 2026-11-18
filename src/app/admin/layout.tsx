@@ -95,7 +95,7 @@ const navItems: NavItem[] = [
   { href: '/admin/onsenji/about',         label: '拝観案内',       icon: '🎫', group: ONSENJI_PAGES_GROUP },
   { href: '/admin/onsenji/goshuin',       label: '御朱印',         icon: '📮', group: ONSENJI_PAGES_GROUP },
   { href: '/admin/onsenji/onsen',         label: '温泉のご案内',   icon: '♨️', group: ONSENJI_PAGES_GROUP },
-  { href: '/admin/onsenji/onsen-status',  label: '温泉設定',       icon: '🚦', group: ONSENJI_PAGES_GROUP },
+  { href: '/admin/onsenji/onsen-status',  label: '温泉設定（閉湯・開湯）', icon: '🚦', group: ONSENJI_PAGES_GROUP },
   { href: '/admin/onsenji/shakyou',       label: '写経体験',       icon: '✍️', group: ONSENJI_PAGES_GROUP },
   { href: '/admin/onsenji/shabutu',       label: '写仏体験',       icon: '🖌️', group: ONSENJI_PAGES_GROUP },
   { href: '/admin/onsenji/faq',           label: 'FAQ',            icon: '❓', group: ONSENJI_PAGES_GROUP },

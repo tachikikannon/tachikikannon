@@ -1104,6 +1104,10 @@
     "quickAbout": "拝観時間・料金",
     "quickFaq": "よくある質問"
   },
+  "onsenSeason": {
+    "openDate": "開湯予定日：{date}",
+    "openDateTbd": "開湯予定日：未定"
+  },
   "home": {
     "ctaAbout": "参拝のご案内",
     "ctaPrayer": "御祈願を見る",

@@ -4,10 +4,12 @@ import { createClient } from '@/lib/supabase'
 import { normalizeStaleList } from '@/lib/site-content'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
-type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
+// clearable / date の意味は src/components/admin/SectionEditor.tsx と同じ（両エディタで揃えること）
+type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean; clearable?: boolean }
 type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string; requireItemKey?: string }
 type BooleanField = { key: string; label: string; type: 'boolean'; defaultValue?: string; checkboxLabel?: string }
-type Field = TextField | ListFieldDef | BooleanField
+type DateField = { key: string; label: string; type: 'date'; defaultValue?: string; clearLabel?: string }
+type Field = TextField | ListFieldDef | BooleanField | DateField
 type Section = { section: string; href: string; fields: Field[] }
 
 const J = (v: unknown) => JSON.stringify(v)
@@ -221,6 +223,13 @@ const SECTIONS: Section[] = [
     section: '温泉設定',
     href: '/onsenji',
     fields: [
+      // 閉湯・開湯（冬季休業など）。src/app/admin/onsenji/onsen-status/page.tsx と同じ内容にすること
+      { key: 'onsenji_onsen_season_close_date', label: '【閉湯登録】閉湯日（この日から公開ページが自動で「閉湯中」の案内に切り替わります。閉湯期間中は、下の「温泉営業ステータスの表示」の設定に関係なく案内を表示します）', type: 'date', clearLabel: '日付を消す' },
+      { key: 'onsenji_onsen_season_open_date', label: '【開湯登録】開湯日・予定（この日から自動で通常の営業表示に戻ります。未定なら空欄で保存してください。閉湯中は「開湯予定日：令和◯年◯月◯日」または「開湯予定日：未定」と表示されます）', type: 'date', clearLabel: '日付を消す（未定にする）' },
+      { key: 'onsenji_onsen_season_closed_force', label: '【閉湯登録】今すぐ閉湯中にする（チェックを入れている間は、日付に関係なく閉湯中の案内を表示します。開湯したらチェックを外して保存してください）', type: 'boolean', defaultValue: 'false', checkboxLabel: '閉湯中にする' },
+      { key: 'onsenji_onsen_season_closed_label', label: '閉湯中の見出し文言', defaultValue: '冬季閉湯中', translatable: true },
+      { key: 'onsenji_onsen_season_wait_message', label: '閉湯中のメッセージ（空欄で保存すると表示しません）', multiline: true, defaultValue: '開湯するまでお待ちください。', translatable: true, clearable: true },
+      { key: 'onsenji_onsen_season_info_message', label: '開湯についての案内メッセージ（例: 昨年は令和8年4月11日に開湯しました。空欄で保存すると表示しません）', multiline: true, defaultValue: '昨年は令和8年4月11日に開湯しました。', translatable: true, clearable: true },
       { key: 'onsenji_onsen_status_enabled', label: '温泉営業ステータスの表示（トップページ ヒーロー下に表示）', type: 'boolean', defaultValue: 'true', checkboxLabel: '表示する' },
       { key: 'onsenji_onsen_status_open_label', label: '営業中の表示文言', defaultValue: 'ただいま入浴いただけます', translatable: true },
       { key: 'onsenji_onsen_status_reception_closed_label', label: '受付終了間際（終了1時間前〜終了時刻）の表示文言', defaultValue: '本日の入浴の受付は終了しました', translatable: true },
@@ -544,9 +553,10 @@ export default function OnsenjPagesEditor() {
     SECTIONS.forEach(({ fields }) => fields.forEach(f => {
       if (f.defaultValue) defaults[f.key] = f.defaultValue
     }))
+    const clearableKeys = new Set(SECTIONS.flatMap(({ fields }) => fields.filter(f => 'clearable' in f && f.clearable).map(f => f.key)))
     supabase.from('site_content').select('key,value').then(({ data }) => {
       const map: Record<string, string> = { ...defaults }
-      data?.forEach(row => { if (row.value) map[row.key] = row.value })
+      data?.forEach(row => { if (row.value || clearableKeys.has(row.key)) map[row.key] = row.value ?? '' })
       SECTIONS.forEach(({ fields }) => fields.forEach(f => {
         if (f.type === 'list' && f.requireItemKey) {
           map[f.key] = normalizeStaleList(map[f.key] ?? f.defaultValue, f.defaultValue, f.requireItemKey)
@@ -597,6 +607,24 @@ export default function OnsenjPagesEditor() {
                       />
                       {field.checkboxLabel ?? '有効にする'}
                     </label>
+                  ) : field.type === 'date' ? (
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="date"
+                        className="admin-input max-w-[12rem]"
+                        value={values[field.key] ?? ''}
+                        onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))}
+                      />
+                      {field.clearLabel && (
+                        <button
+                          type="button"
+                          onClick={() => setValues(v => ({ ...v, [field.key]: '' }))}
+                          className="text-xs text-gray-500 underline hover:text-gray-700 whitespace-nowrap"
+                        >
+                          {field.clearLabel}
+                        </button>
+                      )}
+                    </div>
                   ) : field.type === 'list' ? (
                     <ListEditor
                       value={values[field.key] ?? field.defaultValue}

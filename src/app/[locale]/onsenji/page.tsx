@@ -12,6 +12,8 @@ import { OnsenjiStructuredData } from '@/components/StructuredData'
 import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { getLocalizedContent, pickLocalized } from '@/lib/site-content'
 import { newsCategoriesKey, parseNewsCategories, categoryColor, categoryLabel } from '@/lib/newsCategories'
+import { ONSEN_SEASON_DEFAULTS, ONSEN_SEASON_CLEARABLE_KEYS, getOnsenSeasonState, formatOnsenDate } from '@/lib/onsenSeason'
+import OnsenSeasonNotice from '@/components/OnsenSeasonNotice'
 import type { Locale } from '@/i18n/routing'
 import type { News } from '@/types'
 
@@ -91,6 +93,7 @@ const DEFAULT_CONTENT: Record<string, string> = {
   onsenji_onsen_status_note: '※満員の場合は順番にご入浴いただきます',
   onsenji_onsen_status_note_en: 'If the bath is full, please wait for your turn.',
   onsenji_onsen_closure_events: '[]',
+  ...ONSEN_SEASON_DEFAULTS,
   onsenji_heading_news: 'お知らせ',
   onsenji_heading_news_en: 'News',
   onsenji_about_title: '温泉寺について',
@@ -161,7 +164,7 @@ async function getContent(): Promise<Record<string, string>> {
     if (!res.ok) return DEFAULT_CONTENT
     const rows: { key: string; value: string }[] = await res.json()
     const map = { ...DEFAULT_CONTENT }
-    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    rows.forEach(r => { if (r.value || ONSEN_SEASON_CLEARABLE_KEYS.has(r.key)) map[r.key] = r.value ?? '' })
     return map
   } catch {
     return DEFAULT_CONTENT
@@ -191,6 +194,12 @@ export default async function OnsenjPage({
   const closureEvents = pj<ClosureEvent[]>(getLocalizedContent(c, 'onsenji_onsen_closure_events', loc), [])
   const todayISO = jstDateISO()
   const todaysClosure = closureEvents.find(e => e.date === todayISO)
+  // 閉湯期間（冬季休業など）は、行事・時間帯による表示より優先し、「表示する」設定に関係なく案内を出す
+  const season = getOnsenSeasonState(c, loc, todayISO)
+  const tSeason = await getTranslations('onsenSeason')
+  const seasonOpenDateLine = season.upcomingOpenISO
+    ? tSeason('openDate', { date: formatOnsenDate(season.upcomingOpenISO, loc) })
+    : tSeason('openDateTbd')
   const onsenOpenTime = c['onsenji_onsen_status_open_time'] || '09:00'
   const onsenCloseTime = c['onsenji_onsen_status_close_time'] || '16:00'
   const nowMinutes = jstMinutesNow()
@@ -269,7 +278,11 @@ export default async function OnsenjPage({
             </p>
           }
         >
-          {onsenStatusEnabled && (
+          {season.closed ? (
+            <div className="flex justify-center">
+              <OnsenSeasonNotice season={season} openDateLine={seasonOpenDateLine} variant="hero" />
+            </div>
+          ) : onsenStatusEnabled && (
             <div className="flex justify-center">
               {todaysClosure ? (
                 <div className="inline-flex items-center gap-3 bg-[#c0524a] text-white px-6 py-4 rounded-2xl shadow-xl">

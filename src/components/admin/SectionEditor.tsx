@@ -4,10 +4,14 @@ import { createClient } from '@/lib/supabase'
 import { normalizeStaleList } from '@/lib/site-content'
 import ListEditor, { type ListField } from '@/components/admin/ListEditor'
 
-type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean }
+// clearable: 空欄で保存したら公開ページで「非表示」になるフィールド（公開側も空文字を尊重する実装が必要）。
+// 管理画面でも、空欄で保存済みなら既定文で埋め直さずに空欄のまま表示する。
+type TextField = { key: string; label: string; hint?: string; multiline?: boolean; defaultValue?: string; type?: 'text'; translatable?: boolean; clearable?: boolean }
 type ListFieldDef = { key: string; label: string; type: 'list'; listFields: ListField[]; defaultValue: string; translatable?: boolean; defaultValueEn?: string; requireItemKey?: string }
 type BooleanField = { key: string; label: string; type: 'boolean'; defaultValue?: string; checkboxLabel?: string }
-export type Field = TextField | ListFieldDef | BooleanField
+// 日付（カレンダーから選択、"YYYY-MM-DD" で保存）。clearLabel を付けると日付を消すボタンを出す
+type DateField = { key: string; label: string; type: 'date'; defaultValue?: string; clearLabel?: string }
+export type Field = TextField | ListFieldDef | BooleanField | DateField
 
 interface Props {
   title: string
@@ -25,9 +29,10 @@ export default function SectionEditor({ title, href, fields, accent = 'navy' }: 
   useEffect(() => {
     const defaults: Record<string, string> = {}
     fields.forEach(f => { if (f.defaultValue) defaults[f.key] = f.defaultValue })
+    const clearableKeys = new Set(fields.filter(f => 'clearable' in f && f.clearable).map(f => f.key))
     supabase.from('site_content').select('key,value').then(({ data }) => {
       const map: Record<string, string> = { ...defaults }
-      data?.forEach(row => { if (row.value) map[row.key] = row.value })
+      data?.forEach(row => { if (row.value || clearableKeys.has(row.key)) map[row.key] = row.value ?? '' })
       fields.forEach(f => {
         if (f.type === 'list' && f.requireItemKey) {
           map[f.key] = normalizeStaleList(map[f.key] ?? f.defaultValue, f.defaultValue, f.requireItemKey)
@@ -77,6 +82,24 @@ export default function SectionEditor({ title, href, fields, accent = 'navy' }: 
                 />
                 {field.checkboxLabel ?? '有効にする'}
               </label>
+            ) : field.type === 'date' ? (
+              <div className="flex items-center gap-3">
+                <input
+                  type="date"
+                  className="admin-input max-w-[12rem]"
+                  value={values[field.key] ?? ''}
+                  onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))}
+                />
+                {field.clearLabel && (
+                  <button
+                    type="button"
+                    onClick={() => setValues(v => ({ ...v, [field.key]: '' }))}
+                    className="text-xs text-gray-500 underline hover:text-gray-700 whitespace-nowrap"
+                  >
+                    {field.clearLabel}
+                  </button>
+                )}
+              </div>
             ) : field.type === 'list' ? (
               <ListEditor
                 value={values[field.key] ?? field.defaultValue}

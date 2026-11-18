@@ -4,6 +4,13 @@ import SectionEditor from '@/components/admin/SectionEditor'
 const J = (v: unknown) => JSON.stringify(v)
 
 const FIELDS = [
+  // 閉湯・開湯（冬季休業など）。src/app/admin/onsenji-pages/page.tsx の「温泉設定」と同じ内容にすること
+  { key: 'onsenji_onsen_season_close_date', label: '【閉湯登録】閉湯日（この日から公開ページが自動で「閉湯中」の案内に切り替わります。閉湯期間中は、下の「温泉営業ステータスの表示」の設定に関係なく案内を表示します）', type: 'date' as const, clearLabel: '日付を消す' },
+  { key: 'onsenji_onsen_season_open_date', label: '【開湯登録】開湯日・予定（この日から自動で通常の営業表示に戻ります。未定なら空欄で保存してください。閉湯中は「開湯予定日：令和◯年◯月◯日」または「開湯予定日：未定」と表示されます）', type: 'date' as const, clearLabel: '日付を消す（未定にする）' },
+  { key: 'onsenji_onsen_season_closed_force', label: '【閉湯登録】今すぐ閉湯中にする（チェックを入れている間は、日付に関係なく閉湯中の案内を表示します。開湯したらチェックを外して保存してください）', type: 'boolean' as const, defaultValue: 'false', checkboxLabel: '閉湯中にする' },
+  { key: 'onsenji_onsen_season_closed_label', label: '閉湯中の見出し文言', defaultValue: '冬季閉湯中', translatable: true },
+  { key: 'onsenji_onsen_season_wait_message', label: '閉湯中のメッセージ（空欄で保存すると表示しません）', multiline: true, defaultValue: '開湯するまでお待ちください。', translatable: true, clearable: true },
+  { key: 'onsenji_onsen_season_info_message', label: '開湯についての案内メッセージ（例: 昨年は令和8年4月11日に開湯しました。空欄で保存すると表示しません）', multiline: true, defaultValue: '昨年は令和8年4月11日に開湯しました。', translatable: true, clearable: true },
   { key: 'onsenji_onsen_status_enabled', label: '温泉営業ステータスの表示（トップページ ヒーロー下に表示）', type: 'boolean' as const, defaultValue: 'true', checkboxLabel: '表示する' },
   { key: 'onsenji_onsen_status_open_label', label: '営業中の表示文言', defaultValue: 'ただいま入浴いただけます', translatable: true },
   { key: 'onsenji_onsen_status_reception_closed_label', label: '受付終了間際（終了1時間前〜終了時刻）の表示文言', defaultValue: '本日の入浴の受付は終了しました', translatable: true },

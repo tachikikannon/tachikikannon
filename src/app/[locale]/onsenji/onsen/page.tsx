@@ -8,6 +8,8 @@ import HeaderOnsenji from '@/components/HeaderOnsenji'
 import FooterOnsenji from '@/components/FooterOnsenji'
 import ZoomableImage from '@/components/ZoomableImage'
 import { getLocalizedContent } from '@/lib/site-content'
+import { ONSEN_SEASON_DEFAULTS, ONSEN_SEASON_CLEARABLE_KEYS, getOnsenSeasonState, formatOnsenDate } from '@/lib/onsenSeason'
+import OnsenSeasonNotice from '@/components/OnsenSeasonNotice'
 import type { Locale } from '@/i18n/routing'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -47,6 +49,7 @@ const DEFAULTS: Record<string, string> = {
   onsenji_onsen_fee_note_en: 'Bathing fee: adults ¥500, elementary/junior high school students ¥300',
   onsenji_onsen_note:      'タオルをご持参ください。貸し出しは行っておりません。',
   onsenji_onsen_note_en: 'Please bring your own towel. Towel rental is not available.',
+  ...ONSEN_SEASON_DEFAULTS,
 }
 
 async function getContent(): Promise<Record<string, string>> {
@@ -61,7 +64,7 @@ async function getContent(): Promise<Record<string, string>> {
     if (!res.ok) return DEFAULTS
     const rows: { key: string; value: string }[] = await res.json()
     const map = { ...DEFAULTS }
-    rows.forEach(r => { if (r.value) map[r.key] = r.value })
+    rows.forEach(r => { if (r.value || ONSEN_SEASON_CLEARABLE_KEYS.has(r.key)) map[r.key] = r.value ?? '' })
     return map
   } catch {
     return DEFAULTS
@@ -79,6 +82,11 @@ export default async function OnsenjOnsenPage({
   const tc = await getTranslations('common')
   const content = await getContent()
   const g = (key: string) => getLocalizedContent(content, key, loc)
+  const season = getOnsenSeasonState(content, loc)
+  const tSeason = await getTranslations('onsenSeason')
+  const seasonOpenDateLine = season.upcomingOpenISO
+    ? tSeason('openDate', { date: formatOnsenDate(season.upcomingOpenISO, loc) })
+    : tSeason('openDateTbd')
 
   return (
     <>
@@ -109,6 +117,11 @@ export default async function OnsenjOnsenPage({
         </section>
 
         <div className="max-w-3xl mx-auto px-4 py-14 space-y-14">
+
+          {/* 閉湯期間中の案内（管理画面「温泉設定」の閉湯日・開湯日で自動表示） */}
+          {season.closed && (
+            <OnsenSeasonNotice season={season} openDateLine={seasonOpenDateLine} variant="page" />
+          )}
 
           {/* 概要 */}
           <section>
