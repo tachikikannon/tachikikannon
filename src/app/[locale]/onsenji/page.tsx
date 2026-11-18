@@ -304,9 +304,9 @@ export default async function OnsenjPage({
                       {onsenStatusClosedTimeLabel}
                     </p>
                   </div>
-                  <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
+                  <p className="text-xs md:text-sm text-gray-700">{onsenStatusHours}</p>
                   {onsenStatusNote && (
-                    <p className="text-[11px] md:text-xs text-gray-400 mt-0.5">{onsenStatusNote}</p>
+                    <p className="text-[11px] md:text-xs text-gray-600 mt-0.5">{onsenStatusNote}</p>
                   )}
                 </div>
               ) : onsenReceptionClosed ? (
@@ -320,9 +320,9 @@ export default async function OnsenjPage({
                       {onsenStatusReceptionClosedLabel}
                     </p>
                   </div>
-                  <p className="text-xs md:text-sm text-gray-500">{onsenStatusHours}</p>
+                  <p className="text-xs md:text-sm text-gray-700">{onsenStatusHours}</p>
                   {onsenStatusNote && (
-                    <p className="text-[11px] md:text-xs text-gray-400 mt-0.5">{onsenStatusNote}</p>
+                    <p className="text-[11px] md:text-xs text-gray-600 mt-0.5">{onsenStatusNote}</p>
                   )}
                 </div>
               ) : (
@@ -336,9 +336,9 @@ export default async function OnsenjPage({
                       {todayLabel}　{onsenStatusOpenLabel}
                     </p>
                   </div>
-                  <p className="text-xs md:text-sm text-onsenji/70">{onsenStatusHours}</p>
+                  <p className="text-xs md:text-sm text-onsenji">{onsenStatusHours}</p>
                   {onsenStatusNote && (
-                    <p className="text-[11px] md:text-xs text-onsenji/50 mt-0.5">{onsenStatusNote}</p>
+                    <p className="text-[11px] md:text-xs text-onsenji mt-0.5">{onsenStatusNote}</p>
                   )}
                 </div>
               )}

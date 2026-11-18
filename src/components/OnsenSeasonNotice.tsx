@@ -22,11 +22,11 @@ export default function OnsenSeasonNotice({
           <p className="text-lg md:text-2xl font-bold tracking-wide">{season.label}</p>
         </div>
         {season.waitMessage && (
-          <p className="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line">{season.waitMessage}</p>
+          <p className="text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-line">{season.waitMessage}</p>
         )}
-        <p className="text-xs md:text-sm text-gray-500">{openDateLine}</p>
+        <p className="text-xs md:text-sm text-gray-700">{openDateLine}</p>
         {season.infoMessage && (
-          <p className="text-[11px] md:text-xs text-gray-400 mt-0.5 leading-relaxed whitespace-pre-line">{season.infoMessage}</p>
+          <p className="text-[11px] md:text-xs text-gray-600 mt-0.5 leading-relaxed whitespace-pre-line">{season.infoMessage}</p>
         )}
       </div>
     )
@@ -42,7 +42,7 @@ export default function OnsenSeasonNotice({
       )}
       <p className="text-sm text-gray-600 mt-2 font-medium">{openDateLine}</p>
       {season.infoMessage && (
-        <p className="text-xs md:text-sm text-gray-500 mt-2 leading-relaxed whitespace-pre-line">{season.infoMessage}</p>
+        <p className="text-xs md:text-sm text-gray-600 mt-2 leading-relaxed whitespace-pre-line">{season.infoMessage}</p>
       )}
     </section>
   )
