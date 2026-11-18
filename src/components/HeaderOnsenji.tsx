@@ -1,11 +1,18 @@
 'use client'
 import Image from '@/components/SafeImage'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/i18n/navigation'
+import { useHeroIntroPlaying } from '@/lib/heroIntroStore'
 
-export default function HeaderOnsenji() {
+/**
+ * introStatus: トップページのヒーロー演出の再生中（入浴ステータスのPOPがまだ見えない間）だけ、
+ * ヘッダー下段の帯に表示する内容。演出が終わってPOPが現れると帯は閉じる。トップページ以外では渡さない。
+ */
+export default function HeaderOnsenji({ introStatus }: { introStatus?: ReactNode } = {}) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const introPlaying = useHeroIntroPlaying()
+  const showIntroStatus = !!introStatus && introPlaying && !menuOpen
   const [scrolled, setScrolled] = useState(false)
   const locale = useLocale()
   const pathname = usePathname()
@@ -81,6 +88,20 @@ export default function HeaderOnsenji() {
           <span className={`block w-6 h-0.5 bg-white transition-transform ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
         </button>
       </div>
+
+      {/* ヒーロー演出中だけの入浴ステータス帯（grid-template-rowsの0fr⇔1frで高さをなめらかに開閉） */}
+      {introStatus && (
+        <div
+          className="grid transition-[grid-template-rows,opacity] duration-500 ease-out"
+          // 閉じるときは、HeroReveal側でPOPがフェードインし始める（写真が現れてから450ms後）のに合わせて遅らせる
+          style={{ gridTemplateRows: showIntroStatus ? '1fr' : '0fr', opacity: showIntroStatus ? 1 : 0, transitionDelay: showIntroStatus || menuOpen ? '0ms' : '450ms' }}
+          aria-hidden={!showIntroStatus}
+        >
+          <div className="overflow-hidden">
+            <div className="border-t border-white/15 px-4 py-2">{introStatus}</div>
+          </div>
+        </div>
+      )}
 
       {/* モバイルメニュー */}
       {menuOpen && (

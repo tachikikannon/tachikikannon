@@ -1,5 +1,6 @@
 'use client'
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { setHeroIntroPlaying } from '@/lib/heroIntroStore'
 
 // 白背景の見出し演出が完全に終わって写真が現れたか（imageActive）を、
 // background（HeroMediaCycle等）側からuseContextで読めるようにする。
@@ -325,6 +326,9 @@ export default function HeroReveal({
 
   const textActive = verticalHeading ? step > -1 : phase !== 'idle'
   const imageActive = verticalHeading ? verticalImageActive : horizontalImageActive
+  // 演出の再生中（写真が現れるまで）をヘッダー等へ伝える（温泉寺ヘッダーの入浴ステータス帯で使用）
+  useEffect(() => { setHeroIntroPlaying(!imageActive) }, [imageActive])
+  useEffect(() => () => setHeroIntroPlaying(false), [])
   // liftPxは横書き版の見出し（＋温泉寺の入浴ステータスカード分の下部の高さ）に
   // 合わせて調整された値なので、縦書き版では使わない。代わりに、白背景フェーズの
   // 寺紋・文字が上下ど真ん中よりわずかに上に来るよう、中禅寺・温泉寺で共通の

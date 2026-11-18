@@ -1,6 +1,7 @@
 export const revalidate = 60
 
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Image from '@/components/SafeImage'
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -211,6 +212,37 @@ export default async function OnsenjPage({
   const todayLabel = loc === 'en'
     ? new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric' }).format(new Date())
     : `${Number(todayISO.split('-')[1])}月${Number(todayISO.split('-')[2])}日`
+  const todaysClosureMessage = todaysClosure
+    ? (loc === 'en'
+      ? `The hot spring is closed today due to ${todaysClosure.name}.`
+      : `本日は${todaysClosure.name}の為、温泉には入れません`)
+    : ''
+
+  // ヒーロー演出の再生中（入浴ステータスのPOPがまだ見えない間）だけ、ヘッダー下段の帯に出す
+  // POPと同じ内容の短縮版（注意書きは省略）。判定の優先順位はPOPと同じ。
+  const statusDot = (color: string, pingColor?: string) => (
+    <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
+      {pingColor && <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${pingColor} opacity-75`} />}
+      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${color}`} />
+    </span>
+  )
+  const statusLine = (dot: ReactNode, main: string, sub?: string) => (
+    <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 text-white text-xs md:text-sm leading-snug text-center">
+      <span className="inline-flex items-center gap-2 font-bold">{dot}{main}</span>
+      {sub && <span>{sub}</span>}
+    </p>
+  )
+  const introStatus: ReactNode = season.closed
+    ? statusLine(statusDot('bg-[#8fb0d6]'), season.label, seasonOpenDateLine)
+    : !onsenStatusEnabled
+      ? undefined
+      : todaysClosure
+        ? statusLine(<span className="flex-shrink-0">⚠️</span>, todaysClosureMessage)
+        : !onsenWithinHours
+          ? statusLine(statusDot('bg-[#e07a72]', 'bg-[#e07a72]'), onsenStatusClosedTimeLabel, onsenStatusHours)
+          : onsenReceptionClosed
+            ? statusLine(statusDot('bg-amber-400', 'bg-amber-300'), onsenStatusReceptionClosedLabel, onsenStatusHours)
+            : statusLine(statusDot('bg-[#7ec8a4]', 'bg-[#7ec8a4]'), `${todayLabel}　${onsenStatusOpenLabel}`, onsenStatusHours)
   const headingNews = getLocalizedContent(c, 'onsenji_heading_news', loc)
   const aboutTitle = getLocalizedContent(c, 'onsenji_about_title', loc)
   const headingGoryaku = getLocalizedContent(c, 'onsenji_heading_goryaku', loc)
@@ -246,7 +278,7 @@ export default async function OnsenjPage({
   return (
     <>
       <OnsenjiStructuredData locale={loc} />
-      <HeaderOnsenji />
+      <HeaderOnsenji introStatus={introStatus} />
       <main>
         {/* ヒーロー */}
         <HeroReveal
@@ -288,9 +320,7 @@ export default async function OnsenjPage({
                 <div className="inline-flex items-center gap-3 bg-[#c0524a] text-white px-6 py-4 rounded-2xl shadow-xl">
                   <span className="text-2xl flex-shrink-0">⚠️</span>
                   <p className="text-sm md:text-base font-bold leading-snug text-left">
-                    {loc === 'en'
-                      ? `The hot spring is closed today due to ${todaysClosure.name}.`
-                      : `本日は${todaysClosure.name}の為、温泉には入れません`}
+                    {todaysClosureMessage}
                   </p>
                 </div>
               ) : !onsenWithinHours ? (
