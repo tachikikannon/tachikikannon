@@ -90,6 +90,9 @@ interface HeroRevealProps {
       "hero-pop-buttons"クラスを付けた要素の直下の子を、写真が現れたあとに
       1つずつ弾むように順番に表示する(globals.cssのCSSアニメーションで実現) */
   staggerChildren?: boolean
+  /** 写真の上に重ねる地色（darkColor）オーバーレイの濃さ(0〜1)。文字を読みやすくするためのもので、
+      大きいほど写真が暗く見える。既定は0.22。お寺ごとに写真の明るさが違うため個別に調整できるようにした */
+  overlayOpacity?: number
   className?: string
 }
 
@@ -141,7 +144,7 @@ export default function HeroReveal({
   verticalHeading = false, midContent, crestSrc,
   crestTargetCharFrac, secondLineOffsetEm, pairFirstTwoLines,
   darkColor, lightColor, eyebrowDarkColor = darkColor, eyebrowLightColor = lightColor,
-  background, children, liftPx = 0, bottomLiftPx = 0, staggerChildren = false, className,
+  background, children, liftPx = 0, bottomLiftPx = 0, staggerChildren = false, overlayOpacity = 0.22, className,
 }: HeroRevealProps) {
   const headingContentRef = useRef<HTMLDivElement>(null)
   const bottomGroupRef = useRef<HTMLDivElement>(null)
@@ -396,7 +399,7 @@ export default function HeroReveal({
         <HeroRevealedContext.Provider value={imageActive}>{background}</HeroRevealedContext.Provider>
         {/* 文字を読みやすくするための薄いオーバーレイ（濃すぎない程度）。
             装飾のみなので、下の背景（HeroMediaCycle等）へのクリックを妨げないようpointer-events-none */}
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: darkColor, opacity: 0.22 }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: darkColor, opacity: overlayOpacity }} />
       </div>
 
       {/* メインコピー・サブコピーは常にセクション全体（画像）の上下中央に配置する。

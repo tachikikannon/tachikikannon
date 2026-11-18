@@ -253,6 +253,7 @@ export default async function OnsenjPage({
           className="min-h-[100svh]"
           liftPx={72}
           bottomLiftPx={40}
+          overlayOpacity={0.1}
           eyebrow={c.onsenji_hero_en}
           heading={heroTitle}
           verticalHeading={loc !== 'en'}
